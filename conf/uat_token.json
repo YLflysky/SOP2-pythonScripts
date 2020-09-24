@@ -1,0 +1,52 @@
+{
+  "action": "ADD",
+  "cpId": "NX_ENGINE",
+  "aid": "4614907",
+  "domainId": "GAS",
+  "cpOrderId": "20200911170253459000",
+  "cpDetail": {
+    "orderNo": "20200911170253459000",
+    "merchantOrderNo": "58fd5b33-b7b8-4e19-8fbd-c21f0f1ad10f",
+    "paymentUrl": "weixin://wxpay/bizpayurl?pr\u003dmb1OWj0",
+    "paymentMethod": "wechat",
+    "status": "init"
+  },
+  "param": {
+    "stationId": "20b5ed1e47a244a7ac89f4ab42a8f5de",
+    "oilType": "92",
+    "oilGunNum": "1",
+    "totalFee": "600",
+    "stationName": "王预存款油站",
+    "stationAddr": "123456789",
+    "oilKind": "汽油",
+    "phone": "18888888888",
+    "paymentType": "qrcode",
+    "paymentMethod": "wechat",
+    "invoiceStatus": 2.0
+  },
+  "title": "加油自动化测试",
+  "desc": "zdh测试",
+  "extra": {},
+  "detail": {
+    "orderNo": "20200911170253459000",
+    "merchantOrderNo": "58fd5b33-b7b8-4e19-8fbd-c21f0f1ad10f",
+    "paymentUrl": "weixin://wxpay/bizpayurl?pr\u003dmb1OWj0",
+    "paymentMethod": "wechat",
+    "status": "init"
+  },
+  "info": {
+    "orderNo": "20200911170253459000",
+    "merchantOrderNo": "58fd5b33-b7b8-4e19-8fbd-c21f0f1ad10f",
+    "paymentUrl": "weixin://wxpay/bizpayurl?pr\u003dmb1OWj0",
+    "paymentMethod": "wechat",
+    "status": "init"
+  },
+  "orderStatus": "WAITING_PAY",
+  "payStatus": "WAITING_PAY",
+  "payExpireDate": 1599816774748,
+  "price": 6.0,
+  "refundMoney": 0.0,
+  "tenantId": "string",
+  "epOrderId": 2351,
+  "epOrderCode": "202009119273420064"
+}
