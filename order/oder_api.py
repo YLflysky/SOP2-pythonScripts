@@ -52,7 +52,6 @@ class Order(Base):
         self.header['aid'] = aid
         data = {'invoiceNo': invoice_no}
         code, body = self.do_get(url, data)
-        self.assert_msg(code, body)
         return body
 
     def order_detail(self, aid, order_no):
@@ -82,9 +81,9 @@ class Order(Base):
         print('-----开始teardown------')
         res1 = self.do_mysql_exec('delete from order_invoice where invoice_no={}'.format(invoice), 'order')
         res2 = self.do_mysql_exec(
-            'delete from order_invoice_relation where invoice_id=(select id from order_invoice where invoice_no={}'.format(
-                invoice),
-            'order')
+            'delete from order_invoice_relation where order_id=(select id from `order` where ex_order_no="{}")'.format(
+                order), 'order')
+
         print('result:{},{}'.format(res1, res2))
         print('同步的发票删除成功')
 
@@ -113,33 +112,54 @@ class Order(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def sync_order_kafka(self):
-        header = {'domainId': 'GAS'}
-        aid = self.f.pyint(4, 5)
-        ORDER_NO = self.f.ssn()
-        kafka_data = {'action': 'ADD', "vin": "DEFAULT_VIN", "cpId": "NX_ENGINE", "aid": aid, "serviceId": "GAS",
-                      "orderType": "BUSINESS", "exOrderNo": ORDER_NO, "title": self.f.sentence(),
-                      "businessState": "SUCCESS_PAY", "businessStateDesc": "zdh测试", "amount": 6.0, "payAmount": 0,
-                      "createdTime": 1600312755440, "timeout": 10, "orderStatus": "FINISH", "orderSubStatus": "DONE",
-                      "delete": False, 'tenantId': 'string', 'cpOrderId': ORDER_NO, 'epOrderCode': ORDER_NO,
-                      "businessInfo": {"actual": 5.99, "gunNum": "1", "amount": 6, "cpOrderNo": "20200917111619961000",
-                                       "cpId": "NX_ENGINE", "discount": 0.01, "createOrderTime": "2020-09-17 11:16:20",
-                                       "merchantOrderNo": "36a5ecca-f1ba-4bc2-81af-db231138126f", "couponAmount": 0,
-                                       "payType": "WECHAT_PAY", "phone": "18888888888", "oilType": "92",
-                                       "payment": "qrcode",
-                                       "paymentTime": "2020-09-17 11:18:59", "aid": "4614907", "status": "SUCCESS_PAY",
-                                       "stationId": "20b5ed1e47a244a7ac89f4ab42a8f5de"}, "discountAmount": 0,
-                      "domainId": "GAS", "origin": "EP", 'orderCategory': '001'}
-        kafka_data = {"action": "INVOICE_UPDATE", "domainId": "GAS", "epInvoiceId": 14, "cpId": "NX_ENGINE",
-                      "serialNo": "20200922134659640233", "invoiceNo": "38133062",'tenantId':'string',
-                      "actionId": "action_20200922134659691000", "aid": "4614907", "tel": "02887676543",
+    def sync_order_kafka(self, ep_order_id, business_info:dict, domain='GAS'):
+        '''
+        发送订单kafka消息
+        :param ep_order_id:订单的主键
+        :param domain: 业务域，默认为GAS
+        :return:
+        '''
+        header = {'domainId': domain}
+        aid = self.f.pyint()
+        title = self.f.sentence()
+        param = {'phone':self.f.phone_number(),'invoiceStatus':2,'paymentMethod':'wechat'}
+        kafka_data = {'action': 'UPDATE', "cpId": "NX_ENGINE", "aid": aid,'param':json.dumps(param),
+                      "orderType": "BUSINESS", "title": title,"desc": "zdh测试",
+                      "businessState": "SUCCESS_PAY",  "price": 6.0,
+                      "createdTime": 1600312755440, "timeout": 10, "orderStatus": "WAITING_PAY", "orderSubStatus": "DONE",
+                      "delete": False, 'tenantId': 'string', 'epOrderId': ep_order_id, 'payStatus': 'SUCCESS_PAY',
+                      "info": json.dumps(business_info), "discountAmount": 0,'epOrderCode':ep_order_id,
+                      "domainId": domain, 'orderCategory': '105'}
+
+        kafka_data = {'key': json.dumps(kafka_data)}
+        msg = {'header': header, 'kafkaData': kafka_data}
+        host = '10.20.4.11:9092'
+        topic = 'order-finished-remind-topic'
+        self.send_kafka_msg(host, topic, msg)
+
+    def sync_invoice_kafka(self, ep_order_id, domain='GAS', cp='NX_ENGINE'):
+        '''
+        模拟从kafka发送加油发票信息
+        :param ep_order_id: order主键
+        :param domain: 业务域，默认为GAS
+        :param cp: 默认为NX_ENGINE
+        :return:
+        '''
+        header = {'domainId': domain}
+        remark = self.f.sentence()
+        date = self.time_delta()
+        price = self.f.pyfloat(1.00, 100.00)
+        kafka_data = {"action": "INVOICE_UPDATE", "domainId": domain, "epInvoiceId": 14, "cpId": cp,
+                      "serialNo": self.f.md5(), "invoiceNo": "38133062", 'tenantId': 'string',
+                      "actionId": "action", "aid": self.f.pyint(100, 999), "tel": self.f.phone_number(),
                       "phone": "18888888888", "partyType": "COMPANY", "tax": "91310115560364240G", "name": "钛马信息技术有限公司",
-                      "addressTel": "null02887676543", "bankAccount": "nullnull", "price": "5.99",
-                      "remark": "虽然两个设计拥有现在比较.", "content": "车用汽油/柴油(明细项)", "status": "SUCCESS",
-                      "email": "taocao@yahoo.com", "createTime": "2020-09-22 13:47:00",
-                      "transmissionTime": "2020-09-22 13:46:59", "createBy": "system",'epOrderId': '123',
-                      "createDate": "2020-09-22 13:47:00", "updateBy": "system", "updateDate": "2020-09-22 14:00:04",
-                      "remarks": "虽然两个设计拥有现在比较.", "delFlag": "0"}
+                      "addressTel": "02887676543", "bankAccount": "null", "price": price,
+                      "remark": remark, "content": "车用汽油/柴油(明细项)", "status": "SUCCESS",
+                      "email": self.f.email(), "createTime": date,
+                      "transmissionTime": date, "createBy": "system", 'epOrderId': ep_order_id,
+                      "createDate": date, "updateBy": "system", "updateDate": date,
+                      "remarks": remark, "delFlag": "0"}
+
         kafka_data = {'key': json.dumps(kafka_data)}
         msg = {'header': header, 'kafkaData': kafka_data}
         host = '10.20.4.11:9092'

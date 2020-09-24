@@ -125,7 +125,8 @@ class Base:
 
     def get_pro_path(self):
         current_path = os.path.abspath(os.path.dirname(__file__))
-        pro_path = current_path[:current_path.find('sop2' + '\\') + len('sop2' + '\\')]
+        pro_name = 'SOP2-pythonScripts'
+        pro_path = current_path[:current_path.find(pro_name + '\\') + len(pro_name + '\\')]
         return pro_path
 
     def get_token(self,username='18224077254',password='123456',vin='LFV3A23C1K3161804'):
@@ -272,13 +273,15 @@ class Base:
             cur.execute(msg)
             # 提交修改
             conn.commit()
-        except:
+            lk.prt('执行sql语句成功:{}'.format(msg))
+        except Exception as e:
+            lk.prt('执行失败：{}'.format(e))
             conn.rollback()
 
         finally:
             cur.close()
             conn.close()
-        lk.prt('执行sql语句成功')
+
 
 
     def read_conf(self, name, section, option):

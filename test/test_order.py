@@ -1,8 +1,9 @@
 import pytest
 import os
-from base.base import Base
 from order.oder_api import Order
 import random
+import time
+import json
 
 os.environ['ENV'] = 'DEV'
 os.environ['GATE'] = 'false'
@@ -74,5 +75,28 @@ def test_generate_orderNo():
     body = o.generate_order_no()
     assert 'SUCCEED' == body['returnStatus']
     assert body['data'] is not None
+
+@pytest.mark.callback
+@pytest.mark.order
+def test_callback():
+    ep_order = '123456789'
+    info = {'name': 'waka waka', 'age': 18}
+    o.do_mysql_exec('delete from `order` where ex_order_no="{}"'.format(ep_order),'order')
+
+    o.sync_order_kafka(ep_order, info)
+    time.sleep(2.0)
+    sql_res = o.do_mysql_select(
+        'select d.detail,o.ex_order_no,o.order_status '
+        'from `order` o,order_detail d where o.id=d.order_id and ex_order_no="{}"'.format(
+            ep_order), 'order')
+    print('同步订单成功')
+    assert len(sql_res) == 1
+    assert sql_res[0]['order_status'] == 'INIT'
+    print('同步订单状态成功:{}'.format(sql_res[0]['order_status']))
+    assert sql_res[0]['ex_order_no'] == ep_order
+    print('同步订单ex_order_no成功:{}'.format(ep_order))
+    info = json.dumps(info,sort_keys=True)
+    assert sql_res[0]['detail'] == info
+    print("同步business info成功：{}".format(info))
 
 
