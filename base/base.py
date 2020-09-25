@@ -295,6 +295,7 @@ class Base:
         '''
         config = configparser.ConfigParser()
         conf_path = os.path.join(self.get_pro_path(),'conf/{}'.format(name))
+        lk.prt('config path is:{}'.format(conf_path))
         config.read(conf_path)
         return config.get(section, option)
 
