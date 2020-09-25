@@ -14,6 +14,7 @@ from base.db import MysqlConfig
 from faker import Faker
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
+import sys
 
 class Base:
 
@@ -124,9 +125,13 @@ class Base:
         return url_query_dict
 
     def get_pro_path(self):
+        if 'win' in sys.platform:
+            seperator = '\\'
+        else:
+            seperator = '/'
         current_path = os.path.abspath(os.path.dirname(__file__))
         pro_name = 'SOP2-pythonScripts'
-        pro_path = current_path[:current_path.find(pro_name + '\\') + len(pro_name + '\\')]
+        pro_path = current_path[:current_path.find(pro_name + seperator) + len(pro_name + seperator)]
         return pro_path
 
     def get_token(self,username='18224077254',password='123456',vin='LFV3A23C1K3161804'):
