@@ -79,7 +79,7 @@ class Order(Base):
 
     def teardown_sync(self, order, invoice):
         print('-----开始teardown------')
-        res1 = self.do_mysql_exec('delete from order_invoice where invoice_no={}'.format(invoice), 'order')
+        res1 = self.do_mysql_exec('delete from order_invoice where invoice_no="{}"'.format(invoice), 'order')
         res2 = self.do_mysql_exec(
             'delete from order_invoice_relation where order_id=(select id from `order` where ex_order_no="{}")'.format(
                 order), 'order')
@@ -112,7 +112,7 @@ class Order(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def sync_order_kafka(self, ep_order_id, business_info:dict, domain='GAS'):
+    def sync_order_kafka(self, ep_order_id, business_info:dict, domain='GAS',cp='NX_ENGINE'):
         '''
         发送订单kafka消息
         :param ep_order_id:订单的主键
@@ -123,7 +123,7 @@ class Order(Base):
         aid = self.f.pyint()
         title = self.f.sentence()
         param = {'phone':self.f.phone_number(),'invoiceStatus':2,'paymentMethod':'wechat'}
-        kafka_data = {'action': 'UPDATE', "cpId": "NX_ENGINE", "aid": aid,'param':json.dumps(param),
+        kafka_data = {'action': 'UPDATE',"vin":"DEFAULT_VIN", "cpId": cp, "aid": aid,'param':json.dumps(param),
                       "orderType": "BUSINESS", "title": title,"desc": "zdh测试",
                       "businessState": "SUCCESS_PAY",  "price": 6.0,
                       "createdTime": 1600312755440, "timeout": 10, "orderStatus": "WAITING_PAY", "orderSubStatus": "DONE",
@@ -137,7 +137,7 @@ class Order(Base):
         topic = 'order-finished-remind-topic'
         self.send_kafka_msg(host, topic, msg)
 
-    def sync_invoice_kafka(self, ep_order_id, domain='GAS', cp='NX_ENGINE'):
+    def sync_invoice_kafka(self, ep_order_id, invoice, price, domain='GAS', cp='NX_ENGINE'):
         '''
         模拟从kafka发送加油发票信息
         :param ep_order_id: order主键
@@ -148,9 +148,8 @@ class Order(Base):
         header = {'domainId': domain}
         remark = self.f.sentence()
         date = self.time_delta()
-        price = self.f.pyfloat(1.00, 100.00)
-        kafka_data = {"action": "INVOICE_UPDATE", "domainId": domain, "epInvoiceId": 14, "cpId": cp,
-                      "serialNo": self.f.md5(), "invoiceNo": "38133062", 'tenantId': 'string',
+        kafka_data = {"action": "INVOICE_UPDATE", "domainId": domain, "epInvoiceId": 10086, "cpId": cp,
+                      "serialNo": self.f.md5(), 'tenantId': 'string',"invoiceNo":invoice,
                       "actionId": "action", "aid": self.f.pyint(100, 999), "tel": self.f.phone_number(),
                       "phone": "18888888888", "partyType": "COMPANY", "tax": "91310115560364240G", "name": "钛马信息技术有限公司",
                       "addressTel": "02887676543", "bankAccount": "null", "price": price,
@@ -243,7 +242,7 @@ if __name__ == '__main__':
     # o.order_detail(aid='221',order_no='11953484401634137341')
     # o.sync_order(aid=123, orderNo=1008600, ex_order_no='ex10086', origin='EP')
     # o.sync_refund('221','ex92091521906491713931')
-    o.apply_invoice(aid='4614907', order_no=['2020092313422542753248'], duty_no='91310115560364240G',
+    o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
                     head='钛马信息技术有限公司')
     # ex = ExternalOrder()
     # ex.ex_order_sync()

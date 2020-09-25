@@ -251,6 +251,7 @@ class Base:
         cur = conn.cursor(pymysql.cursors.DictCursor)
         cur.execute(msg)
         res = cur.fetchall()
+        lk.prt('执行sql语句成功:{}'.format(msg))
         for res1 in res:
             for key,val in res1.items():
                 if isinstance(val,datetime.datetime):

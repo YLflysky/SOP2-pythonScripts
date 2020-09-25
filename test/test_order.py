@@ -78,25 +78,55 @@ def test_generate_orderNo():
 
 @pytest.mark.callback
 @pytest.mark.order
-def test_callback():
+def test_callback_order():
     ep_order = '123456789'
     info = {'name': 'waka waka', 'age': 18}
     o.do_mysql_exec('delete from `order` where ex_order_no="{}"'.format(ep_order),'order')
 
-    o.sync_order_kafka(ep_order, info)
+    o.sync_order_kafka(ep_order, info,cp="NX_ENGINE")
     time.sleep(2.0)
     sql_res = o.do_mysql_select(
-        'select d.detail,o.ex_order_no,o.order_status '
+        'select d.detail,o.* '
         'from `order` o,order_detail d where o.id=d.order_id and ex_order_no="{}"'.format(
             ep_order), 'order')
     print('同步订单成功')
     assert len(sql_res) == 1
-    assert sql_res[0]['order_status'] == 'INIT'
-    print('同步订单状态成功:{}'.format(sql_res[0]['order_status']))
+    assert sql_res[0]['order_status'] == 'FINISH'
+    assert sql_res[0]['business_status'] == 'SUCCESS_PAY'
+    assert sql_res[0]['business_status_desc'] == 'zdh测试'
+    assert sql_res[0]['vin'] == 'DEFAULT_VIN'
+    assert sql_res[0]['category'] == '105'
+    assert sql_res[0]['sp_id'] == 'NX_ENGINE'
+    assert sql_res[0]['service_id'] == 'GAS'
+    assert sql_res[0]['price'] == '6.00'
     assert sql_res[0]['ex_order_no'] == ep_order
     print('同步订单ex_order_no成功:{}'.format(ep_order))
     info = json.dumps(info,sort_keys=True)
     assert sql_res[0]['detail'] == info
     print("同步business info成功：{}".format(info))
+
+@pytest.mark.callback
+@pytest.mark.order
+def test_callback_invoice():
+    '''
+    测试发票的callback
+    :return:
+    '''
+    ep_order = 1
+    invoice_no = random.randint(1,100)
+    price = o.f.pyint(1.00,100.00)
+    print('初始化环境....')
+    o.teardown_sync(ep_order,invoice_no)
+
+    o.sync_invoice_kafka(ep_order,invoice_no,price)
+    time.sleep(2.0)
+    sql_res = o.do_mysql_select(
+        'select i.sp_id,i.price,i.invoice_no '
+        'from order_invoice i,order_invoice_relation r where i.id=r.invoice_id and i.invoice_no="{}"'.format(
+            invoice_no), 'order')
+    assert len(sql_res) == 1
+    assert sql_res[0]['sp_id'] == 'NX_ENGINE'
+    assert sql_res[0]['price'] == price
+    assert sql_res[0]['invoice_no'] == str(invoice_no)
 
 
