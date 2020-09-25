@@ -171,11 +171,11 @@ class Order(Base):
         code, body = self.do_get(url, data)
         self.assert_msg(code, body)
 
-    def apply_invoice(self, aid, order_no, duty_no, head):
+    def apply_invoice(self, aid, order_no, duty_no, head,phone):
 
         url = self.url + '/v1/invoice/apply'
         data = {
-            'dutyNum': duty_no, 'email': self.f.email(), 'invoiceHead': head, 'phone': '18888888888',
+            'dutyNum': duty_no, 'email': self.f.email(), 'invoiceHead': head, 'phone': phone,
             'invoiceType': '0', 'orderId': order_no, 'remark': self.f.sentence(), 'tel': '02887676543'}
         self.header['aid'] = aid
         code, body = self.do_post(url, data, )
@@ -243,7 +243,7 @@ if __name__ == '__main__':
     # o.sync_order(aid=123, orderNo=1008600, ex_order_no='ex10086', origin='EP')
     # o.sync_refund('221','ex92091521906491713931')
     o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
-                    head='钛马信息技术有限公司')
+                    head='钛马信息技术有限公司',phone='18888888888')
     # ex = ExternalOrder()
     # ex.ex_order_sync()
     # ex_order_no_list = o.do_mysql_select(
