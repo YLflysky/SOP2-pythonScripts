@@ -21,6 +21,7 @@ class Calendar(Base):
         self.vin = vin
         lk.prt('开始获取token...')
         self.header['Authorization']=self.get_token(self.name,self.password,self.vin)
+        self.header['Did']='VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
 
 
 
@@ -31,9 +32,8 @@ class Calendar(Base):
         url = self.url + '/calendar/event/findAll'
         data = {'updateTime':update_time}
         code,body = self.do_get(url,data)
-        origin = {d['origin'] for d in body['data']['events']}
-        print(origin)
-        self.assert_msg(code,body)
+        print(body)
+        return body
 
     def find_detail(self,id):
         """
@@ -42,7 +42,8 @@ class Calendar(Base):
         url = self.url + '/calendar/event/findDetail'
         data = {'id':id}
         code,body = self.do_get(url,data)
-        self.assert_msg(code,body)
+        print(body)
+        return body
 
     def add_event(self,start_time,end_time,**kwargs):
         url = self.url + '/calendar/event/add'
@@ -60,6 +61,12 @@ class Calendar(Base):
         url = self.url + '/calendar/event/modify'
         data = {'id':event_id,'eventStartTime':s,'eventEndTime':e,**kwargs}
         code,body = self.do_post(url,data)
+        return body
+
+    def get_event_list(self,data):
+        url = self.url + '/calendar/event/getEventListBySpecifiedTime'
+        code,body = self.do_get(url,data)
+        print(body)
         return body
 
 if __name__ == '__main__':

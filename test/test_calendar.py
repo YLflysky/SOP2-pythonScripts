@@ -2,22 +2,27 @@ import pytest
 from calendar_file.canlendar_api import Calendar
 import os
 import allure
+import random
 
 os.environ['GATE'] = 'false'
 os.environ['ENV'] = 'LOCAL'
 c = Calendar()
+
 
 @pytest.fixture()
 def del_event(**kwargs):
     yield
     c.del_event(**kwargs)
 
+
 def log_time(func):
-    def make_decorater(*args,**kwargs):
+    def make_decorater(*args, **kwargs):
         print('现在开始装饰')
-        func(*args,**kwargs)
+        func(*args, **kwargs)
         print('现在结束装饰')
+
     return make_decorater
+
 
 @allure.suite('calendar')
 @allure.story('add event')
@@ -42,6 +47,7 @@ def test_add_event_01():
     finally:
         c.del_event(event_id=calendar_id)
 
+
 @allure.suite('calendar')
 @allure.story('add event')
 @pytest.mark.calendar
@@ -65,8 +71,8 @@ def test_add_event_02():
                               localEventId=local_event_id,
                               eventName=event_name,
                               address=address,
-                              longitude=longitude,latitude=latitude,remarks=remarks,
-                              duration=duration,createTime=create_time,allday=allday)['data']['id']
+                              longitude=longitude, latitude=latitude, remarks=remarks,
+                              duration=duration, createTime=create_time, allday=allday)['data']['id']
     sql_res = c.do_mysql_select(
         'select * from calendar_event where id={}'.format(calendar_id),
         db='fawvw_golf_calendar')
@@ -81,6 +87,7 @@ def test_add_event_02():
     finally:
         c.del_event(event_id=calendar_id)
 
+
 @allure.suite('calendar')
 @allure.story('add event')
 @pytest.mark.calendar
@@ -90,8 +97,9 @@ def test_add_event_03():
     '''
     s = c.get_time_stamp(days=2)
     e = c.get_time_stamp(days=1)
-    code,body = c.add_event(s,e)
+    body = c.add_event(s, e)
     assert body['statusMessage'] == 'wrong date range'
+
 
 @allure.suite('calendar')
 @allure.story('update event')
@@ -99,15 +107,100 @@ def test_add_event_03():
 def test_update_event():
     s = c.get_time_stamp()
     e = c.get_time_stamp(days=1)
-    id = c.add_event(s,e)['data']['id']
-    c.update_event(event_id=id,longitude='1.00',latitude='1.00',s=s,e=e,address='铜梁区')
-    sql_res = c.do_mysql_select('select * from calendar_event where id={}'.format(id),'fawvw_golf_calendar')
+    id = c.add_event(s, e)['data']['id']
+    c.update_event(event_id=id, longitude='1.00', latitude='1.00', s=s, e=e, address='铜梁区')
+    sql_res = c.do_mysql_select('select * from calendar_event where id={}'.format(id), 'fawvw_golf_calendar')
     try:
-        assert float(sql_res[0]['longitude'])==1.00
-        assert float(sql_res[0]['latitude'])==1.00
-        assert sql_res[0]['address']=='铜梁区'
+        assert float(sql_res[0]['longitude']) == 1.00
+        assert float(sql_res[0]['latitude']) == 1.00
+        assert sql_res[0]['address'] == '铜梁区'
     finally:
         c.del_event(id)
 
 
+@allure.suite('calendar')
+@allure.story('find all')
+@pytest.mark.calendar
+@pytest.mark.parametrize('t', [c.get_time_stamp(days=-10), None])
+def test_find_all(t):
+    '''
+    获取用户全部日历信息，当前时间前10天
+    '''
+    body = c.find_all_event(update_time=t)
+    assert len(body['data']['events']) > 0
 
+
+@allure.suite('calendar')
+@allure.story('find detail')
+@pytest.mark.calendar
+def test_find_detail_success():
+    '''
+    通过事件id成功查找单个日历事件详情
+    '''
+    body = c.find_detail(38565)
+    assert body['data']['id'] == '38565'
+
+
+@allure.suite('calendar')
+@allure.story('find detail')
+@pytest.mark.calendar
+@pytest.mark.parametrize('id', [123, 'abc', 1, 2, 3])
+def test_find_detail_fail(id):
+    '''
+    查找单个日历事件详情异常情况
+    '''
+    body = c.find_detail(id)
+    assert 'data' not in body.keys()
+
+
+@allure.suite('calendar')
+@allure.story('get list')
+@pytest.mark.calendar
+@pytest.mark.parametrize('t',['TYPE_ONE','TYPE_TWO','TYPE_THREE'])
+def test_get_event_list_01(t):
+    '''
+    查询指定时间段时间列表,仅输入apiType
+    '''
+    data = {'apiType':t}
+    body = c.get_event_list(data)
+    assert len(body['data']['events']) > 0
+
+@allure.suite('calendar')
+@allure.story('get list')
+@pytest.mark.calendar
+def test_get_event_list_02():
+    '''
+    查询指定时间段时间列表,输入Date
+    '''
+    data = {'apiType':'TYPE_ONE','startDate':'1602210000','endDate':'1602291000'}
+    body = c.get_event_list(data)
+    assert len(body['data']['events']) > 0
+    num = random.choice(body['data']['events'])
+    actual_start = num['eventStartTime']
+    actual_end = num['eventEndTime']
+    actual = int(actual_end)-int(actual_start)
+    expect = 1602291000-1602210000
+    assert actual >= expect
+    print('c测试通过：实际日历区间:{},期望日历区间:{}'.format(actual,expect))
+
+@allure.suite('calendar')
+@allure.story('get list')
+@pytest.mark.calendar
+def test_get_event_list_03():
+    '''
+    查询指定时间段时间列表,输入时间区间错误
+    '''
+    data = {'apiType':'TYPE_ONE','startDate':'16022050000','endDate':'1602291000'}
+    body = c.get_event_list(data)
+    assert body['statusMessage'] == 'wrong date range'
+
+@allure.suite('calendar')
+@allure.story('get list')
+@pytest.mark.calendar
+def test_get_event_list_04():
+    '''
+    查询指定时间段时间列表,输入枚举值错误
+    '''
+    data = {'apiType':'TYPE_ONE1',}
+    body = c.get_event_list(data)
+    assert body['statusCode'] == '400'

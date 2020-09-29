@@ -11,7 +11,7 @@ class Order(Base):
         if self.gate:
             self.url = self.read_conf('sop2_env.conf', self.env, 'host')
         else:
-            self.url = self.read_conf('sop2_env.conf', self.env, 'host')
+            self.url = self.read_conf('sop2_env.conf', self.env, 'order_host')
 
     def update_order_in(self):
         url = self.url + '/order/update'
@@ -112,7 +112,7 @@ class Order(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def sync_order_kafka(self, ep_order_id, business_info:dict, domain='GAS',cp='NX_ENGINE'):
+    def sync_order_kafka(self, ep_order_id, business_info: dict, domain='GAS', cp='NX_ENGINE'):
         '''
         发送订单kafka消息
         :param ep_order_id:订单的主键
@@ -122,13 +122,14 @@ class Order(Base):
         header = {'domainId': domain}
         aid = self.f.pyint()
         title = self.f.sentence()
-        param = {'phone':self.f.phone_number(),'invoiceStatus':2,'paymentMethod':'wechat'}
-        kafka_data = {'action': 'UPDATE',"vin":"DEFAULT_VIN", "cpId": cp, "aid": aid,'param':json.dumps(param),
-                      "orderType": "BUSINESS", "title": title,"desc": "zdh测试",
-                      "businessState": "SUCCESS_PAY",  "price": 6.0,
-                      "createdTime": 1600312755440, "timeout": 10, "orderStatus": "SUCCESS_PAY", "orderSubStatus": "DONE",
+        param = {'phone': self.f.phone_number(), 'invoiceStatus': 2, 'paymentMethod': 'wechat'}
+        kafka_data = {'action': 'UPDATE', "vin": "DEFAULT_VIN", "cpId": cp, "aid": aid, 'param': json.dumps(param),
+                      "orderType": "BUSINESS", "title": title, "desc": "zdh测试",
+                      "businessState": "SUCCESS_PAY", "price": 6.0,
+                      "createdTime": 1600312755440, "timeout": 10, "orderStatus": "SUCCESS_PAY",
+                      "orderSubStatus": "DONE",
                       "delete": False, 'tenantId': 'string', 'epOrderId': ep_order_id, 'payStatus': 'SUCCESS_PAY',
-                      "info": json.dumps(business_info), "discountAmount": 0,'epOrderCode':ep_order_id,
+                      "info": json.dumps(business_info), "discountAmount": 0, 'epOrderCode': ep_order_id,
                       "domainId": domain, 'orderCategory': '105'}
 
         kafka_data = {'key': json.dumps(kafka_data)}
@@ -149,7 +150,7 @@ class Order(Base):
         remark = self.f.sentence()
         date = self.time_delta()
         kafka_data = {"action": "INVOICE_UPDATE", "domainId": domain, "epInvoiceId": 10086, "cpId": cp,
-                      "serialNo": self.f.md5(), 'tenantId': 'string',"invoiceNo":invoice,
+                      "serialNo": self.f.md5(), 'tenantId': 'string', "invoiceNo": invoice,
                       "actionId": "action", "aid": self.f.pyint(100, 999), "tel": self.f.phone_number(),
                       "phone": "18888888888", "partyType": "COMPANY", "tax": "91310115560364240G", "name": "钛马信息技术有限公司",
                       "addressTel": "02887676543", "bankAccount": "null", "price": price,
@@ -171,7 +172,7 @@ class Order(Base):
         code, body = self.do_get(url, data)
         self.assert_msg(code, body)
 
-    def apply_invoice(self, aid, order_no, duty_no, head,phone):
+    def apply_invoice(self, aid, order_no, duty_no, head, phone):
 
         url = self.url + '/v1/invoice/apply'
         data = {
@@ -189,6 +190,13 @@ class Order(Base):
                 'refundStatus': 'SUCCESS', 'origin': 'EP', 'refundChannel': 'CASH', 'refundType': 'REFUND'}
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
+
+    def sync_order_pay(self, aid, order_no, pay_no, **kwargs):
+        url = self.url + '/v1/order/sync/pay'
+        data = {'aid': aid, 'orderNo': order_no, 'payOrderNo': pay_no, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
+                'payType': 'APP', 'payTime': self.time_delta(),'payStatus':'SUCCESS',**kwargs}
+        code,body = self.do_post(url,data)
+        print(body)
 
 
 class ExternalOrder(Base):
@@ -227,8 +235,8 @@ class ExternalOrder(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'DEV'
-    os.environ['GATE'] = 'true'
+    os.environ['ENV'] = 'LOCAL'
+    os.environ['GATE'] = 'false'
     o = Order()
     # fakers = o.f
     # for f in fakers:
@@ -238,12 +246,13 @@ if __name__ == '__main__':
             'epOrderId': '20200904132112692745472', 'cpId': 'XIAOMA', 'invoiceNo': 2283680, 'partyType': 'PERSONAL',
             'bankAccount': '377363783294793', 'status': 'SUCCESS', 'price': '10', 'createTime': '2020-09-09 09:12:08',
             'transmissionTime': '2020-09-11 09:12:08'}
+    # o.sync_order_pay('1601281637323','2020092816271772640960','123')
     # o.sync_order_kafka()
     # o.order_detail(aid='221',order_no='11953484401634137341')
     # o.sync_order(aid=123, orderNo=1008600, ex_order_no='ex10086', origin='EP')
-    # o.sync_refund('221','ex92091521906491713931')
-    o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
-                    head='钛马信息技术有限公司',phone='18888888888')
+    o.sync_refund('111333','202009247772089433')
+    # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
+    #                 head='钛马信息技术有限公司', phone='18888888888')
     # ex = ExternalOrder()
     # ex.ex_order_sync()
     # ex_order_no_list = o.do_mysql_select(
