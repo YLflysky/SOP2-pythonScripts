@@ -103,7 +103,7 @@ def test_apply_invoice():
         sys.exit(-1)
 
     order_no = random.choice(order_no)['order_no']
-    order_no = [order_no]
+    order_no = ['2020092709355144316384']
     phone = '18888888888'
     head = '钛马信息技术有限公司'
     duty = '91310115560364240G'
@@ -129,14 +129,14 @@ def test_callback_order():
             ep_order), 'order')
     print('同步订单成功')
     assert len(sql_res) == 1
-    assert sql_res[0]['order_status'] == 'FINISH'
+    assert sql_res[0]['order_status'] == 'PAY_SUCCESS'
     assert sql_res[0]['business_status'] == 'SUCCESS_PAY'
     assert sql_res[0]['business_status_desc'] == 'zdh测试'
     assert sql_res[0]['vin'] == 'DEFAULT_VIN'
     assert sql_res[0]['category'] == '105'
     assert sql_res[0]['sp_id'] == 'NX_ENGINE'
     assert sql_res[0]['service_id'] == 'GAS'
-    assert sql_res[0]['price'] == '6.00'
+    assert str(sql_res[0]['total_amount']) == '6.00'
     assert sql_res[0]['ex_order_no'] == ep_order
     print('同步订单ex_order_no成功:{}'.format(ep_order))
     info = json.dumps(info, sort_keys=True)
@@ -147,7 +147,7 @@ def test_callback_order():
 @allure.suite('order')
 @allure.story('callback')
 @pytest.mark.callback
-@pytest.mark.order
+@pytest.mark.invoice
 def test_callback_invoice():
     '''
     测试发票的callback

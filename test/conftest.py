@@ -1,5 +1,5 @@
 import pytest
-from base.base import Base
+from box.base import Base
 
 o = Base()
 

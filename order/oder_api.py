@@ -1,4 +1,4 @@
-from base.base import Base
+from box.base import Base
 import random
 import os
 import json
@@ -126,7 +126,7 @@ class Order(Base):
         kafka_data = {'action': 'UPDATE',"vin":"DEFAULT_VIN", "cpId": cp, "aid": aid,'param':json.dumps(param),
                       "orderType": "BUSINESS", "title": title,"desc": "zdh测试",
                       "businessState": "SUCCESS_PAY",  "price": 6.0,
-                      "createdTime": 1600312755440, "timeout": 10, "orderStatus": "EXPIRED", "orderSubStatus": "DONE",
+                      "createdTime": 1600312755440, "timeout": 10, "orderStatus": "SUCCESS_PAY", "orderSubStatus": "DONE",
                       "delete": False, 'tenantId': 'string', 'epOrderId': ep_order_id, 'payStatus': 'SUCCESS_PAY',
                       "info": json.dumps(business_info), "discountAmount": 0,'epOrderCode':ep_order_id,
                       "domainId": domain, 'orderCategory': '105'}

@@ -12,5 +12,6 @@ class MysqlConfig(Enum):
     EP_UAT = {'host':'10.20.14.8','port':3306,'username':'faw_ep_uat_rd_r','password':'EZHNoaUYBgPvTXnxiy5S'}
     EP_DEV = {'host':'10.20.14.4','port':3306,'username':'root','password':'Cdp@123@mysql'}
     EP_LOCAL = EP_DEV
+    SOP2_MA=EP_UAT
 
 # print(MysqlConfig.SIT.value)

@@ -7,10 +7,10 @@ import json
 import pymysql
 import configparser
 import xlrd
-from base.lk_logger import lk
+from box.lk_logger import lk
 import os
 import datetime
-from base.db import MysqlConfig
+from box.db import MysqlConfig
 from faker import Faker
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
@@ -30,7 +30,7 @@ class Base:
                 self.header['x-microservice-name'] = 'api-gateway'
                 self.header['Did'] = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
                 self.header['userModel'] = 'DEFAULT'
-                # self.header['Authorization'] = self.get_token()
+                self.header['Authorization'] = self.get_token()
                 self.gate = True
             else:
                 self.gate = False
@@ -54,7 +54,7 @@ class Base:
             """
         temp_time = self.time_delta(days,seconds,microseconds,milliseconds,minutes,hours,weeks)
         time_array = time.strptime(temp_time,'%Y-%m-%d %H:%M:%S')
-        time_stamp = str(int(time.mktime(time_array)))
+        time_stamp = str(int(time.mktime(time_array))*1000)
         return time_stamp
 
     def _sign_time(self):
@@ -182,8 +182,13 @@ class Base:
             data = data.encode('utf-8')
         lk.prt('final post header is:{}'.format(self.header))
         res = requests.post(url=url, data=data,params=params, headers=self.header, verify=False,**kwargs)
-        response_body = json.loads(res.text)
-        return res.status_code, response_body
+        try:
+            response_body = json.loads(res.text)
+        except Exception as e:
+            lk.prt('解析json字符串出错:',e)
+            lk.prt(res.text)
+        else:
+            return res.status_code, response_body
 
     def do_post_file(self,url,params,data,file_path):
         '''
@@ -360,6 +365,10 @@ class Base:
     def str_time(self,data_time:datetime.datetime):
         temp = data_time.strftime('%Y-%m-%d %H:%M:%S')
         return temp
+
+    def stamp_to_str(self,stamp):
+        time_array = time.localtime(int(stamp)/1000)
+        return time.strftime('%Y-%m-%d %H:%M:%S',time_array)
 
     def send_kafka_msg(self,host,topic,data):
         '''
