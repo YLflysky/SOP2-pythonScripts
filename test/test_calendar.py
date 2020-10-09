@@ -27,7 +27,6 @@ def log_time(func):
 @allure.suite('calendar')
 @allure.story('add event')
 @pytest.mark.calendar
-@log_time
 def test_add_event_01():
     '''
     输入全部必填项，添加日历事件

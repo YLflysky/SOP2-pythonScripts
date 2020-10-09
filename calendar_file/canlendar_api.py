@@ -7,7 +7,7 @@ class Calendar(Base):
     '''
     BM日历API
     '''
-    def __init__(self,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311'):
+    def __init__(self,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311',aid='9350195'):
         super().__init__()
 
         self.url = self.read_conf('sop2_env.conf',self.env,'calendar_host')
@@ -20,8 +20,9 @@ class Calendar(Base):
         self.password = password
         self.vin = vin
         lk.prt('开始获取token...')
-        self.header['Authorization']=self.get_token(self.name,self.password,self.vin)
+        # self.header['Authorization']=self.get_token(self.name,self.password,self.vin)
         self.header['Did']='VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
+        self.header['uid']=aid
 
 
 
@@ -56,6 +57,7 @@ class Calendar(Base):
         url = self.url + '/calendar/event/delete'
         data = {'id':event_id}
         code,body = self.do_delete(url,data)
+        self.assert_msg(code,body)
 
     def update_event(self,event_id,s,e,**kwargs):
         url = self.url + '/calendar/event/modify'
@@ -69,9 +71,10 @@ class Calendar(Base):
         print(body)
         return body
 
+
 if __name__ == '__main__':
     os.environ['GATE']='false'
-    os.environ['ENV']='LOCAL'
+    os.environ['ENV']='DEV'
     c = Calendar()
 
     c.del_event(38573)
