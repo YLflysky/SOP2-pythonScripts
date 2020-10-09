@@ -5,7 +5,7 @@ import allure
 import random
 
 os.environ['GATE'] = 'false'
-os.environ['ENV'] = 'LOCAL'
+os.environ['ENV'] = 'DEV'
 c = Calendar()
 
 

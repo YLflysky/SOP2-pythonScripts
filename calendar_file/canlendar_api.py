@@ -10,7 +10,7 @@ class Calendar(Base):
     def __init__(self,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311'):
         super().__init__()
 
-        self.url = self.read_conf('sop2_env.conf',self.env,'host')
+        self.url = self.read_conf('sop2_env.conf',self.env,'calendar_host')
         if self.gate:
             self.url = self.url + '/test-access/tm/mos/37w-calendar/api/v1'
         else:
