@@ -97,8 +97,38 @@ def test_add_event_03():
     s = c.get_time_stamp(days=2)
     e = c.get_time_stamp(days=1)
     body = c.add_event(s, e)
-    assert body['statusMessage'] == 'wrong date range'
 
+    assert body['errorMessage'] == 'wrong date range'
+
+@allure.suite('calendar')
+@allure.story('add event')
+@pytest.mark.calendar
+def test_add_event_04():
+    '''
+    传入rrule
+    '''
+    s = c.get_time_stamp(days=-100)
+    e = c.get_time_stamp(days=100)
+    id = c.add_event(s, e,rrule='Only Once')['data']['id']
+    sql_res = c.do_mysql_select(
+        'select * from calendar_event where id={}'.format(id),
+        db='fawvw_golf_calendar')
+
+    assert sql_res[0]['rrule'] == 'Only Once'
+
+
+
+@allure.suite('calendar')
+@allure.story('add event')
+@pytest.mark.calendar
+def test_add_event_05():
+    '''
+    传入错误的rrule
+    '''
+    s = c.get_time_stamp(days=2)
+    e = c.get_time_stamp(days=3)
+    body = c.add_event(s, e,rrule='Only Once1')
+    assert body['errorMessage'] == 'rule resolve error'
 
 @allure.suite('calendar')
 @allure.story('update event')
@@ -120,10 +150,10 @@ def test_update_event():
 @allure.suite('calendar')
 @allure.story('find all')
 @pytest.mark.calendar
-@pytest.mark.parametrize('t', [c.get_time_stamp(days=-10), None])
+@pytest.mark.parametrize('t', [1601203105641, None])
 def test_find_all(t):
     '''
-    获取用户全部日历信息，当前时间前10天
+    获取用户全部日历信息，输入时间
     '''
     body = c.find_all_event(update_time=t)
     assert len(body['data']['events']) > 0
@@ -136,8 +166,16 @@ def test_find_detail_success():
     '''
     通过事件id成功查找单个日历事件详情
     '''
-    body = c.find_detail(38565)
-    assert body['data']['id'] == '38565'
+    st = c.get_time_stamp()
+    et = c.get_time_stamp(seconds=10)
+    id = c.add_event(st,et)['data']['id']
+    body = c.find_detail(id)
+    try:
+        assert body['data']['id'] == id
+        assert body['data']['eventStartTime'] == st
+        assert body['data']['eventEndTime'] == et
+    finally:
+        c.del_event(id)
 
 
 @allure.suite('calendar')
@@ -191,7 +229,7 @@ def test_get_event_list_03():
     '''
     data = {'apiType':'TYPE_ONE','startDate':'16022050000','endDate':'1602291000'}
     body = c.get_event_list(data)
-    assert body['statusMessage'] == 'wrong date range'
+    assert body['errorMessage'] == 'wrong date range'
 
 @allure.suite('calendar')
 @allure.story('get list')
@@ -202,4 +240,32 @@ def test_get_event_list_04():
     '''
     data = {'apiType':'TYPE_ONE1',}
     body = c.get_event_list(data)
-    assert body['statusCode'] == '400'
+    assert body['errorCode'] == '400'
+
+@pytest.mark.calendar
+@allure.suite('calendar')
+@allure.story('last time')
+@pytest.mark.parametrize('uid',[c.uid,'123456','4606930','4608048','4608147'])
+def test_get_last_time(uid):
+    '''
+    获取日历最近一次更新时间
+    '''
+    body = c.get_last_time(uid,c.device_id)
+    assert body['data']['updateTime'] is not None
+
+
+@pytest.mark.calendar
+@allure.suite('calendar')
+@allure.story('rrule_list')
+@pytest.mark.parametrize('api',['TYPE_ONE','TYPE_TWO','TYPE_THREE'])
+def test_event_list_by_rule_01(api):
+    '''
+    测试根据规则返回日历事件列表
+    '''
+    st = 1602401995000
+    et = 1603427680000
+    device = c.device_id
+    params = c.do_mysql_select('select uid from calendar_event where rrule="FREQ=DAILY;COUNT=2"','fawvw_golf_calendar')
+    uid = params[0]['uid']
+    body = c.event_list_by_rule(api,st,et,uid,device)
+    print(body)

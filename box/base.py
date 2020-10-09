@@ -231,7 +231,8 @@ class Base:
         return res.status_code, response_body
 
     def do_get(self, url, params):
-        params = self._calc_digital_sign(url, params)
+        if self.gate:
+            params = self._calc_digital_sign(url, params)
         lk.prt('final get url is:{}'.format(url))
         lk.prt('final get header is:{}'.format(self.header))
         try:

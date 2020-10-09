@@ -19,10 +19,12 @@ class Calendar(Base):
         self.name = name
         self.password = password
         self.vin = vin
+        self.uid = aid
+        self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
         lk.prt('开始获取token...')
         # self.header['Authorization']=self.get_token(self.name,self.password,self.vin)
-        self.header['Did']='VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
-        self.header['uid']=aid
+        self.header['deviceId']=self.device_id
+        self.header['uid']=self.uid
 
 
 
@@ -66,10 +68,45 @@ class Calendar(Base):
         return body
 
     def get_event_list(self,data):
+        '''
+        获取事件列表接口
+        '''
         url = self.url + '/calendar/event/getEventListBySpecifiedTime'
         code,body = self.do_get(url,data)
         print(body)
         return body
+
+    def get_last_time(self,uid,deviceId):
+        url = self.url + '/calendar/event/getEventLastUpdatedTime'
+        self.header['uid'] = uid
+        self.header['deviceId'] = deviceId
+        code,body = self.do_get(url,None)
+        self.assert_msg(code,body)
+        return body
+
+    def event_list_by_rule(self,api_type,st,et,uid,deviceId):
+        '''
+        根据规则返回事件列表
+        '''
+        self.header['uid'] = uid
+        self.header['deviceId'] = deviceId
+        url = self.url + '/calendar/event/getEventFissionListByMonth'
+        data = {'apiType':api_type,'startDate':st,'endDate':et}
+        code,body = self.do_get(url,data)
+        assert 200 == code
+        return body
+
+    def mobile_sync(self):
+        url = self.read_conf('sop2_env.conf', self.env, 'calendar_host')
+        url = url + '/public/calendar/event/sync'
+        mobile_event = {'localEventId':self.f.pyint(100,1000),'cudStatus':'C','eventStartTime':self.get_time_stamp(days=-10),'eventEndTime':self.get_time_stamp(days=10)}
+        data = {'currentTime':self.get_time_stamp(),'events':[mobile_event]}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
+
+    def mobile_find_all(self):
+        url = self.read_conf('sop2_env.conf', self.env, 'calendar_host')
+        url = url + '/public/calendar/event/findAll'
 
 
 if __name__ == '__main__':
@@ -77,4 +114,4 @@ if __name__ == '__main__':
     os.environ['ENV']='DEV'
     c = Calendar()
 
-    c.del_event(38573)
+    c.mobile_sync()
