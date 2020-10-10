@@ -96,17 +96,20 @@ class Calendar(Base):
         assert 200 == code
         return body
 
-    def mobile_sync(self):
+    def mobile_sync(self,data):
         url = self.read_conf('sop2_env.conf', self.env, 'calendar_host')
         url = url + '/public/calendar/event/sync'
-        mobile_event = {'localEventId':self.f.pyint(100,1000),'cudStatus':'C','eventStartTime':self.get_time_stamp(days=-10),'eventEndTime':self.get_time_stamp(days=10)}
-        data = {'currentTime':self.get_time_stamp(),'events':[mobile_event]}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
 
-    def mobile_find_all(self):
+    def mobile_find_all(self,uid):
         url = self.read_conf('sop2_env.conf', self.env, 'calendar_host')
         url = url + '/public/calendar/event/findAll'
+        self.header['uid']=uid
+        code,body = self.do_get(url,None)
+        self.assert_msg(code,body)
+        return body['data']
 
 
 if __name__ == '__main__':
@@ -114,4 +117,5 @@ if __name__ == '__main__':
     os.environ['ENV']='DEV'
     c = Calendar()
 
-    c.mobile_sync()
+    c.mobile_sync('C')
+    c.mobile_find_all(c.uid)

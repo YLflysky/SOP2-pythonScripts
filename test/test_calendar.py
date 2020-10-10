@@ -100,6 +100,7 @@ def test_add_event_03():
 
     assert body['errorMessage'] == 'wrong date range'
 
+
 @allure.suite('calendar')
 @allure.story('add event')
 @pytest.mark.calendar
@@ -109,13 +110,12 @@ def test_add_event_04():
     '''
     s = c.get_time_stamp(days=-100)
     e = c.get_time_stamp(days=100)
-    id = c.add_event(s, e,rrule='Only Once')['data']['id']
+    id = c.add_event(s, e, rrule='Only Once')['data']['id']
     sql_res = c.do_mysql_select(
         'select * from calendar_event where id={}'.format(id),
         db='fawvw_golf_calendar')
 
     assert sql_res[0]['rrule'] == 'Only Once'
-
 
 
 @allure.suite('calendar')
@@ -127,8 +127,9 @@ def test_add_event_05():
     '''
     s = c.get_time_stamp(days=2)
     e = c.get_time_stamp(days=3)
-    body = c.add_event(s, e,rrule='Only Once1')
+    body = c.add_event(s, e, rrule='Only Once1')
     assert body['errorMessage'] == 'rule resolve error'
+
 
 @allure.suite('calendar')
 @allure.story('update event')
@@ -168,7 +169,7 @@ def test_find_detail_success():
     '''
     st = c.get_time_stamp()
     et = c.get_time_stamp(seconds=10)
-    id = c.add_event(st,et)['data']['id']
+    id = c.add_event(st, et)['data']['id']
     body = c.find_detail(id)
     try:
         assert body['data']['id'] == id
@@ -193,14 +194,15 @@ def test_find_detail_fail(id):
 @allure.suite('calendar')
 @allure.story('get list')
 @pytest.mark.calendar
-@pytest.mark.parametrize('t',['TYPE_ONE','TYPE_TWO','TYPE_THREE'])
+@pytest.mark.parametrize('t', ['TYPE_ONE', 'TYPE_TWO', 'TYPE_THREE'])
 def test_get_event_list_01(t):
     '''
     查询指定时间段时间列表,仅输入apiType
     '''
-    data = {'apiType':t}
+    data = {'apiType': t}
     body = c.get_event_list(data)
     assert len(body['data']['events']) > 0
+
 
 @allure.suite('calendar')
 @allure.story('get list')
@@ -209,16 +211,17 @@ def test_get_event_list_02():
     '''
     查询指定时间段时间列表,输入Date
     '''
-    data = {'apiType':'TYPE_ONE','startDate':'1602210000','endDate':'1602291000'}
+    data = {'apiType': 'TYPE_ONE', 'startDate': '1602210000', 'endDate': '1602291000'}
     body = c.get_event_list(data)
     assert len(body['data']['events']) > 0
     num = random.choice(body['data']['events'])
     actual_start = num['eventStartTime']
     actual_end = num['eventEndTime']
-    actual = int(actual_end)-int(actual_start)
-    expect = 1602291000-1602210000
+    actual = int(actual_end) - int(actual_start)
+    expect = 1602291000 - 1602210000
     assert actual >= expect
-    print('c测试通过：实际日历区间:{},期望日历区间:{}'.format(actual,expect))
+    print('c测试通过：实际日历区间:{},期望日历区间:{}'.format(actual, expect))
+
 
 @allure.suite('calendar')
 @allure.story('get list')
@@ -227,9 +230,10 @@ def test_get_event_list_03():
     '''
     查询指定时间段时间列表,输入时间区间错误
     '''
-    data = {'apiType':'TYPE_ONE','startDate':'16022050000','endDate':'1602291000'}
+    data = {'apiType': 'TYPE_ONE', 'startDate': '16022050000', 'endDate': '1602291000'}
     body = c.get_event_list(data)
     assert body['errorMessage'] == 'wrong date range'
+
 
 @allure.suite('calendar')
 @allure.story('get list')
@@ -238,26 +242,27 @@ def test_get_event_list_04():
     '''
     查询指定时间段时间列表,输入枚举值错误
     '''
-    data = {'apiType':'TYPE_ONE1',}
+    data = {'apiType': 'TYPE_ONE1', }
     body = c.get_event_list(data)
     assert body['errorCode'] == '400'
+
 
 @pytest.mark.calendar
 @allure.suite('calendar')
 @allure.story('last time')
-@pytest.mark.parametrize('uid',[c.uid,'123456','4606930','4608048','4608147'])
+@pytest.mark.parametrize('uid', [c.uid, '123456', '4606930', '4608048', '4608147'])
 def test_get_last_time(uid):
     '''
     获取日历最近一次更新时间
     '''
-    body = c.get_last_time(uid,c.device_id)
+    body = c.get_last_time(uid, c.device_id)
     assert body['data']['updateTime'] is not None
 
 
 @pytest.mark.calendar
 @allure.suite('calendar')
 @allure.story('rrule_list')
-@pytest.mark.parametrize('api',['TYPE_ONE','TYPE_TWO','TYPE_THREE'])
+@pytest.mark.parametrize('api', ['TYPE_ONE', 'TYPE_TWO', 'TYPE_THREE'])
 def test_event_list_by_rule_01(api):
     '''
     测试根据规则返回日历事件列表
@@ -265,7 +270,53 @@ def test_event_list_by_rule_01(api):
     st = 1602401995000
     et = 1603427680000
     device = c.device_id
-    params = c.do_mysql_select('select uid from calendar_event where rrule="FREQ=DAILY;COUNT=2"','fawvw_golf_calendar')
+    params = c.do_mysql_select('select uid from calendar_event where rrule="FREQ=DAILY;COUNT=2"', 'fawvw_golf_calendar')
     uid = params[0]['uid']
-    body = c.event_list_by_rule(api,st,et,uid,device)
+    body = c.event_list_by_rule(api, st, et, uid, device)
     print(body)
+
+
+@pytest.mark.calendar
+@allure.suite('calendar')
+@allure.story('mobile')
+@pytest.mark.parametrize('cud', ['C', 'U', 'D'])
+def test_mobile_sync_01(cud):
+    '''
+    输入一个event，同步事件
+    '''
+    mobile_event = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': cud,
+                    'eventStartTime': c.get_time_stamp(days=-10), 'eventEndTime': c.get_time_stamp(days=10)}
+    data = {'currentTime': c.get_time_stamp(), 'events': [mobile_event]}
+    res = c.mobile_sync(data)
+    assert res['data']['syncCounts'] == 1
+
+
+@pytest.mark.calendar
+@allure.suite('calendar')
+@allure.story('mobile')
+def test_mobile_sync_02():
+    '''
+    输入多个event，同步事件
+    '''
+    mobile_event1 = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': 'C',
+                     'eventStartTime': c.get_time_stamp(days=-10), 'eventEndTime': c.get_time_stamp(days=10)}
+
+    mobile_event2 = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': 'U',
+                     'eventStartTime': c.get_time_stamp(seconds=10), 'eventEndTime': c.get_time_stamp(seconds=20)}
+    mobile_event3 = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': 'D',
+                     'eventStartTime': c.get_time_stamp(seconds=10), 'eventEndTime': c.get_time_stamp(seconds=20),
+                     'remarks': c.f.sentence(),'allday':False}
+    data = {'currentTime': c.get_time_stamp(), 'events': [mobile_event1, mobile_event2, mobile_event3]}
+    res = c.mobile_sync(data)
+    assert res['data']['syncCounts'] == '3'
+
+
+@pytest.mark.calendar
+@allure.suite('calendar')
+@allure.story('mobile')
+@pytest.mark.parametrize('u',[c.uid,'123456','4606718'])
+def test_mobile_find_all(u):
+    res = c.mobile_find_all(uid=u)
+    print('uid为{}的事件个数为:{}'.format(u,len(res['events'])))
+    assert len(res['events']) >= 0
+
