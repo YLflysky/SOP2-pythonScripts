@@ -84,6 +84,19 @@ def test_generate_orderNo():
     assert 'SUCCEED' == body['returnStatus']
     assert body['data'] is not None
 
+def test_sync_pay():
+    '''
+    测试同步支付结果
+    '''
+    sql = o.do_mysql_select('select aid,order_no from  `order` where del_flag=0',db='order')
+    sql = random.choice(sql)
+    aid = sql['aid']
+    order_no = sql['order_no']
+    pay_no = o.f.pyint()
+    o.sync_order_pay(aid,order_no,pay_no,)
+    res = o.do_mysql_select('select count(1) from order_pay where pay_no = {}'.format(pay_no),'order')
+    assert len(res)==1
+    o.do_mysql_exec('delete from order_pay where pay_no={}'.format(pay_no),'order')
 
 
 @allure.suite('order')
@@ -103,7 +116,7 @@ def test_apply_invoice():
         sys.exit(-1)
 
     order_no = random.choice(order_no)['order_no']
-    order_no = ['2020092709355144316384']
+    order_no = ['20201012103736463180224']
     phone = '18888888888'
     head = '钛马信息技术有限公司'
     duty = '91310115560364240G'

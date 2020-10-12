@@ -220,7 +220,7 @@ def test_get_event_list_02():
     actual = int(actual_end) - int(actual_start)
     expect = 1602291000 - 1602210000
     assert actual >= expect
-    print('c测试通过：实际日历区间:{},期望日历区间:{}'.format(actual, expect))
+    print('测试通过：实际日历区间:{},期望日历区间:{}'.format(actual, expect))
 
 
 @allure.suite('calendar')
