@@ -288,7 +288,7 @@ def test_mobile_sync_01(cud):
                     'eventStartTime': c.get_time_stamp(days=-10), 'eventEndTime': c.get_time_stamp(days=10)}
     data = {'currentTime': c.get_time_stamp(), 'events': [mobile_event]}
     res = c.mobile_sync(data)
-    assert res['data']['syncCounts'] == 1
+    assert res['data']['syncCounts'] == '1'
 
 
 @pytest.mark.calendar
