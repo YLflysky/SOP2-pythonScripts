@@ -55,6 +55,17 @@ class Order(Base):
         print(code,body)
         return body
 
+    def sync_order(self,ex,origin,aid,category,**kwargs):
+        '''
+        同步订单接口
+        '''
+        url = self.url + '/v1/order/sync'
+        data = {'exOrderNo':ex,'origin':origin,'aid':aid,'orderCategory':category,**kwargs}
+
+        code,body = self.do_post(url,data)
+        self.assert_msg(code,body)
+        return body
+
     def order_detail(self, aid, order_no):
         url = self.url + '/v1/order/orderNo/{}'.format(order_no)
         code, body = self.do_get(url, params={'aid': aid})
@@ -95,23 +106,6 @@ class Order(Base):
         assert 200 == code
         return body
 
-    def sync_order(self, orderNo, ex_order_no, origin, aid):
-        '''
-        UAT环境同步订单信息
-        :return:
-        '''
-        url = self.url + '/v1/order/sync'
-        data = {'aid': aid, 'detail': {'jojo1': 'code_002', 'jojo2': '111'}, 'timeout': '82726',
-                'orderNo': orderNo, 'info': {'productId': 'code_002', 'price': '111', 'quantity': '1'},
-                'exOrderNo': ex_order_no, 'delFlag': '2', 'remarks': 'jojo', 'createTime': '159765443334',
-                'invoiceStatus': 'FAILED', 'pointsFlag': True, 'pointsNums': '1', 'pointsAmount': '78',
-                'couponAmount': '2', 'couponId': '25365', 'vehModelCode': '川A123456', 'vin': 'LJ8E3C1MXGB008988',
-                'actualPayAmount': '9', 'discountAmount': '4', 'amount': '5', 'serviceId': '765', 'spId': '987',
-                'orderType': 'COMMODITY', 'title': 'BM测试同步订单', 'businessStateDesc': '98', 'businessState': '98',
-                'origin': origin, 'orderCategory': '007', 'orderStatus': 'INIT'}
-
-        code, body = self.do_post(url, data)
-        self.assert_msg(code, body)
 
     def sync_order_kafka(self, ep_order_id, business_info: dict, domain='GAS', cp='NX_ENGINE'):
         '''

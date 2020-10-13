@@ -6,7 +6,7 @@ class TencentCar(Base):
     def __init__(self):
         super().__init__()
 
-        if os.getenv('GATE') == 'true':
+        if self.gate:
             self.url = self.read_conf('sop2_env.conf',self.env,'hu_host')+'/test-access/tm'
         else:
             print('暂时不支持的环境')

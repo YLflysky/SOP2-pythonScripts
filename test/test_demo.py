@@ -1,5 +1,5 @@
 import pytest
-
+from test import models
 
 def myfunc():
     raise ValueError("Exception 123 raised")
@@ -21,3 +21,23 @@ def test_ehlo(smtp_connection):
     assert res == 250
     print(_)
     assert 0
+
+@pytest.fixture()
+def make_customer_record():
+    created_records =[]
+
+    def _make_customer_record(name):
+        record = models.Customer(name=name,orders=[])
+        created_records.append(record)
+        return record
+
+    yield _make_customer_record
+
+    #销毁数据
+    for record in created_records:
+        record.destory()
+
+def test_customer_records(make_customer_record):
+    c_1 = make_customer_record('Lisa')
+    c_2 = make_customer_record('Mike')
+    c_3 = make_customer_record('Meredith')

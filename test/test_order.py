@@ -84,19 +84,20 @@ def test_generate_orderNo():
     assert 'SUCCEED' == body['returnStatus']
     assert body['data'] is not None
 
+
 def test_sync_pay():
     '''
     测试同步支付结果
     '''
-    sql = o.do_mysql_select('select aid,order_no from  `order` where del_flag=0',db='order')
+    sql = o.do_mysql_select('select aid,order_no from  `order` where del_flag=0', db='order')
     sql = random.choice(sql)
     aid = sql['aid']
     order_no = sql['order_no']
     pay_no = o.f.pyint()
-    o.sync_order_pay(aid,order_no,pay_no,)
-    res = o.do_mysql_select('select count(1) from order_pay where pay_no = {}'.format(pay_no),'order')
-    assert len(res)==1
-    o.do_mysql_exec('delete from order_pay where pay_no={}'.format(pay_no),'order')
+    o.sync_order_pay(aid, order_no, pay_no, )
+    res = o.do_mysql_select('select count(1) from order_pay where pay_no = {}'.format(pay_no), 'order')
+    assert len(res) == 1
+    o.do_mysql_exec('delete from order_pay where pay_no={}'.format(pay_no), 'order')
 
 
 @allure.suite('order')
@@ -108,7 +109,7 @@ def test_apply_invoice():
     '''
     aid = '4614907'
     order_no = o.do_mysql_select(
-        'select order_no from `order` where aid={} and'
+        'select order_no from `order` where aid={} and service_id="GAS" and '
         ' order_status="PAY_SUCCESS" and invoice_issuable=1 and invoice_status=0'.format(
             aid), 'order')
     if len(order_no) == 0:
@@ -116,12 +117,12 @@ def test_apply_invoice():
         sys.exit(-1)
 
     order_no = random.choice(order_no)['order_no']
-    order_no = ['20201013103512466200704']
+    order_no = ['20201013105955077200704']
     phone = '18888888888'
     head = '钛马信息技术有限公司'
     duty = '91310115560364240G'
-    o.apply_invoice(aid,order_no,duty,head,phone)
-    sql_res = o.do_mysql_select('select invoice_status from `order` where order_no={}'.format(order_no[0]),'order')
+    o.apply_invoice(aid, order_no, duty, head, phone)
+    sql_res = o.do_mysql_select('select invoice_status from `order` where order_no={}'.format(order_no[0]), 'order')
     assert sql_res[0]['invoice_status'] == 1
 
 
@@ -174,10 +175,69 @@ def test_callback_invoice():
 
     o.sync_invoice_kafka(ep_order, invoice_no, price)
     time.sleep(2.0)
-    sql_res = o.do_mysql_select('select i.*,r.invoice_id from order_invoice i,order_invoice_relation r where i.id=r.invoice_id and i.invoice_no="{}"'.format(invoice_no),'order')
+    sql_res = o.do_mysql_select(
+        'select i.*,r.invoice_id from order_invoice i,order_invoice_relation r where i.id=r.invoice_id and i.invoice_no="{}"'.format(
+            invoice_no), 'order')
 
     assert len(sql_res) == 1
     assert sql_res[0]['sp_id'] == 'NX_ENGINE'
     assert sql_res[0]['price'] == price
     assert sql_res[0]['invoice_no'] == str(invoice_no)
     assert sql_res[0]['invoice_id'] == sql_res[0]['id']
+
+
+@allure.suite('order')
+@allure.story('sync')
+@pytest.mark.order
+@pytest.mark.parametrize('order_status', ['INIT', 'WAITING_PAY', 'PROCESSING', 'REFUND_FAILED', 'REFUND_SUCCESS',
+                                          'PAY_SUCCESS', 'PAY_FAILED', 'CANCEL', 'FINISH', 'EXPIRE', 'REFUNDING',
+                                          'RESERVED'])
+def test_sync_order_01(order_status):
+    '''
+    同步订单接口测试，订单状态枚举
+    '''
+    ex = 'test001'
+    origin = 'EP'
+    aid = '123456'
+    category = '102'
+    res = o.sync_order(ex, origin, aid, category, orderStatus=order_status, timeout=20)
+    sql_res = o.do_mysql_select('select order_status from `order` where order_no="{}"'.format(res['data']), 'order')
+    assert len(sql_res) == 1
+    assert sql_res[0]['order_status'] == order_status
+    o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')
+
+
+@allure.suite('order')
+@allure.story('sync')
+@pytest.mark.order
+@pytest.mark.parametrize('order_type', ['RESERVATION', 'COMMODITY', 'BUSINESS'])
+def test_sync_order_02(order_type):
+    '''
+    同步订单接口测试，订单类型枚举
+    '''
+    ex = 'test001'
+    origin = 'EP'
+    aid = '123456'
+    category = '102'
+    res = o.sync_order(ex, origin, aid, category, orderType=order_type, checkFlag=True)
+    sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(res['data']), 'order')
+    assert len(sql_res) == 1
+    o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')
+
+
+@allure.suite('order')
+@allure.story('sync')
+@pytest.mark.order
+@pytest.mark.parametrize('origin', ['SELF', 'EP', 'BM', 'MA', 'VPA', 'OTHER'])
+def test_sync_order_03(origin):
+    '''
+    同步订单接口测试，订单来源枚举
+    '''
+    ex = 'test001'
+    aid = '123456'
+    category = '102'
+    res = o.sync_order(ex, origin, aid, category)
+    sql_res = o.do_mysql_select('select origin from `order` where order_no="{}"'.format(res['data']), 'order')
+    assert len(sql_res) == 1
+    assert sql_res[0]['origin'] == origin
+    o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')

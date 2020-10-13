@@ -4,7 +4,8 @@ from box.base import Base
 o = Base()
 
 @pytest.fixture()
-def del_invoice(order,serial):
+def del_invoice(request):
+    serial,order = None,None
     yield
     print('------开始删除同步的发票-----')
     o.do_mysql_select('delete from order_invoice where serial_no="{}"'.format(serial), 'order')
