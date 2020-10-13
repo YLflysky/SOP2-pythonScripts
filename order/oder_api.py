@@ -52,6 +52,7 @@ class Order(Base):
         self.header['aid'] = aid
         data = {'invoiceNo': invoice_no}
         code, body = self.do_get(url, data)
+        print(code,body)
         return body
 
     def order_detail(self, aid, order_no):

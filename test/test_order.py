@@ -11,10 +11,10 @@ os.environ['ENV'] = 'DEV'
 os.environ['GATE'] = 'false'
 o = Order()
 
-success_data = [{'aid': 'admin', 'serialNo': '3'},
-                {'aid': '123', 'serialNo': 'qwer'},
-                {'aid': '123', 'serialNo': 'abcd'},
-                {'aid': '123', 'serialNo': '1024'}]
+success_data = [{'aid': '123456', 'invoiceNo': '1881413'},
+                {'aid': '123456', 'invoiceNo': '4738440'},
+                {'aid': '4614907', 'invoiceNo': '38133119'},
+                {'aid': '386', 'invoiceNo': '34'}]
 
 
 @allure.suite('order')
@@ -22,13 +22,13 @@ success_data = [{'aid': 'admin', 'serialNo': '3'},
 @pytest.mark.order
 @pytest.mark.parametrize('param', success_data)
 def test_invoice_detail_success(param):
-    res = o.invoice_detail(param['aid'], param['serialNo'])
+    res = o.invoice_detail(param['aid'], param['invoiceNo'])
     assert 'SUCCEED' == res['returnStatus']
-    SQL_RES = o.do_mysql_select('select * from order_invoice where serial_no="{}"'.format(param['serialNo']), 'order')
+    SQL_RES = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(param['invoiceNo']), 'order')
     print(SQL_RES)
     assert len(SQL_RES) == 1
     assert SQL_RES[0]['status'] == res['data']['status']
-    assert param['serialNo'] == res['data']['serialNo']
+    assert SQL_RES[0]['invoice_no'] == res['data']['invoiceNo']
     assert SQL_RES[0]['transmission_time'] == res['data']['transmissionTime']
 
 
@@ -116,7 +116,7 @@ def test_apply_invoice():
         sys.exit(-1)
 
     order_no = random.choice(order_no)['order_no']
-    order_no = ['20201012103736463180224']
+    order_no = ['20201013103512466200704']
     phone = '18888888888'
     head = '钛马信息技术有限公司'
     duty = '91310115560364240G'
