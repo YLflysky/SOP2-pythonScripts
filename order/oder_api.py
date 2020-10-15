@@ -9,9 +9,9 @@ class Order(Base):
     def __init__(self):
         super().__init__()
         if self.gate:
-            self.url = self.read_conf('sop2_env.conf', self.env, 'host')
-        else:
-            self.url = self.read_conf('sop2_env.conf', self.env, 'order_host')
+            self.header['Authorization'] = self.get_token(other='BM')
+
+        self.url = self.read_conf('sop2_env.conf', self.env, 'order_host')
 
     def update_order_in(self):
         url = self.url + '/order/update'
@@ -194,39 +194,6 @@ class Order(Base):
         print(body)
 
 
-class ExternalOrder(Base):
-    def __init__(self):
-        super().__init__()
-
-        if self.gate:
-            self.url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
-        else:
-            self.url = self.read_conf('sop2_env.conf', self.env, 'host_ex')
-
-    def ex_order_sync(self):
-        '''
-        订单同步外部信息
-        :return:
-        '''
-        url = self.url + '/external/v2/sync/order'
-        businessInfo = {}
-
-        abc = {'amount': '100', 'title': '同步订单', 'businessState': 'PROCESSING', 'orderType': 'COMMODITY',
-               'vin': '123456',
-               'aid': '4613993', 'serviceId': '11', 'spId': '1', 'exOrderNo': '1016192287776772',
-               'orderCategory': 'parking', 'businessStateDesc': '不太通aaa', 'payAmount': '1024', 'discountAmount': '100',
-               'businessInfo': businessInfo}
-
-        code, body = self.do_post(url, abc)
-        self.assert_msg(code, body)
-
-    def get_order_list(self):
-
-        url = self.url + '/test-access/tm/mosc-order-ma/order/api/v2/vins/LFV3A23C1K3161804/orders/list'
-        data = {'beginTime': '2020-06-01 14:12:33', 'endTime': '2099-08-11 14:12:33', 'orderCategory': '00',
-                'orderStatus': '1000', 'vin': 'LFV3A23C1K3161804', 'pageIndex': '1', 'pageSize': '5'}
-        code, body = self.do_get(url, params=data)
-        self.assert_msg(code, body)
 
 
 if __name__ == '__main__':
@@ -242,10 +209,9 @@ if __name__ == '__main__':
             'bankAccount': '377363783294793', 'status': 'SUCCESS', 'price': '10', 'createTime': '2020-09-09 09:12:08',
             'transmissionTime': '2020-09-11 09:12:08'}
     # o.sync_order_pay('1601281637323','2020092816271772640960','123')
-    # o.sync_order_kafka()
     # o.order_detail(aid='221',order_no='11953484401634137341')
     # o.sync_order(aid=123, orderNo=1008600, ex_order_no='ex10086', origin='EP')
-    o.sync_refund('111333','202009247772089433')
+    # o.sync_refund('111333','202009247772089433')
     # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
     #                 head='钛马信息技术有限公司', phone='18888888888')
     # ex = ExternalOrder()

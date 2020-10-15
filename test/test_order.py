@@ -14,7 +14,7 @@ o = Order()
 success_data = [{'aid': '123456', 'invoiceNo': '1881413'},
                 {'aid': '123456', 'invoiceNo': '4738440'},
                 {'aid': '4614907', 'invoiceNo': '38133119'},
-                {'aid': '386', 'invoiceNo': '34'}]
+                {'aid': '882', 'invoiceNo': '10'}]
 
 
 @allure.suite('order')
@@ -60,7 +60,6 @@ data = [
 @allure.story('syncInvoice')
 @pytest.mark.parametrize('d', data)
 @pytest.mark.order
-@pytest.mark.invoice
 def test_sync_invoice(d):
     ex_order_no = d['epOrderId']
     invoice_no = d['invoiceNo']
@@ -84,7 +83,9 @@ def test_generate_orderNo():
     assert 'SUCCEED' == body['returnStatus']
     assert body['data'] is not None
 
-
+@allure.suite('order')
+@allure.story('sync pay')
+@pytest.mark.order
 def test_sync_pay():
     '''
     测试同步支付结果
@@ -102,7 +103,7 @@ def test_sync_pay():
 
 @allure.suite('order')
 @allure.story('syncInvoice')
-@pytest.mark.invoice
+@pytest.mark.order
 def test_apply_invoice():
     '''
     测试申请开发票接口
@@ -128,7 +129,6 @@ def test_apply_invoice():
 
 @allure.suite('order')
 @allure.story('callback')
-@pytest.mark.callback
 @pytest.mark.order
 def test_callback_order():
     ep_order = '123456789'
@@ -160,8 +160,7 @@ def test_callback_order():
 
 @allure.suite('order')
 @allure.story('callback')
-@pytest.mark.callback
-@pytest.mark.invoice
+@pytest.mark.order
 def test_callback_invoice():
     '''
     测试发票的callback
@@ -241,3 +240,31 @@ def test_sync_order_03(origin):
     assert len(sql_res) == 1
     assert sql_res[0]['origin'] == origin
     o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')
+
+
+@allure.suite('order')
+@allure.story('sync')
+@pytest.mark.order
+def test_sync_order_reservation():
+    '''
+    测试同步订单为预约单轮询检查订单状态功能
+
+    '''
+    ex = o.f.pyint()
+    aid = '123456'
+    category = '102'
+    status='INIT'
+    service='111'
+
+    res = o.sync_order(ex,'VPA',aid,category,orderType='RESERVATION', checkFlag=True,orderStatus=status,
+                       serviceId=service,spId=o.f.pyint())
+
+    time.sleep(15.0)
+    sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(res['data']), 'order')
+    try:
+        assert len(sql_res) == 1
+        assert sql_res
+        assert sql_res[0]['order_status'] == 'FINISH'
+        assert sql_res[0]['check_flag'] == '0'
+    finally:
+        o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')
