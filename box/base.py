@@ -237,6 +237,7 @@ class Base:
             params = self._calc_digital_sign(url, params)
         lk.prt('final get url is:{}'.format(url))
         lk.prt('final get header is:{}'.format(self.header))
+        lk.prt('final get param is:{}'.format(params))
         try:
             res = requests.get(url=url,params=params, headers=self.header, verify=False)
             response_body = json.loads(res.text)

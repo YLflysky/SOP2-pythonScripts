@@ -99,17 +99,32 @@ def test_order_count_04(status):
 @allure.suite('order')
 @allure.story('hu count')
 @pytest.mark.order
-def test_order_count_05():
+@pytest.mark.parametrize('category',['01','02'])
+def test_order_count_05(category):
     '''
     输入订单category为01
     '''
     uid = '4614907'
     vin = bm.f.pyint()
     bm.reload_config()
-    res = bm.order_count(vin, uid, orderCategory='01')
+    res = bm.order_count(vin, uid, orderCategory=category)
     assert res['description'] == '成功'
     count = res['data']
-    order_category = bm.do_mysql_select('select category from category_relation where hu_category="01"','order')
+    order_category = bm.do_mysql_select('select category from category_relation where hu_category="{}"'.format(category),'order')
     order_category = order_category[0]['category']
     sql_res = bm.do_mysql_select('select count(1) as c from `order` where aid="4614907" and category="{}"'.format(order_category),'order')
     assert sql_res[0]['c'] == int(count)
+
+
+@allure.suite('order')
+@allure.story('hu count')
+@pytest.mark.order
+def test_order_count_06():
+    '''
+    输入BM订单中不存在的status，报错
+    '''
+    uid = '4614907'
+    vin = bm.f.pyint()
+    status = bm.f.word()
+    res = bm.order_count(vin, uid, orderStatus=status)
+    assert res['description'] == 'AOD0103:ORDER_STATUS_INVALID'

@@ -11,7 +11,7 @@ class Order(Base):
         if self.gate:
             self.header['Authorization'] = self.get_token(other='BM')
 
-        self.url = self.read_conf('sop2_env.conf', self.env, 'order_host')
+        self.url = self.read_conf('sop2_env.conf', self.env, 'order_be_host')
 
     def update_order_in(self):
         url = self.url + '/order/update'

@@ -14,7 +14,7 @@ o = Order()
 success_data = [{'aid': '123456', 'invoiceNo': '1881413'},
                 {'aid': '123456', 'invoiceNo': '4738440'},
                 {'aid': '4614907', 'invoiceNo': '38133119'},
-                {'aid': '882', 'invoiceNo': '10'}]
+                {'aid': '4614931', 'invoiceNo': '38133230'}]
 
 
 @allure.suite('order')
@@ -45,6 +45,28 @@ fail_data = [{'aid': None, 'serialNo': 'serial_no_0001'},
 def test_invoice_detail_fail(param):
     res = o.invoice_detail(param['aid'], param['serialNo'])
     assert 'FAILED' == res['returnStatus']
+
+
+@allure.suite('order')
+@allure.story('invoiceDetail')
+@pytest.mark.order
+def test_gas_invoice_detail():
+    '''
+    测试加油业务域发票详情
+    '''
+    param = o.do_mysql_select('select * from order_invoice where service_id="GAS" and id in'
+                              ' (select invoice_id from order_invoice_relation)','order')
+    if len(param) ==0:
+        print('no test data...exit test')
+        sys.exit(-1)
+    param = random.choice(param)
+    res = o.invoice_detail(param['aid'], param['invoice_no'])
+    assert 'SUCCEED' == res['returnStatus']
+    assert param['status'] == res['data']['status']
+    assert param['invoice_no'] == res['data']['invoiceNo']
+    assert param['transmission_time'] == res['data']['transmissionTime']
+    assert param['tax'] == res['data']['tax']
+    assert param['address_tel'] == res['data']['addressTel']
 
 
 data = [
