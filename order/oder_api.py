@@ -13,21 +13,20 @@ class Order(Base):
 
         self.url = self.read_conf('sop2_env.conf', self.env, 'order_be_host')
 
-    def update_order_in(self):
-        url = self.url + '/order/update'
-        num = random.randint(10000000000000000000, 99999999999999999999)
-        businessInfo = {'productId': 'code_002', 'price': 111, 'quantity': 1}
-        data = {'orderNo': 20200725143430381466944, 'orderCategory': '27262ysyat', 'spId': '080002', 'aid': '9349643',
-                'vehModelCode': '040804', 'businessInfo': businessInfo, 'vin': 'LFVSOP2TEST000018', 'serviceId': '08',
-                'orderType': 'BUSINESS', 'cpOrderNo': 'MA{}'.format(num), 'title': self.f.sentence(),
-                'businessState': 'PROCESSING', 'businessStateDesc': 'SUCCESS', 'amount': 1, 'payAmount': 1,
-                'timeout': 30, 'discountAmount': 1}
-
+    def update_order(self,order_no,aid,**kwargs):
+        '''
+        底层修改订单服务
+        '''
+        url = self.url + '/v1/order/update'
+        data = {'orderNo': order_no, 'aid': aid,**kwargs}
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def add_order_in(self):
-        url = self.url + '/order/create'
+    def add_order(self):
+        '''
+        底层添加订单服务
+        '''
+        url = self.url + '/v1/order/create'
         num = random.randint(10000000000000000000, 99999999999999999999)
         businessInfo = {'productId': 'code_002', 'price': 111, 'quantity': 1}
         data = {'orderCategory': '27262ysyat', 'spId': '0082', 'aid': '9349643',
@@ -38,6 +37,12 @@ class Order(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
         return body['data']
+
+    def del_order(self,order_no,aid):
+        url = self.url + '/v1/order/delete'
+        data = {'orderNo':order_no,'aid':aid}
+        code,body = o.do_get(url,data)
+        self.assert_msg(code,body)
 
     def invoice_detail(self, aid, invoice_no):
         '''
@@ -197,9 +202,11 @@ class Order(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'LOCAL'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = Order()
+    # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
+    o.del_order(order_no='20201020101920646233472',aid='1603160360456')
     # fakers = o.f
     # for f in fakers:
     #     if 'py' in f:

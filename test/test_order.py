@@ -55,8 +55,8 @@ def test_gas_invoice_detail():
     测试加油业务域发票详情
     '''
     param = o.do_mysql_select('select * from order_invoice where service_id="GAS" and id in'
-                              ' (select invoice_id from order_invoice_relation)','order')
-    if len(param) ==0:
+                              ' (select invoice_id from order_invoice_relation)', 'order')
+    if len(param) == 0:
         print('no test data...exit test')
         sys.exit(-1)
     param = random.choice(param)
@@ -104,6 +104,7 @@ def test_generate_orderNo():
     body = o.generate_order_no()
     assert 'SUCCEED' == body['returnStatus']
     assert body['data'] is not None
+
 
 @allure.suite('order')
 @allure.story('sync pay')
@@ -275,11 +276,11 @@ def test_sync_order_reservation():
     ex = o.f.pyint()
     aid = '123456'
     category = '102'
-    status='INIT'
-    service='111'
+    status = 'INIT'
+    service = '111'
 
-    res = o.sync_order(ex,'VPA',aid,category,orderType='RESERVATION', checkFlag=True,orderStatus=status,
-                       serviceId=service,spId=o.f.pyint())
+    res = o.sync_order(ex, 'VPA', aid, category, orderType='RESERVATION', checkFlag=True, orderStatus=status,
+                       serviceId=service, spId=o.f.pyint())
 
     time.sleep(15.0)
     sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(res['data']), 'order')
@@ -289,4 +290,35 @@ def test_sync_order_reservation():
         assert sql_res[0]['order_status'] == 'FINISH'
         assert sql_res[0]['check_flag'] == '0'
     finally:
+        pass
         o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')
+
+
+@allure.suite('order')
+@allure.story('update')
+@pytest.mark.order
+def test_update_order():
+    '''
+    测试更新订单，更新订单状态,业务信息
+    '''
+    ex = 'test001'
+    aid = '123456'
+    category = '102'
+    origin = 'EP'
+    res = o.sync_order(ex, origin, aid, category)
+    order_no = res['data']
+    business_info = {'name': 'sergio', 'age': '27', 'weight': '145', 'height': '174'}
+    o.update_order(order_no=order_no, aid=aid, orderStatus='INIT', businessInfo=business_info)
+    sql_res = o.do_mysql_select(
+        'select order_status,detail from `order` o,order_detail d where 1=1 and o.id=d.order_id and order_no="{}"'.format(
+            order_no), 'order')
+    try:
+        assert sql_res[0]['order_status'] == 'INIT'
+        sql_res_detail = json.loads(sql_res[0]['detail'])
+        assert sql_res_detail['age'] == business_info['age']
+        assert sql_res_detail['name'] == business_info['name']
+        assert sql_res_detail['weight'] == business_info['weight']
+        assert sql_res_detail['height'] == business_info['height']
+    finally:
+        pass
+        o.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'order')
