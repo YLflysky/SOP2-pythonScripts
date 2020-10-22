@@ -6,7 +6,8 @@ class BMOrder(Base):
     '''
     def __init__(self):
         super().__init__()
-        self.url = self.read_conf('sop2_env.conf',self.env,'order_hu_host')
+        self.hu_url = self.read_conf('sop2_env.conf',self.env,'hu_host')
+        self.be_url = self.read_conf('sop2_env.conf',self.env,'be_host')
 
     def assert_msg(self,code,body):
         print(body)
@@ -18,7 +19,7 @@ class BMOrder(Base):
         according to the order status,time returns the order quantity
         '''
 
-        url = self.url + '/api/v2/vins/{}/orders/count'.format(vin)
+        url = self.hu_url + '/order/api/v2/vins/{}/orders/count'.format(vin)
         data = {'userId':uid,**kwargs}
         code,body = self.do_get(url,data)
         print(body)
@@ -28,9 +29,31 @@ class BMOrder(Base):
         '''
         重新加载category配置接口
         '''
-        url = self.url + '/api/v2/order/map/reload'
+        url = self.hu_url + '/order/api/v2/order/map/reload'
         code,body = self.do_get(url,None)
         self.assert_msg(code,body)
+
+    def sync_bm_order(self,bm_order_id,data):
+        '''
+        订单适配层同步BM订单
+        '''
+        url = self.be_url + '/order/api/v2/orders/{}/sync'.format(bm_order_id)
+
+        code,body = self.do_post(url,data)
+        self.assert_msg(code,body)
+        return body
+
+    def update_bm_order(self,order_no,vin,userId,updateType,**kwargs):
+        '''
+        BM适配层更新订单
+        '''
+        url = self.be_url + '/order/api/v2/orders/{}/status'.format(order_no)
+        params = {'vin':vin,'userId':userId,'updateType':updateType,**kwargs}
+        code,body = self.do_put(url,None,params)
+        self.assert_msg(code,body)
+
+
+
 
 
 if __name__ == '__main__':
@@ -38,4 +61,11 @@ if __name__ == '__main__':
     os.environ['ENV']='DEV'
     os.environ['GATE']='false'
     o = BMOrder()
-    o.order_count(vin='LFVSOP2TEST000311',uid='4614907')
+    # o.order_count(vin=123,uid='469317')
+    data = {'vin': o.f.pyint(), 'brand': o.f.word(), 'businessExtInfo': o.f.pydict(4, True, value_types=str),
+            'discountAmount': '10086',
+            'orderAmount': '100', 'orderCategory': 105, 'serviceId': 'GAS', 'spId': '111', 'title': o.f.sentence(),
+            'userId': '469317', 'serviceOrderState': 'FINISH', 'serviceOrderStateDesc': 'jojo', }
+    o.update_bm_order(order_no='20200915135838636516096',vin=o.f.pyint(),userId='qwe',updateType='1',
+                      orderEvent='就是我',businessState='NOTHING_TO_SAY')
+    # o.sync_bm_order(bm_order_id=768212448097734656)

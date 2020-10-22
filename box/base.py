@@ -10,6 +10,7 @@ import xlrd
 from box.lk_logger import lk
 import os
 import datetime
+from decimal import *
 from box.db import MysqlConfig
 from faker import Faker
 from kafka import KafkaProducer
@@ -225,9 +226,12 @@ class Base:
             self.header = {'Content-Type': 'application/json'}
         lk.prt('final put url is:{}'.format(url))
         if isinstance(data, dict):
-            data = json.dumps(data)
+            data = json.dumps(data,ensure_ascii=False)
+
         lk.prt('final put data is:{}'.format(data))
         lk.prt('final put header is:{}'.format(self.header))
+        if data is not None:
+            data = data.encode('utf-8')
         res = requests.put(url=url,params=params, data=data, headers=self.header, verify=False)
         response_body = json.loads(res.text)
         return res.status_code, response_body
@@ -261,7 +265,7 @@ class Base:
                                host=config_dict['host'],
                                port=config_dict['port'],
                                user=config_dict['username'],
-                               password=config_dict['password'])
+                               password=config_dict['password'],charset='utf8')
         cur = conn.cursor(pymysql.cursors.DictCursor)
         cur.execute(msg)
         res = cur.fetchall()
@@ -270,6 +274,8 @@ class Base:
             for key,val in res1.items():
                 if isinstance(val,datetime.datetime):
                     res1[key]=self.str_time(val)
+                elif isinstance(val,Decimal):
+                    res1[key] = float(val)
 
         cur.close()
         conn.close()
@@ -281,7 +287,7 @@ class Base:
                                host=config_dict['host'],
                                port=config_dict['port'],
                                user=config_dict['username'],
-                               password=config_dict['password'])
+                               password=config_dict['password'],charset='utf8')
         cur = conn.cursor(pymysql.cursors.DictCursor)
         try:
             # 执行sql语句

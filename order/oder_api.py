@@ -11,13 +11,13 @@ class Order(Base):
         if self.gate:
             self.header['Authorization'] = self.get_token(other='BM')
 
-        self.url = self.read_conf('sop2_env.conf', self.env, 'order_be_host')
+        self.url = self.read_conf('sop2_env.conf', self.env, 'be_host')
 
     def update_order(self,order_no,aid,**kwargs):
         '''
         底层修改订单服务
         '''
-        url = self.url + '/v1/order/update'
+        url = self.url + '/order/v1/order/update'
         data = {'orderNo': order_no, 'aid': aid,**kwargs}
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
@@ -26,7 +26,7 @@ class Order(Base):
         '''
         底层添加订单服务
         '''
-        url = self.url + '/v1/order/create'
+        url = self.url + '/order/v1/order/create'
         num = random.randint(10000000000000000000, 99999999999999999999)
         businessInfo = {'productId': 'code_002', 'price': 111, 'quantity': 1}
         data = {'orderCategory': '27262ysyat', 'spId': '0082', 'aid': '9349643',
@@ -39,7 +39,7 @@ class Order(Base):
         return body['data']
 
     def del_order(self,order_no,aid):
-        url = self.url + '/v1/order/delete'
+        url = self.url + '/order/v1/order/delete'
         data = {'orderNo':order_no,'aid':aid}
         code,body = o.do_get(url,data)
         self.assert_msg(code,body)
@@ -53,7 +53,7 @@ class Order(Base):
         :return:
         '''
 
-        url = self.url + '/v1/invoice/detail'
+        url = self.url + '/order/v1/invoice/detail'
         self.header['aid'] = aid
         data = {'invoiceNo': invoice_no}
         code, body = self.do_get(url, data)
@@ -64,7 +64,7 @@ class Order(Base):
         '''
         同步订单接口
         '''
-        url = self.url + '/v1/order/sync'
+        url = self.url + '/order/v1/order/sync'
         data = {'exOrderNo':ex,'origin':origin,'aid':aid,'orderCategory':category,**kwargs}
 
         code,body = self.do_post(url,data)
@@ -72,13 +72,13 @@ class Order(Base):
         return body
 
     def order_detail(self, aid, order_no):
-        url = self.url + '/v1/order/orderNo/{}'.format(order_no)
+        url = self.url + '/order/v1/order/orderNo/{}'.format(order_no)
         code, body = self.do_get(url, params={'aid': aid})
         self.assert_msg(code, body)
 
     def sync_invoice(self, orderNo, invoiceNo, status, party, ):
 
-        url = self.url + '/v1/invoice/notify/ep/sync'
+        url = self.url + '/order/v1/invoice/notify/ep/sync'
 
         data = {'actionId': 'INVOICE_UPDATE', 'aid': '123456', 'domainId': 'COMMON', 'epInvoiceId': '1',
                 'epOrderId': orderNo,
@@ -90,7 +90,7 @@ class Order(Base):
         self.assert_msg(code, body)
 
     def sync_invoice_total(self, data):
-        url = self.url + '/v1/invoice/notify/ep/sync'
+        url = self.url + '/order/v1/invoice/notify/ep/sync'
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
@@ -105,7 +105,7 @@ class Order(Base):
         print('同步的发票删除成功')
 
     def generate_order_no(self):
-        url = self.url + '/v1/order/genOrderNo'
+        url = self.url + '/order/v1/order/genOrderNo'
         code, body = self.do_get(url, None)
         print(body)
         assert 200 == code
@@ -167,14 +167,14 @@ class Order(Base):
         self.send_kafka_msg(host, topic, msg)
 
     def invoice_info(self, aid):
-        url = self.url + '/v1/invoice/header'
+        url = self.url + '/order/v1/invoice/header'
         data = {'aid': aid}
         code, body = self.do_get(url, data)
         self.assert_msg(code, body)
 
     def apply_invoice(self, aid, order_no, duty_no, head, phone):
 
-        url = self.url + '/v1/invoice/apply'
+        url = self.url + '/order/v1/invoice/apply'
         data = {
             'dutyNum': duty_no, 'email': self.f.email(), 'invoiceHead': head, 'phone': phone,
             'invoiceType': '0', 'orderId': order_no, 'remark': self.f.sentence(), 'tel': '02887676543'}
@@ -185,14 +185,14 @@ class Order(Base):
     def sync_refund(self, aid, ex_order_no):
         sql_res = self.do_mysql_select('select aid,ex_order_no from `order`', db='order')
         sql_res = random.choice(sql_res)
-        url = self.url + '/v1/order/sync/refund'
+        url = self.url + '/order/v1/order/sync/refund'
         data = {'aid': aid, 'exOrderNo': ex_order_no, 'refundAmount': '1',
                 'refundStatus': 'SUCCESS', 'origin': 'EP', 'refundChannel': 'CASH', 'refundType': 'REFUND'}
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
     def sync_order_pay(self, aid, order_no, pay_no, **kwargs):
-        url = self.url + '/v1/order/sync/pay'
+        url = self.url + '/order/v1/order/sync/pay'
         data = {'aid': aid, 'orderNo': order_no, 'payOrderNo': pay_no, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
                 'payType': 'APP', 'payTime': self.time_delta(),'payStatus':'SUCCESS',**kwargs}
         code,body = self.do_post(url,data)
