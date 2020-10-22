@@ -129,7 +129,7 @@ class Order(Base):
                       "createdTime": 1600312755440, "timeout": 10, "orderStatus": "SUCCESS_PAY",
                       "orderSubStatus": "DONE",
                       "delete": False, 'tenantId': 'string', 'epOrderId': ep_order_id, 'payStatus': 'SUCCESS_PAY',
-                      "info": json.dumps(business_info), "discountAmount": 0, 'epOrderCode': ep_order_id,
+                      "info": business_info, "discountAmount": 0, 'epOrderCode': ep_order_id,
                       "domainId": domain, 'orderCategory': '105'}
 
         kafka_data = {'key': json.dumps(kafka_data)}
@@ -205,6 +205,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = Order()
+    o.sync_order_kafka()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
     o.del_order(order_no='20201020101920646233472',aid='1603160360456')
     # fakers = o.f

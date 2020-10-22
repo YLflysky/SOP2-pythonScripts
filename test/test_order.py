@@ -173,7 +173,7 @@ def test_callback_order():
     assert sql_res[0]['category'] == '105'
     assert sql_res[0]['sp_id'] == 'NX_ENGINE'
     assert sql_res[0]['service_id'] == 'GAS'
-    assert str(sql_res[0]['total_amount']) == '6.00'
+    assert str(sql_res[0]['total_amount']) == '6.0'
     assert sql_res[0]['ex_order_no'] == ep_order
     print('同步订单ex_order_no成功:{}'.format(ep_order))
     info = json.dumps(info, sort_keys=True)
