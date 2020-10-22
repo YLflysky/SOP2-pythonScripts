@@ -31,6 +31,5 @@ def test_get_pay_result_fail(d):
     '''
     输入的order_no不存在，无查询结果
     '''
-    order_no = pay.f.pyint()
     res = pay.get_pay_result(d[0],d[1])
     assert 'errorMessage' in res.keys()

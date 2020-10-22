@@ -7,7 +7,7 @@ import json
 import allure
 import sys
 
-os.environ['ENV'] = 'DEV'
+os.environ['ENV'] = 'UAT'
 os.environ['GATE'] = 'false'
 o = Order()
 
