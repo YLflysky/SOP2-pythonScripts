@@ -7,7 +7,7 @@ import json
 import allure
 import sys
 
-os.environ['ENV'] = 'UAT'
+os.environ['ENV'] = 'DEV'
 os.environ['GATE'] = 'false'
 o = Order()
 
@@ -322,3 +322,32 @@ def test_update_order():
     finally:
         pass
         o.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'order')
+
+@allure.suite('order')
+@allure.story('delete')
+@pytest.mark.order
+def test_del_order_01():
+    '''
+    测试删除订单，订单状态为WAITING_PAY，不能删除
+    '''
+    order = o.do_mysql_select('select * from `order` where order_status="WAITING_PAY" and del_flag=0','order')
+    order = random.choice(order)
+    no = order['order_no']
+    aid = order['aid']
+    res = o.del_order(no,aid)
+    assert res['errorMessage'] == '订单状态不满足条件'
+
+
+@allure.suite('order')
+@allure.story('delete')
+@pytest.mark.order
+def test_del_order_02():
+    '''
+    测试删除订单，del_flag=1的订单不能删除
+    '''
+    order = o.do_mysql_select('select * from `order` where del_flag=1','order')
+    order = random.choice(order)
+    no = order['order_no']
+    aid = order['aid']
+    res = o.del_order(no,aid)
+    assert res['errorMessage'] == '订单不存在'

@@ -6,7 +6,7 @@ import random
 import json
 
 
-os.environ['ENV'] = 'UAT'
+os.environ['ENV'] = 'DEV'
 os.environ['GATE'] = 'false'
 
 bm = BMOrder()
@@ -141,13 +141,13 @@ def test_order_count_06():
 @allure.suite('order')
 @allure.story('sync bm order')
 @pytest.mark.order
-def test_sync_bm_order():
+@pytest.mark.parametrize('brand',['VW','JETTA','AUDI'])
+def test_sync_bm_order(brand):
     '''
     测试同步BM适配层订单
     '''
     id = bm.f.pyint()
     vin = bm.f.pyint()
-    brand = 'FAW'
     ext_info = bm.f.pydict(4, True, value_types=str)
     discount_amount = '10000'
     order_amount = bm.f.pyint(10086, 100000)
@@ -167,9 +167,10 @@ def test_sync_bm_order():
     try:
         assert res['description'] == '成功'
         sql_res = bm.do_mysql_select('select * from `order` where order_no="{}"'.format(res['data']), 'order')
-        # assert sql_res[0]['total_amount'] == float(order_amount / 100)
-        assert sql_res[0]['discount_amount'] == 10000.0
+        assert sql_res[0]['total_amount'] == float(order_amount / 100)
+        assert sql_res[0]['discount_amount'] == 100.00
         assert sql_res[0]['ex_order_no'] == str(id)
+        assert sql_res[0]['brand'] == brand
     finally:
         bm.do_mysql_exec(
             'delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(res['data']),
