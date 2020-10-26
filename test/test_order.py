@@ -83,12 +83,37 @@ data = [
 @pytest.mark.parametrize('d', data)
 @pytest.mark.order
 def test_sync_invoice(d):
+    '''
+    同步发票信息，一个发票信息仅含有一个订单
+    '''
     ex_order_no = d['epOrderId']
     invoice_no = d['invoiceNo']
     status = d['status']
     party_type = d['partyType']
+    ex_order_no = [ex_order_no]
     o.teardown_sync(ex_order_no, invoice_no)
-    o.sync_invoice(ex_order_no, invoice_no, status, party_type)
+    o.sync_invoice(invoice_no, status, party_type, ex_order_no)
+    sql = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(invoice_no), 'order')
+    assert len(sql) == 1
+    body = o.invoice_detail(sql[0]['aid'], invoice_no)
+    assert 'SUCCEED' == body['returnStatus']
+    assert status == body['data']['status']
+    assert party_type == body['data']['invoiceType']
+
+
+@allure.suite('order')
+@allure.story('syncInvoice')
+@pytest.mark.order
+def test_sync_invoice_02():
+    '''
+    测试多个订单开一个发票
+    '''
+    ex_order_no = ['2364','3322233']
+    invoice_no = o.f.pyint()
+    status = 'SUCCESS'
+    party_type = 'COMPANY'
+    o.teardown_sync(ex_order_no, invoice_no)
+    o.sync_invoice(invoice_no, status, party_type, ex_order_no)
     sql = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(invoice_no), 'order')
     assert len(sql) == 1
     body = o.invoice_detail(sql[0]['aid'], invoice_no)
@@ -323,6 +348,7 @@ def test_update_order():
         pass
         o.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'order')
 
+
 @allure.suite('order')
 @allure.story('delete')
 @pytest.mark.order
@@ -330,11 +356,11 @@ def test_del_order_01():
     '''
     测试删除订单，订单状态为WAITING_PAY，不能删除
     '''
-    order = o.do_mysql_select('select * from `order` where order_status="WAITING_PAY" and del_flag=0','order')
+    order = o.do_mysql_select('select * from `order` where order_status="WAITING_PAY" and del_flag=0', 'order')
     order = random.choice(order)
     no = order['order_no']
     aid = order['aid']
-    res = o.del_order(no,aid)
+    res = o.del_order(no, aid)
     assert res['errorMessage'] == '订单状态不满足条件'
 
 
@@ -345,9 +371,9 @@ def test_del_order_02():
     '''
     测试删除订单，del_flag=1的订单不能删除
     '''
-    order = o.do_mysql_select('select * from `order` where del_flag=1','order')
+    order = o.do_mysql_select('select * from `order` where del_flag=1', 'order')
     order = random.choice(order)
     no = order['order_no']
     aid = order['aid']
-    res = o.del_order(no,aid)
+    res = o.del_order(no, aid)
     assert res['errorMessage'] == '订单不存在'

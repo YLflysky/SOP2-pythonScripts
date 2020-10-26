@@ -6,8 +6,8 @@ import random
 import json
 
 
-os.environ['ENV'] = 'DEV'
-os.environ['GATE'] = 'false'
+os.environ['ENV'] = 'UAT'
+os.environ['GATE'] = 'true'
 
 bm = BMOrder()
 

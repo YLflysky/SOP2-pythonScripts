@@ -78,12 +78,12 @@ class Order(Base):
         code, body = self.do_get(url, params={'aid': aid})
         self.assert_msg(code, body)
 
-    def sync_invoice(self, orderNo, invoiceNo, status, party, ):
+    def sync_invoice(self, invoiceNo, status, party,orderNo:list):
 
         url = self.url + '/sm/order/v1/invoice/notify/ep/sync'
 
         data = {'actionId': 'INVOICE_UPDATE', 'aid': '123456', 'domainId': 'COMMON', 'epInvoiceId': '1',
-                'epOrderId': orderNo,
+                'epOrderIds': orderNo,
                 'cpId': 'XIAOMA', 'invoiceNo': invoiceNo, 'partyType': party,
                 'bankAccount': self.f.credit_card_number(), 'status': status,
                 'remark': self.f.sentence(), 'price': self.f.pyint(), 'createTime': self.time_delta(days=-1),
@@ -96,12 +96,13 @@ class Order(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def teardown_sync(self, order, invoice):
+    def teardown_sync(self, orders:list, invoice):
         print('-----开始teardown------')
         res1 = self.do_mysql_exec('delete from order_invoice where invoice_no="{}"'.format(invoice), 'order')
-        res2 = self.do_mysql_exec(
-            'delete from order_invoice_relation where order_id=(select id from `order` where ex_order_no="{}")'.format(
-                order), 'order')
+        for order in orders:
+            res2 = self.do_mysql_exec(
+                'delete from order_invoice_relation where order_id=(select id from `order` where ex_order_no="{}")'.format(
+                    order), 'order')
 
         print('result:{},{}'.format(res1, res2))
         print('同步的发票删除成功')

@@ -16,6 +16,8 @@ from faker import Faker
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 import sys
+import re
+
 
 class Base:
 
@@ -38,7 +40,6 @@ class Base:
             lk.prt('init error:{}'.format(e))
             return
 
-
     public_param = {
         #  "appId": "666666",
         # "os": "android",
@@ -47,19 +48,19 @@ class Base:
 
     }
 
-    def get_time_stamp(self,days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
+    def get_time_stamp(self, days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
         """获取时间戳
 
             - :return:返回时间戳
             """
-        temp_time = self.time_delta(days,seconds,microseconds,milliseconds,minutes,hours,weeks)
-        time_array = time.strptime(temp_time,'%Y-%m-%d %H:%M:%S')
-        time_stamp = str(int(time.mktime(time_array))*1000)
+        temp_time = self.time_delta(days, seconds, microseconds, milliseconds, minutes, hours, weeks)
+        time_array = time.strptime(temp_time, '%Y-%m-%d %H:%M:%S')
+        time_stamp = str(int(time.mktime(time_array)) * 1000)
         return time_stamp
 
     def _sign_time(self):
 
-        temp = time.time()*1000
+        temp = time.time() * 1000
         return str(int(temp))
 
     def rand_uuid(self):
@@ -76,6 +77,14 @@ class Base:
             params.append('{}={}'.format(key, value))
         return '&'.join(params)
 
+    def match_url(self,url):
+        '''
+        正则表达式获取域名
+        '''
+        regular = re.compile(r'[a-zA-Z]+://[\s\S]*\.com')
+        res = re.search(regular,url)
+        return res.group()
+
     def _calc_digital_sign(self, url, params):
         """计算签名
 
@@ -90,13 +99,11 @@ class Base:
         nonce = temp.replace("-", "")
 
         # 1.获取资源路径
-        resource_uri = url.replace("https://otherbackend-uat-sop2.mosc.faw-vw.com/test-access/tm/", "")
-        resource_uri = resource_uri.replace("https://hu-uat-sop2.mosc.faw-vw.com/test-access/tm/", "")
-        resource_uri = resource_uri.replace("https://h5-uat-sop2.mosc.faw-vw.com/test-acce/tm/ss","")
-        #resource_uri ="mos/dealer-maintenance/oapi/updateMaintenanceOrder"
 
+        resource_uri = url.replace(self.match_url(url), "")
+        lk.prt('需要签名的uri为:{}'.format(resource_uri))
         # 2.获取查询参数
-        url_query_dict=params
+        url_query_dict = params
         # 3.添加签名时间，排序
         url_query_dict["appkey"] = "3717440806"
         url_query_dict["signt"] = sign_timestamp
@@ -134,11 +141,13 @@ class Base:
         pro_path = current_path[:current_path.find(pro_name + seperator) + len(pro_name + seperator)]
         return pro_path
 
-    def get_token(self,other='MA',username='18224077254',password='123456',vin='LFV3A23C1K3161804'):
-        if other=='MA':
+    def get_token(self, other='MA', username='18224077254', password='123456', vin='LFV3A23C1K3161804'):
+        if other == 'MA':
             url = "https://otherbackend-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token"
-        elif other=='BM':
+        elif other == 'BM':
             url = 'http://49.233.242.137:18031/sop2bm/hu/cm/user/api/v1/token'
+        else:
+            raise ValueError('other is wrong')
         headers = {
             'Content-Type': 'application/json',
             'TraceId': 'app-store#recommend-list#1527758664#X9G-11111.04.2099990054#12345678',
@@ -174,9 +183,10 @@ class Base:
             return False
         return True
 
-    def do_post(self, url, data,params=None,**kwargs):
+    def do_post(self, url, data, params=None, **kwargs):
         if self.gate:
-            params = self._calc_digital_sign(url,params)
+            params = self._calc_digital_sign(url, params)
+            url = url + '?' + parse.urlencode(params)
         lk.prt('final post url is:{}'.format(url))
         if isinstance(data, dict):
             data = json.dumps(data, ensure_ascii=False)
@@ -184,16 +194,16 @@ class Base:
         if data is not None:
             data = data.encode('utf-8')
         lk.prt('final post header is:{}'.format(self.header))
-        res = requests.post(url=url, data=data,params=params, headers=self.header, verify=False,**kwargs)
+        res = requests.post(url=url, data=data, params=params, headers=self.header, verify=False, **kwargs)
         try:
             response_body = json.loads(res.text)
         except Exception as e:
-            lk.prt('解析json字符串出错:',e)
+            lk.prt('解析json字符串出错:', e)
             lk.prt(res.text)
         else:
             return res.status_code, response_body
 
-    def do_post_file(self,url,params,data,file_path):
+    def do_post_file(self, url, params, data, file_path):
         '''
         上传文件接口测试
         :param url:
@@ -201,7 +211,7 @@ class Base:
         :return:
         '''
         if self.gate:
-            params = self._calc_digital_sign(url,params)
+            params = self._calc_digital_sign(url, params)
         lk.prt('final post url is:{}'.format(url))
         if isinstance(data, dict):
             data = json.dumps(data, ensure_ascii=False)
@@ -211,28 +221,28 @@ class Base:
 
         del self.header['Content-type']
         lk.prt('final post header is:{}'.format(self.header))
-        f = open(file_path,'rb')
-        files = {'file':f}
-        res = requests.post(url=url,params=params, data=data, headers=self.header,files=files, verify=False)
+        f = open(file_path, 'rb')
+        files = {'file': f}
+        res = requests.post(url=url, params=params, data=data, headers=self.header, files=files, verify=False)
         f.close()
         response_body = json.loads(res.text)
         self.header['Content-type'] = 'application/json; charset=utf-8'
         return res.status_code, response_body
 
-    def do_put(self, url,params, data):
+    def do_put(self, url, params, data):
         if self.gate:
-            params = self._calc_digital_sign(url,params)
+            params = self._calc_digital_sign(url, params)
         else:
             self.header = {'Content-Type': 'application/json'}
         lk.prt('final put url is:{}'.format(url))
         if isinstance(data, dict):
-            data = json.dumps(data,ensure_ascii=False)
+            data = json.dumps(data, ensure_ascii=False)
 
         lk.prt('final put data is:{}'.format(data))
         lk.prt('final put header is:{}'.format(self.header))
         if data is not None:
             data = data.encode('utf-8')
-        res = requests.put(url=url,params=params, data=data, headers=self.header, verify=False)
+        res = requests.put(url=url, params=params, data=data, headers=self.header, verify=False)
         response_body = json.loads(res.text)
         return res.status_code, response_body
 
@@ -243,7 +253,7 @@ class Base:
         lk.prt('final get header is:{}'.format(self.header))
         lk.prt('final get param is:{}'.format(params))
         try:
-            res = requests.get(url=url,params=params, headers=self.header, verify=False)
+            res = requests.get(url=url, params=params, headers=self.header, verify=False)
             response_body = json.loads(res.text)
             return res.status_code, response_body
         except Exception as e:
@@ -253,41 +263,41 @@ class Base:
         params = self._calc_digital_sign(url, params)
         lk.prt('final delete url is:{}'.format(url))
         try:
-            res = requests.delete(url=url,params=params, headers=self.header, verify=False)
+            res = requests.delete(url=url, params=params, headers=self.header, verify=False)
             response_body = json.loads(res.text)
             return res.status_code, response_body
         except Exception as e:
             lk.prt(e)
 
-    def do_mysql_select(self, msg, db,host='EP'):
-        config_dict = eval('MysqlConfig.{}_{}.value'.format(host,self.env))
+    def do_mysql_select(self, msg, db, host='EP'):
+        config_dict = eval('MysqlConfig.{}_{}.value'.format(host, self.env))
         conn = pymysql.connect(database=db,
                                host=config_dict['host'],
                                port=config_dict['port'],
                                user=config_dict['username'],
-                               password=config_dict['password'],charset='utf8')
+                               password=config_dict['password'], charset='utf8')
         cur = conn.cursor(pymysql.cursors.DictCursor)
         cur.execute(msg)
         res = cur.fetchall()
         lk.prt('执行sql语句成功:{}'.format(msg))
         for res1 in res:
-            for key,val in res1.items():
-                if isinstance(val,datetime.datetime):
-                    res1[key]=self.str_time(val)
-                elif isinstance(val,Decimal):
+            for key, val in res1.items():
+                if isinstance(val, datetime.datetime):
+                    res1[key] = self.str_time(val)
+                elif isinstance(val, Decimal):
                     res1[key] = float(val)
 
         cur.close()
         conn.close()
         return res
 
-    def do_mysql_exec(self,msg, db,host='EP'):
+    def do_mysql_exec(self, msg, db, host='EP'):
         config_dict = eval('MysqlConfig.{}_{}.value'.format(host, self.env))
         conn = pymysql.connect(database=db,
                                host=config_dict['host'],
                                port=config_dict['port'],
                                user=config_dict['username'],
-                               password=config_dict['password'],charset='utf8')
+                               password=config_dict['password'], charset='utf8')
         cur = conn.cursor(pymysql.cursors.DictCursor)
         try:
             # 执行sql语句
@@ -303,8 +313,6 @@ class Base:
             cur.close()
             conn.close()
 
-
-
     def read_conf(self, name, section, option):
         '''
         read config files
@@ -314,7 +322,7 @@ class Base:
         :return: the value of the chosen option
         '''
         config = configparser.ConfigParser()
-        conf_path = os.path.join(self.get_pro_path(),'conf/{}'.format(name))
+        conf_path = os.path.join(self.get_pro_path(), 'conf/{}'.format(name))
         lk.prt('config path is:{}'.format(conf_path))
         config.read(conf_path)
         return config.get(section, option)
@@ -367,20 +375,20 @@ class Base:
         formatted_time = add_time.strftime('%Y-%m-%d %H:%M:%S')
         return formatted_time
 
-    def assert_msg(self,code,body):
+    def assert_msg(self, code, body):
         print(body)
         assert 200 == code
         assert 'SUCCEED' == body['returnStatus']
 
-    def str_time(self,data_time:datetime.datetime):
+    def str_time(self, data_time: datetime.datetime):
         temp = data_time.strftime('%Y-%m-%d %H:%M:%S')
         return temp
 
-    def stamp_to_str(self,stamp):
-        time_array = time.localtime(int(stamp)/1000)
-        return time.strftime('%Y-%m-%d %H:%M:%S',time_array)
+    def stamp_to_str(self, stamp):
+        time_array = time.localtime(int(stamp) / 1000)
+        return time.strftime('%Y-%m-%d %H:%M:%S', time_array)
 
-    def send_kafka_msg(self,host,topic,data):
+    def send_kafka_msg(self, host, topic, data):
         '''
         模拟发送kafka消息
         :param host: kafka ip地址
@@ -389,9 +397,9 @@ class Base:
         :return:
         '''
 
-        producer = KafkaProducer(bootstrap_servers=host,api_version=(0,10),retries=5)
+        producer = KafkaProducer(bootstrap_servers=host, api_version=(0, 10), retries=5)
 
-        msg = bytes(json.dumps(data),encoding='utf-8')
+        msg = bytes(json.dumps(data), encoding='utf-8')
         print(msg)
         try:
             future = producer.send(topic, msg)
@@ -401,3 +409,7 @@ class Base:
             print('send message failed. [e] ={}'.format(e))
 
 
+if __name__ == '__main__':
+    url = 'https://other-be-uat.mosc.faw-vw.com/sop2bm/be/order/api/v2/orders/8404/sync'
+    res = Base().match_url(url)
+    print(res)
