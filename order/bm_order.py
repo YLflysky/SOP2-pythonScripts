@@ -66,6 +66,7 @@ if __name__ == '__main__':
             'discountAmount': '10086',
             'orderAmount': '100', 'orderCategory': 105, 'serviceId': 'GAS', 'spId': '111', 'title': o.f.sentence(),
             'userId': '469317', 'serviceOrderState': 'FINISH', 'serviceOrderStateDesc': 'jojo', }
-    o.update_bm_order(order_no='20200915135838636516096',vin=o.f.pyint(),userId='qwe',updateType='1',
-                      orderEvent='就是我',businessState='NOTHING_TO_SAY')
+    o.order_count(vin='DEFAULT_VIN',uid='33')
+    # o.update_bm_order(order_no='20200915135838636516096',vin=o.f.pyint(),userId='qwe',updateType='1',
+    #                   orderEvent='就是我',businessState='NOTHING_TO_SAY')
     # o.sync_bm_order(bm_order_id=768212448097734656)

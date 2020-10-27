@@ -12,7 +12,7 @@ os.environ['GATE'] = 'false'
 o = Order()
 
 success_data = [{'aid': '123456', 'invoiceNo': '1881413'},
-                {'aid': '123456', 'invoiceNo': '4738440'},
+                {'aid': '123456', 'invoiceNo': '282249'},
                 {'aid': '4614907', 'invoiceNo': '38133119'},
                 {'aid': '4614931', 'invoiceNo': '38133230'}]
 
@@ -22,6 +22,9 @@ success_data = [{'aid': '123456', 'invoiceNo': '1881413'},
 @pytest.mark.order
 @pytest.mark.parametrize('param', success_data)
 def test_invoice_detail_success(param):
+    '''
+    测试获取发票详情成功情况
+    '''
     res = o.invoice_detail(param['aid'], param['invoiceNo'])
     assert 'SUCCEED' == res['returnStatus']
     SQL_RES = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(param['invoiceNo']), 'order')
@@ -43,6 +46,9 @@ fail_data = [{'aid': None, 'serialNo': 'serial_no_0001'},
 @pytest.mark.order
 @pytest.mark.parametrize('param', fail_data)
 def test_invoice_detail_fail(param):
+    '''
+    测试获取发票详情失败情况
+    '''
     res = o.invoice_detail(param['aid'], param['serialNo'])
     assert 'FAILED' == res['returnStatus']
 
@@ -109,7 +115,7 @@ def test_sync_invoice_02():
     测试多个订单开一个发票
     '''
     ex_order_no = ['2364','3322233']
-    invoice_no = o.f.pyint()
+    invoice_no = 10086
     status = 'SUCCESS'
     party_type = 'COMPANY'
     o.teardown_sync(ex_order_no, invoice_no)
@@ -120,6 +126,7 @@ def test_sync_invoice_02():
     assert 'SUCCEED' == body['returnStatus']
     assert status == body['data']['status']
     assert party_type == body['data']['invoiceType']
+    assert len(body['data']['orderIdList']) == 2
 
 
 @allure.suite('order')
@@ -214,23 +221,19 @@ def test_callback_invoice():
     测试发票的callback
     :return:
     '''
-    ep_order = 1
-    invoice_no = random.randint(1, 100)
+    ep_order = [1,2,3]
+    invoice_no = 999
     price = o.f.pyint(1.00, 100.00)
     print('初始化环境....')
     o.teardown_sync(ep_order, invoice_no)
-
-    o.sync_invoice_kafka(ep_order, invoice_no, price)
+    aid = 'sergio'
+    o.sync_invoice_kafka(ep_orders=ep_order, invoice=invoice_no, price=price,aid=aid)
     time.sleep(2.0)
-    sql_res = o.do_mysql_select(
-        'select i.*,r.invoice_id from order_invoice i,order_invoice_relation r where i.id=r.invoice_id and i.invoice_no="{}"'.format(
-            invoice_no), 'order')
-
-    assert len(sql_res) == 1
-    assert sql_res[0]['sp_id'] == 'NX_ENGINE'
-    assert sql_res[0]['price'] == price
-    assert sql_res[0]['invoice_no'] == str(invoice_no)
-    assert sql_res[0]['invoice_id'] == sql_res[0]['id']
+    res = o.invoice_detail(aid,invoice_no)
+    assert res['data']['userId'] == aid
+    assert res['data']['price'] == float(price)
+    assert res['data']['invoiceNo'] == str(invoice_no)
+    assert res['data']['orderIdList'] == ep_order
 
 
 @allure.suite('order')

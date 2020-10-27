@@ -254,6 +254,7 @@ class Base:
         lk.prt('final get param is:{}'.format(params))
         try:
             res = requests.get(url=url, params=params, headers=self.header, verify=False)
+            lk.prt(res.text)
             response_body = json.loads(res.text)
             return res.status_code, response_body
         except Exception as e:
@@ -302,9 +303,11 @@ class Base:
         try:
             # 执行sql语句
             cur.execute(msg)
+            effect_row = cur.rowcount
             # 提交修改
             conn.commit()
             lk.prt('执行sql语句成功:{}'.format(msg))
+            lk.prt('执行的sql语句影响行数为:{}'.format(effect_row))
         except Exception as e:
             lk.prt('执行失败：{}'.format(e))
             conn.rollback()

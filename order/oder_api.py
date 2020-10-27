@@ -98,13 +98,11 @@ class Order(Base):
 
     def teardown_sync(self, orders:list, invoice):
         print('-----开始teardown------')
-        res1 = self.do_mysql_exec('delete from order_invoice where invoice_no="{}"'.format(invoice), 'order')
+        self.do_mysql_exec('delete from order_invoice where invoice_no="{}"'.format(invoice), 'order')
         for order in orders:
-            res2 = self.do_mysql_exec(
+            self.do_mysql_exec(
                 'delete from order_invoice_relation where order_id=(select id from `order` where ex_order_no="{}")'.format(
                     order), 'order')
-
-        print('result:{},{}'.format(res1, res2))
         print('同步的发票删除成功')
 
     def generate_order_no(self):
@@ -141,10 +139,10 @@ class Order(Base):
         topic = 'order-finished-remind-topic'
         self.send_kafka_msg(host, topic, msg)
 
-    def sync_invoice_kafka(self, ep_order_id, invoice, price, domain='GAS', cp='NX_ENGINE'):
+    def sync_invoice_kafka(self, ep_orders:list, invoice, price,aid, domain='GAS', cp='NX_ENGINE'):
         '''
         模拟从kafka发送加油发票信息
-        :param ep_order_id: order主键
+        :param ep_orders:EP订单列表
         :param domain: 业务域，默认为GAS
         :param cp: 默认为NX_ENGINE
         :return:
@@ -154,12 +152,12 @@ class Order(Base):
         date = self.time_delta()
         kafka_data = {"action": "INVOICE_UPDATE", "domainId": domain, "epInvoiceId": 10086, "cpId": cp,
                       "serialNo": self.f.md5(), 'tenantId': 'string', "invoiceNo": invoice,
-                      "actionId": "action", "aid": self.f.pyint(100, 999), "tel": self.f.phone_number(),
+                      "actionId": "action", "aid": aid, "tel": self.f.phone_number(),
                       "phone": "18888888888", "partyType": "COMPANY", "tax": "91310115560364240G", "name": "钛马信息技术有限公司",
                       "addressTel": "02887676543", "bankAccount": "null", "price": price,
                       "remark": remark, "content": "车用汽油/柴油(明细项)", "status": "SUCCESS",
                       "email": self.f.email(), "createTime": date,
-                      "transmissionTime": date, "createBy": "system", 'epOrderId': ep_order_id,
+                      "transmissionTime": date, "createBy": "system", 'epOrderIds': ep_orders,
                       "createDate": date, "updateBy": "system", "updateDate": date,
                       "remarks": remark, "delFlag": "0"}
 
