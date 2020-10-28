@@ -34,20 +34,33 @@ class Payment(Base):
         self.assert_msg(c,b)
         return b
 
-    def ali_pay_callback(self):
+    def ali_pay_callback(self,trade_status,app_id,out_trade_no,receipt_amount,gmt_payment,trade_no,**kwargs):
         '''
         支付宝支付结果回调，模仿CDP调用该接口
         '''
 
         url = self.url + '/pay/notify/aliPayQrCallBack'
-        data = {'trade_status':'TRADE_SUCCESS','app_id':'123','out_trade_no':'c7bb647bf47c442a8ae3f6c0dcf4c592',
-                'receipt_amount':0}
+        data = {'trade_status':trade_status,'app_id':app_id,'out_trade_no':out_trade_no,
+                'receipt_amount':receipt_amount,'gmt_payment':gmt_payment,'tradeNo':trade_no,**kwargs}
         code,body = self.do_post(url,data)
         self.assert_msg(code,body)
+        return body
+
+    def ger_qr_code(self,aid,order_no,channel):
+        '''
+        获取支付二维码
+        '''
+        url = self.url + '/pay/qrCode'
+        params = {'aid':aid,'orderNo':order_no,'payChannel':channel}
+        code,body = self.do_get(url,params)
+        self.assert_msg(code,body)
+
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'LOCAL'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     pay = Payment()
-    pay.ali_pay_callback()
+    pay.ger_qr_code(aid='9349643',order_no='M202007160901278277176514',channel='ALI_PAY')
+    pay.get_pay_agreement(uid='32432',code='12101',order_no='20200907105829249819204',lang='zh-CN')
+    # pay.ali_pay_callback('trade_success','2018091361389377','qwer',999,pay.time_delta(),pay.f.pyint())

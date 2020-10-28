@@ -193,6 +193,9 @@ class Order(Base):
         self.assert_msg(code, body)
 
     def sync_order_pay(self, aid, order_no, pay_no, **kwargs):
+        '''
+        同步支付结果
+        '''
         url = self.url + '/sm/order/v1/order/sync/pay'
         data = {'aid': aid, 'orderNo': order_no, 'payOrderNo': pay_no, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
                 'payType': 'APP', 'payTime': self.time_delta(),'payStatus':'SUCCESS',**kwargs}

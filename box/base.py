@@ -254,7 +254,6 @@ class Base:
         lk.prt('final get param is:{}'.format(params))
         try:
             res = requests.get(url=url, params=params, headers=self.header, verify=False)
-            lk.prt(res.text)
             response_body = json.loads(res.text)
             return res.status_code, response_body
         except Exception as e:
