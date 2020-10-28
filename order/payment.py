@@ -58,9 +58,9 @@ class Payment(Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     pay = Payment()
-    pay.ger_qr_code(aid='9349643',order_no='M202007160901278277176514',channel='ALI_PAY')
+    # pay.ger_qr_code(aid='9349643',order_no='M202007160901278277176514',channel='ALI_PAY')
     pay.get_pay_agreement(uid='32432',code='12101',order_no='20200907105829249819204',lang='zh-CN')
     # pay.ali_pay_callback('trade_success','2018091361389377','qwer',999,pay.time_delta(),pay.f.pyint())

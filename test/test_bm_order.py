@@ -6,8 +6,8 @@ import random
 import json
 
 
-os.environ['ENV'] = 'UAT'
-os.environ['GATE'] = 'true'
+os.environ['ENV'] = 'DEV'
+os.environ['GATE'] = 'false'
 
 bm = BMOrder()
 
@@ -108,7 +108,7 @@ def test_order_count_04(status):
 @pytest.mark.parametrize('category', ['01', '02'])
 def test_order_count_05(category):
     '''
-    输入订单category为01
+    根据category查询订单数量
     '''
     uid = '4614907'
     vin = bm.f.pyint()
@@ -117,10 +117,13 @@ def test_order_count_05(category):
     assert res['description'] == '成功'
     count = res['data']
     order_category = bm.do_mysql_select(
-        'select category from category_relation where hu_category="{}"'.format(category), 'order')
-    order_category = order_category[0]['category']
-    sql_res = bm.do_mysql_select(
-        'select count(1) as c from `order` where aid="4614907" and category="{}"'.format(order_category), 'order')
+        'select category from category_relation where hu_category = "{}"'.format(category), 'order')
+    categories = []
+    for c in order_category:
+        categories.append(c['category'])
+    sql = 'select count(1) as c from `order` where aid="4614907" and category in ("{}")'.format('","'.join(categories))
+    sql_res = bm.do_mysql_select(sql, 'order')
+
     assert sql_res[0]['c'] == int(count)
 
 
@@ -183,6 +186,9 @@ def test_sync_bm_order(brand):
 @pytest.mark.order
 @pytest.mark.parametrize('d',[('INIT','jojo'),(None,None),('PROCESSING','kaka')])
 def test_update_bm_order(d):
+    '''
+    测试BM适配层更新订单接口
+    '''
     order = bm.do_mysql_select(' SELECT * FROM `order` WHERE origin="BM" and vin is not null and del_flag=0', 'order')
     order = random.choice(order)
     order_no = order['order_no']

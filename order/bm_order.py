@@ -20,8 +20,9 @@ class BMOrder(Base):
         '''
 
         url = self.hu_url + '/order/api/v2/vins/{}/orders/count'.format(vin)
-        data = {'userId':uid,**kwargs}
-        code,body = self.do_get(url,data)
+        self.header['aid'] = uid
+        params = {**kwargs}
+        code,body = self.do_get(url,params)
         print(body)
         return body
 

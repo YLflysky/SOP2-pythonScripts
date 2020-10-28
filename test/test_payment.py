@@ -8,7 +8,7 @@ import allure
 import sys
 
 os.environ['GATE'] = 'false'
-os.environ['ENV'] = 'DEV'
+os.environ['ENV'] = 'UAT'
 
 pay = Payment()
 
@@ -77,7 +77,8 @@ def test_get_pay_agreement_default(d):
                               ('在线',None,'12101','zh-CN',"Required String parameter 'orderNo' is not present"),
                          ('在线','abc','12101','zh-CN',"Feign调用order获取订单数据错误"),
                             ('在线','11112223',None,'zh-CN',"Required String parameter 'agreementCode' is not present"),
-                              ('32432','20200907105829249819204','12101','Japanese','不支持的语言')])
+                              ('32432','20200907105829249819204','12101','Japanese','不支持的语言'),
+                              ('32432','20200907105829249819204','agreementCode','zh-CN','无效的支付协议码')])
 def test_get_pay_agreement_fail(d):
     '''
     测试获取支付协议失败情况
