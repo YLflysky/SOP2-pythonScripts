@@ -47,11 +47,12 @@ def test_bm_get_qr_code(code):
         # 获取二维码
         res = pay.get_qr_code(vin=vin,aid=user_id,order_no=order_no,pay_type=code,category=category)
 
-        assert res['data']['qrCode'] is not None
+        assert res['data']['qrCode']
     finally:
-        pay.do_mysql_exec('delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),'order')
-        pay.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no,user_id), 'order')
-
+        order.do_mysql_exec('delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),'order')
+        order.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no,user_id), 'order')
+        pay.do_mysql_exec('delete from order_id_relation where order_no="{}"'.format(order_no),'mosc_pay')
+        pay.do_mysql_exec('delete from pay_order where order_no="{}"'.format(order_no),'mosc_pay')
 
 @pytest.mark.payment
 @allure.suite('payment')
