@@ -6,7 +6,7 @@ import random
 import json
 
 
-os.environ['ENV'] = 'DEV'
+os.environ['ENV'] = 'UAT'
 os.environ['GATE'] = 'false'
 
 bm = BMOrder()
@@ -15,7 +15,7 @@ bm = BMOrder()
 @pytest.mark.order
 @allure.suite('order')
 @allure.story('hu count')
-@pytest.mark.parametrize('uid', ('4614907', '1600841231973', '221', '11223344', '哈哈jiu%%%'))
+@pytest.mark.parametrize('uid', ('4614907', '1600841231973', '221', '11223344', '4614931'))
 def test_order_count(uid):
     '''
     测试车机端根据vin和uid获取订单数量
@@ -96,7 +96,7 @@ def test_order_count_04(status):
             'order')
     else:
         sql_res = bm.do_mysql_select(
-            'select count(1) as c from `order` where aid="221" and del_flag=0 ',
+            'select count(1) as c from `order` where aid="221" and order_status !="INIT" and del_flag=0 ',
             'order')
 
     assert sql_res[0]['c'] == int(count)
@@ -105,7 +105,7 @@ def test_order_count_04(status):
 @allure.suite('order')
 @allure.story('hu count')
 @pytest.mark.order
-@pytest.mark.parametrize('category', ['01', '02'])
+@pytest.mark.parametrize('category', ['00','01', '02'])
 def test_order_count_05(category):
     '''
     根据category查询订单数量
@@ -144,7 +144,7 @@ def test_order_count_06():
 @allure.suite('order')
 @allure.story('sync bm order')
 @pytest.mark.order
-@pytest.mark.parametrize('brand',['VW','JETTA','AUDI'])
+@pytest.mark.parametrize('brand',['VW','JETTA','AUDI'],ids=['brand为VW','brand为JETTA','brand为AUDI'])
 def test_sync_bm_order(brand):
     '''
     测试同步BM适配层订单
@@ -169,16 +169,17 @@ def test_sync_bm_order(brand):
     res = bm.sync_bm_order(id, data)
     try:
         assert res['description'] == '成功'
-        sql_res = bm.do_mysql_select('select * from `order` where order_no="{}"'.format(res['data']), 'order')
+        order_no = res['data']
+        sql_res = bm.do_mysql_select('select * from `order` where order_no="{}"'.format(order_no), 'order')
         assert sql_res[0]['total_amount'] == float(order_amount / 100)
         assert sql_res[0]['discount_amount'] == 100.00
         assert sql_res[0]['ex_order_no'] == str(id)
         assert sql_res[0]['brand'] == brand
     finally:
         bm.do_mysql_exec(
-            'delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(res['data']),
+            'delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),
             'order')
-        bm.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')
+        bm.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no,user_id), 'order')
 
 
 @allure.suite('order')
