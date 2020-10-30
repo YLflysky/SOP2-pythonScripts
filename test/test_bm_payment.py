@@ -58,7 +58,7 @@ def test_bm_get_qr_code(code):
 @allure.suite('payment')
 @allure.story('bm adapter')
 @pytest.mark.parametrize('param',[('1','001','orderNo0001','121010','100'),
-                                  ('1','00','orderNo0001','12101','100'),
+                                  ('1','001','orderNo000','12101','100'),
                                   ('','001','orderNo0001','11101','100'),
                                   ('1','dwqdwq','orderNo0001','11101','100'),
                                   ('1','001',None,'11101','100'),
@@ -95,7 +95,7 @@ def test_bm_pay_agreement_default(param):
     '''
     测试获取默认支付协议
     '''
-    res = pay.get_pay_agreement('221','81676918110561974562','12101',param[0])
+    res = pay.get_pay_agreement('221','20201030062521612266240','12101',param[0])
     assert param[1] in res['data']['title']
 
 

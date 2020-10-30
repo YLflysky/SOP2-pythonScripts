@@ -46,7 +46,7 @@ class Payment(Base):
         self.assert_msg(code,body)
         return body
 
-    def ger_qr_code(self,aid,order_no,channel):
+    def get_qr_code(self,aid,order_no,channel):
         '''
         获取支付二维码
         '''
@@ -55,13 +55,27 @@ class Payment(Base):
         code,body = self.do_get(url,params)
         self.assert_msg(code,body)
 
+    def cmcc_callback(self,aid,enterprise,channel,notify_type,status):
+        '''
+        免密支付结果回调接口
+        '''
+        url = self.url + '/contract/notify/cmcc'
+        param = {'enterpriseId':enterprise,'userId':aid,'channel':channel,'notifyType':notify_type,'contractStatus':status}
+
+        code,body = self.do_post(url,param)
+        self.assert_msg(code,body)
+        return body
+
+
+
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'LOCAL'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     pay = Payment()
     # pay.ger_qr_code(aid='qwer',order_no='orderNo0001',channel='ALI_PAY')
 
-    pay.get_pay_agreement(uid='221',order_no='20201029154015868266240',lang='zh-CN',code='12101')
+    # pay.get_pay_agreement(uid='221',order_no='20201029154015868266240',lang='zh-CN',code='12101')
     # pay.ali_pay_callback('trade_success','2018091361389377','qwer',999,pay.time_delta(),pay.f.pyint())
+    pay.cmcc_callback(aid='221',enterprise='2100010000',channel=1.3,notify_type=1.3,status=1)
