@@ -56,6 +56,7 @@ def test_get_spare_list_02():
         with allure.step('goods'):
             allure.attach(str(names),'score')
 
+
 @pytest.mark.eshop
 @allure.suite('spare shop')
 @allure.story('get list')
