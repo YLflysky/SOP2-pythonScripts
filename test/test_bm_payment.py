@@ -5,7 +5,7 @@ from order.bm_order import BMOrder
 import os
 import json
 
-os.environ['ENV'] = 'UAT'
+os.environ['ENV'] = 'DEV'
 os.environ['GATE'] = 'false'
 
 order = BMOrder()

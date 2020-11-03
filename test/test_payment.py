@@ -16,10 +16,11 @@ pay = Payment()
 @allure.suite('payment')
 @allure.story('get result')
 @pytest.mark.payment
-@pytest.mark.parametrize('d',[('1234','1234'),('1235','1234'),('20200907105829249819204','32432')])
+@pytest.mark.parametrize('d',[('1234','1234'),('1235','1234'),('20200907105829249819204','32432'),('orderNo0001','9642113')],
+                         ids=['支付成功','支付失败','支付中','成功'])
 def test_get_pay_result(d):
     res = pay.get_pay_result(d[0],d[1])
-    sql = pay.do_mysql_select('select * from pay_order where order_no="{}"'.format(d[0]),'mosc_pay')
+    sql = pay.do_mysql_select('select * from pay_order where order_no="{}" order by pay_time desc limit 1'.format(d[0]),'mosc_pay')
     if sql[0]['buyer_account']:
         assert res['data']['buyerAccount'] == sql[0]['buyer_account']
     status = sql[0]['pay_status']
@@ -49,7 +50,7 @@ def test_get_pay_result_fail(d):
 @allure.suite('payment')
 @allure.story('get agreement')
 @pytest.mark.payment
-@pytest.mark.parametrize('d',[('在线','11112223','11101','en-US','ENGLISH'),('在线','111124424523','12101','zh-CN','荒野求生')])
+@pytest.mark.parametrize('d',[('9642113','11112223','11101','en-US','ENGLISH'),('9642113','111124424523','12101','zh-CN','荒野求生')])
 def test_get_pay_agreement(d):
     '''
     测试获取支付协议
@@ -78,7 +79,7 @@ def test_get_pay_agreement_default(d):
                               ('在线',None,'12101','zh-CN',"Required String parameter 'orderNo' is not present"),
                          ('在线','abc','12101','zh-CN',"Feign调用order获取订单数据错误"),
                             ('在线','11112223',None,'zh-CN',"Required String parameter 'agreementCode' is not present"),
-                              ('32432','20200907105829249819204','12101','Japanese','不支持的语言'),
+                              ('32432','20200907105829249819204','12101','Japanese','未找到支付协议'),
                               ('32432','20200907105829249819204','agreementCode','zh-CN','无效的支付协议码')],
                          ids=['不传aid','不传orderNo','没有该订单','不传code','传入语言错误','传入code错误'])
 def test_get_pay_agreement_wrong(d):
@@ -94,7 +95,7 @@ callback_data = [('trade_success','2018091361389377','e6ef423f23194a4f8a924027c3
 @allure.suite('payment')
 @allure.story('cdp callback')
 @pytest.mark.payment
-@pytest.mark.parametrize('d',callback_data)
+@pytest.mark.parametrize('d',callback_data,ids=['输入必填项，返回success'])
 def test_ali_pay_cdp_callback_01(d):
     '''
     测试获取支付宝cdp回调结果，输入全部必填项
@@ -112,7 +113,7 @@ def test_ali_pay_cdp_callback_01(d):
         assert pay_res[0]['pay_time'] == d[4]
         assert pay_res[0]['pay_status'] == 'SUCCESS'
     finally:
-        pay.do_mysql_exec('delete from order_pay where pay_no={}'.format(d[5]),'order')
+        pay.do_mysql_exec('delete from order_pay where pay_no="{}"'.format(d[5]),'order')
 
 @allure.suite('payment')
 @allure.story('cdp callback')
@@ -150,6 +151,23 @@ def test_ali_pay_cdp_callback_02():
     res = pay.get_pay_result(order_no,aid=aid)
     assert res['data']['buyerAccount'] == buyer_logon_id
     assert res['data']['payResultStatus'] == '101'
+
+
+@allure.suite('payment')
+@allure.story('cdp callback')
+@pytest.mark.payment
+def test_ali_pay_cdp_callback_sop1():
+    '''
+    输入的out_trade_no不在FTB2.2数据库中查询到，调用SOP1的service
+    '''
+    status = 'trade_success'
+    app_id = '2018091361389377'
+    out_trade_no = 'qwer'
+    receipt_amount = 99.99
+    gmt_payment= pay.time_delta(days=-1)
+    trade_no = '10000'
+    res = pay.ali_pay_callback(status,app_id,out_trade_no,receipt_amount,gmt_payment,trade_no,)
+    assert res == 'success'
 
 
 callback_data_fail = [('trade_fail','2018091361389377','qwer',pay.f.pyfloat(2,2,True),pay.time_delta(),'123'),

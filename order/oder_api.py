@@ -210,7 +210,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     o = Order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
-    o.del_order(order_no='20201020101920646233472',aid='1603160360456')
+    # o.del_order(order_no='20201020101920646233472',aid='1603160360456')
     # fakers = o.f
     # for f in fakers:
     #     if 'py' in f:
@@ -220,7 +220,7 @@ if __name__ == '__main__':
             'bankAccount': '377363783294793', 'status': 'SUCCESS', 'price': '10', 'createTime': '2020-09-09 09:12:08',
             'transmissionTime': '2020-09-11 09:12:08'}
     # o.sync_order_pay('1601281637323','2020092816271772640960','123')
-    # o.order_detail(aid='221',order_no='11953484401634137341')
+    o.order_detail(aid='33',order_no='20201102132449300413696')
     # o.sync_order(aid=123, orderNo=1008600, ex_order_no='ex10086', origin='EP')
     # o.sync_refund('111333','202009247772089433')
     # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',

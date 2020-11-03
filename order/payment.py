@@ -71,11 +71,11 @@ class Payment(Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'LOCAL'
     os.environ['GATE'] = 'false'
     pay = Payment()
     # pay.ger_qr_code(aid='qwer',order_no='orderNo0001',channel='ALI_PAY')
 
-    # pay.get_pay_agreement(uid='221',order_no='20201029154015868266240',lang='zh-CN',code='12101')
+    pay.get_pay_agreement(uid='9642113',order_no='11112223',lang='zh-CN',code='11101')
     # pay.ali_pay_callback('trade_success','2018091361389377','qwer',999,pay.time_delta(),pay.f.pyint())
-    pay.cmcc_callback(aid='221',enterprise='2100010000',channel=1.3,notify_type=1.3,status=1)
+    # pay.cmcc_callback(aid='221',enterprise='2100010000',channel=1.3,notify_type=1.3,status=1)

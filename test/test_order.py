@@ -221,9 +221,9 @@ def test_callback_invoice():
     测试发票的callback
     :return:
     '''
-    ep_order = [1,2,3]
+    ep_order = [1,'222334442','22233442']
     invoice_no = 999
-    price = o.f.pyint(1.00, 100.00)
+    price = o.f.pyfloat(right_digits=2,positive=True,min_value=1,max_value=10000)
     print('初始化环境....')
     o.teardown_sync(ep_order, invoice_no)
     aid = 'sergio'
@@ -231,9 +231,9 @@ def test_callback_invoice():
     time.sleep(2.0)
     res = o.invoice_detail(aid,invoice_no)
     assert res['data']['userId'] == aid
-    assert res['data']['price'] == float(price)
+    assert res['data']['price'] == str(price)
     assert res['data']['invoiceNo'] == str(invoice_no)
-    assert res['data']['orderIdList'] == ep_order
+    assert len(res['data']['orderIdList']) == 3
 
 
 @allure.suite('order')
