@@ -2,11 +2,8 @@ import pytest
 import allure
 from order.bm_payment import BMPayment
 from order.bm_order import BMOrder
-import os
 import json
 
-os.environ['ENV'] = 'DEV'
-os.environ['GATE'] = 'false'
 
 order = BMOrder()
 pay = BMPayment()

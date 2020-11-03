@@ -1,7 +1,10 @@
 import pytest
 from box.base import Base
-
+import os
 o = Base()
+
+os.environ['GATE'] = 'false'
+os.environ['ENV'] = 'UAT'
 
 @pytest.fixture()
 def del_invoice(request):

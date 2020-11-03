@@ -7,9 +7,6 @@ import json
 import allure
 import sys
 
-os.environ['GATE'] = 'false'
-os.environ['ENV'] = 'DEV'
-
 pay = Payment()
 
 
@@ -81,7 +78,7 @@ def test_get_pay_agreement_default(d):
                               ('在线',None,'12101','zh-CN',"Required String parameter 'orderNo' is not present"),
                          ('在线','abc','12101','zh-CN',"Feign调用order获取订单数据错误"),
                             ('在线','11112223',None,'zh-CN',"Required String parameter 'agreementCode' is not present"),
-                              ('32432','20200907105829249819204','12101','Japanese','未找到支付协议'),
+                              ('32432','20200907105829249819204','12101','Japanese','不支持的语言'),
                               ('32432','20200907105829249819204','agreementCode','zh-CN','无效的支付协议码')],
                          ids=['不传aid','不传orderNo','没有该订单','不传code','传入语言错误','传入code错误'])
 def test_get_pay_agreement_wrong(d):
