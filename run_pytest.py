@@ -6,7 +6,20 @@ import pytest
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='params of pytest marks self-defined')
     parser.add_argument('--mark',help='marks to run pytest')
+    parser.add_argument('--env',help='choose test environment',choices=['DEV','SIT','UAT'])
+    parser.add_argument('--gate',help='decide whether to user gateway',choices=['true','false'])
     args = parser.parse_args()
+    if not args.env:
+        print('请指定测试环境:{}'.format('DEV,SIT,UAT'))
+        sys.exit(-1)
+    else:
+        os.environ['ENV'] = args.env
+
+    if not args.gate:
+        print('请指定是否指定网关:{}'.format('true,false'))
+        sys.exit(-1)
+    else:
+        os.environ['GATE'] = args.gate
 
     print('marks:{}'.format(args.mark))
     if not args.mark:
