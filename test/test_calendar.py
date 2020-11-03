@@ -1,11 +1,8 @@
 import pytest
 from calendar_file.canlendar_api import Calendar
-import os
 import allure
 import random
 
-os.environ['GATE'] = 'false'
-os.environ['ENV'] = 'DEV'
 c = Calendar()
 
 

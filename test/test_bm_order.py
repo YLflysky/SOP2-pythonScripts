@@ -1,13 +1,10 @@
 import pytest
 import allure
-import os
 from order.bm_order import BMOrder
 import random
 import json
 
 
-os.environ['ENV'] = 'UAT'
-os.environ['GATE'] = 'false'
 
 bm = BMOrder()
 

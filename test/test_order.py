@@ -1,5 +1,4 @@
 import pytest
-import os
 from order.oder_api import Order
 import random
 import time
@@ -7,8 +6,7 @@ import json
 import allure
 import sys
 
-os.environ['ENV'] = 'DEV'
-os.environ['GATE'] = 'false'
+
 o = Order()
 
 success_data = [{'aid': '123456', 'invoiceNo': '1881413'},

@@ -3,9 +3,6 @@ import allure
 import os
 from eshop.spare import SpareShop
 
-os.environ['ENV'] = 'DEV'
-os.environ['gate'] = 'false'
-
 spare = SpareShop()
 
 
@@ -41,7 +38,7 @@ def test_get_spare_list():
 @pytest.mark.eshop
 @allure.suite('spare shop')
 @allure.story('get list')
-def test_get_spare_list_02():
+def test_get_spare_list_sort():
     '''
     测试获取备件列表，测试排序
     '''
@@ -60,9 +57,9 @@ def test_get_spare_list_02():
 @pytest.mark.eshop
 @allure.suite('spare shop')
 @allure.story('get list')
-def test_get_spare_list_03():
+def test_get_spare_list_reverse():
     '''
-    测试获取备件列表，测试排序，倒序排序
+    测试获取备件列表，测试倒序排序
     '''
     res = spare.get_spare_list(category='all',index=1,size=100,sort='desc',sortName='score')
     if res['total'] != 0:

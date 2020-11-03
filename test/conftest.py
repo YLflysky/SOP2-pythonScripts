@@ -3,16 +3,8 @@ from box.base import Base
 import os
 o = Base()
 
-os.environ['GATE'] = 'false'
-os.environ['ENV'] = 'UAT'
+if not os.getenv('GATE'):
+    os.environ['GATE'] = 'false'
+if not os.getenv('ENV'):
+    os.environ['ENV'] = 'UAT'
 
-@pytest.fixture()
-def del_invoice(request):
-    serial,order = None,None
-    yield
-    print('------开始删除同步的发票-----')
-    o.do_mysql_select('delete from order_invoice where serial_no="{}"'.format(serial), 'order')
-    o.do_mysql_select(
-        'delete from order_invoice_relation where order_id=(select id from `order` where ex_order_no="{}")'.format(
-            order), 'order')
-    print('------删除发票成功-----')
