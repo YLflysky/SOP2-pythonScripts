@@ -23,17 +23,17 @@ if __name__ == '__main__':
 
     print('marks:{}'.format(args.mark))
     print(len(args.mark))
-    if not args.mark or args.mark == '':
+    if not args.mark or len(args.mark) == 0:
         pytest.main(
-            ['-q', '-m' './test', '--alluredir=/data/allure-results'])
+            ['-q', './test', '--alluredir=/data/allure-results'])
     else:
         marks = args.mark.split(',')
         if len(marks) > 1:
             pytest.main(
-                ['-q', '-m' './test', '--alluredir=/data/allure-results', '-m', "{}".format(' or '.join(marks))])
+                ['-q', './test', '--alluredir=/data/allure-results', '-m', "{}".format(' or '.join(marks))])
         elif len(marks) == 1:
             pytest.main(
-                ['-q', '-m' './test', '--alluredir=/data/allure-results', '-m', "{}".format(marks[0])])
+                ['-q', './test', '--alluredir=/data/allure-results', '-m', "{}".format(marks[0])])
         else:
             print('参数错误')
             sys.exit(-1)
