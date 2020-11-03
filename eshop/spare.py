@@ -8,7 +8,7 @@ class SpareShop(Base):
     def __init__(self):
         super().__init__()
 
-        self.url = self.read_conf('sop2_env.conf',self.env,'hu_host')
+        self.url = self.read_conf('sop2_env.conf',self.env,'be_host')
 
     def get_spare_list(self,category,index,size,**kwargs):
         '''
