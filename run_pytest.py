@@ -22,6 +22,7 @@ if __name__ == '__main__':
         os.environ['GATE'] = args.gate
 
     print('marks:{}'.format(args.mark))
+    print(len(args.mark))
     if not args.mark or args.mark == '':
         pytest.main(
             ['-q', '-m' './test', '--alluredir=/data/allure-results'])
