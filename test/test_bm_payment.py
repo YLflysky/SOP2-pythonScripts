@@ -72,9 +72,9 @@ def test_bm_get_qr_code_wrong(param):
     assert 'error' in json.dumps(res)
 
 
-@pytest.mark.parametrize('param',[('9642113','11112222333','zh-CN','11101'),
-                                  ('9642113','M202007160901278277176514','en-US','12101'),
-                                  ('4614907','20201012103736463180224','zh-CN','11101')],
+@pytest.mark.parametrize('param',[('9642113','11112222333','zh-CN','11101','中文1'),
+                                  ('9642113','20200904132809784139264','en-US','12101','DDWQDQW'),
+                                  ('4614907','20201012103736463180224','zh-CN','11101','加油')],
                          ids=['获取支付宝支付中文协议','获取微信支付英文协议','获取加油支付宝协议'])
 @pytest.mark.payment
 @allure.suite('payment')
@@ -83,12 +83,13 @@ def test_bm_pay_agreement(param):
     测试获取支付协议
     '''
     res = pay.get_pay_agreement(param[0],param[1],param[3],param[2])
-    assert res['data']['title']
+    assert res['data']['title'] == param[-1]
     assert res['data']['content']
 
 
 @pytest.mark.parametrize('param',[('zh-CN','服务条款及免责声明'),
-                                  ('en-US','Terms of Service and Disclaimer')],ids=['获取中文默认支付协议','获取英文默认支付协议'])
+                                  ('en-US','Terms of Service and Disclaimer')],
+                         ids=['获取中文默认支付协议','获取英文默认支付协议'])
 @pytest.mark.payment
 @allure.suite('payment')
 def test_bm_pay_agreement_default(param):
@@ -117,24 +118,18 @@ def test_bm_pay_agreement_wrong(param):
 
 @pytest.mark.payment
 @allure.suite('payment')
-@pytest.mark.parametrize('data',[('111','orderNo0001','9642113','102',1),
-                                 ('111','20201027135001071204800','33','102',1),
-                                 ('111','1235','1234','102',1),
-                                 ('111','20201027113016328225280','1603769416000','102',1)],
+@pytest.mark.parametrize('data',[('111','20200907105829249819204','32432','102',1,'100'),
+                                 ('111','20201027135001071204800','33','102',1,'101'),
+                                 ('111','1235','1234','102',1,'102'),
+                                 ('111','20201027113016328225280','1603769416000','102',1,'101')],
                          ids=['获取正在支付的支付结果','获取支付成功结果','获取支付失败结果','支付成功'])
 def test_bm_pay_result(data):
     '''
     测试BM适配层获取支付结果
     '''
     res = pay.get_pay_result(data[0],data[1],data[2],data[3],data[4])
-    sql = pay.do_mysql_select('select pay_status,buyer_account from pay_order where order_no="{}" order by pay_time desc limit 1'.format(data[1]),'mosc_pay')
-    if sql[0]['pay_status'] == 'PROCESSING':
-        assert res['data']['payResultStatus'] == '100'
-    elif sql[0]['pay_status'] == 'SUCCESS':
-        assert res['data']['payResultStatus'] == '101'
-
-    elif sql[0]['pay_status'] == 'FAILED':
-        assert res['data']['payResultStatus'] == '102'
+    sql = pay.do_mysql_select('select buyer_account from pay_order where order_no="{}" order by pay_time desc limit 1'.format(data[1]),'mosc_pay')
+    assert res['data']['payResultStatus'] == data[-1]
 
     assert res['data']['buyerAccount'] == sql[0]['buyer_account']
 
@@ -142,10 +137,9 @@ def test_bm_pay_result(data):
 @pytest.mark.payment
 @allure.suite('payment')
 @pytest.mark.parametrize('data',[('111','orderNo0002','9642113','102',1),
-                                 ('111','20201027135001071204800','33','',1),
-                                 ('111','1235','1234','102',''),
+                                 ('kk123','20201027135001071204800','ramos','102',1),
                                  ('','20201027113016328225280','1603769416000','102',1)],
-                         ids=['输入的订单没有支付结果','不输入category','不输入rollNumber','不输入vin'])
+                         ids=['输入的订单没有支付结果','输入不存在的订单','不输入vin'])
 def test_bm_pay_result_wrong(data):
     '''
     测试BM适配层获取支付结果异常情况

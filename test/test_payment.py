@@ -50,7 +50,8 @@ def test_get_pay_result_fail(d):
 @allure.suite('payment')
 @allure.story('get agreement')
 @pytest.mark.payment
-@pytest.mark.parametrize('d',[('9642113','11112223','11101','en-US','ENGLISH'),('9642113','111124424523','12101','zh-CN','荒野求生')])
+@pytest.mark.parametrize('d',[('9642113','11112223','11101','en-US','ENGLISH'),('9642113','111124424523','12101','zh-CN','荒野求生')]
+                         ,ids=['支付宝英文协议','微信中文协议'])
 def test_get_pay_agreement(d):
     '''
     测试获取支付协议
@@ -63,7 +64,8 @@ def test_get_pay_agreement(d):
 @allure.story('get agreement')
 @pytest.mark.payment
 @pytest.mark.parametrize('d',[('221','33596893367386636663','11101','zh-CN','服务条款及免责声明（测试使用）'),
-                              ('U002','20201012060626794180224','12101','en-US','Terms of Service and Disclaimer (Used for Testing)')])
+                              ('U002','20201012060626794180224','12101','en-US','Terms of Service and Disclaimer (Used for Testing)')]
+                         ,ids=['默认中文协议','默认英文协议'])
 def test_get_pay_agreement_default(d):
     '''
     测试默认获取支付协议
@@ -90,12 +92,13 @@ def test_get_pay_agreement_wrong(d):
     assert res['errorMessage'] ==d[-1]
 
 
-callback_data = [('trade_success','2018091361389377','e6ef423f23194a4f8a924027c37917d1',pay.f.pyfloat(2,2,True),pay.time_delta(),pay.f.pyint())]
+callback_data = [('trade_success','2018091361389377','e6ef423f23194a4f8a924027c37917d1',pay.f.pyfloat(2,2,True),pay.time_delta(),pay.f.pyint()),
+                 ('trade_success','2018091361389377','c94ed68006f847969c53db5506513152',pay.f.pyfloat(2,2,True),pay.time_delta(days=-10),pay.f.pyint())]
 
 @allure.suite('payment')
 @allure.story('cdp callback')
 @pytest.mark.payment
-@pytest.mark.parametrize('d',callback_data,ids=['输入必填项，返回success'])
+@pytest.mark.parametrize('d',callback_data,ids=['order_no=M202007160901278277176514','order_no=orderNo0001'])
 def test_ali_pay_cdp_callback_01(d):
     '''
     测试获取支付宝cdp回调结果，输入全部必填项
@@ -114,6 +117,7 @@ def test_ali_pay_cdp_callback_01(d):
         assert pay_res[0]['pay_status'] == 'SUCCESS'
     finally:
         pay.do_mysql_exec('delete from order_pay where pay_no="{}"'.format(d[5]),'order')
+
 
 @allure.suite('payment')
 @allure.story('cdp callback')
@@ -162,7 +166,7 @@ def test_ali_pay_cdp_callback_sop1():
     '''
     status = 'trade_success'
     app_id = '2018091361389377'
-    out_trade_no = 'qwer'
+    out_trade_no = pay.f.pyint(10000,1000000)
     receipt_amount = 99.99
     gmt_payment= pay.time_delta(days=-1)
     trade_no = '10000'
@@ -200,14 +204,14 @@ def test_cmcc_callback_01():
 
     pay.cmcc_callback(aid,'2100010000',1,1,1)
     try:
-        sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="ALIPAY"'.format(aid),'mosc_pay')
+        sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),'mosc_pay')
         assert sql[0]['pause_status'] == 'OPEN'
         assert sql[0]['sign_status'] == 'OPEN'
     finally:
-        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALIPAY"'.format(aid),'mosc_pay')
+        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),'mosc_pay')
 
-@allure.suite('payment')
-@allure.story('cmcc callback')
+@allure.feature('payment')
+@allure.suite('cmcc callback')
 @pytest.mark.payment
 def test_cmcc_callback_02():
     '''
@@ -217,12 +221,12 @@ def test_cmcc_callback_02():
 
     pay.cmcc_callback(aid, '2100010000', 1, 2, 2)
     try:
-        sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="ALIPAY"'.format(aid),
+        sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),
                                   'mosc_pay')
         assert sql[0]['pause_status'] == 'PAUSE'
         assert sql[0]['sign_status'] == 'CLOSE'
     finally:
-        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALIPAY"'.format(aid),
+        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),
                           'mosc_pay')
 
 @allure.suite('payment')
