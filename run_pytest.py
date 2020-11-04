@@ -1,4 +1,4 @@
-#encoding=utf-8
+#encoding=gbk
 import os,sys
 import argparse
 import shlex
@@ -35,7 +35,7 @@ if __name__ == '__main__':
         elif len(marks) == 1:
             cmd = 'pytest -q ./test --alluredir /data/allure-results -m {}'.format(marks[0])
         else:
-            print('å‚æ•°é”™è¯¯')
+            print('²ÎÊı´íÎó')
             sys.exit(-1)
     cmd = shlex.split(cmd)
     p = subprocess.Popen(cmd,shell=False,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
