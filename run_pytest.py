@@ -35,5 +35,5 @@ if __name__ == '__main__':
         else:
             print('参数错误')
             sys.exit(-1)
-        subprocess.check_output(cmd).decode('utf-8')
+        cmd.encode('utf-8').decode('utf-8')
         os.system(cmd)
