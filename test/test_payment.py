@@ -117,7 +117,7 @@ def test_ali_pay_cdp_callback_01(d):
         pay_res = pay.do_mysql_select('select * from order_pay where pay_no={}'.format(d[5]), 'order')
         assert pay_res[0]['pay_channel'] == 'ALI_PAY'
         assert pay_res[0]['pay_no'] == str(d[5])
-        assert pay_res[0]['pay_way'] == 'QR_CODE'
+        assert pay_res[0]['pay_way'] == 'QR_PAY'
         assert pay_res[0]['pay_amount'] == d[3]
         assert pay_res[0]['pay_time'] == d[4]
         assert pay_res[0]['pay_status'] == 'SUCCESS'
@@ -135,6 +135,8 @@ def test_ali_pay_cdp_callback_02():
     status = 'trade_success'
     app_id = '2018091361389377'
     out_trade_no = '228de2285c6d4c70b71f7b63f7949d77'
+    order_no='orderNo0001'
+    aid = '9642113'
     receipt_amount = 99.99
     gmt_payment = pay.time_delta(days=-1)
     trade_no = '10000'
@@ -150,15 +152,10 @@ def test_ali_pay_cdp_callback_02():
     pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(trade_no), 'order')
     assert pay_res[0]['pay_channel'] == 'ALI_PAY'
     assert pay_res[0]['pay_no'] == trade_no
-    assert pay_res[0]['pay_way'] == 'QR_CODE'
+    assert pay_res[0]['pay_way'] == 'QR_PAY'
     assert pay_res[0]['pay_amount'] == receipt_amount
     assert pay_res[0]['pay_time'] == gmt_payment
     # 校验支付结果同步到支付的支付记录中
-    order_no = pay.do_mysql_select(
-        'select order_no from order_id_relation where out_order_no="{}"'.format(out_trade_no), 'mosc_pay')
-    order_no = order_no[0]['order_no']
-    order_res = pay.do_mysql_select('select * from `order` where order_no="{}"'.format(order_no), 'order')
-    aid = order_res[0]['aid']
     res = pay.get_pay_result(order_no, aid=aid)
     assert res['data']['buyerAccount'] == buyer_logon_id
     assert res['data']['payResultStatus'] == '101'

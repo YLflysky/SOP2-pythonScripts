@@ -81,8 +81,7 @@ class Payment(Base):
 
 if __name__ == '__main__':
     import os
-
-    os.environ['ENV'] = 'LOCAL'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     pay = Payment()
     # pay.ger_qr_code(aid='qwer',order_no='orderNo0001',channel='ALI_PAY')
