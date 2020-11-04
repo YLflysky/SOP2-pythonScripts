@@ -192,12 +192,12 @@ class Order(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def sync_order_pay(self, aid, order_no, pay_no, **kwargs):
+    def sync_order_pay(self, pay_no, **kwargs):
         '''
         同步支付结果
         '''
         url = self.url + '/sm/order/v1/order/sync/pay'
-        data = {'aid': aid, 'orderNo': order_no, 'payOrderNo': pay_no, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
+        data = { 'payOrderNo': pay_no, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
                 'payType': 'APP', 'payTime': self.time_delta(),'payStatus':'SUCCESS',**kwargs}
         code,body = self.do_post(url,data)
         print(body)
@@ -219,8 +219,8 @@ if __name__ == '__main__':
             'epOrderId': '20200904132112692745472', 'cpId': 'XIAOMA', 'invoiceNo': 2283680, 'partyType': 'PERSONAL',
             'bankAccount': '377363783294793', 'status': 'SUCCESS', 'price': '10', 'createTime': '2020-09-09 09:12:08',
             'transmissionTime': '2020-09-11 09:12:08'}
-    # o.sync_order_pay('1601281637323','2020092816271772640960','123')
-    o.order_detail(aid='33',order_no='20201102132449300413696')
+    o.sync_order_pay('123',aid='')
+    # o.order_detail(aid='33',order_no='20201102132449300413696')
     # o.sync_order(aid=123, orderNo=1008600, ex_order_no='ex10086', origin='EP')
     # o.sync_refund('111333','202009247772089433')
     # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
