@@ -1,9 +1,9 @@
 #encoding=gbk
-import os,sys
+import os
 import argparse
 import shlex
 import subprocess
-
+import sys
 
 if __name__ == '__main__':
 
@@ -35,17 +35,6 @@ if __name__ == '__main__':
         elif len(marks) == 1:
             cmd = 'pytest -q ./test --alluredir /data/allure-results -m {}'.format(marks[0])
         else:
-            print('参数错误')
+            print('args error')
             sys.exit(-1)
-    cmd = shlex.split(cmd)
-    p = subprocess.Popen(cmd,shell=False,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-    while p.poll() is None:
-        line = p.stdout.readline()
-        line = line.strip()
-        if line:
-            s1 = str(line,encoding='gbk')
-            print(s1)
-    if p.returncode == 0:
-        print('subprogram success')
-    else:
-        print('subprogram fail')
+    os.system(cmd)
