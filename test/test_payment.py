@@ -11,7 +11,7 @@ pay = Payment()
 
 
 @allure.suite('payment')
-@allure.story('get result')
+@allure.feature('获取支付结果')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', [('1234', '1234'), ('1235', '1234'), ('20200907105829249819204', '32432'),
                                ('orderNo0001', '9642113')],
@@ -32,7 +32,7 @@ def test_get_pay_result(d):
 
 
 @allure.suite('payment')
-@allure.story('get result')
+@allure.story('获取支付结果')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', [(pay.f.pyint(), '123', '支付订单不存在'),
                                (None, '123', "Required String parameter 'orderNo' is not present"),
@@ -47,7 +47,7 @@ def test_get_pay_result_fail(d):
 
 
 @allure.suite('payment')
-@allure.story('get agreement')
+@allure.story('获取支付协议')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', [('9642113', '11112223', '11101', 'en-US', 'ENGLISH'),
                                ('9642113', '111124424523', '12101', 'zh-CN', '荒野求生')]
@@ -61,7 +61,7 @@ def test_get_pay_agreement(d):
 
 
 @allure.suite('payment')
-@allure.story('get agreement')
+@allure.feature('获取支付协议')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', [('221', '33596893367386636663', '11101', 'zh-CN', '服务条款及免责声明（测试使用）'),
                                ('U002', '20201012060626794180224', '12101', 'en-US',
@@ -76,7 +76,7 @@ def test_get_pay_agreement_default(d):
 
 
 @allure.suite('payment')
-@allure.story('get agreement')
+@allure.feature('获取支付协议')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', [(None, '11112223', '11101', 'EN-US', "Required String parameter 'aid' is not present"),
                                ('在线', None, '12101', 'zh-CN', "Required String parameter 'orderNo' is not present"),
@@ -101,7 +101,7 @@ callback_data = [('trade_success', '2018091361389377', 'e6ef423f23194a4f8a924027
 
 
 @allure.suite('payment')
-@allure.story('cdp callback')
+@allure.feature('支付宝cdp回调')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', callback_data, ids=['order_no=M202007160901278277176514', 'order_no=orderNo0001'])
 def test_ali_pay_cdp_callback_01(d):
@@ -126,7 +126,7 @@ def test_ali_pay_cdp_callback_01(d):
 
 
 @allure.suite('payment')
-@allure.story('cdp callback')
+@allure.feature('支付宝cdp回调')
 @pytest.mark.payment
 def test_ali_pay_cdp_callback_02():
     '''
@@ -162,7 +162,7 @@ def test_ali_pay_cdp_callback_02():
 
 
 @allure.suite('payment')
-@allure.story('cdp callback')
+@allure.feature('支付宝cdp回调')
 @pytest.mark.payment
 def test_ali_pay_cdp_callback_sop1():
     '''
@@ -188,7 +188,7 @@ callback_data_fail = [('trade_fail', '2018091361389377', 'qwer', pay.f.pyfloat(2
 
 
 @allure.suite('payment')
-@allure.story('cdp callback')
+@allure.feature('支付宝cdp回调')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', callback_data_fail, ids=['trade_status错误', 'app_id错误', 'out_trade_no错误', '没传支付时间'])
 def test_ali_pay_cdp_callback_wrong(d):
@@ -202,7 +202,7 @@ def test_ali_pay_cdp_callback_wrong(d):
 
 
 @allure.suite('payment')
-@allure.story('cmcc callback')
+@allure.feature('免密签约结果回调')
 @pytest.mark.payment
 def test_cmcc_callback_01():
     '''
@@ -221,7 +221,7 @@ def test_cmcc_callback_01():
 
 
 @allure.feature('payment')
-@allure.suite('cmcc callback')
+@allure.feature('免密签约结果回调')
 @pytest.mark.payment
 def test_cmcc_callback_02():
     '''
@@ -241,7 +241,7 @@ def test_cmcc_callback_02():
 
 
 @allure.suite('payment')
-@allure.story('cmcc callback')
+@allure.feature('免密签约结果回调')
 @pytest.mark.payment
 def test_cmcc_callback_03():
     '''
@@ -261,7 +261,7 @@ def test_cmcc_callback_03():
 
 
 @allure.suite('payment')
-@allure.story('cmcc callback')
+@allure.feature('免密签约结果回调')
 @pytest.mark.payment
 def test_cmcc_callback_04():
     '''
@@ -281,7 +281,7 @@ def test_cmcc_callback_04():
 
 
 @allure.suite('payment')
-@allure.story('cmcc callback')
+@allure.feature('免密签约结果回调')
 @pytest.mark.payment
 @pytest.mark.parametrize('wrong', [('221', '2100010000', 2, 1, 2), ('221', '21000100001', 2, 1, 1),
                                    ('221', '2100010000', 3, 1, 1), (None, '2100010000', 1, 1, 1)],
@@ -294,8 +294,8 @@ def test_cmcc_callback_wrong(wrong):
     assert res['errorMessage']
 
 
-@allure.feature('payment')
-@allure.story('sync pay stream')
+@allure.suite('payment')
+@allure.feature('同步支付记录')
 @pytest.mark.payment
 @pytest.mark.parametrize('enum', [('ALI_PAY', 'PROCESSING', 'QR_PAY', 'BM'), ('WECHAT_PAY', 'SUCCESS', 'APP', 'MA'),
                                   ('WECHAT_PAY', 'FAILED', 'FREE_PASS_PAY', 'SOP1'),
@@ -344,8 +344,8 @@ def test_sync_pay_stream(enum):
         pay.do_mysql_exec('delete from pay_order where ex_pay_no="{}"'.format(ex_pay_no), 'mosc_pay')
 
 
-@allure.feature('payment')
-@allure.story('sync pay stream')
+@allure.suite('payment')
+@allure.feature('同步支付记录')
 @pytest.mark.payment
 def test_sync_pay_stream_xuantian():
     '''
@@ -384,8 +384,8 @@ def test_sync_pay_stream_xuantian():
         pass
 
 
-@allure.feature('payment')
-@allure.story('sync pay stream')
+@allure.suite('payment')
+@allure.story('同步支付记录')
 @pytest.mark.payment
 def test_sync_pay_stream_update():
     '''
@@ -435,8 +435,8 @@ error = [(None, 'aid001', 'ex_order001', 'pay001', 'order001', 9999, 10000, 1, '
          ]
 
 
-@allure.feature('payment')
-@allure.story('sync pay stream')
+@allure.suite('payment')
+@allure.story('同步支付记录')
 @pytest.mark.payment
 @pytest.mark.parametrize('params', error, ids=['不输入车架号','不输入aid','不输入ex_order','不输入pay_no'])
 def test_sync_pay_stream_wrong(params):

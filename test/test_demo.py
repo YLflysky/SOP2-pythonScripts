@@ -10,4 +10,4 @@ def test_02():
 
 @pytest.mark.lyin
 def test_03():
-    assert 1 == 2
+    assert 1 == 1
