@@ -11,13 +11,13 @@ if __name__ == '__main__':
     parser.add_argument('--gate',help='decide whether to user gateway',choices=['true','false'])
     args = parser.parse_args()
     if not args.env:
-        print('请指定测试环境:{}'.format('DEV,SIT,UAT'))
+        print('please choose test environment:{}'.format('DEV,SIT,UAT'))
         sys.exit(-1)
     else:
         os.environ['ENV'] = args.env
 
     if not args.gate:
-        print('请指定是否指定网关:{}'.format('true,false'))
+        print('please choose whether to use gateway:{}'.format('true,false'))
         sys.exit(-1)
     else:
         os.environ['GATE'] = args.gate
@@ -35,5 +35,6 @@ if __name__ == '__main__':
         else:
             print('参数错误')
             sys.exit(-1)
+        print(cmd)
         cmd.encode('utf-8').decode('utf-8')
         os.system(cmd)
