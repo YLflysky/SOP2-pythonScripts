@@ -83,7 +83,7 @@ data = [
 
 
 @allure.suite('order')
-@allure.story('syncInvoice')
+@allure.feature('同步发票信息')
 @pytest.mark.parametrize('d', data)
 @pytest.mark.order
 def test_sync_invoice(d):
@@ -106,7 +106,7 @@ def test_sync_invoice(d):
 
 
 @allure.suite('order')
-@allure.story('syncInvoice')
+@allure.feature('同步发票信息')
 @pytest.mark.order
 def test_sync_invoice_02():
     '''
@@ -128,7 +128,7 @@ def test_sync_invoice_02():
 
 
 @allure.suite('order')
-@allure.story('orderNo')
+@allure.feature('生成一个订单号')
 @pytest.mark.order
 def test_generate_orderNo():
     body = o.generate_order_no()
@@ -137,7 +137,7 @@ def test_generate_orderNo():
 
 
 @allure.suite('order')
-@allure.story('sync pay')
+@allure.feature('同步支付结果')
 @pytest.mark.order
 def test_sync_pay():
     '''
@@ -148,14 +148,14 @@ def test_sync_pay():
     aid = sql['aid']
     order_no = sql['order_no']
     pay_no = o.f.pyint()
-    o.sync_order_pay(aid, order_no, pay_no, )
+    o.sync_order_pay(pay_no,aid=aid,orderNo=order_no)
     res = o.do_mysql_select('select count(1) from order_pay where pay_no = {}'.format(pay_no), 'order')
     assert len(res) == 1
     o.do_mysql_exec('delete from order_pay where pay_no={}'.format(pay_no), 'order')
 
 
 @allure.suite('order')
-@allure.story('syncInvoice')
+@allure.feature('申请开票')
 @pytest.mark.order
 def test_apply_invoice():
     '''
@@ -181,7 +181,7 @@ def test_apply_invoice():
 
 
 @allure.suite('order')
-@allure.story('callback')
+@allure.feature('callback同步订单信息')
 @pytest.mark.order
 def test_callback_order():
     ep_order = '123456789'
@@ -212,7 +212,7 @@ def test_callback_order():
 
 
 @allure.suite('order')
-@allure.story('callback')
+@allure.feature('callback同步发票信息')
 @pytest.mark.order
 def test_callback_invoice():
     '''
@@ -235,7 +235,7 @@ def test_callback_invoice():
 
 
 @allure.suite('order')
-@allure.story('sync')
+@allure.feature('同步订单信息')
 @pytest.mark.order
 @pytest.mark.parametrize('order_status', ['INIT', 'WAITING_PAY', 'PROCESSING', 'REFUND_FAILED', 'REFUND_SUCCESS',
                                           'PAY_SUCCESS', 'PAY_FAILED', 'CANCEL', 'FINISH', 'EXPIRE', 'REFUNDING',
@@ -256,7 +256,7 @@ def test_sync_order_01(order_status):
 
 
 @allure.suite('order')
-@allure.story('sync')
+@allure.feature('同步订单信息')
 @pytest.mark.order
 @pytest.mark.parametrize('order_type', ['RESERVATION', 'COMMODITY', 'BUSINESS'])
 def test_sync_order_02(order_type):
@@ -274,7 +274,7 @@ def test_sync_order_02(order_type):
 
 
 @allure.suite('order')
-@allure.story('sync')
+@allure.feature('同步订单信息')
 @pytest.mark.order
 @pytest.mark.parametrize('origin', ['SELF', 'EP', 'BM', 'MA', 'VPA', 'OTHER'])
 def test_sync_order_03(origin):
@@ -292,7 +292,7 @@ def test_sync_order_03(origin):
 
 
 @allure.suite('order')
-@allure.story('sync')
+@allure.feature('同步预约单')
 @pytest.mark.order
 def test_sync_order_reservation():
     '''
@@ -321,7 +321,7 @@ def test_sync_order_reservation():
 
 
 @allure.suite('order')
-@allure.story('update')
+@allure.feature('更新订单')
 @pytest.mark.order
 def test_update_order():
     '''
@@ -351,7 +351,7 @@ def test_update_order():
 
 
 @allure.suite('order')
-@allure.story('delete')
+@allure.feature('删除订单')
 @pytest.mark.order
 def test_del_order_01():
     '''
@@ -366,7 +366,7 @@ def test_del_order_01():
 
 
 @allure.suite('order')
-@allure.story('delete')
+@allure.feature('删除订单')
 @pytest.mark.order
 def test_del_order_02():
     '''

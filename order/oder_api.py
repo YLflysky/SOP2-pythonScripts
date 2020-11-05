@@ -219,8 +219,8 @@ if __name__ == '__main__':
             'epOrderId': '20200904132112692745472', 'cpId': 'XIAOMA', 'invoiceNo': 2283680, 'partyType': 'PERSONAL',
             'bankAccount': '377363783294793', 'status': 'SUCCESS', 'price': '10', 'createTime': '2020-09-09 09:12:08',
             'transmissionTime': '2020-09-11 09:12:08'}
-    o.sync_order_pay('123',aid='')
-    # o.order_detail(aid='33',order_no='20201102132449300413696')
+    # o.sync_order_pay('123',aid='')
+    o.order_detail(aid='33',order_no='20201104165745583380928')
     # o.sync_order(aid=123, orderNo=1008600, ex_order_no='ex10086', origin='EP')
     # o.sync_refund('111333','202009247772089433')
     # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',

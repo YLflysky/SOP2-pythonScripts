@@ -220,7 +220,7 @@ def test_cmcc_callback_01():
         pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid), 'mosc_pay')
 
 
-@allure.feature('payment')
+@allure.suite('payment')
 @allure.feature('免密签约结果回调')
 @pytest.mark.payment
 def test_cmcc_callback_02():

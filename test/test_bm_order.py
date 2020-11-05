@@ -139,7 +139,7 @@ def test_order_count_06():
 
 
 @allure.suite('order')
-@allure.story('sync bm order')
+@allure.feature('BM同步订单信息')
 @pytest.mark.order
 @pytest.mark.parametrize('brand',['VW','JETTA','AUDI'],ids=['brand为VW','brand为JETTA','brand为AUDI'])
 def test_sync_bm_order(brand):
