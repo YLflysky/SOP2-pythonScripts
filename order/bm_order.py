@@ -61,6 +61,7 @@ class BMOrder(Base):
         self.header['aid'] = aid
         code,body = self.do_get(url,None)
         self.assert_msg(code,body)
+        return body
 
 
 
@@ -78,4 +79,4 @@ if __name__ == '__main__':
     # o.order_count(vin='DEFAULT_VIN',uid='33')
     # o.update_bm_order(order_no='20201104154521856385024',vin='3FCECCBA6990DD8F4839403E77F14F85',userId='10000000312441',updateType='1',
     #                   orderEvent='就是我',businessState='NOTHING_TO_SAY')
-    o.bm_order_detail(aid='221',order_no='29515778243258532831',vin=o.random_vin())
+    o.reload_config()

@@ -95,7 +95,7 @@ def test_sync_invoice(d):
     status = d['status']
     party_type = d['partyType']
     ex_order_no = [ex_order_no]
-    o.teardown_sync(ex_order_no, invoice_no)
+    o.teardown_sync_invoice(ex_order_no, invoice_no)
     o.sync_invoice(invoice_no, status, party_type, ex_order_no)
     sql = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(invoice_no), 'order')
     assert len(sql) == 1
@@ -116,7 +116,7 @@ def test_sync_invoice_02():
     invoice_no = 10086
     status = 'SUCCESS'
     party_type = 'COMPANY'
-    o.teardown_sync(ex_order_no, invoice_no)
+    o.teardown_sync_invoice(ex_order_no, invoice_no)
     o.sync_invoice(invoice_no, status, party_type, ex_order_no)
     sql = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(invoice_no), 'order')
     assert len(sql) == 1
@@ -125,6 +125,26 @@ def test_sync_invoice_02():
     assert status == body['data']['status']
     assert party_type == body['data']['invoiceType']
     assert len(body['data']['orderIdList']) == 2
+
+
+@allure.suite('order')
+@allure.feature('同步发票信息')
+@pytest.mark.order
+def test_sync_invoice_03():
+    '''
+    测试同步发票信息，传入已存在的发票更改信息
+    '''
+    invoice_no='7200097'
+    status=random.choice(['SUCCESS','PENDING','FAILED','NOT_ISSUED'])
+    party = random.choice(['PERSONAL','COMPANY'])
+    ep_order_id = ['3322333']
+    o.sync_invoice(invoice_no,status,party,ep_order_id)
+    sql_res = o.do_mysql_select('select * from order_invoice where invoice_no={}'.format(invoice_no),'order')
+    assert sql_res[0]['status'] == status
+    assert sql_res[0]['party_type'] == party
+    with allure.step('test result'):
+        allure.attach(status,'发票状态',attachment_type=str)
+        allure.attach(party,'发票抬头',attachment_type=str)
 
 
 @allure.suite('order')
@@ -219,12 +239,12 @@ def test_callback_invoice():
     测试发票的callback
     :return:
     '''
-    ep_order = [1,'222334442','22233442']
+    ep_order = ['1','222334442','22233442']
     invoice_no = 999
     price = o.f.pyfloat(right_digits=2,positive=True,min_value=1,max_value=10000)
     print('初始化环境....')
-    o.teardown_sync(ep_order, invoice_no)
-    aid = 'sergio'
+    o.teardown_sync_invoice(ep_order, invoice_no)
+    aid = o.f.word()
     o.sync_invoice_kafka(ep_orders=ep_order, invoice=invoice_no, price=price,aid=aid)
     time.sleep(2.0)
     res = o.invoice_detail(aid,invoice_no)

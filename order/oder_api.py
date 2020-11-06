@@ -79,7 +79,9 @@ class Order(Base):
         self.assert_msg(code, body)
 
     def sync_invoice(self, invoiceNo, status, party,orderNo:list):
-
+        '''
+        底层同步发票信息api
+        '''
         url = self.url + '/sm/order/v1/invoice/notify/ep/sync'
 
         data = {'actionId': 'INVOICE_UPDATE', 'aid': '123456', 'domainId': 'COMMON', 'epInvoiceId': '1',
@@ -96,7 +98,10 @@ class Order(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def teardown_sync(self, orders:list, invoice):
+    def teardown_sync_invoice(self, orders:list, invoice):
+        '''
+        删除同步发票后的测试数据
+        '''
         print('-----开始teardown------')
         self.do_mysql_exec('delete from order_invoice where invoice_no="{}"'.format(invoice), 'order')
         for order in orders:
@@ -135,7 +140,7 @@ class Order(Base):
 
         kafka_data = {'key': json.dumps(kafka_data)}
         msg = {'header': header, 'kafkaData': kafka_data}
-        host = '10.20.4.11:9092'
+        host = '10.20.4.12:9092'
         topic = 'order-finished-remind-topic'
         self.send_kafka_msg(host, topic, msg)
 
@@ -215,12 +220,8 @@ if __name__ == '__main__':
     # for f in fakers:
     #     if 'py' in f:
     #         print(f)
-    data = {'actionId': 'UPDATE_INVOICE', 'aid': '123456', 'domainId': 'COMMON', 'epInvoiceId': '1',
-            'epOrderId': '20200904132112692745472', 'cpId': 'XIAOMA', 'invoiceNo': 2283680, 'partyType': 'PERSONAL',
-            'bankAccount': '377363783294793', 'status': 'SUCCESS', 'price': '10', 'createTime': '2020-09-09 09:12:08',
-            'transmissionTime': '2020-09-11 09:12:08'}
     # o.sync_order_pay('123',aid='')
-    o.order_detail(aid='33',order_no='20201104165745583380928')
+    # o.order_detail(aid='33',order_no='20201105163220254380928')
     # o.sync_order(aid=123, orderNo=1008600, ex_order_no='ex10086', origin='EP')
     # o.sync_refund('111333','202009247772089433')
     # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',

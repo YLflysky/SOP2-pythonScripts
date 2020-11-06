@@ -9,9 +9,12 @@ import json
 bm = BMOrder()
 
 
+def setup_module():
+    bm.reload_config()
+
 @pytest.mark.order
 @allure.suite('order')
-@allure.story('hu count')
+@allure.feature('BM车机端获取订单数量')
 @pytest.mark.parametrize('uid', ('4614907', '1600841231973', '221', '11223344', '4614931'))
 def test_order_count(uid):
     '''
@@ -26,7 +29,7 @@ def test_order_count(uid):
 
 
 @allure.suite('order')
-@allure.story('hu count')
+@allure.feature('BM车机端获取订单数量')
 @pytest.mark.order
 def test_order_count_fail():
     '''
@@ -39,7 +42,7 @@ def test_order_count_fail():
 
 
 @allure.suite('order')
-@allure.story('hu count')
+@allure.feature('BM车机端获取订单数量')
 @pytest.mark.order
 def test_order_count_03():
     '''
@@ -59,7 +62,7 @@ def test_order_count_03():
 
 
 @allure.suite('order')
-@allure.story('hu count')
+@allure.feature('BM车机端获取订单数量')
 @pytest.mark.order
 @pytest.mark.parametrize('status', ['1000', '1001', '1002', '1003', '1004', '1005'])
 def test_order_count_04(status):
@@ -100,7 +103,7 @@ def test_order_count_04(status):
 
 
 @allure.suite('order')
-@allure.story('hu count')
+@allure.feature('BM车机端获取订单数量')
 @pytest.mark.order
 @pytest.mark.parametrize('category', ['00','01', '02'])
 def test_order_count_05(category):
@@ -125,7 +128,7 @@ def test_order_count_05(category):
 
 
 @allure.suite('order')
-@allure.story('hu count')
+@allure.feature('BM车机端获取订单数量')
 @pytest.mark.order
 def test_order_count_06():
     '''
@@ -180,7 +183,7 @@ def test_sync_bm_order(brand):
 
 
 @allure.suite('order')
-@allure.story('update bm order')
+@allure.feature('BM适配层更新订单')
 @pytest.mark.order
 @pytest.mark.parametrize('d',[('INIT','jojo'),(None,None),('PROCESSING','kaka')])
 def test_update_bm_order(d):
@@ -206,3 +209,12 @@ def test_update_bm_order(d):
     order_id = sql_res[0]['id']
     sql_res_detail = bm.do_mysql_select('select detail from order_detail where order_id={}'.format(order_id),'order')
     assert len(sql_res_detail) == 1
+
+
+@allure.suite('order')
+@allure.feature('BM车机端获取订单详情')
+@pytest.mark.order
+@pytest.mark.parametrize('d',[('221','29515778243258532831'),('33','20201104165745583380928'),('4612472','4612472112221')])
+def test_bm_order_detail(d):
+    res = bm.bm_order_detail(d[0],d[1],bm.random_vin())
+    assert res['data']['orderCategory']
