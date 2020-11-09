@@ -22,17 +22,18 @@ class Flow(Base):
 
     def flow_detail(self,goods):
         '''
-        flow服务底层获取
+        flow服务底层获取流量详情
         '''
         url = self.flow_url + '/goods/detail'
         param = {'goodsId':goods}
         c,b = self.do_get(url,param)
         self.assert_msg(c,b)
+        return b
 
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'LOCAL'
     flow = Flow()
-    flow.flow_detail('255')
-    # flow.bm_get_flow_detail('254')
+    flow.flow_detail(10010)
+    # flow.bm_get_flow_detail('255')

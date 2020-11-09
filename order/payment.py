@@ -100,6 +100,6 @@ if __name__ == '__main__':
     # pay.ger_qr_code(aid='qwer',order_no='orderNo0001',channel='ALI_PAY')
     # pay.get_pay_result('20200907105829249819204','32432')
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
-    pay.ali_pay_callback('trade_success', '2018091361389377', 'c94ed68006f847969c53db55065131520', 999, pay.time_delta(),
+    pay.ali_pay_callback('trade_success', '2018091361389377', 'd0c934c8a7c44629bf9501d818d35eb4', 999, pay.time_delta(),
                          pay.f.pyint())
     # pay.cmcc_callback(aid='221',enterprise='2100010000',channel=1.3,notify_type=1.3,status=1)
