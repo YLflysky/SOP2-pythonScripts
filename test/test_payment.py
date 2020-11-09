@@ -146,7 +146,8 @@ def test_ali_pay_cdp_callback_02():
     buyer_id = pay.f.pyint(10000, 10000000)
     total = 100.00
     res = pay.ali_pay_callback(status, app_id, out_trade_no, receipt_amount, gmt_payment, trade_no,
-                               buyer_logon_id=buyer_logon_id, total_amount=total)
+                               buyer_logon_id=buyer_logon_id, total_amount=total,seller_id=seller_id,
+                               seller_email=seller_email,buyer_id=buyer_id)
     assert res == 'success'
     # 校验支付结果同步到订单支付结果中
     pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(trade_no), 'order')
@@ -427,7 +428,7 @@ def test_sync_pay_stream_update():
 error = [(None, 'aid001', 'ex_order001', 'pay001', 'order001', 9999, 10000, 1, 'ALI_PAY',
           'PROCESSING',pay.time_delta(), 'SOP1', 'APP', 'MUSIC', 'QQ_MUSIC', '车架号不能为空'),
          ('vin10086', None, 'ex_order001', 'pay001', 'order001', 9999, 10000, 1,  'ALI_PAY','PROCESSING',
-          pay.time_delta(), 'SOP1', 'APP', 'MUSIC', 'QQ_MUSIC', 'aid不能为空'),
+          pay.time_delta(), 'SOP1', 'APP', 'MUSIC', 'QQ_MUSIC', '用户aid不能为空'),
          ('vin10086', 'aid001', None, 'pay001', 'order001', 9999, 10000, 1, 'ALI_PAY', 'PROCESSING',
           pay.time_delta(), 'SOP1', 'APP', 'MUSIC', 'QQ_MUSIC', '外部订单号不能为空'),
 ('vin10086', 'aid001', 'ex_order001', None, 'order001', 9999, 10000, 1, 'ALI_PAY', 'PROCESSING',
@@ -452,3 +453,12 @@ def test_sync_pay_stream_wrong(params):
     assert res['returnStatus'] == 'FAILED'
     assert res['errorMessage'] == params[15]
 
+
+@allure.suite('payment')
+@allure.story('检查是否为FTB支付流水')
+@pytest.mark.payment
+@pytest.mark.parametrize('payNo', [('fdb6099683ad4ba6877e65450f9d6e51',True),('a70cfac6808d45da845fee0c3a9275f9',True),(pay.f.pyint(),False)],
+                         ids=['FTB订单','FTB订单','非FTB订单'])
+def test_sync_pay_stream_wrong(payNo):
+    res = pay.check_route(payNo[0])
+    assert res['data'] == payNo[1]

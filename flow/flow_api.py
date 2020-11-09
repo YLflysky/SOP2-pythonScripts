@@ -6,21 +6,33 @@ class Flow(Base):
     def __init__(self):
         super().__init__()
 
-        self.url = self.read_conf('sop2_env.conf',self.env,'flow_host')
+        self.hu_url = self.read_conf('sop2_env.conf',self.env,'hu_host')
+        self.flow_url = self.read_conf('sop2_env.conf',self.env,'flow_host')
 
 
-    def get_flow_detail(self,goods_id):
+    def bm_get_flow_detail(self,goods_id):
         '''
-        获取流量详情接口
+        BM适配层获取流量详情接口
         '''
-        url = self.url + '/api/v2/products/{}/detail'.format(goods_id)
+        url = self.hu_url + '/api/v2/products/{}/detail'.format(goods_id)
+        code,body = self.do_get(url,params=None)
+        assert code == 200
+        print(body)
+        return body
 
-        code,body = self.do_get(url,None)
-        self.assert_msg(code,body)
+    def flow_detail(self,goods):
+        '''
+        flow服务底层获取
+        '''
+        url = self.flow_url + '/goods/detail'
+        param = {'goodsId':goods}
+        c,b = self.do_get(url,param)
+        self.assert_msg(c,b)
 
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'LOCAL'
     flow = Flow()
-    flow.get_flow_detail(goods_id='123')
+    flow.flow_detail('255')
+    # flow.bm_get_flow_detail('254')

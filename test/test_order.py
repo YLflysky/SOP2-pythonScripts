@@ -244,12 +244,12 @@ def test_callback_invoice():
     price = o.f.pyfloat(right_digits=2,positive=True,min_value=1,max_value=10000)
     print('初始化环境....')
     o.teardown_sync_invoice(ep_order, invoice_no)
-    aid = o.f.word()
+    aid = o.f.pyint()
     o.sync_invoice_kafka(ep_orders=ep_order, invoice=invoice_no, price=price,aid=aid)
     time.sleep(2.0)
-    res = o.invoice_detail(aid,invoice_no)
-    assert res['data']['userId'] == aid
-    assert res['data']['price'] == str(price)
+    res = o.invoice_detail(str(aid),invoice_no)
+    assert res['data']['userId'] == str(aid)
+    assert float(res['data']['price']) == price
     assert res['data']['invoiceNo'] == str(invoice_no)
     assert len(res['data']['orderIdList']) == 3
 
