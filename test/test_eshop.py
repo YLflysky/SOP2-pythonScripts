@@ -37,7 +37,7 @@ def test_get_spare_list():
 
 @pytest.mark.eshop
 @allure.suite('spare shop')
-@allure.feature('获取备件商城列表')
+@allure.title('获取备件商城列表')
 def test_get_spare_list_sort():
     '''
     测试获取备件列表，测试排序

@@ -194,7 +194,7 @@ class Base:
         if data is not None:
             data = data.encode('utf-8')
         lk.prt('final post header is:{}'.format(self.header))
-        res = requests.post(url=url, data=data, params=params, headers=self.header, verify=False, **kwargs)
+        res = requests.post(url=url, data=data, params=params, headers=self.header, verify=True, **kwargs)
         try:
             response_body = json.loads(res.text)
         except Exception as e:

@@ -11,7 +11,7 @@ pay = BMPayment()
 
 @pytest.mark.payment
 @allure.suite('payment')
-@allure.feature('BM适配层获取二维码')
+@allure.title('BM适配层获取二维码')
 @pytest.mark.parametrize('code',['11101','12101'])
 def test_bm_get_qr_code(code):
     '''
@@ -46,14 +46,15 @@ def test_bm_get_qr_code(code):
 
         assert res['data']['qrCode']
     finally:
-        order.do_mysql_exec('delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),'order')
-        order.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no,user_id), 'order')
-        pay.do_mysql_exec('delete from order_id_relation where order_no="{}"'.format(order_no),'mosc_pay')
-        pay.do_mysql_exec('delete from pay_order where order_no="{}"'.format(order_no),'mosc_pay')
+        pass
+        # order.do_mysql_exec('delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),'order')
+        # order.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no,user_id), 'order')
+        # pay.do_mysql_exec('delete from order_id_relation where order_no="{}"'.format(order_no),'mosc_pay')
+        # pay.do_mysql_exec('delete from pay_order where order_no="{}"'.format(order_no),'mosc_pay')
 
 @pytest.mark.payment
 @allure.suite('payment')
-@allure.feature('BM适配层获取二维码')
+@allure.title('BM适配层获取二维码')
 @pytest.mark.parametrize('param',[('1','001','orderNo0001','121010','100'),
                                   ('1','001','orderNo000','12101','100'),
                                   ('','001','orderNo0001','11101','100'),
@@ -75,7 +76,7 @@ def test_bm_get_qr_code_wrong(param):
                          ids=['获取支付宝支付中文协议','获取微信支付英文协议','获取加油支付宝协议'])
 @pytest.mark.payment
 @allure.suite('payment')
-@allure.feature('BM适配层获取支付协议')
+@allure.title('BM适配层获取支付协议')
 def test_bm_pay_agreement(param):
     '''
     测试获取支付协议
@@ -90,7 +91,7 @@ def test_bm_pay_agreement(param):
                          ids=['获取中文默认支付协议','获取英文默认支付协议'])
 @pytest.mark.payment
 @allure.suite('payment')
-@allure.feature('BM适配层获取支付协议')
+@allure.title('BM适配层获取支付协议')
 def test_bm_pay_agreement_default(param):
     '''
     测试获取默认支付协议
@@ -107,7 +108,7 @@ def test_bm_pay_agreement_default(param):
                          ids=['不输入aid','不输入orderNo','输入code不支持','输入语言错误','输入订单不存在'])
 @pytest.mark.payment
 @allure.suite('payment')
-@allure.feature('BM适配层获取支付协议')
+@allure.title('BM适配层获取支付协议')
 def test_bm_pay_agreement_wrong(param):
     '''
     测试获取支付协议异常情况
@@ -118,7 +119,7 @@ def test_bm_pay_agreement_wrong(param):
 
 @pytest.mark.payment
 @allure.suite('payment')
-@allure.feature('BM适配层获取支付结果')
+@allure.title('BM适配层获取支付结果')
 @pytest.mark.parametrize('data',[('111','20200907105829249819204','32432','102',1,'100'),
                                  ('111','20201027135001071204800','33','102',1,'101'),
                                  ('111','1235','1234','102',1,'102'),
@@ -137,7 +138,7 @@ def test_bm_pay_result(data):
 
 @pytest.mark.payment
 @allure.suite('payment')
-@allure.feature('BM适配层获取支付结果')
+@allure.title('BM适配层获取支付结果')
 @pytest.mark.parametrize('data',[('111','orderNo0002','9642113','102',1),
                                  ('kk123','20201027135001071204800','ramos','102',1),
                                  ('','20201027113016328225280','1603769416000','102',1)],
