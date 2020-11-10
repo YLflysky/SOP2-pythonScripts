@@ -32,7 +32,7 @@ def test_get_pay_result(d):
 
 
 @allure.suite('payment')
-@allure.story('获取支付结果')
+@allure.title('获取支付结果')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', [(pay.f.pyint(), '123', '支付订单不存在'),
                                (None, '123', "Required String parameter 'orderNo' is not present"),
@@ -47,7 +47,7 @@ def test_get_pay_result_fail(d):
 
 
 @allure.suite('payment')
-@allure.story('获取支付协议')
+@allure.title('获取支付协议')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', [('9642113', '11112223', '11101', 'en-US', 'ENGLISH'),
                                ('9642113', '111124424523', '12101', 'zh-CN', '荒野求生')]
@@ -188,7 +188,7 @@ callback_data_fail = [('trade_fail', '2018091361389377', 'qwer', pay.f.pyfloat(2
                       (
                           'trade_success', '20180913613893770', 'qwer', pay.f.pyfloat(2, 2, True), pay.time_delta(),
                           '123'),
-                      ('trade_success', '2018091361389377', 'out_trade_no', pay.f.pyfloat(2, 2, True), pay.time_delta(),
+                      ('trade_success', '2018091361389377', None, pay.f.pyfloat(2, 2, True), pay.time_delta(),
                        '123'),
                       ('trade_success', '20180913613893770', 'qwer', pay.f.pyfloat(2, 2, True), None, '123')]
 
@@ -204,7 +204,7 @@ def test_ali_pay_cdp_callback_wrong(d):
 
     res = pay.ali_pay_callback(trade_status=d[0], app_id=d[1], out_trade_no=d[2], receipt_amount=d[3], gmt_payment=d[4],
                                trade_no=d[5])
-    assert res == 'fail'
+    assert res == 'failure'
 
 
 @allure.suite('payment')
@@ -391,7 +391,7 @@ def test_sync_pay_stream_xuantian():
 
 
 @allure.suite('payment')
-@allure.story('同步支付记录')
+@allure.title('同步支付记录')
 @pytest.mark.payment
 def test_sync_pay_stream_update():
     '''
@@ -442,7 +442,7 @@ error = [(None, 'aid001', 'ex_order001', 'pay001', 'order001', 9999, 10000, 1, '
 
 
 @allure.suite('payment')
-@allure.story('同步支付记录')
+@allure.title('同步支付记录')
 @pytest.mark.payment
 @pytest.mark.parametrize('params', error, ids=['不输入车架号', '不输入aid', '不输入ex_order', '不输入pay_no'])
 def test_sync_pay_stream_wrong(params):
@@ -461,7 +461,7 @@ def test_sync_pay_stream_wrong(params):
 
 
 @allure.suite('payment')
-@allure.story('检查是否为FTB支付流水')
+@allure.title('检查是否为FTB支付流水')
 @pytest.mark.payment
 @pytest.mark.parametrize('payNo',
                          [('fdb6099683ad4ba6877e65450f9d6e51', True), ('a70cfac6808d45da845fee0c3a9275f9', True),
@@ -473,7 +473,7 @@ def test_sync_check_route(payNo):
 
 
 @allure.suite('payment')
-@allure.story('同步支付结果')
+@allure.title('同步支付结果')
 @pytest.mark.payment
 def test_sync_pay_result():
     '''

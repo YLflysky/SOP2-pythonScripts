@@ -22,7 +22,7 @@ def log_time(func):
 
 
 @allure.suite('calendar')
-@allure.story('add event')
+@allure.title('add event')
 @pytest.mark.calendar
 def test_add_event_01():
     '''
@@ -45,7 +45,7 @@ def test_add_event_01():
 
 
 @allure.suite('calendar')
-@allure.story('add event')
+@allure.title('add event')
 @pytest.mark.calendar
 def test_add_event_02():
     '''
@@ -85,7 +85,7 @@ def test_add_event_02():
 
 
 @allure.suite('calendar')
-@allure.story('add event')
+@allure.title('add event')
 @pytest.mark.calendar
 def test_add_event_03():
     '''
@@ -99,7 +99,7 @@ def test_add_event_03():
 
 
 @allure.suite('calendar')
-@allure.story('add event')
+@allure.title('add event')
 @pytest.mark.calendar
 def test_add_event_04():
     '''
@@ -116,7 +116,7 @@ def test_add_event_04():
 
 
 @allure.suite('calendar')
-@allure.story('add event')
+@allure.title('add event')
 @pytest.mark.calendar
 def test_add_event_05():
     '''
@@ -129,7 +129,7 @@ def test_add_event_05():
 
 
 @allure.suite('calendar')
-@allure.story('update event')
+@allure.title('update event')
 @pytest.mark.calendar
 def test_update_event():
     s = c.get_time_stamp()
@@ -146,7 +146,7 @@ def test_update_event():
 
 
 @allure.suite('calendar')
-@allure.story('find all')
+@allure.title('find all')
 @pytest.mark.calendar
 @pytest.mark.parametrize('t', [1601203105641, None])
 def test_find_all(t):
@@ -158,7 +158,7 @@ def test_find_all(t):
 
 
 @allure.suite('calendar')
-@allure.story('find detail')
+@allure.title('find detail')
 @pytest.mark.calendar
 def test_find_detail_success():
     '''
@@ -177,7 +177,7 @@ def test_find_detail_success():
 
 
 @allure.suite('calendar')
-@allure.story('find detail')
+@allure.title('find detail')
 @pytest.mark.calendar
 @pytest.mark.parametrize('id', [123, 'abc', 1, 2, 3])
 def test_find_detail_fail(id):
@@ -189,7 +189,7 @@ def test_find_detail_fail(id):
 
 
 @allure.suite('calendar')
-@allure.story('get list')
+@allure.title('get list')
 @pytest.mark.calendar
 @pytest.mark.parametrize('t', ['TYPE_ONE', 'TYPE_TWO', 'TYPE_THREE'])
 def test_get_event_list_01(t):
@@ -202,7 +202,7 @@ def test_get_event_list_01(t):
 
 
 @allure.suite('calendar')
-@allure.story('get list')
+@allure.title('get list')
 @pytest.mark.calendar
 def test_get_event_list_02():
     '''
@@ -221,7 +221,7 @@ def test_get_event_list_02():
 
 
 @allure.suite('calendar')
-@allure.story('get list')
+@allure.title('get list')
 @pytest.mark.calendar
 def test_get_event_list_03():
     '''
@@ -233,7 +233,7 @@ def test_get_event_list_03():
 
 
 @allure.suite('calendar')
-@allure.story('get list')
+@allure.title('get list')
 @pytest.mark.calendar
 def test_get_event_list_04():
     '''
@@ -246,7 +246,7 @@ def test_get_event_list_04():
 
 @pytest.mark.calendar
 @allure.suite('calendar')
-@allure.story('last time')
+@allure.title('last time')
 @pytest.mark.parametrize('uid', [c.uid, '123456', '4606930', '4608048', '4608147'])
 def test_get_last_time(uid):
     '''
@@ -258,7 +258,7 @@ def test_get_last_time(uid):
 
 @pytest.mark.calendar
 @allure.suite('calendar')
-@allure.story('rrule_list')
+@allure.title('rrule_list')
 @pytest.mark.parametrize('api', ['TYPE_ONE', 'TYPE_TWO', 'TYPE_THREE'])
 def test_event_list_by_rule_01(api):
     '''
@@ -275,7 +275,7 @@ def test_event_list_by_rule_01(api):
 
 @pytest.mark.calendar
 @allure.suite('calendar')
-@allure.story('mobile')
+@allure.title('mobile')
 @pytest.mark.parametrize('cud', ['C', 'U', 'D'])
 def test_mobile_sync_01(cud):
     '''
@@ -290,7 +290,7 @@ def test_mobile_sync_01(cud):
 
 @pytest.mark.calendar
 @allure.suite('calendar')
-@allure.story('mobile')
+@allure.title('mobile')
 def test_mobile_sync_02():
     '''
     输入多个event，同步事件
@@ -310,7 +310,7 @@ def test_mobile_sync_02():
 
 @pytest.mark.calendar
 @allure.suite('calendar')
-@allure.story('mobile')
+@allure.title('mobile')
 @pytest.mark.parametrize('u',[c.uid,'123456','4606718'])
 def test_mobile_find_all(u):
     res = c.mobile_find_all(uid=u)

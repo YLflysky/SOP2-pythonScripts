@@ -9,6 +9,7 @@ class Payment(Base):
     def __init__(self):
         super().__init__()
         self.url = self.read_conf('sop2_env.conf', self.env, 'payment_host')
+        self.second_url = self.read_conf('sop2_env.conf', self.env, '2nd_host')
 
     def get_pay_result(self, order_no, aid):
         '''
@@ -41,7 +42,7 @@ class Payment(Base):
         支付宝支付结果回调，模仿CDP调用该接口
         '''
 
-        url = 'http://62.234.199.115:18040/sop2bm/second' + '/pay/notify/v1/aliPayQrCallBack'
+        url = self.second_url + '/pay/notify/v1/aliPayQrCallBack'
         data = {'trade_status': trade_status, 'app_id': app_id, 'out_trade_no': out_trade_no,
                 'receipt_amount': receipt_amount, 'gmt_payment': gmt_payment, 'trade_no': trade_no, **kwargs}
         code, body = self.do_post(url, data)

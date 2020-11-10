@@ -16,7 +16,7 @@ success_data = [{'aid': '123456', 'invoiceNo': '1881413'},
 
 
 @allure.suite('order')
-@allure.story('invoiceDetail')
+@allure.title('invoiceDetail')
 @pytest.mark.order
 @pytest.mark.parametrize('param', success_data)
 def test_invoice_detail_success(param):
@@ -40,7 +40,7 @@ fail_data = [{'aid': None, 'serialNo': 'serial_no_0001'},
 
 
 @allure.suite('order')
-@allure.story('invoiceDetail')
+@allure.title('invoiceDetail')
 @pytest.mark.order
 @pytest.mark.parametrize('param', fail_data)
 def test_invoice_detail_fail(param):
@@ -52,7 +52,7 @@ def test_invoice_detail_fail(param):
 
 
 @allure.suite('order')
-@allure.story('invoiceDetail')
+@allure.title('invoiceDetail')
 @pytest.mark.order
 def test_gas_invoice_detail():
     '''

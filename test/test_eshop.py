@@ -8,7 +8,7 @@ spare = SpareShop()
 
 @pytest.mark.eshop
 @allure.suite('spare shop')
-@allure.story('获取备件商城category')
+@allure.title('获取备件商城category')
 def test_get_spare_category():
     '''
     测试获取备件商城category
@@ -19,7 +19,7 @@ def test_get_spare_category():
 
 @pytest.mark.eshop
 @allure.suite('spare shop')
-@allure.story('获取备件商城列表')
+@allure.title('获取备件商城列表')
 def test_get_spare_list():
     '''
     测试获取备件列表
@@ -56,7 +56,7 @@ def test_get_spare_list_sort():
 
 @pytest.mark.eshop
 @allure.suite('spare shop')
-@allure.story('获取备件商城列表')
+@allure.title('获取备件商城列表')
 def test_get_spare_list_reverse():
     '''
     测试获取备件列表，测试倒序排序
