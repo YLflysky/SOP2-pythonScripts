@@ -258,7 +258,7 @@ class Base:
         lk.prt('final get url is:{}'.format(url))
         lk.prt('final get header is:{}'.format(self.header))
         lk.prt('final get param is:{}'.format(params))
-        res = requests.get(url=url, params=params, headers=self.header, verify=True)
+        res = requests.get(url=url, params=params, headers=self.header, verify=False)
         response_body = json.loads(res.text)
         return res.status_code, response_body
 

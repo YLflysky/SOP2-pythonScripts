@@ -33,7 +33,7 @@ class Flow(Base):
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'LOCAL'
+    os.environ['ENV'] = 'DEV'
     flow = Flow()
     flow.flow_detail(10010)
     # flow.bm_get_flow_detail('255')

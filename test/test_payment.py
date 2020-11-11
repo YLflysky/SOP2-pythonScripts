@@ -50,7 +50,7 @@ def test_get_pay_result_fail(d):
 @allure.title('获取支付协议')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', [('9642113', '11112223', '11101', 'en-US', 'ENGLISH'),
-                               ('9642113', '111124424523', '12101', 'zh-CN', '荒野求生')]
+                               ('9351524', '111124424523', '12101', 'zh-CN', 'QQ音乐')]
     , ids=['支付宝英文协议', '微信中文协议'])
 def test_get_pay_agreement(d):
     '''
@@ -106,28 +106,30 @@ def test_ali_pay_cdp_callback_01(d):
     # 获取支付二维码，生成支付记录
     pay_msg = pay.get_qr_code(d[0], d[1], 'ALI_PAY')
     pay_no = pay.do_mysql_select(
-        'select out_order_no from order_id_relation where order_no="{}" order by created_time desc limit 1'.format(d[1]),
+        'select pay_no from pay_order where order_no="{}" and is_effective=1'.format(d[1]),
         'mosc_pay')
-    pay_no = pay_no[0]['out_order_no']
+    pay_no = pay_no[0]['pay_no']
     amount = pay_msg['data']['payAmount']
     pay_time = pay.time_delta()
     trade_no = pay.f.pyint()
     # 回调支付结果
     res = pay.ali_pay_callback('trade_success', '2018091361389377', pay_no, amount, pay_time, trade_no)
-
-    assert res == 'success'
-    # 检查支付结果同步到支付记录中
-    sql = pay.do_mysql_select('select * from pay_order where order_no="{}" and is_effective=1 order by pay_time desc limit 1'.format(d[1]), 'mosc_pay')
-    assert sql[0]['pay_status'] == 'SUCCESS'
-    assert sql[0]['ex_pay_no'] == str(trade_no)
-    # 检查支付结果同步到订单中
-    pay_res = pay.do_mysql_select('select * from order_pay where order_no="{}"'.format(d[1]), 'order')
-    assert pay_res[0]['pay_channel'] == 'ALI_PAY'
-    assert pay_res[0]['pay_no'] == str(d[5])
-    assert pay_res[0]['pay_way'] == 'QR_PAY'
-    assert pay_res[0]['pay_amount'] == d[3]
-    assert pay_res[0]['pay_time'] == d[4]
-    assert pay_res[0]['pay_status'] == 'SUCCESS'
+    try:
+        assert res == 'success'
+        # 检查支付结果同步到支付记录中
+        sql = pay.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no), 'mosc_pay')
+        assert sql[0]['pay_status'] == 'SUCCESS'
+        assert sql[0]['ex_pay_no'] == str(trade_no)
+        # 检查支付结果同步到订单中
+        pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'order')
+        assert pay_res[0]['pay_channel'] == 'ALI_PAY'
+        assert pay_res[0]['pay_way'] == 'QR_PAY'
+        assert float(pay_res[0]['pay_amount']) == float(amount)
+        assert pay_res[0]['pay_time'] == pay_time
+        assert pay_res[0]['pay_status'] == 'SUCCESS'
+    finally:
+        pay.do_mysql_exec('delete from order_pay where order_no="{}"'.format(d[1]), 'order')
+        pay.do_mysql_exec('delete from pay_order where order_no="{}" and is_effective=1'.format(d[1]), 'mosc_pay')
 
 
 @allure.suite('payment')
@@ -137,11 +139,14 @@ def test_ali_pay_cdp_callback_02():
     '''
     测试获取支付宝cdp回调结果，回调参数加上选填项
     '''
+    aid='32432'
+    order_no='2603681151000'
     status = 'trade_success'
     app_id = '2018091361389377'
-    out_trade_no = '228de2285c6d4c70b71f7b63f7949d77'
-    order_no = 'orderNo0001'
-    aid = '9642113'
+    # 获取支付二维码，生成支付记录
+    pay_msg = pay.get_qr_code(aid, order_no, 'ALI_PAY')
+    pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),'mosc_pay')
+    pay_no = pay_no[0]['pay_no']
     receipt_amount = 99.99
     gmt_payment = pay.time_delta(days=-1)
     trade_no = '10000'
@@ -150,21 +155,26 @@ def test_ali_pay_cdp_callback_02():
     seller_id = pay.f.pyint(10000, 10000000)
     buyer_id = pay.f.pyint(10000, 10000000)
     total = 100.00
-    res = pay.ali_pay_callback(status, app_id, out_trade_no, receipt_amount, gmt_payment, trade_no,
+    res = pay.ali_pay_callback(status, app_id, pay_no, receipt_amount, gmt_payment, trade_no,
                                buyer_logon_id=buyer_logon_id, total_amount=total, seller_id=seller_id,
                                seller_email=seller_email, buyer_id=buyer_id)
-    assert res == 'success'
-    # 校验支付结果同步到订单支付结果中
-    pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(trade_no), 'order')
-    assert pay_res[0]['pay_channel'] == 'ALI_PAY'
-    assert pay_res[0]['pay_no'] == trade_no
-    assert pay_res[0]['pay_way'] == 'QR_PAY'
-    assert pay_res[0]['pay_amount'] == receipt_amount
-    assert pay_res[0]['pay_time'] == gmt_payment
-    # 校验支付结果同步到支付的支付记录中
-    res = pay.get_pay_result(order_no, aid=aid)
-    assert res['data']['buyerAccount'] == buyer_logon_id
-    assert res['data']['payResultStatus'] == '101'
+    try:
+        assert res == 'success'
+        # 校验支付结果同步到订单支付结果中
+        pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'order')
+        assert pay_res[0]['pay_channel'] == 'ALI_PAY'
+        assert pay_res[0]['pay_no'] == pay_no
+        assert pay_res[0]['pay_way'] == 'QR_PAY'
+        assert pay_res[0]['pay_amount'] == receipt_amount
+        assert pay_res[0]['pay_time'] == gmt_payment
+        # 校验支付结果同步到支付的支付记录中
+        res = pay.get_pay_result(order_no, aid)
+        assert res['data']['buyerAccount'] == buyer_logon_id
+        assert res['data']['payResultStatus'] == '101'
+    finally:
+        pay.do_mysql_exec('delete from order_pay where order_no="{}"'.format(order_no), 'order')
+        pay.do_mysql_exec('delete from pay_order where order_no="{}" and is_effective=1'.format(order_no), 'mosc_pay')
+
 
 
 @allure.suite('payment')
@@ -464,7 +474,7 @@ def test_sync_pay_stream_wrong(params):
 @allure.title('检查是否为FTB支付流水')
 @pytest.mark.payment
 @pytest.mark.parametrize('payNo',
-                         [('fdb6099683ad4ba6877e65450f9d6e51', True), ('a70cfac6808d45da845fee0c3a9275f9', True),
+                         [('10086', True), ('bc8e0c91e25d4f1796b6c4336ad3fbb0', True),
                           (pay.f.pyint(), False)],
                          ids=['FTB订单', 'FTB订单', '非FTB订单'])
 def test_sync_check_route(payNo):
@@ -480,8 +490,9 @@ def test_sync_pay_result():
     测试同步支付结果：生成二维码->支付成功->支付宝或微信同步支付结果
     :return:
     '''
-    # pay.get_qr_code(aid='9642113',order_no='orderNo0001',channel='ALI_PAY')
-    no = '135ad3ff2d0c42edb1acf22a64111eb9'
+    pay.get_qr_code(aid='9642113',order_no='orderNo0001',channel='ALI_PAY')
+    no = pay.do_mysql_select('select pay_no from pay_order where order_no="orderNo0001" and is_effective=1','mosc_pay')
+    no = no[0]['pay_no']
     ex_no = pay.f.pyint(100000, 1000000)
     time = pay.time_delta()
     amount = pay.f.pyfloat(positive=True, right_digits=2, left_digits=4)
@@ -489,14 +500,15 @@ def test_sync_pay_result():
                               way='QR_PAY')
     try:
         assert res['returnStatus'] == 'SUCCEED'
-        sql_pay = pay.do_mysql_select('select * from pay_order where ex_pay_no="{}"'.format(ex_no), 'mosc_pay')
+        sql_pay = pay.do_mysql_select('select * from pay_order where pay_no="{}"'.format(no), 'mosc_pay')
         assert sql_pay[0]['pay_status'] == 'SUCCESS'
         assert sql_pay[0]['pay_amount'] == amount
         print('支付流水断言成功')
         sql_order = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(no), 'order')
+        assert len(sql_order) == 1
         assert sql_order[0]['pay_status'] == 'SUCCESS'
         assert sql_order[0]['pay_amount'] == amount
         print('订单结果断言成功')
     finally:
-        pay.do_mysql_exec("UPDATE pay_order SET pay_status='PROCESSING' where order_no='20201109132006569380928'",
-                          'mosc_pay')
+        pay.do_mysql_exec('delete from order_pay where order_no="orderNo0001"','order')
+        pay.do_mysql_exec('delete from pay_order where order_no="orderNo0001" and is_effective=1','mosc_pay')

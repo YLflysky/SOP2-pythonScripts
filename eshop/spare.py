@@ -14,7 +14,7 @@ class SpareShop(Base):
         '''
         获取备件商城列表
         '''
-        url = self.url + '/eshop/mos/eshop_bonus/api/v1/goods/search'
+        url = self.url + '/eshop/bonus/api/v1/goods/search'
         param = {'pageIndex':index,'pageSize':size}
         data = {'categoryId':category,**kwargs}
         code,body = self.do_post(url,data,params=param)
@@ -22,7 +22,7 @@ class SpareShop(Base):
         return body
 
     def get_category_id(self):
-        url = self.url + '/eshop/mos/eshop_bonus/api/v1/goods/category'
+        url = self.url + '/eshop/bonus/api/v1/goods/category'
         code,body = self.do_get(url,None)
         self.assert_msg(code,body)
         id = body['data']
@@ -33,7 +33,7 @@ class SpareShop(Base):
         '''
         获取备件详情API
         '''
-        url = self.url + '/eshop/mos/eshop_bonus/api/v1/goods/details'
+        url = self.url + '/eshop/bonus/api/v1/goods/details'
         param = {'goodsId':goods_id}
         code,body = self.do_get(url,param)
         self.assert_msg(code,body)
@@ -47,7 +47,7 @@ class SpareShop(Base):
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'UAT'
     shop = SpareShop()
     category = shop.get_category_id()
     # print(category)

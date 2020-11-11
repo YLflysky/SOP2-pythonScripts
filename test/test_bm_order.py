@@ -4,13 +4,12 @@ from order.bm_order import BMOrder
 import random
 import json
 
-
-
 bm = BMOrder()
 
 
 def setup_module():
     bm.reload_config()
+
 
 @pytest.mark.order
 @allure.suite('order')
@@ -105,7 +104,7 @@ def test_order_count_04(status):
 @allure.suite('order')
 @allure.title('BM车机端获取订单数量')
 @pytest.mark.order
-@pytest.mark.parametrize('category', ['00','01', '02'])
+@pytest.mark.parametrize('category', ['00', '01', '02'])
 def test_order_count_05(category):
     '''
     根据category查询订单数量
@@ -144,7 +143,7 @@ def test_order_count_06():
 @allure.suite('order')
 @allure.title('BM同步订单信息')
 @pytest.mark.order
-@pytest.mark.parametrize('brand',['VW','JETTA','AUDI'],ids=['brand为VW','brand为JETTA','brand为AUDI'])
+@pytest.mark.parametrize('brand', ['VW', 'JETTA', 'AUDI'], ids=['brand为VW', 'brand为JETTA', 'brand为AUDI'])
 def test_sync_bm_order(brand):
     '''
     测试同步BM适配层订单
@@ -179,13 +178,13 @@ def test_sync_bm_order(brand):
         bm.do_mysql_exec(
             'delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),
             'order')
-        bm.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no,user_id), 'order')
+        bm.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no, user_id), 'order')
 
 
 @allure.suite('order')
 @allure.title('BM适配层更新订单')
 @pytest.mark.order
-@pytest.mark.parametrize('d',[('INIT','jojo'),(None,None),('PROCESSING','kaka')])
+@pytest.mark.parametrize('d', [('INIT', 'jojo'), (None, None), ('PROCESSING', 'kaka')])
 def test_update_bm_order(d):
     '''
     测试BM适配层更新订单接口
@@ -201,20 +200,40 @@ def test_update_bm_order(d):
     event = bm.f.sentence()
 
     bm.update_bm_order(order_no, vin, uid, '1', businessExtInfo=businessInfo, businessState=businessState,
-                       businessStateDesc=businessStateDesc,orderEvent = event)
+                       businessStateDesc=businessStateDesc, orderEvent=event)
     sql_res = bm.do_mysql_select('SELECT * FROM `order` WHERE order_no="{}"'.format(order_no), 'order')
     if d[0] is not None and d[1] is not None:
         assert sql_res[0]['business_status'] == businessState
         assert sql_res[0]['business_status_desc'] == businessStateDesc
     order_id = sql_res[0]['id']
-    sql_res_detail = bm.do_mysql_select('select detail from order_detail where order_id={}'.format(order_id),'order')
+    sql_res_detail = bm.do_mysql_select('select detail from order_detail where order_id={}'.format(order_id), 'order')
     assert len(sql_res_detail) == 1
 
 
 @allure.suite('order')
 @allure.title('BM车机端获取订单详情')
 @pytest.mark.order
-@pytest.mark.parametrize('d',[('221','29515778243258532831'),('33','20201104165745583380928'),('4612472','4612472112221')])
-def test_bm_order_detail(d):
-    res = bm.bm_order_detail(d[0],d[1],bm.random_vin())
+@pytest.mark.parametrize('d', [('221', '29515778243258532831'), ('33', '20201104165745583380928'),
+                               ('4612472', '4612472112221')])
+def test_bm_order_detail_aid(d):
+    '''
+    测试BM车机端获取订单详情，header传入aid
+    :param d:
+    :return:
+    '''
+    res = bm.bm_order_detail(d[0], d[1], bm.random_vin())
+    assert res['data']['orderCategory']
+
+
+@allure.suite('order')
+@allure.title('BM车机端获取订单详情')
+@pytest.mark.order
+def test_bm_order_detail_token():
+    '''
+    测试BM车机端获取订单详情，header传入aid
+    :param d:
+    :return:
+    '''
+    token = 'eyJraWQiOiJiYzEzZjMzNy05MjY3LTQyNTktYTQzZS02NmZkY2Q4MTc4NzQiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2lkcC11YXQubW9zYy5mYXctdncuY29tIiwiYW1yIjoicHdkIiwidHlwZSI6IkFUIiwiYXVkIjpbIlZXR01CQjAxQ05BUFAxIiwiYXV0b25hdmkuY29tIiwiWDlHLTEwMjE3LjA2LjE5OTk5OTAwMTIiXSwic3ViIjoiOTM1MTUyNCIsImlhdCI6MTYwNDkyMzUzOSwidmVyIjoiMC4wLjEiLCJ2aW4iOiJDMzE1MkQwMkZGMjlBRDgzRkI5MjJBQzE0QTRCOUM3QyIsImV4cCI6MTYwNTA5NjMzOSwianRpIjoiOTczZDI0NDAtNTRmNy00YjYyLTg1ZDgtMWEzYWU4MzNhMjM5IiwiY29yIjoiQ04iLCJhaWQiOiI5MzUxNTI0IiwidG50IjoiVldfSFVfQ05TM19YOUctMTAyMTcuMDYuMTk5OTk5MDAxMl92My4wLjFfdjAuMC4xIiwiaWR0LWlkIjoiNDEyYzQwOTktMGZkYy00MmNjLTljYjEtZWQxY2EyNWE0OTliIiwic2NwIjoiYWNjb3VudCIsInJ0LWlkIjoiY2I1ODhkMjMtMjY2NC00MWJjLTllZjUtZmIwOTM1NzIwMjc5In0.jc2jdPTpob0T1k-fUYTfDTjmZlkwdJo1QdPpyxgjKVyd6x1DiG6Pt3OZd7qngrx_2FJOoN2k8KGvdHIxhqe4EA'
+    res = bm.bm_order_detail(None,order_no='111124424523',vin=bm.random_vin(),token=token)
     assert res['data']['orderCategory']

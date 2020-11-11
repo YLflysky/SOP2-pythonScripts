@@ -53,13 +53,15 @@ class BMOrder(Base):
         code,body = self.do_put(url,None,params)
         self.assert_msg(code,body)
 
-    def bm_order_detail(self,aid,order_no,vin):
+    def bm_order_detail(self,aid,order_no,vin,token=None):
         '''
         BM车机端获取订单详情接口
         '''
         url = self.hu_url+'/order/api/v2/vins/{}/users/{}/orders/{}'.format(vin,aid,order_no)
-        # self.header['aid'] = aid
-        self.header['Authorization'] = 'eyJraWQiOiJiYzEzZjMzNy05MjY3LTQyNTktYTQzZS02NmZkY2Q4MTc4NzQiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2lkcC11YXQubW9zYy5mYXctdncuY29tIiwiYW1yIjoicHdkIiwidHlwZSI6IkFUIiwiYXVkIjpbIlZXR01CQjAxQ05BUFAxIiwiYXV0b25hdmkuY29tIiwiWDlHLTEwMjE3LjA2LjE5OTk5OTAwMTIiXSwic3ViIjoiOTM1MTUyNCIsImlhdCI6MTYwNDkyMzUzOSwidmVyIjoiMC4wLjEiLCJ2aW4iOiJDMzE1MkQwMkZGMjlBRDgzRkI5MjJBQzE0QTRCOUM3QyIsImV4cCI6MTYwNTA5NjMzOSwianRpIjoiOTczZDI0NDAtNTRmNy00YjYyLTg1ZDgtMWEzYWU4MzNhMjM5IiwiY29yIjoiQ04iLCJhaWQiOiI5MzUxNTI0IiwidG50IjoiVldfSFVfQ05TM19YOUctMTAyMTcuMDYuMTk5OTk5MDAxMl92My4wLjFfdjAuMC4xIiwiaWR0LWlkIjoiNDEyYzQwOTktMGZkYy00MmNjLTljYjEtZWQxY2EyNWE0OTliIiwic2NwIjoiYWNjb3VudCIsInJ0LWlkIjoiY2I1ODhkMjMtMjY2NC00MWJjLTllZjUtZmIwOTM1NzIwMjc5In0.jc2jdPTpob0T1k-fUYTfDTjmZlkwdJo1QdPpyxgjKVyd6x1DiG6Pt3OZd7qngrx_2FJOoN2k8KGvdHIxhqe4EA'
+        if aid:
+            self.header['aid'] = aid
+        else:
+            self.header['Authorization'] = token
         code,body = self.do_get(url,None)
         self.assert_msg(code,body)
         return body
@@ -81,4 +83,4 @@ if __name__ == '__main__':
     # o.update_bm_order(order_no='20201104154521856385024',vin='3FCECCBA6990DD8F4839403E77F14F85',userId='10000000312441',updateType='1',
     #                   orderEvent='就是我',businessState='NOTHING_TO_SAY')
     # o.reload_config()
-    o.bm_order_detail(aid='9351524',order_no='111124424523',vin='6WU7LOB55T2R5E5PL')
+    o.order_count(uid='9351515',vin='6WU7LOB55T2R5E5PL')

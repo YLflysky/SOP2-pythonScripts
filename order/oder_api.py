@@ -222,7 +222,10 @@ if __name__ == '__main__':
     #         print(f)
     # o.sync_order_pay('123',aid='')
     # o.order_detail(aid='33',order_no='20201105163220254380928')
-    # o.sync_order(aid=123, orderNo=1008600, ex_order_no='ex10086', origin='EP')
+    order_no = o.generate_order_no()['data']
+    o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
+                 serviceId='MUSIC',spId='CLOUD MUSIC',title='测试支付订单',payAmount=0.01,amount=0.01,
+                 goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # o.sync_refund('111333','202009247772089433')
     # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
     #                 head='钛马信息技术有限公司', phone='18888888888')
