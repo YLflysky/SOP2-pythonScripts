@@ -263,7 +263,8 @@ class Base:
         return res.status_code, response_body
 
     def do_delete(self, url, params):
-        params = self._calc_digital_sign(url, params)
+        if self.gate:
+            params = self._calc_digital_sign(url, params)
         lk.prt('final delete url is:{}'.format(url))
         try:
             res = requests.delete(url=url, params=params, headers=self.header, verify=False)
@@ -272,7 +273,7 @@ class Base:
         except Exception as e:
             lk.prt(e)
 
-    def do_mysql_select(self, msg, db, host='EP'):
+    def do_mysql_select(self, msg, db, host='SOP2'):
         config_dict = eval('MysqlConfig.{}_{}.value'.format(host, self.env))
         conn = pymysql.connect(database=db,
                                host=config_dict['host'],
@@ -294,7 +295,7 @@ class Base:
         conn.close()
         return res
 
-    def do_mysql_exec(self, msg, db, host='EP'):
+    def do_mysql_exec(self, msg, db, host='SOP2'):
         config_dict = eval('MysqlConfig.{}_{}.value'.format(host, self.env))
         conn = pymysql.connect(database=db,
                                host=config_dict['host'],

@@ -39,7 +39,7 @@ def test_bm_get_qr_code(code):
         res = order.sync_bm_order(id, data)
         order_no = res['data']
         # 更新订单来源为SOP1
-        order.do_mysql_exec('update `order` set origin="SOP1",actual_pay_amount=0.01 where order_no="{}"'.format(order_no),'order')
+        order.do_mysql_exec('update `order` set origin="SOP1",actual_pay_amount=0.01 where order_no="{}"'.format(order_no),'fawvw_order')
 
         # 获取二维码
         res = pay.get_qr_code(vin=vin,aid=user_id,order_no=order_no,pay_type=code,category=category)
@@ -47,10 +47,10 @@ def test_bm_get_qr_code(code):
         assert res['data']['qrCode']
     finally:
         pass
-        # order.do_mysql_exec('delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),'order')
-        # order.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no,user_id), 'order')
-        # pay.do_mysql_exec('delete from order_id_relation where order_no="{}"'.format(order_no),'mosc_pay')
-        # pay.do_mysql_exec('delete from pay_order where order_no="{}"'.format(order_no),'mosc_pay')
+        # order.do_mysql_exec('delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),'fawvw_order')
+        # order.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no,user_id), 'fawvw_order')
+        # pay.do_mysql_exec('delete from order_id_relation where order_no="{}"'.format(order_no),'fawvw_pay')
+        # pay.do_mysql_exec('delete from pay_order where order_no="{}"'.format(order_no),'fawvw_pay')
 
 @pytest.mark.payment
 @allure.suite('payment')
@@ -121,16 +121,16 @@ def test_bm_pay_agreement_wrong(param):
 @allure.suite('payment')
 @allure.title('BM适配层获取支付结果')
 @pytest.mark.parametrize('data',[('111','20200907105829249819204','32432','102',1,'100'),
-                                 ('111','20201027135001071204800','33','102',1,'101'),
+                                 (pay.random_vin(),'20201109132011110380928','221','111',1,'100'),
                                  ('111','1235','1234','102',1,'102'),
                                  ('111','20201027113016328225280','1603769416000','102',1,'101')],
-                         ids=['获取正在支付的支付结果','获取支付成功结果','获取支付失败结果','支付成功'])
+                         ids=['获取正在支付的支付结果','获取音乐订单支付','获取支付失败结果','支付成功'])
 def test_bm_pay_result(data):
     '''
     测试BM适配层获取支付结果
     '''
     res = pay.get_pay_result(data[0],data[1],data[2],data[3],data[4])
-    sql = pay.do_mysql_select('select buyer_account from pay_order where order_no="{}" order by pay_time desc limit 1'.format(data[1]),'mosc_pay')
+    sql = pay.do_mysql_select('select buyer_account from pay_order where order_no="{}"'.format(data[1]),'fawvw_pay')
     assert res['data']['payResultStatus'] == data[-1]
 
     assert res['data']['buyerAccount'] == sql[0]['buyer_account']

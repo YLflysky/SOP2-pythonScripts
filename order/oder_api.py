@@ -103,11 +103,11 @@ class Order(Base):
         删除同步发票后的测试数据
         '''
         print('-----开始teardown------')
-        self.do_mysql_exec('delete from order_invoice where invoice_no="{}"'.format(invoice), 'order')
+        self.do_mysql_exec('delete from order_invoice where invoice_no="{}"'.format(invoice), 'fawvw_order')
         for order in orders:
             self.do_mysql_exec(
                 'delete from order_invoice_relation where order_id=(select id from `order` where ex_order_no="{}")'.format(
-                    order), 'order')
+                    order), 'fawvw_order')
         print('同步的发票删除成功')
 
     def generate_order_no(self):
@@ -189,7 +189,7 @@ class Order(Base):
         self.assert_msg(code, body)
 
     def sync_refund(self, aid, ex_order_no):
-        sql_res = self.do_mysql_select('select aid,ex_order_no from `order`', db='order')
+        sql_res = self.do_mysql_select('select aid,ex_order_no from `order`', db='fawvw_order')
         sql_res = random.choice(sql_res)
         url = self.url + '/sm/order/v1/order/sync/refund'
         data = {'aid': aid, 'exOrderNo': ex_order_no, 'refundAmount': '1',
@@ -233,12 +233,12 @@ if __name__ == '__main__':
     # ex.ex_order_sync()
     # ex_order_no_list = o.do_mysql_select(
     #     'SELECT o.ex_order_no from `order` as o WHERE o.id not IN(SELECT order_id from order_invoice_relation) and o.origin="EP"',
-    #     db='order')
+    #     db='fawvw_order')
     # print(ex_order_no_list)
     # orderNo = random.choice(ex_order_no_list)['ex_order_no']
     # serial = random.randint(1000000, 10000000)
     # o.sync_invoice(orderNo, serial)
-    # sql = o.do_mysql_select('select * from order_invoice where serial="{}"'.format(serial),'order')
+    # sql = o.do_mysql_select('select * from order_invoice where serial="{}"'.format(serial),'fawvw_order')
     # o.invoice_detail(sql[0]['aid'],sql[0]['invoice_no'])
     # o.teardown_sync(orderNo, serial)
     # res = o.invoice_detail(aid='123',serial_no='qwer1')

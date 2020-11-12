@@ -34,7 +34,7 @@ def test_add_event_01():
     calendar_id = c.add_event(start_time, end_time)['data']['id']
     sql_res = c.do_mysql_select(
         'select uid,origin,start_time,end_time from calendar_event where id={}'.format(calendar_id),
-        db='fawvw_golf_calendar')
+        db='fawvw_calendar')
     try:
         assert sql_res[0]['uid'] == '9350195'
         assert sql_res[0]['origin'] == 'HU'
@@ -71,7 +71,7 @@ def test_add_event_02():
                               duration=duration, createTime=create_time, allday=allday)['data']['id']
     sql_res = c.do_mysql_select(
         'select * from calendar_event where id={}'.format(calendar_id),
-        db='fawvw_golf_calendar')
+        db='fawvw_calendar')
     try:
         assert sql_res[0]['uid'] == '9350195'
         assert sql_res[0]['origin'] == 'HU'
@@ -110,7 +110,7 @@ def test_add_event_04():
     id = c.add_event(s, e, rrule='Only Once')['data']['id']
     sql_res = c.do_mysql_select(
         'select * from calendar_event where id={}'.format(id),
-        db='fawvw_golf_calendar')
+        db='fawvw_calendar')
 
     assert sql_res[0]['rrule'] == 'Only Once'
 
@@ -136,7 +136,7 @@ def test_update_event():
     e = c.get_time_stamp(days=1)
     id = c.add_event(s, e)['data']['id']
     c.update_event(event_id=id, longitude='1.00', latitude='1.00', s=s, e=e, address='铜梁区')
-    sql_res = c.do_mysql_select('select * from calendar_event where id={}'.format(id), 'fawvw_golf_calendar')
+    sql_res = c.do_mysql_select('select * from calendar_event where id={}'.format(id), 'fawvw_calendar')
     try:
         assert float(sql_res[0]['longitude']) == 1.00
         assert float(sql_res[0]['latitude']) == 1.00
@@ -267,7 +267,7 @@ def test_event_list_by_rule_01(api):
     st = 1602401995000
     et = 1603427680000
     device = c.device_id
-    params = c.do_mysql_select('select uid from calendar_event where rrule="FREQ=DAILY;COUNT=2"', 'fawvw_golf_calendar')
+    params = c.do_mysql_select('select uid from calendar_event where rrule="FREQ=DAILY;COUNT=2"', 'fawvw_calendar')
     uid = params[0]['uid']
     body = c.event_list_by_rule(api, st, et, uid, device)
     print(body)

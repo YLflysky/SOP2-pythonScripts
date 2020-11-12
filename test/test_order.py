@@ -25,7 +25,7 @@ def test_invoice_detail_success(param):
     '''
     res = o.invoice_detail(param['aid'], param['invoiceNo'])
     assert 'SUCCEED' == res['returnStatus']
-    SQL_RES = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(param['invoiceNo']), 'order')
+    SQL_RES = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(param['invoiceNo']), 'fawvw_order')
     print(SQL_RES)
     assert len(SQL_RES) == 1
     assert SQL_RES[0]['status'] == res['data']['status']
@@ -59,7 +59,7 @@ def test_gas_invoice_detail():
     测试加油业务域发票详情
     '''
     param = o.do_mysql_select('select * from order_invoice where service_id="GAS" and id in'
-                              ' (select invoice_id from order_invoice_relation)', 'order')
+                              ' (select invoice_id from order_invoice_relation)', 'fawvw_order')
     if len(param) == 0:
         print('no test data...exit test')
         sys.exit(-1)
@@ -97,7 +97,7 @@ def test_sync_invoice(d):
     ex_order_no = [ex_order_no]
     o.teardown_sync_invoice(ex_order_no, invoice_no)
     o.sync_invoice(invoice_no, status, party_type, ex_order_no)
-    sql = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(invoice_no), 'order')
+    sql = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(invoice_no), 'fawvw_order')
     assert len(sql) == 1
     body = o.invoice_detail(sql[0]['aid'], invoice_no)
     assert 'SUCCEED' == body['returnStatus']
@@ -118,7 +118,7 @@ def test_sync_invoice_02():
     party_type = 'COMPANY'
     o.teardown_sync_invoice(ex_order_no, invoice_no)
     o.sync_invoice(invoice_no, status, party_type, ex_order_no)
-    sql = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(invoice_no), 'order')
+    sql = o.do_mysql_select('select * from order_invoice where invoice_no="{}"'.format(invoice_no), 'fawvw_order')
     assert len(sql) == 1
     body = o.invoice_detail(sql[0]['aid'], invoice_no)
     assert 'SUCCEED' == body['returnStatus']
@@ -139,7 +139,7 @@ def test_sync_invoice_03():
     party = random.choice(['PERSONAL','COMPANY'])
     ep_order_id = ['3322333']
     o.sync_invoice(invoice_no,status,party,ep_order_id)
-    sql_res = o.do_mysql_select('select * from order_invoice where invoice_no={}'.format(invoice_no),'order')
+    sql_res = o.do_mysql_select('select * from order_invoice where invoice_no={}'.format(invoice_no),'fawvw_order')
     assert sql_res[0]['status'] == status
     assert sql_res[0]['party_type'] == party
     with allure.step('test result'):
@@ -163,15 +163,15 @@ def test_sync_pay():
     '''
     测试同步支付结果
     '''
-    sql = o.do_mysql_select('select aid,order_no from  `order` where del_flag=0', db='order')
+    sql = o.do_mysql_select('select aid,order_no from  `order` where del_flag=0', 'fawvw_order')
     sql = random.choice(sql)
     aid = sql['aid']
     order_no = sql['order_no']
     pay_no = o.f.pyint()
     o.sync_order_pay(pay_no,aid=aid,orderNo=order_no)
-    res = o.do_mysql_select('select count(1) from order_pay where pay_no = {}'.format(pay_no), 'order')
+    res = o.do_mysql_select('select count(1) from order_pay where pay_no = {}'.format(pay_no), 'fawvw_order')
     assert len(res) == 1
-    o.do_mysql_exec('delete from order_pay where pay_no={}'.format(pay_no), 'order')
+    o.do_mysql_exec('delete from order_pay where pay_no={}'.format(pay_no), 'fawvw_order')
 
 
 @allure.suite('order')
@@ -185,7 +185,7 @@ def test_apply_invoice():
     order_no = o.do_mysql_select(
         'select order_no from `order` where aid={} and service_id="GAS" and '
         ' order_status="PAY_SUCCESS" and invoice_issuable=1 and invoice_status=0'.format(
-            aid), 'order')
+            aid), 'fawvw_order')
     if len(order_no) == 0:
         print('没有可以开票的测试数据，退出测试...')
         sys.exit(-1)
@@ -196,7 +196,7 @@ def test_apply_invoice():
     head = '钛马信息技术有限公司'
     duty = '91310115560364240G'
     o.apply_invoice(aid, order_no, duty, head, phone)
-    sql_res = o.do_mysql_select('select invoice_status from `order` where order_no={}'.format(order_no[0]), 'order')
+    sql_res = o.do_mysql_select('select invoice_status from `order` where order_no={}'.format(order_no[0]), 'fawvw_order')
     assert sql_res[0]['invoice_status'] == 1
 
 
@@ -206,14 +206,14 @@ def test_apply_invoice():
 def test_callback_order():
     ep_order = '123456789'
     info = {'name': 'waka waka', 'age': 18}
-    o.do_mysql_exec('delete from `order` where ex_order_no="{}"'.format(ep_order), 'order')
+    o.do_mysql_exec('delete from `order` where ex_order_no="{}"'.format(ep_order), 'fawvw_order')
 
     o.sync_order_kafka(ep_order, info, cp="NX_ENGINE")
     time.sleep(2.0)
     sql_res = o.do_mysql_select(
         'select d.detail,o.* '
         'from `order` o,order_detail d where o.id=d.order_id and ex_order_no="{}"'.format(
-            ep_order), 'order')
+            ep_order), 'fawvw_order')
     print('同步订单成功')
     assert len(sql_res) == 1
     assert sql_res[0]['order_status'] == 'PAY_SUCCESS'
@@ -269,10 +269,10 @@ def test_sync_order_01(order_status):
     aid = '123456'
     category = '102'
     res = o.sync_order(ex, origin, aid, category, orderStatus=order_status, timeout=20)
-    sql_res = o.do_mysql_select('select order_status from `order` where order_no="{}"'.format(res['data']), 'order')
+    sql_res = o.do_mysql_select('select order_status from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
     assert len(sql_res) == 1
     assert sql_res[0]['order_status'] == order_status
-    o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')
+    o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
 
 
 @allure.suite('order')
@@ -288,9 +288,9 @@ def test_sync_order_02(order_type):
     aid = '123456'
     category = '102'
     res = o.sync_order(ex, origin, aid, category, orderType=order_type, checkFlag=True)
-    sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(res['data']), 'order')
+    sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
     assert len(sql_res) == 1
-    o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')
+    o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
 
 
 @allure.suite('order')
@@ -305,10 +305,10 @@ def test_sync_order_03(origin):
     aid = '123456'
     category = '102'
     res = o.sync_order(ex, origin, aid, category)
-    sql_res = o.do_mysql_select('select origin from `order` where order_no="{}"'.format(res['data']), 'order')
+    sql_res = o.do_mysql_select('select origin from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
     assert len(sql_res) == 1
     assert sql_res[0]['origin'] == origin
-    o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')
+    o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
 
 
 @allure.suite('order')
@@ -329,7 +329,7 @@ def test_sync_order_reservation():
                        serviceId=service, spId=o.f.pyint())
 
     time.sleep(15.0)
-    sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(res['data']), 'order')
+    sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
     try:
         assert len(sql_res) == 1
         assert sql_res
@@ -337,7 +337,7 @@ def test_sync_order_reservation():
         assert sql_res[0]['check_flag'] == '0'
     finally:
         pass
-        o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'order')
+        o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
 
 
 @allure.suite('order')
@@ -357,7 +357,7 @@ def test_update_order():
     o.update_order(order_no=order_no, aid=aid, orderStatus='INIT', businessInfo=business_info)
     sql_res = o.do_mysql_select(
         'select order_status,detail from `order` o,order_detail d where 1=1 and o.id=d.order_id and order_no="{}"'.format(
-            order_no), 'order')
+            order_no), 'fawvw_order')
     try:
         assert sql_res[0]['order_status'] == 'INIT'
         sql_res_detail = json.loads(sql_res[0]['detail'])
@@ -367,7 +367,7 @@ def test_update_order():
         assert sql_res_detail['height'] == business_info['height']
     finally:
         pass
-        o.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'order')
+        o.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
 
 
 @allure.suite('order')
@@ -377,7 +377,7 @@ def test_del_order_01():
     '''
     测试删除订单，订单状态为WAITING_PAY，不能删除
     '''
-    order = o.do_mysql_select('select * from `order` where order_status="WAITING_PAY" and del_flag=0', 'order')
+    order = o.do_mysql_select('select * from `order` where order_status="WAITING_PAY" and del_flag=0', 'fawvw_order')
     order = random.choice(order)
     no = order['order_no']
     aid = order['aid']
@@ -392,7 +392,7 @@ def test_del_order_02():
     '''
     测试删除订单，del_flag=1的订单不能删除
     '''
-    order = o.do_mysql_select('select * from `order` where del_flag=1', 'order')
+    order = o.do_mysql_select('select * from `order` where del_flag=1', 'fawvw_order')
     order = random.choice(order)
     no = order['order_no']
     aid = order['aid']

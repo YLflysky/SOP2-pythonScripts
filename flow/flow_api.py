@@ -30,10 +30,30 @@ class Flow(Base):
         self.assert_msg(c,b)
         return b
 
+    def sign_result_callback(self,aid,channel,notify_type,status,enterprise='2100010000'):
+        '''
+        流量免密签约结果回调
+        :param enterprise:企业id，大众为2100010000
+        :param aid:大众用户id
+        :param channel:支付渠道，1=支付宝，2=微信
+        :param notify_type:回调类型，1=签约，2=解约
+        :param status:状态，1=已签约，2=未签约
+        :return:
+        '''
+        url = self.flow_url + '/cmcc/notify/contractResultNotify'
+        data = {'enterpriseId':enterprise,'userId':aid,'channel':channel,'notifyType':notify_type,'contractStatus':status}
+        c,b = self.do_post(url,data)
+        assert 200 == c
+        print(b)
+        return b
+
+
+
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'DEV'
     flow = Flow()
-    flow.flow_detail(10010)
-    # flow.bm_get_flow_detail('255')
+    # flow.flow_detail(10010)
+    # flow.bm_get_flow_detail('10010')
+    flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)

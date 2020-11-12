@@ -83,4 +83,4 @@ if __name__ == '__main__':
     # o.update_bm_order(order_no='20201104154521856385024',vin='3FCECCBA6990DD8F4839403E77F14F85',userId='10000000312441',updateType='1',
     #                   orderEvent='就是我',businessState='NOTHING_TO_SAY')
     # o.reload_config()
-    o.order_count(uid='9351515',vin='6WU7LOB55T2R5E5PL')
+    o.bm_order_detail(aid='9351524',order_no='20201110181836517380928',vin=o.random_vin())

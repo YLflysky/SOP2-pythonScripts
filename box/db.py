@@ -14,5 +14,7 @@ class MysqlConfig(Enum):
     SOP2_MA=EP_DEV
     EP_UAT = EP_DEV
     SOP2_DEV = {'host':'192.168.133.191','port':3306,'username':'faw_sop2_dev','password':'oJNqwQsUa239GbdYz7Tp'}
-
+    SOP2_SIT = {'host':'192.168.133.178','port':3306,'username':'faw_sop2_sit_rd_automation','password':'36zj4QsauCUt0blOkwZ8'}
+    SOP2_UAT = {'host':'192.168.133.203','port':3306,'username':'faw_sop2_uat_rd_automation','password':'ci1yjxz4qIuNpJZCOHrR'}
+    SOP2_LOCAL = SOP2_DEV
 # print(MysqlConfig.SIT.value)

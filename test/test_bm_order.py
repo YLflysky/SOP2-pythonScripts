@@ -21,7 +21,7 @@ def test_order_count(uid):
     '''
     vin = bm.f.pyint()
     count = bm.order_count(vin, uid)['data']
-    sql_res = bm.do_mysql_select('select count(1) as c from `order` where aid="{}" and del_flag=0'.format(uid), 'order')
+    sql_res = bm.do_mysql_select('select count(1) as c from `order` where aid="{}" and del_flag=0'.format(uid), 'fawvw_order')
     assert sql_res[0]['c'] == int(count)
     with allure.step('测试结果'):
         allure.attach('uid为{}的订单数量获取成功：{}'.format(uid, count), '测试结果')
@@ -56,7 +56,7 @@ def test_order_count_03():
     count = res['data']
     sql_res = bm.do_mysql_select(
         'select count(1) as c from `order` where aid="{}" and create_date between "{}" and "{}"'.format(uid, begin,
-                                                                                                        end), 'order')
+                                                                                                        end), 'fawvw_order')
     assert sql_res[0]['c'] == int(count)
 
 
@@ -76,27 +76,27 @@ def test_order_count_04(status):
     if status == '1001':
         sql_res = bm.do_mysql_select(
             'select count(1) as c from `order` where aid="221" and order_status in ("WAITING_PAY") and del_flag=0',
-            'order')
+            'fawvw_order')
     elif status == '1002':
         sql_res = bm.do_mysql_select(
             'select count(1) as c from `order` where aid="221" and order_status in '
             '("PROCESSING","REFUND_FAILED","PAY_SUCCESS","PAY_FAILED","RESERVED") and del_flag=0',
-            'order')
+            'fawvw_order')
     elif status == '1003':
         sql_res = bm.do_mysql_select(
-            'select count(1) as c from `order` where aid="221" and order_status in ("FINISH") and del_flag=0', 'order')
+            'select count(1) as c from `order` where aid="221" and order_status in ("FINISH") and del_flag=0', 'fawvw_order')
     elif status == '1004':
         sql_res = bm.do_mysql_select(
             'select count(1) as c from `order` where aid="221" and order_status in ("CANCEL","EXPIRE") and del_flag=0',
-            'order')
+            'fawvw_order')
     elif status == '1005':
         sql_res = bm.do_mysql_select(
             'select count(1) as c from `order` where aid="221" and order_status in ("REFUND_SUCCESS","REFUNDING") and del_flag=0',
-            'order')
+            'fawvw_order')
     else:
         sql_res = bm.do_mysql_select(
             'select count(1) as c from `order` where aid="221" and order_status !="INIT" and del_flag=0 ',
-            'order')
+            'fawvw_order')
 
     assert sql_res[0]['c'] == int(count)
 
@@ -116,12 +116,12 @@ def test_order_count_05(category):
     assert res['description'] == '成功'
     count = res['data']
     order_category = bm.do_mysql_select(
-        'select category from category_relation where hu_category = "{}"'.format(category), 'order')
+        'select category from category_relation where hu_category = "{}"'.format(category), 'fawvw_order')
     categories = []
     for c in order_category:
         categories.append(c['category'])
     sql = 'select count(1) as c from `order` where aid="4614907" and category in ("{}")'.format('","'.join(categories))
-    sql_res = bm.do_mysql_select(sql, 'order')
+    sql_res = bm.do_mysql_select(sql, 'fawvw_order')
 
     assert sql_res[0]['c'] == int(count)
 
@@ -169,7 +169,7 @@ def test_sync_bm_order(brand):
     try:
         assert res['description'] == '成功'
         order_no = res['data']
-        sql_res = bm.do_mysql_select('select * from `order` where order_no="{}"'.format(order_no), 'order')
+        sql_res = bm.do_mysql_select('select * from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
         assert sql_res[0]['total_amount'] == float(order_amount / 100)
         assert sql_res[0]['discount_amount'] == 100.00
         assert sql_res[0]['ex_order_no'] == str(id)
@@ -177,8 +177,8 @@ def test_sync_bm_order(brand):
     finally:
         bm.do_mysql_exec(
             'delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),
-            'order')
-        bm.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no, user_id), 'order')
+            'fawvw_order')
+        bm.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no, user_id), 'fawvw_order')
 
 
 @allure.suite('order')
@@ -189,7 +189,7 @@ def test_update_bm_order(d):
     '''
     测试BM适配层更新订单接口
     '''
-    order = bm.do_mysql_select(' SELECT * FROM `order` WHERE origin="BM" and vin is not null and del_flag=0', 'order')
+    order = bm.do_mysql_select(' SELECT * FROM `order` WHERE origin="BM" and vin is not null and del_flag=0', 'fawvw_order')
     order = random.choice(order)
     order_no = order['order_no']
     vin = order['vin']
@@ -201,12 +201,12 @@ def test_update_bm_order(d):
 
     bm.update_bm_order(order_no, vin, uid, '1', businessExtInfo=businessInfo, businessState=businessState,
                        businessStateDesc=businessStateDesc, orderEvent=event)
-    sql_res = bm.do_mysql_select('SELECT * FROM `order` WHERE order_no="{}"'.format(order_no), 'order')
+    sql_res = bm.do_mysql_select('SELECT * FROM `order` WHERE order_no="{}"'.format(order_no), 'fawvw_order')
     if d[0] is not None and d[1] is not None:
         assert sql_res[0]['business_status'] == businessState
         assert sql_res[0]['business_status_desc'] == businessStateDesc
     order_id = sql_res[0]['id']
-    sql_res_detail = bm.do_mysql_select('select detail from order_detail where order_id={}'.format(order_id), 'order')
+    sql_res_detail = bm.do_mysql_select('select detail from order_detail where order_id={}'.format(order_id), 'fawvw_order')
     assert len(sql_res_detail) == 1
 
 
@@ -223,6 +223,7 @@ def test_bm_order_detail_aid(d):
     '''
     res = bm.bm_order_detail(d[0], d[1], bm.random_vin())
     assert res['data']['orderCategory']
+    assert res['data']['orderStatus']
 
 
 @allure.suite('order')

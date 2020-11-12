@@ -14,12 +14,12 @@ pay = Payment()
 @allure.title('获取支付结果')
 @pytest.mark.payment
 @pytest.mark.parametrize('d', [('1234', '1234'), ('1235', '1234'), ('20200907105829249819204', '32432'),
-                               ('orderNo0001', '9642113')],
+                               ('efafea', '2222')],
                          ids=['支付成功', '支付失败', '支付中', '成功'])
 def test_get_pay_result(d):
     res = pay.get_pay_result(d[0], d[1])
     sql = pay.do_mysql_select('select * from pay_order where order_no="{}" order by pay_time desc limit 1'.format(d[0]),
-                              'mosc_pay')
+                              'fawvw_pay')
     if sql[0]['buyer_account']:
         assert res['data']['buyerAccount'] == sql[0]['buyer_account']
     status = sql[0]['pay_status']
@@ -107,7 +107,7 @@ def test_ali_pay_cdp_callback_01(d):
     pay_msg = pay.get_qr_code(d[0], d[1], 'ALI_PAY')
     pay_no = pay.do_mysql_select(
         'select pay_no from pay_order where order_no="{}" and is_effective=1'.format(d[1]),
-        'mosc_pay')
+        'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
     amount = pay_msg['data']['payAmount']
     pay_time = pay.time_delta()
@@ -117,19 +117,19 @@ def test_ali_pay_cdp_callback_01(d):
     try:
         assert res == 'success'
         # 检查支付结果同步到支付记录中
-        sql = pay.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no), 'mosc_pay')
+        sql = pay.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no), 'fawvw_pay')
         assert sql[0]['pay_status'] == 'SUCCESS'
         assert sql[0]['ex_pay_no'] == str(trade_no)
         # 检查支付结果同步到订单中
-        pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'order')
+        pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
         assert pay_res[0]['pay_channel'] == 'ALI_PAY'
         assert pay_res[0]['pay_way'] == 'QR_PAY'
         assert float(pay_res[0]['pay_amount']) == float(amount)
         assert pay_res[0]['pay_time'] == pay_time
         assert pay_res[0]['pay_status'] == 'SUCCESS'
     finally:
-        pay.do_mysql_exec('delete from order_pay where order_no="{}"'.format(d[1]), 'order')
-        pay.do_mysql_exec('delete from pay_order where order_no="{}" and is_effective=1'.format(d[1]), 'mosc_pay')
+        pay.do_mysql_exec('delete from order_pay where order_no="{}"'.format(d[1]), 'fawvw_order')
+        pay.do_mysql_exec('delete from pay_order where order_no="{}" and is_effective=1'.format(d[1]), 'fawvw_pay')
 
 
 @allure.suite('payment')
@@ -145,7 +145,7 @@ def test_ali_pay_cdp_callback_02():
     app_id = '2018091361389377'
     # 获取支付二维码，生成支付记录
     pay_msg = pay.get_qr_code(aid, order_no, 'ALI_PAY')
-    pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),'mosc_pay')
+    pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
     receipt_amount = 99.99
     gmt_payment = pay.time_delta(days=-1)
@@ -161,7 +161,7 @@ def test_ali_pay_cdp_callback_02():
     try:
         assert res == 'success'
         # 校验支付结果同步到订单支付结果中
-        pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'order')
+        pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
         assert pay_res[0]['pay_channel'] == 'ALI_PAY'
         assert pay_res[0]['pay_no'] == pay_no
         assert pay_res[0]['pay_way'] == 'QR_PAY'
@@ -172,8 +172,8 @@ def test_ali_pay_cdp_callback_02():
         assert res['data']['buyerAccount'] == buyer_logon_id
         assert res['data']['payResultStatus'] == '101'
     finally:
-        pay.do_mysql_exec('delete from order_pay where order_no="{}"'.format(order_no), 'order')
-        pay.do_mysql_exec('delete from pay_order where order_no="{}" and is_effective=1'.format(order_no), 'mosc_pay')
+        pay.do_mysql_exec('delete from order_pay where order_no="{}"'.format(order_no), 'fawvw_order')
+        pay.do_mysql_exec('delete from pay_order where order_no="{}" and is_effective=1'.format(order_no), 'fawvw_pay')
 
 
 
@@ -229,11 +229,11 @@ def test_cmcc_callback_01():
     pay.cmcc_callback(aid, '2100010000', 1, 1, 1)
     try:
         sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),
-                                  'mosc_pay')
+                                  'fawvw_pay')
         assert sql[0]['pause_status'] == 'OPEN'
         assert sql[0]['sign_status'] == 'OPEN'
     finally:
-        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid), 'mosc_pay')
+        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid), 'fawvw_pay')
 
 
 @allure.suite('payment')
@@ -248,12 +248,12 @@ def test_cmcc_callback_02():
     pay.cmcc_callback(aid, '2100010000', 1, 2, 2)
     try:
         sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),
-                                  'mosc_pay')
+                                  'fawvw_pay')
         assert sql[0]['pause_status'] == 'PAUSE'
         assert sql[0]['sign_status'] == 'CLOSE'
     finally:
         pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),
-                          'mosc_pay')
+                          'fawvw_pay')
 
 
 @allure.suite('payment')
@@ -268,12 +268,12 @@ def test_cmcc_callback_03():
     pay.cmcc_callback(aid, '2100010000', 2, 1, 1)
     try:
         sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="WECHAT_PAY"'.format(aid),
-                                  'mosc_pay')
+                                  'fawvw_pay')
         assert sql[0]['pause_status'] == 'OPEN'
         assert sql[0]['sign_status'] == 'OPEN'
     finally:
         pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="WECHAT_PAY"'.format(aid),
-                          'mosc_pay')
+                          'fawvw_pay')
 
 
 @allure.suite('payment')
@@ -288,12 +288,12 @@ def test_cmcc_callback_04():
     pay.cmcc_callback(aid, '2100010000', 2, 2, 2)
     try:
         sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="WECHAT_PAY"'.format(aid),
-                                  'mosc_pay')
+                                  'fawvw_pay')
         assert sql[0]['pause_status'] == 'PAUSE'
         assert sql[0]['sign_status'] == 'CLOSE'
     finally:
         pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="WECHAT_PAY"'.format(aid),
-                          'mosc_pay')
+                          'fawvw_pay')
 
 
 @allure.suite('payment')
@@ -307,7 +307,8 @@ def test_cmcc_callback_wrong(wrong):
     测试回调免密支付结果接口--异常情况
     '''
     res = pay.cmcc_callback(aid=wrong[0], enterprise=wrong[1], channel=wrong[2], notify_type=wrong[3], status=wrong[4])
-    assert res['errorMessage']
+    assert res['status'] == '0000_1'
+    assert res['message']
 
 
 @allure.suite('payment')
@@ -342,7 +343,7 @@ def test_sync_pay_stream(enum):
             'origin': origin}
     pay.sync_pay_stream(data)
     try:
-        sql_res = pay.do_mysql_select('select * from pay_order where ex_pay_no="{}"'.format(ex_pay_no), 'mosc_pay')
+        sql_res = pay.do_mysql_select('select * from pay_order where ex_pay_no="{}"'.format(ex_pay_no), 'fawvw_pay')
         assert len(sql_res) == 1
         sql_res = sql_res[0]
         assert sql_res['vin'] == vin
@@ -357,7 +358,7 @@ def test_sync_pay_stream(enum):
         assert sql_res['pay_status'] == status
         assert sql_res['order_source'] == origin
     finally:
-        pay.do_mysql_exec('delete from pay_order where ex_pay_no="{}"'.format(ex_pay_no), 'mosc_pay')
+        pay.do_mysql_exec('delete from pay_order where ex_pay_no="{}"'.format(ex_pay_no), 'fawvw_pay')
 
 
 @allure.suite('payment')
@@ -391,7 +392,7 @@ def test_sync_pay_stream_xuantian():
             'buyerAccount': buyer, 'failReason': reason}
     pay.sync_pay_stream(data)
     try:
-        sql_res = pay.do_mysql_select('select * from pay_order where ex_pay_no="{}"'.format(ex_pay_no), 'mosc_pay')
+        sql_res = pay.do_mysql_select('select * from pay_order where ex_pay_no="{}"'.format(ex_pay_no), 'fawvw_pay')
         assert len(sql_res) == 1
         sql_res = sql_res[0]
         assert sql_res['buyer_account'] == buyer
@@ -431,7 +432,7 @@ def test_sync_pay_stream_update():
             'buyerAccount': buyer, 'failReason': reason}
     pay.sync_pay_stream(data)
     try:
-        sql_res = pay.do_mysql_select('select * from pay_order where ex_pay_no="{}"'.format(ex_pay_no), 'mosc_pay')
+        sql_res = pay.do_mysql_select('select * from pay_order where ex_pay_no="{}"'.format(ex_pay_no), 'fawvw_pay')
         assert len(sql_res) == 1
         sql_res = sql_res[0]
         assert sql_res['buyer_account'] == buyer
@@ -491,7 +492,7 @@ def test_sync_pay_result():
     :return:
     '''
     pay.get_qr_code(aid='9642113',order_no='orderNo0001',channel='ALI_PAY')
-    no = pay.do_mysql_select('select pay_no from pay_order where order_no="orderNo0001" and is_effective=1','mosc_pay')
+    no = pay.do_mysql_select('select pay_no from pay_order where order_no="orderNo0001" and is_effective=1','fawvw_pay')
     no = no[0]['pay_no']
     ex_no = pay.f.pyint(100000, 1000000)
     time = pay.time_delta()
@@ -500,15 +501,15 @@ def test_sync_pay_result():
                               way='QR_PAY')
     try:
         assert res['returnStatus'] == 'SUCCEED'
-        sql_pay = pay.do_mysql_select('select * from pay_order where pay_no="{}"'.format(no), 'mosc_pay')
+        sql_pay = pay.do_mysql_select('select * from pay_order where pay_no="{}"'.format(no), 'fawvw_pay')
         assert sql_pay[0]['pay_status'] == 'SUCCESS'
         assert sql_pay[0]['pay_amount'] == amount
         print('支付流水断言成功')
-        sql_order = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(no), 'order')
+        sql_order = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(no), 'fawvw_order')
         assert len(sql_order) == 1
         assert sql_order[0]['pay_status'] == 'SUCCESS'
         assert sql_order[0]['pay_amount'] == amount
         print('订单结果断言成功')
     finally:
-        pay.do_mysql_exec('delete from order_pay where order_no="orderNo0001"','order')
-        pay.do_mysql_exec('delete from pay_order where order_no="orderNo0001" and is_effective=1','mosc_pay')
+        pay.do_mysql_exec('delete from order_pay where order_no="orderNo0001"','fawvw_order')
+        pay.do_mysql_exec('delete from pay_order where order_no="orderNo0001" and is_effective=1','fawvw_pay')
