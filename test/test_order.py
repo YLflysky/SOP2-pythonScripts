@@ -169,9 +169,9 @@ def test_sync_pay():
     order_no = sql['order_no']
     pay_no = o.f.pyint()
     o.sync_order_pay(pay_no,aid=aid,orderNo=order_no)
-    res = o.do_mysql_select('select count(1) from order_pay where pay_no = {}'.format(pay_no), 'fawvw_order')
+    res = o.do_mysql_select('select count(1) from order_pay where pay_no = "{}"'.format(pay_no), 'fawvw_order')
     assert len(res) == 1
-    o.do_mysql_exec('delete from order_pay where pay_no={}'.format(pay_no), 'fawvw_order')
+    o.do_mysql_exec('delete from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
 
 
 @allure.suite('order')
@@ -196,7 +196,7 @@ def test_apply_invoice():
     head = '钛马信息技术有限公司'
     duty = '91310115560364240G'
     o.apply_invoice(aid, order_no, duty, head, phone)
-    sql_res = o.do_mysql_select('select invoice_status from `order` where order_no={}'.format(order_no[0]), 'fawvw_order')
+    sql_res = o.do_mysql_select('select invoice_status from `order` where order_no="{}"'.format(order_no[0]), 'fawvw_order')
     assert sql_res[0]['invoice_status'] == 1
 
 

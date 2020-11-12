@@ -108,8 +108,8 @@ class Calendar(Base):
 
 if __name__ == '__main__':
     os.environ['GATE']='false'
-    os.environ['ENV']='DEV'
+    os.environ['ENV']='UAT'
     c = Calendar()
 
-    c.mobile_sync('C')
+    # c.mobile_sync('C')
     c.mobile_find_all(c.uid)
