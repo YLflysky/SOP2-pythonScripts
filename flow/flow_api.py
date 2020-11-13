@@ -79,12 +79,12 @@ if __name__ == '__main__':
     import os
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'SIT'
     flow = Flow()
     # flow.get_qr_code('e00c66a3ad7a4964911cbaf475bcca9b','111','20201113094813034827392','ALI_PAY',flow.f.md5())
     success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additionalAttrs=success_attr)
-    flow.flow_detail(10010)
-    # flow.bm_get_flow_detail('100')
+    flow.flow_detail(255)
+    # flow.bm_get_flow_detail('255')
     # flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)
