@@ -84,7 +84,8 @@ data = [
 
 @allure.suite('order')
 @allure.title('同步发票信息')
-@pytest.mark.parametrize('d', data)
+@pytest.mark.parametrize('d', data,ids=['同步状态为未开票的发票','同步状态为开票中的发票','同步状态为开票成功的发票',
+                                        '同步状态为开票失败的发票','同步发票抬头为公司的发票'])
 @pytest.mark.order
 def test_sync_invoice(d):
     '''
@@ -142,15 +143,15 @@ def test_sync_invoice_03():
     sql_res = o.do_mysql_select('select * from order_invoice where invoice_no={}'.format(invoice_no),'fawvw_order')
     assert sql_res[0]['status'] == status
     assert sql_res[0]['party_type'] == party
-    with allure.step('test result'):
-        allure.attach(status,'发票状态',attachment_type=str)
-        allure.attach(party,'发票抬头',attachment_type=str)
+    with allure.step('测试结果'):
+        allure.attach(status,'发票状态',attachment_type=allure.attachment_type.TEXT)
+        allure.attach(party,'发票抬头',attachment_type=allure.attachment_type.TEXT)
 
 
 @allure.suite('order')
 @allure.title('生成一个订单号')
 @pytest.mark.order
-def test_generate_orderNo():
+def test_generate_order_no():
     body = o.generate_order_no()
     assert 'SUCCEED' == body['returnStatus']
     assert body['data'] is not None
@@ -167,7 +168,7 @@ def test_sync_pay():
     sql = random.choice(sql)
     aid = sql['aid']
     order_no = sql['order_no']
-    pay_no = o.f.pyint()
+    pay_no = o.f.md5()
     o.sync_order_pay(pay_no,aid=aid,orderNo=order_no)
     res = o.do_mysql_select('select count(1) from order_pay where pay_no = "{}"'.format(pay_no), 'fawvw_order')
     assert len(res) == 1

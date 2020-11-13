@@ -138,7 +138,7 @@ class Order(Base):
                       "info": business_info, "discountAmount": 0, 'epOrderCode': ep_order_id,
                       "domainId": domain, 'orderCategory': '105'}
 
-        kafka_data = {'key': json.dumps(kafka_data)}
+        kafka_data = {'key': self.my_json_decoder(kafka_data)}
         msg = {'header': header, 'kafkaData': kafka_data}
         host = '10.20.4.12:9092'
         topic = 'order-finished-remind-topic'
@@ -166,7 +166,7 @@ class Order(Base):
                       "createDate": date, "updateBy": "system", "updateDate": date,
                       "remarks": remark, "delFlag": "0"}
 
-        kafka_data = {'key': json.dumps(kafka_data)}
+        kafka_data = {'key': self.my_json_decoder(kafka_data)}
         msg = {'header': header, 'kafkaData': kafka_data}
         host = '10.20.4.11:9092'
         topic = 'order-finished-remind-topic'
@@ -211,7 +211,7 @@ class Order(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = Order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
@@ -221,11 +221,11 @@ if __name__ == '__main__':
     #     if 'py' in f:
     #         print(f)
     # o.sync_order_pay('123',aid='')
-    # o.order_detail(aid='33',order_no='20201105163220254380928')
-    order_no = o.generate_order_no()['data']
-    o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
-                 serviceId='MUSIC',spId='CLOUD MUSIC',title='测试支付订单',payAmount=0.01,amount=0.01,
-                 goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
+    o.order_detail(aid='33',order_no='20201105163220254380928')
+    # order_no = o.generate_order_no()['data']
+    # o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
+    #              serviceId='MUSIC',spId='CLOUD MUSIC',title='测试支付订单',payAmount=0.01,amount=0.01,
+    #              goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # o.sync_refund('111333','202009247772089433')
     # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
     #                 head='钛马信息技术有限公司', phone='18888888888')

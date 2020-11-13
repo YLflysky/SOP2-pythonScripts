@@ -14,12 +14,13 @@ def setup_module():
 @pytest.mark.order
 @allure.suite('order')
 @allure.title('BM车机端获取订单数量')
-@pytest.mark.parametrize('uid', ('4614907', '1600841231973', '221', '11223344', '4614931'))
+@pytest.mark.parametrize('uid', ('4614907', '1600841231973', '221', '11223344', '4614931')
+                         ,ids=['用户id=4614907','用户id=1600841231973','用户id=221','用户id=11223344','用户id=4614931'])
 def test_order_count(uid):
     '''
     测试车机端根据vin和uid获取订单数量
     '''
-    vin = bm.f.pyint()
+    vin = bm.random_vin()
     count = bm.order_count(vin, uid)['data']
     sql_res = bm.do_mysql_select('select count(1) as c from `order` where aid="{}" and del_flag=0'.format(uid), 'fawvw_order')
     assert sql_res[0]['c'] == int(count)

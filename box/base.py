@@ -18,6 +18,7 @@ from kafka.errors import KafkaError
 import sys
 import re
 import random
+from box.my_encoder import MyEncoder
 
 class Base:
 
@@ -440,9 +441,17 @@ class Base:
         vin = ''.join(list1)
         return vin
 
+    def my_json_decoder(self,data):
+        '''
+        自定义json解码器
+        :return:json解析出来的字符串
+        '''
+        return json.dumps(data,cls=MyEncoder,indent=4)
+
 
 if __name__ == '__main__':
     url = 'https://other-be-uat.mosc.faw-vw.com/sop2bm/be/order/api/v2/orders/8404/sync'
     b = Base()
-    res = b.match_url(url)
-    print(b.random_vin())
+    print(b.my_json_decoder(url))
+    # res = b.match_url(url)
+    # print(b.random_vin())
