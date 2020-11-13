@@ -1,16 +1,19 @@
 import pytest
 import allure
+import random
+import sys
 from flow.flow_api import Flow
+from order.payment import Payment
+from box.lk_logger import lk
 
-
+pay = Payment()
 flow = Flow()
-# 测试用例数据
-goods = ['266','254','255','85']
+
 
 @allure.suite('flow')
 @allure.title('BM车机端获取流量详情测试用例')
 @pytest.mark.flow
-@pytest.mark.parametrize('id',goods)
+@pytest.mark.parametrize('id',['266','254','255','85'])
 def test_bm_flow_detail(id):
     res = flow.bm_get_flow_detail(id)
     assert res['code'] == 0
@@ -22,15 +25,17 @@ def test_bm_flow_detail(id):
     assert res['data']['termsOfserviceUrl'] == sql[0]['goodsUrl']
     assert res['data']['price'] == sql[0]['goodsPrice']
 
+
 @allure.suite('flow')
 @allure.title('底层获取流量详情测试用例')
 @pytest.mark.flow
-@pytest.mark.parametrize('id',goods)
-def test_flow_detail(id):
-    res = flow.flow_detail(id)
+def test_flow_detail():
+    goods_id = flow.do_mysql_select('select goodsId from GOODS_CONTROL where goodsStatus="ALREADY_SHELVES"','fawvw_flow')
+    goods_id = random.choice(goods_id)
+    res = flow.flow_detail(goods_id['goodsId'])
     assert res['returnStatus'] == 'SUCCEED'
-
     assert res['data']['goodsControlStatus'] == 'ALREADY_SHELVES'
+    assert res['data']['faValue'] in '1234'
 
 
 @allure.suite('flow')
@@ -55,11 +60,8 @@ def test_bm_flow_detail_wrong(goods):
 def test_sign_result_callback(param):
     res = flow.sign_result_callback(param[0],param[1],param[2],param[3])
     assert res['status'] == '0000_0'
-    assert res['messages'] == '成功'
-    sql = flow.do_mysql_select('select * from contract_sign where aid={}'.format(param[0]),'fawvw_pay')
-    assert len(sql) == 1
-    assert sql[0]['pay_channel'] == param[-2]
-    assert sql[0]['sign_status'] == param[-1]
+    assert res['messages'][0] == '成功'
+    assert res['result']
 
 
 @allure.suite('flow')
@@ -75,3 +77,35 @@ def test_sign_result_callback_wrong(d):
     res = flow.sign_result_callback(d[0],d[1],d[2],d[3])
     assert res['status'] == '0000_1'
     assert res['messages'][0] == '失败'
+
+
+@allure.suite('flow')
+@allure.title('免密支付结果回调')
+@pytest.mark.flow
+def test_pay_result_callback():
+    '''
+    测试支付成功回调
+    :return:
+    '''
+    # 获取流量订单信息
+    order_msg = flow.do_mysql_select('select * from `order` where service_id="FLOW" and order_status="WAITING_PAY"','fawvw_order')
+    if len(order_msg) == 0:
+        lk.prt('没有可供测试的流量订单，退出测试...')
+        sys.exit(-1)
+    order_msg = random.choice(order_msg)
+    order_no = order_msg['order_no']
+    aid = order_msg['aid']
+    # 根据流量订单支付
+    pay.get_qr_code(aid,order_no,channel='ALI_PAY')
+    # 获取支付payNo
+    pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),'fawvw_pay')
+    pay_no = pay_no[0]['pay_no']
+    success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': 'ALI_PAY',
+                    'paidTime': flow.time_delta(formatted='%Y%m%d%H%M%S')}
+    res = flow.common_callback(id=flow.f.pyint(),category=1,status='1000_00',origin_id=pay_no,additionalAttrs=success_attr)
+    assert res['status'] == '0000_0'
+    assert res['messages'][0] == '成功'
+    sql = flow.do_mysql_select('select order_status from `order` where order_no="{}"'.format(order_no),'fawvw_order')
+    assert sql[0]['order_status'] == 'PAY_SUCCESS'
+    sql = flow.do_mysql_select('select pay_status from pay_order where pay_no="{}"'.format(pay_no),'fawvw_pay')
+    assert sql[0]['pay_status'] == 'SUCCESS'

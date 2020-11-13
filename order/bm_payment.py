@@ -12,7 +12,7 @@ class BMPayment(Base):
 
     def get_qr_code(self,vin,aid,order_no,pay_type,category):
         '''
-        获取支付二维码
+        BM车机端获取支付二维码
         '''
 
         url = self.hu_url + '/payment/api/v2/vins/{}/users/{}/orders/{}/payments/qrCode'.format(vin,aid,order_no)
@@ -63,6 +63,6 @@ if __name__ == '__main__':
 
     pay = BMPayment()
     # pay.get_pay_result(vin='123',order_no='orderNo0001',aid='00',category='102',roll_number=1)
-    pay.get_pay_channel(vin='6WU7LOB55T2R5E5PL',aid='9642113',order_no='111124424523',category='107')
+    # pay.get_pay_channel(vin='6WU7LOB55T2R5E5PL',aid='9642113',order_no='111124424523',category='107')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
-    # pay.get_qr_code(vin='123',aid='001',order_no='orderNo000',pay_type='12101',category='123')
+    pay.get_qr_code(vin='123',aid='9642113',order_no='orderNo0001',pay_type='12100',category='105')

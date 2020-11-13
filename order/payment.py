@@ -129,9 +129,9 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     pay = Payment()
-    pay.pay_channel(aid='32432',order_no='20200907105829249819204')
+    # pay.pay_channel(aid='32432',order_no='20200907105829249819204')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
-    # pay.get_qr_code(aid='9642113',order_no='orderNo0001',channel='ALI_PAY')
+    pay.get_qr_code(aid='4614928',order_no='20201113131718048827392',channel='ALI_PAY')
     # pay.get_pay_result('20200907105829249819204','32432')
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback('trade_success', '2018091361389377', '135ad3ff2d0c42edb1acf22a64111eb9', 999, pay.time_delta(),

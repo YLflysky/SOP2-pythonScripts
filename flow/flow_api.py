@@ -50,12 +50,29 @@ class Flow(Base):
     def common_callback(self, id, category, status, origin_id, enterprise_id='2100010000',**kwargs):
         url = self.flow_url + '/cmcc/notify/CI_CommonNotification'
         data = {'enterpriseId': enterprise_id,
-                'multiRecords': [{'id': id, 'idCategory': category, 'status': status, 'originalRequestId': origin_id,
-                                  'additionalAttrs':self.f.pydict(value_types=str)}],**kwargs}
+                'multiRecords': [{'id': id, 'idCategory': category, 'status': status, 'originalRequestId': origin_id,**kwargs}]}
+
         c, b = self.do_post(url, data)
         print(b)
         assert 200 == c
         return b
+
+    def get_qr_code(self,ex_order,aid,order_no,channel,pay_no,sp_id='CMCC'):
+        '''
+        获取流量订单支付二维码
+        :param ex_order: 外部订单号
+        :param aid: 用户id
+        :param order_no: 订单编号
+        :param channel: 支付渠道
+        :param sp_id: CMCC
+        :param pay_no: 支付流水号
+        :return:
+        '''
+        url = self.flow_url+'/order/qrCode'
+        data = {'exOrderNo':ex_order,'aid':aid,'orderNo':order_no,'payChannel':channel,'spId':sp_id,'payNo':pay_no}
+
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
 
 
 if __name__ == '__main__':
@@ -64,7 +81,10 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'DEV'
     flow = Flow()
-    flow.common_callback(id=1, category=1, status='1000_00', origin_id=100)
-    # flow.flow_detail(10010)
-    # flow.bm_get_flow_detail('255')
+    # flow.get_qr_code('e00c66a3ad7a4964911cbaf475bcca9b','111','20201113094813034827392','ALI_PAY',flow.f.md5())
+    success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
+    # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
+    #                      additionalAttrs=success_attr)
+    flow.flow_detail(10010)
+    # flow.bm_get_flow_detail('100')
     # flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)

@@ -357,7 +357,7 @@ class Base:
             data_list.append(data_dict)
         return data_list
 
-    def time_delta(self, days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
+    def time_delta(self, formatted='%Y-%m-%d %H:%M:%S',days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
         """在当前时间基础上进行时间增减操作
 
         - :param days:  【可选】单位：天；类型：整数
@@ -368,9 +368,6 @@ class Base:
         - :param hours:【可选】单位：小时；类型：整数
         - :param weeks:【可选】单位：周；类型：整数
         - :return: 返回格式化后的时间
-
-        - 举例：
-        | Time Delta | days=5 |
         """
         # 获取当前时间
         now = datetime.datetime.now()
@@ -379,7 +376,7 @@ class Base:
                                             milliseconds=milliseconds,
                                             minutes=minutes, hours=hours, weeks=weeks)
         # 格式化字符串输出
-        formatted_time = add_time.strftime('%Y-%m-%d %H:%M:%S')
+        formatted_time = add_time.strftime(formatted)
         return formatted_time
 
     def assert_msg(self, code, body):
