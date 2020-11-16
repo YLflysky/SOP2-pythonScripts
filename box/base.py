@@ -49,13 +49,13 @@ class Base:
 
     }
 
-    def get_time_stamp(self, days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
+    def get_time_stamp(self,formartted='%Y-%m-%d %H:%M:%S', days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
         """获取时间戳
 
             - :return:返回时间戳
             """
-        temp_time = self.time_delta(days, seconds, microseconds, milliseconds, minutes, hours, weeks)
-        time_array = time.strptime(temp_time, '%Y-%m-%d %H:%M:%S')
+        temp_time = self.time_delta(formartted,days, seconds, microseconds, milliseconds, minutes, hours, weeks)
+        time_array = time.strptime(temp_time, formartted)
         time_stamp = str(int(time.mktime(time_array)) * 1000)
         return time_stamp
 
