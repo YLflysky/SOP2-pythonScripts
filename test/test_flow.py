@@ -29,13 +29,13 @@ def test_bm_flow_detail(id):
 @allure.suite('flow')
 @allure.title('底层获取流量详情测试用例')
 @pytest.mark.flow
-def test_flow_detail():
-    goods_id = flow.do_mysql_select('select goodsId from GOODS_CONTROL where goodsStatus="ALREADY_SHELVES"','fawvw_flow')
-    goods_id = random.choice(goods_id)
-    res = flow.flow_detail(goods_id['goodsId'])
+@pytest.mark.parametrize('goods_id',['100','101','102','256','257','258']
+                         ,ids=['酷我1个月VIP','酷我3个月VIP','酷我6个月VIP','在线媒体月包','在线媒体季包','Wi-Fi半年包'])
+def test_flow_detail(goods_id):
+    res = flow.flow_detail(goods_id)
     assert res['returnStatus'] == 'SUCCEED'
     assert res['data']['goodsControlStatus'] == 'ALREADY_SHELVES'
-    assert res['data']['faValue'] in '1234'
+    assert res['data']['goodsName']
 
 
 @allure.suite('flow')

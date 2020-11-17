@@ -120,9 +120,11 @@ class Order(Base):
 
     def sync_order_kafka(self, ep_order_id, business_info: dict, domain='GAS', cp='NX_ENGINE'):
         '''
-        发送订单kafka消息
-        :param ep_order_id:订单的主键
-        :param domain: 业务域，默认为GAS
+        从EP通过callback同步订单
+        :param ep_order_id: ep订单编号
+        :param business_info: 业务信息
+        :param domain: 业务域
+        :param cp: 供应商
         :return:
         '''
         header = {'domainId': domain}
@@ -132,7 +134,7 @@ class Order(Base):
         kafka_data = {'action': 'UPDATE', "vin": "DEFAULT_VIN", "cpId": cp, "aid": aid, 'param': json.dumps(param),
                       "orderType": "BUSINESS", "title": title, "desc": "zdh测试",
                       "businessState": "SUCCESS_PAY", "price": 6.0,
-                      "createdTime": 1600312755440, "timeout": 10, "orderStatus": "SUCCESS_PAY",
+                      "createdTime": 1600312755440, "timeout": 10, "orderStatus": "WAITING_PAY",
                       "orderSubStatus": "DONE",
                       "delete": False, 'tenantId': 'string', 'epOrderId': ep_order_id, 'payStatus': 'SUCCESS_PAY',
                       "info": business_info, "discountAmount": 0, 'epOrderCode': ep_order_id,

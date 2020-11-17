@@ -329,8 +329,9 @@ def test_sync_order_reservation():
     res = o.sync_order(ex, 'VPA', aid, category, orderType='RESERVATION', checkFlag=True, orderStatus=status,
                        serviceId=service, spId=o.f.pyint())
 
+    order_no = res['data']
     time.sleep(15.0)
-    sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
+    sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
     try:
         assert len(sql_res) == 1
         assert sql_res
@@ -338,7 +339,7 @@ def test_sync_order_reservation():
         assert sql_res[0]['check_flag'] == '0'
     finally:
         pass
-        o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
+        # o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
 
 
 @allure.suite('order')

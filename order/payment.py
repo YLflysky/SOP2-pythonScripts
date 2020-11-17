@@ -43,9 +43,6 @@ class Payment(Base):
         '''
 
         url = self.second_url + '/pay/notify/v1/aliPayQrCallBack'
-        # 添加authorization校验,did校验
-        self.add_header()
-        url = self.get_sign_url(url,None)
         data = {'trade_status': trade_status, 'app_id': app_id, 'out_trade_no': out_trade_no,
                 'receipt_amount': receipt_amount, 'gmt_payment': gmt_payment, 'trade_no': trade_no, **kwargs}
         code, body = self.do_post(url, data)
@@ -129,15 +126,15 @@ class Payment(Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     pay = Payment()
     # pay.pay_channel(aid='32432',order_no='20200907105829249819204')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
-    pay.get_qr_code(aid='49987',order_no='20201116153954804516096',channel='ALI_PAY')
+    # pay.get_qr_code(aid='49987',order_no='20201116153954804516096',channel='ALI_PAY')
     # pay.get_pay_result('20200907105829249819204','32432')
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
-    # pay.ali_pay_callback('trade_success', '2018091361389377', '135ad3ff2d0c42edb1acf22a64111eb9', 999, pay.time_delta(),
-    #                      pay.f.pyint())
+    pay.ali_pay_callback('trade_success', '2018091361389377', 'd6b30a83e1e949a59745cd9f65f432fe', receipt_amount=57.00, gmt_payment=pay.time_delta(),
+                         trade_no=pay.f.pyint())
     # pay.cmcc_callback(aid='221',enterprise='2100010000',channel=1,notify_type=2,status=1)
     # pay.sync_pay_result('135ad3ff2d0c42edb1acf22a64111eb9','9409',pay.time_delta(),999,'QR_PAY','BM','ALI_PAY')
