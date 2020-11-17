@@ -61,7 +61,6 @@ def test_sign_result_callback(param):
     res = flow.sign_result_callback(param[0],param[1],param[2],param[3])
     assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
-    assert res['result']
 
 
 @allure.suite('flow')
@@ -87,16 +86,13 @@ def test_pay_result_callback():
     测试支付成功回调
     :return:
     '''
-    # 获取流量订单信息
-    order_msg = flow.do_mysql_select('select * from `order` where service_id="FLOW" and order_status="WAITING_PAY"','fawvw_order')
-    if len(order_msg) == 0:
-        lk.prt('没有可供测试的流量订单，退出测试...')
-        sys.exit(-1)
-    order_msg = random.choice(order_msg)
-    order_no = order_msg['order_no']
-    aid = order_msg['aid']
+    aid = 'qq995939534'
+    order_msg = flow.bm_create_flow_order(goods_id='5b7cf4f565914cab86cf71ef9ca34e99', aid=aid, vin='LFVSOP2TEST000353',
+                              quantity=1)
+    order_no = order_msg['data']['orderNo']
     # 根据流量订单支付
-    pay.get_qr_code(aid,order_no,channel='ALI_PAY')
+    res = pay.get_qr_code(aid,order_no,channel='ALI_PAY')
+    assert res['returnStatus'] == 'SUCCEED'
     # 获取支付payNo
     pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),'fawvw_pay')
     pay_no = pay_no[0]['pay_no']

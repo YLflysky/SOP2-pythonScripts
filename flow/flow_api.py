@@ -13,7 +13,7 @@ class Flow(Base):
         '''
         BM适配层获取流量详情接口
         '''
-        url = self.hu_url + '/api/v2/products/{}/detail'.format(goods_id)
+        url = self.hu_url + '/goods/api/v2/products/{}/detail'.format(goods_id)
         code, body = self.do_get(url, params=None)
         print(body)
         assert code == 200
@@ -74,17 +74,61 @@ class Flow(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
+    def goods_list(self,categories:list):
+        '''
+        flow服务获取商品列表
+        :param categories:商品类型，列表形式
+        :return:
+        '''
+        url = self.flow_url + '/goods/list'
+        param = {'categories':categories}
+        c,b = self.do_get(url,param)
+        self.assert_msg(c,b)
+
+    def bm_goods_list(self,aid,categories):
+        '''
+        BM车机端获取流量商品列表
+        :param aid: 用户id
+        :param categories: 商品类型，列表形式
+        :return:
+        '''
+        url = self.hu_url + '/goods/api/v2/users/{}/vins/{}/products/list'.format(aid,self.random_vin())
+        param = {'productType':categories}
+        code,body = self.do_get(url,param)
+        print(body)
+
+    def bm_create_flow_order(self,goods_id,aid,vin,quantity):
+        '''
+        BM车机端创建流量订单
+        :param goods_id: 商品ID
+        :param aid:大众用户id
+        :param vin:车架号
+        :param quantity:购买数量
+        :return:
+        '''
+        url = self.hu_url + '/goods/api/v1/orderCreate'
+        data = {'goodsId':goods_id,'userId':aid,'vin':vin,'quantity':quantity}
+        self.header['aid'] = aid
+        c,b = self.do_post(url,data)
+        print(b)
+        assert c == 200
+        return b
+
 
 if __name__ == '__main__':
     import os
+    import random
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     flow = Flow()
     # flow.get_qr_code('e00c66a3ad7a4964911cbaf475bcca9b','111','20201113094813034827392','ALI_PAY',flow.f.md5())
     success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additionalAttrs=success_attr)
-    flow.flow_detail(255)
-    # flow.bm_get_flow_detail('255')
+    flow.flow_detail(256)
+    # flow.goods_list(['WIFI_FLOW'])
+    # flow.bm_get_flow_detail('256')
+    # flow.bm_create_flow_order(goods_id='5b7cf4f565914cab86cf71ef9ca34e99',aid='qq995939534',vin='LFVSOP2TEST000353',quantity=1)
+    # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)

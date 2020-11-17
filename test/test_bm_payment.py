@@ -17,7 +17,7 @@ def test_bm_get_qr_code(code):
     '''
     测试BM获取支付二维码
     '''
-    # 同步一条订单，用于获取支付二位码
+    # 同步一条音乐订单，用于获取支付二维码
     id = order.f.pyint()
     goods_id = order.f.pyint()
     vin = order.f.pyint()
@@ -44,7 +44,7 @@ def test_bm_get_qr_code(code):
         # 获取二维码
         res = pay.get_qr_code(vin=vin,aid=user_id,order_no=order_no,pay_type=code,category=category)
 
-        assert res['data']['qrCode']
+        assert res['data']['getPayQrCodeResp']['qrByteData']
     finally:
         pass
         # order.do_mysql_exec('delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),'fawvw_order')

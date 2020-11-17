@@ -26,20 +26,26 @@ class Base:
         self.env = os.getenv('ENV')
         self.header = {}
         self.header['Content-type'] = 'application/json; charset=utf-8'
-        self.f = Faker(locale='zh-CN')
+        self.f = Faker(locale='en-US')
 
         try:
             if os.getenv('GATE') == 'true':
-                self.header['x-namespace-code'] = 'cdp-uat-default'
-                self.header['x-microservice-name'] = 'api-gateway'
-                self.header['Did'] = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
-                self.header['userModel'] = 'DEFAULT'
+                self.add_header()
                 self.gate = True
             else:
                 self.gate = False
         except Exception as e:
             lk.prt('init error:{}'.format(e))
             return
+
+    def add_header(self):
+        '''
+        添加网关header验证
+        :return:
+        '''
+        self.header['Did'] = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
+        self.header['authorization'] = self.f.md5()
+        self.header['did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
 
     public_param = {
         #  "appId": "666666",
@@ -82,9 +88,12 @@ class Base:
         '''
         正则表达式获取域名
         '''
-        regular = re.compile(r'[a-zA-Z]+://[\s\S]*\.com')
-        res = re.search(regular,url)
-        return res.group()
+        regular = re.compile(r'([\w]+://[\S]+\.com|[\w]+://[\S]+:[\d]+)')
+        res = re.match(regular,url)
+        if res:
+            return res.group()
+        else:
+            return None
 
     def _calc_digital_sign(self, url, params):
         """计算签名
@@ -100,8 +109,8 @@ class Base:
         nonce = temp.replace("-", "")
 
         # 1.获取资源路径
-
         resource_uri = url.replace(self.match_url(url), "")
+
         lk.prt('需要签名的uri为:{}'.format(resource_uri))
         # 2.获取查询参数
         url_query_dict = params
@@ -131,6 +140,12 @@ class Base:
         digital_sign = my_md5.hexdigest()
         url_query_dict["sign"] = digital_sign
         return url_query_dict
+
+    def get_sign_url(self,url,param):
+        sign_dict = self._calc_digital_sign(url,param)
+        final_url = url + '?'+parse.urlencode(sign_dict)
+        lk.prt('验签之后的url为:{}'.format(final_url))
+        return final_url
 
     def get_pro_path(self):
         if 'win' in sys.platform:
@@ -447,8 +462,9 @@ class Base:
 
 
 if __name__ == '__main__':
-    url = 'https://other-be-uat.mosc.faw-vw.com/sop2bm/be/order/api/v2/orders/8404/sync'
+    url = 'http://120.53.131.100:18040/pay/notify/v1/aliPayQrCallBack'
     b = Base()
-    print(b.my_json_decoder(url))
-    # res = b.match_url(url)
+    # print(b.my_json_decoder(url))
+    res = b.match_url(url)
+    print(res)
     # print(b.random_vin())
