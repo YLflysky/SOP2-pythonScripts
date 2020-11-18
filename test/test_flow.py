@@ -79,11 +79,43 @@ def test_sign_result_callback_wrong(d):
 
 
 @allure.suite('flow')
-@allure.title('免密支付结果回调')
+@allure.title('免密支付结果回调--支付成功')
 @pytest.mark.flow
-def test_pay_result_callback():
+@pytest.mark.parametrize('channel',['ALI_PAY','WECHAT_PAY'],ids=['支付宝支付成功','微信支付成功'])
+def test_pay_result_callback(channel):
     '''
     测试支付成功回调
+    :return:
+    '''
+    aid = 'qq995939534'
+    order_msg = flow.bm_create_flow_order(goods_id='5b7cf4f565914cab86cf71ef9ca34e99', aid=aid, vin='LFVSOP2TEST000353',
+                              quantity=1)
+    order_no = order_msg['data']['orderNo']
+    # 根据流量订单支付
+    res = pay.get_qr_code(aid,order_no,channel=channel)
+    assert res['returnStatus'] == 'SUCCEED'
+    # 获取支付payNo
+    pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),'fawvw_pay')
+    pay_no = pay_no[0]['pay_no']
+    success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': channel,
+                    'paidTime': flow.time_delta(formatted='%Y%m%d%H%M%S')}
+    res = flow.common_callback(id=flow.f.pyint(),category=1,status='1000_00',origin_id=pay_no,additionalAttrs=success_attr)
+    assert res['status'] == '0000_0'
+    assert res['messages'][0] == '成功'
+    sql = flow.do_mysql_select('select order_status from `order` where order_no="{}"'.format(order_no),'fawvw_order')
+    assert sql[0]['order_status'] == 'PAY_SUCCESS'
+    sql = flow.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
+    assert sql[0]['pay_status'] == 'SUCCESS'
+    sql = flow.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no),'fawvw_pay')
+    assert sql[0]['pay_status'] == 'SUCCESS'
+    assert sql[0]['pay_channel'] == channel
+
+@allure.suite('flow')
+@allure.title('免密支付结果回调--支付失败')
+@pytest.mark.flow
+def test_pay_result_callback_failed():
+    '''
+    测试支付失败回调
     :return:
     '''
     aid = 'qq995939534'
@@ -96,12 +128,11 @@ def test_pay_result_callback():
     # 获取支付payNo
     pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
-    success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': 'ALI_PAY',
-                    'paidTime': flow.time_delta(formatted='%Y%m%d%H%M%S')}
-    res = flow.common_callback(id=flow.f.pyint(),category=1,status='1000_00',origin_id=pay_no,additionalAttrs=success_attr)
+    res = flow.common_callback(id=flow.f.pyint(),category=1,status='1000_01',origin_id=pay_no)
     assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
     sql = flow.do_mysql_select('select order_status from `order` where order_no="{}"'.format(order_no),'fawvw_order')
-    assert sql[0]['order_status'] == 'PAY_SUCCESS'
+    assert sql[0]['order_status'] == 'WAITING_PAY'
     sql = flow.do_mysql_select('select pay_status from pay_order where pay_no="{}"'.format(pay_no),'fawvw_pay')
-    assert sql[0]['pay_status'] == 'SUCCESS'
+    assert sql[0]['pay_status'] == 'FAILED'
+
