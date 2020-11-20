@@ -18,3 +18,8 @@ class MysqlConfig(Enum):
     SOP2_UAT = {'host':'192.168.133.203','port':3306,'username':'faw_sop2_uat_rd_automation','password':'ci1yjxz4qIuNpJZCOHrR'}
     SOP2_LOCAL = SOP2_DEV
 # print(MysqlConfig.SIT.value)
+
+class KafkaConfig(Enum):
+    EP_DEV = '10.20.4.12:9092'
+    EP_SIT = '192.168.133.136:9092'
+    EP_UAT = '10.20.4.11:9092'

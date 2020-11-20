@@ -12,6 +12,7 @@ import os
 import datetime
 from decimal import *
 from box.db import MysqlConfig
+from box.db import KafkaConfig
 from faker import Faker
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
@@ -407,7 +408,7 @@ class Base:
         time_array = time.localtime(int(stamp) / 1000)
         return time.strftime('%Y-%m-%d %H:%M:%S', time_array)
 
-    def send_kafka_msg(self, host, topic, data):
+    def send_kafka_msg(self,  topic, data,host='EP'):
         '''
         模拟发送kafka消息
         :param host: kafka ip地址
@@ -415,7 +416,7 @@ class Base:
         :param data: 发送的消息
         :return:
         '''
-
+        host = eval('KafkaConfig.{}_{}.value'.format(host,self.env))
         producer = KafkaProducer(bootstrap_servers=host, api_version=(0, 10), retries=5)
 
         msg = bytes(json.dumps(data), encoding='utf-8')

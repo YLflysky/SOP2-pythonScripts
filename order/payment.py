@@ -126,15 +126,15 @@ class Payment(Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     pay = Payment()
     # pay.pay_channel(aid='32432',order_no='20200907105829249819204')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
-    pay.get_qr_code(aid='4614928',order_no='20201113170635831868352',channel='ALI_PAY')
+    pay.get_qr_code(aid='221',order_no='20201109132011110380928',channel='ALI_PAY')
     # pay.get_pay_result('20200907105829249819204','32432')
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
-    pay.ali_pay_callback('trade_success', '2019082466466108', '123456', receipt_amount=57.00, gmt_payment=pay.time_delta(),
-                         trade_no=pay.f.pyint())
+    # pay.ali_pay_callback('trade_success', '2019082466466108', '123456', receipt_amount=57.00, gmt_payment=pay.time_delta(),
+    #                      trade_no=pay.f.pyint())
     # pay.cmcc_callback(aid='221',enterprise='2100010000',channel=1,notify_type=2,status=1)
     # pay.sync_pay_result('135ad3ff2d0c42edb1acf22a64111eb9','9409',pay.time_delta(),999,'QR_PAY','BM','ALI_PAY')

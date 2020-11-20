@@ -142,9 +142,8 @@ class Order(Base):
 
         kafka_data = {'key': self.my_json_decoder(kafka_data)}
         msg = {'header': header, 'kafkaData': kafka_data}
-        host = '10.20.4.12:9092'
         topic = 'order-finished-remind-topic'
-        self.send_kafka_msg(host, topic, msg)
+        self.send_kafka_msg(topic, msg)
 
     def sync_invoice_kafka(self, ep_orders:list, invoice, price,aid, domain='GAS', cp='NX_ENGINE'):
         '''

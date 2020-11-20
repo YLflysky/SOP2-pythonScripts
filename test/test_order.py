@@ -217,8 +217,8 @@ def test_callback_order():
             ep_order), 'fawvw_order')
     print('同步订单成功')
     assert len(sql_res) == 1
-    assert sql_res[0]['order_status'] == 'PAY_SUCCESS'
-    assert sql_res[0]['business_status'] == 'SUCCESS_PAY'
+    assert sql_res[0]['order_status'] == 'WAITING_PAY'
+    assert sql_res[0]['business_status'] == 'WAITING_PAY'
     assert sql_res[0]['business_status_desc'] == 'zdh测试'
     assert sql_res[0]['vin'] == 'DEFAULT_VIN'
     assert sql_res[0]['category'] == '105'
@@ -311,6 +311,35 @@ def test_sync_order_03(origin):
     assert sql_res[0]['origin'] == origin
     o.do_mysql_exec('delete from `order` where order_no="{}"'.format(res['data']), 'fawvw_order')
 
+
+@allure.suite('order')
+@allure.title('同步订单信息')
+@pytest.mark.order
+def test_sync_order_all_params():
+    '''
+    同步订单信息，输入所有参数
+    :return:
+    '''
+    ex = o.f.md5()
+    aid = 'qq995939534'
+    category = '110'
+    service = 'MUSIC'
+    sp = 'KUWO'
+    origin = 'SOP1'
+    business_state = 'SUCCESS'
+    business_state_desc = o.f.sentence()
+    title = 'sergio test order'
+    amount = 1.00
+    discount_amount = 0.50
+    actual_amount = amount - discount_amount
+    vin = o.random_vin()
+    info = {'info':'abcd'}
+    business_info = {'business':'music'}
+    coupon_id = '123456'
+    coupon_amount = 0.01
+
+
+    o.sync_order(ex,origin,aid,category,)
 
 @allure.suite('order')
 @allure.title('同步预约单')
