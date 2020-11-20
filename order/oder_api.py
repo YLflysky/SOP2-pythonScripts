@@ -213,7 +213,7 @@ class Order(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = Order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
@@ -223,7 +223,7 @@ if __name__ == '__main__':
     #     if 'py' in f:
     #         print(f)
     # o.sync_order_pay('123',aid='')
-    o.order_detail(aid='33',order_no='20201105163220254380928')
+    o.order_detail(aid='9351524',order_no='20201119172222421876544')
     # order_no = o.generate_order_no()['data']
     # o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
     #              serviceId='MUSIC',spId='CLOUD MUSIC',title='测试支付订单',payAmount=0.01,amount=0.01,

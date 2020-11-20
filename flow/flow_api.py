@@ -85,6 +85,7 @@ class Flow(Base):
         param = {'categories':categories}
         c,b = self.do_get(url,param)
         self.assert_msg(c,b)
+        return b
 
     def bm_goods_list(self,aid,categories):
         '''
@@ -97,6 +98,7 @@ class Flow(Base):
         param = {'productType':categories}
         code,body = self.do_get(url,param)
         print(body)
+        return body
 
     def bm_create_flow_order(self,goods_id,aid,vin,quantity):
         '''
@@ -120,7 +122,9 @@ class Flow(Base):
         data ={'requestId':id,'requestDateTime':date,'notificationFlagRule':rule,'assetType':asset_type,
                'assetId':asset_id,'packageId':package_id,'vin':vin}
         c,b = self.do_post(url,data)
-        self.assert_msg(c,b)
+        print(b)
+        assert c == 200
+        return b
 
 
 
@@ -129,7 +133,7 @@ if __name__ == '__main__':
     import random
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'UAT'
     flow = Flow()
     # flow.get_qr_code('e00c66a3ad7a4964911cbaf475bcca9b','111','20201113094813034827392','ALI_PAY',flow.f.md5())
     success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
@@ -141,5 +145,6 @@ if __name__ == '__main__':
     # flow.bm_create_flow_order(goods_id='5b7cf4f565914cab86cf71ef9ca34e99',aid='qq995939534',vin='LFVSOP2TEST000353',quantity=1)
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)
-    flow.flow_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.1,
+
+    flow.flow_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
                      asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')

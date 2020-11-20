@@ -2,6 +2,7 @@ import pytest
 import allure
 import random
 import sys
+import json
 from flow.flow_api import Flow
 from order.payment import Payment
 from box.lk_logger import lk
@@ -37,6 +38,21 @@ def test_flow_detail(goods_id):
     assert res['data']['goodsControlStatus'] == 'ALREADY_SHELVES'
     assert res['data']['goodsName']
 
+
+@pytest.mark.flow
+@allure.suite('flow')
+@allure.title('用户获取流量列表》》获取流量详情')
+@pytest.mark.parametrize('category',['MUSIC_VIP','RADIO_VIP','WIFI_FLOW','MEDIA_FLOW','PAID_CONTENT'])
+def test_goods_list_detail(category):
+    # 获取WIFI流量列表
+    res1 = flow.bm_goods_list('10086',[category])
+    assert res1['data']['goodsCategories']['category'] == category
+    if len(res1['data']['goodsCategories']['goods']) > 0:
+        for x in res1['data']['goodsCategories']['goods']:
+            ids = x['goodsId']
+            res = flow.bm_get_flow_detail(ids)
+            assert res['data']['goodsName']
+            assert res['data']['price'] is not None
 
 @allure.suite('flow')
 @allure.title('BM车机端获取流量详情')
@@ -136,3 +152,20 @@ def test_pay_result_callback_failed():
     sql = flow.do_mysql_select('select pay_status from pay_order where pay_no="{}"'.format(pay_no),'fawvw_pay')
     assert sql[0]['pay_status'] == 'FAILED'
 
+@pytest.mark.flow
+@allure.suite('flow')
+@allure.title('流量底层剩余流量提醒通知')
+def test_rest_flow_callback():
+    id = flow.f.pyint()
+    date = flow.time_delta(formatted='%Y%m%d%H%M%S')
+    rule = flow.f.pyfloat(positive=True,min_value=0.0,max_value=1.0)
+    asset_type='iccid'
+    asset_id=flow.f.md5()
+    package ='P1001123577'
+    vin = 'LFV2A11KXA3030241'
+    res = flow.flow_notify(id,date,rule,asset_type,asset_id,package,vin)
+    assert res['messages'][0] == '成功'
+    sql = flow.do_mysql_select('select * from mosc_mqtt_message where service_id=8000 order by create_date desc limit 1 ','mosc_mqtt_center')
+    assert sql[0]['body']
+    body = json.loads(sql[0]['body'])
+    assert body['vin'] == vin
