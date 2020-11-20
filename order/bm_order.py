@@ -75,12 +75,13 @@ if __name__ == '__main__':
     os.environ['GATE']='false'
     o = BMOrder()
     # o.order_count(vin=123,uid='469317')
-    data = {'vin': o.f.pyint(), 'brand': o.f.word(), 'businessExtInfo': o.f.pydict(4, True, value_types=str),
+    data = {'vin': o.f.pyint(), 'brand': 'AUDI', 'businessExtInfo': o.f.pydict(4, True, value_types=str),
             'discountAmount': '10086',
             'orderAmount': '100', 'orderCategory': 105, 'serviceId': 'GAS', 'spId': '111', 'title': o.f.sentence(),
             'userId': '469317', 'serviceOrderState': 'FINISH', 'serviceOrderStateDesc': 'jojo', }
+    o.sync_bm_order(o.f.md5(),data)
     # o.order_count(vin='DEFAULT_VIN',uid='33')
     # o.update_bm_order(order_no='20201104154521856385024',vin='3FCECCBA6990DD8F4839403E77F14F85',userId='10000000312441',updateType='1',
     #                   orderEvent='就是我',businessState='NOTHING_TO_SAY')
     # o.reload_config()
-    o.bm_order_detail(aid='9351524',order_no='20201110181836517380928',vin=o.random_vin())
+    # o.bm_order_detail(aid='9351524',order_no='20201110181836517380928',vin=o.random_vin())

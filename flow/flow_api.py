@@ -8,7 +8,7 @@ class Flow(Base):
 
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
         self.flow_url = self.read_conf('sop2_env.conf', self.env, 'flow_host')
-        self.second_url = self.read_conf('sop2_env.conf', self.env, '2nd_host')
+        self.cp_url = self.read_conf('sop2_env.conf', self.env, 'cp_host')
 
     def bm_get_flow_detail(self, goods_id):
         '''
@@ -32,7 +32,7 @@ class Flow(Base):
 
     def sign_result_callback(self, aid, channel, notify_type, status, enterprise='2100010000'):
         '''
-        流量免密签约结果回调
+        流量底层免密签约结果回调
         :param enterprise:企业id，大众为2100010000
         :param aid:大众用户id
         :param channel:支付渠道，1=支付宝，2=微信
@@ -126,6 +126,13 @@ class Flow(Base):
         assert c == 200
         return b
 
+    def cp_sign_result_notify(self,user_id,channel,notify_type,status,enterprise='2100010000'):
+        url = self.cp_url + '/notify/CI_ContractResultNotify'
+        data = {'userId':user_id,'channel':channel,'enterpriseId':enterprise,'notifyType':notify_type,'contractStatus':status}
+        c,b = self.do_post(url,data)
+        print(b)
+        assert c == 200
+        return b
 
 
 if __name__ == '__main__':
@@ -133,12 +140,12 @@ if __name__ == '__main__':
     import random
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'DEV'
     flow = Flow()
     # flow.get_qr_code('e00c66a3ad7a4964911cbaf475bcca9b','111','20201113094813034827392','ALI_PAY',flow.f.md5())
     success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
-    # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
-    #                      additionalAttrs=success_attr)
+    flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
+                         additionalAttrs=success_attr)
     # flow.flow_detail(100)
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_flow_detail('100')
@@ -146,5 +153,6 @@ if __name__ == '__main__':
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)
 
-    flow.flow_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
-                     asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
+    # flow.flow_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
+    #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
+    # flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=2,status=1)

@@ -65,4 +65,4 @@ if __name__ == '__main__':
     # pay.get_pay_result(vin='123',order_no='orderNo0001',aid='00',category='102',roll_number=1)
     # pay.get_pay_channel(vin='6WU7LOB55T2R5E5PL',aid='9642113',order_no='111124424523',category='107')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
-    pay.get_qr_code(vin='123',aid='9642113',order_no='orderNo0001',pay_type='12100',category='105')
+    pay.get_qr_code(vin='123',aid='32432',order_no='20200907105829249819204',pay_type='11100',category='110')
