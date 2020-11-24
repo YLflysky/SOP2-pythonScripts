@@ -222,7 +222,7 @@ if __name__ == '__main__':
     #     if 'py' in f:
     #         print(f)
     # o.sync_order_pay('123',aid='')
-    o.order_detail(aid='9351524',order_no='20201119172222421876544')
+    o.order_detail(aid='9351515',order_no='20201124142350661876544')
     # order_no = o.generate_order_no()['data']
     # o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
     #              serviceId='MUSIC',spId='CLOUD MUSIC',title='测试支付订单',payAmount=0.01,amount=0.01,

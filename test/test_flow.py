@@ -77,6 +77,8 @@ def test_sign_result_callback(param):
     res = flow.sign_result_callback(param[0],param[1],param[2],param[3])
     assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
+    sql = flow.do_mysql_select('select * from contract_sign where aid = "{}" and pay_channel="{}"'.format(param[0],param[4]),'fawvw_pay')
+    assert sql[0]['sign_status'] == param[5]
 
 
 @allure.suite('flow')
@@ -115,7 +117,7 @@ def test_pay_result_callback(channel):
     pay_no = pay_no[0]['pay_no']
     success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': channel,
                     'paidTime': flow.time_delta(formatted='%Y%m%d%H%M%S')}
-    res = flow.common_callback(id=flow.f.pyint(),category=1,status='1000_00',origin_id=pay_no,additionalAttrs=success_attr)
+    res = flow.common_callback(id=flow.f.pyint(),category=1,status='1000_00',origin_id=pay_no,additional_attrs=success_attr)
     assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
     sql = flow.do_mysql_select('select order_status from `order` where order_no="{}"'.format(order_no),'fawvw_order')
@@ -144,7 +146,9 @@ def test_pay_result_callback_failed():
     # 获取支付payNo
     pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
-    res = flow.common_callback(id=flow.f.pyint(),category=1,status='1000_01',origin_id=pay_no)
+    success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': 'ALI_PAY',
+                    'paidTime': flow.time_delta(formatted='%Y%m%d%H%M%S')}
+    res = flow.common_callback(id=flow.f.pyint(),category=1,status='1000_01',origin_id=pay_no,additional_attrs=success_attr)
     assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
     sql = flow.do_mysql_select('select order_status from `order` where order_no="{}"'.format(order_no),'fawvw_order')
@@ -163,9 +167,53 @@ def test_rest_flow_callback():
     asset_id=flow.f.md5()
     package ='P1001123577'
     vin = 'LFV2A11KXA3030241'
-    res = flow.flow_notify(id,date,rule,asset_type,asset_id,package,vin)
+    res = flow.flow_sim_notify(id,date,rule,asset_type,asset_id,package,vin)
     assert res['messages'][0] == '成功'
     sql = flow.do_mysql_select('select * from mosc_mqtt_message where service_id=8000 order by create_date desc limit 1 ','mosc_mqtt_center')
     assert sql[0]['body']
     body = json.loads(sql[0]['body'])
     assert body['vin'] == vin
+
+@pytest.mark.flow
+@pytest.mark.parametrize('channel',['ALI_PAY','WECHAT_PAY'])
+@allure.suite('flow')
+@allure.title('cp-adapter支付结果回调到ftb2.2')
+def test_cp_common_notify_ftb22(channel):
+    '''
+    测试cp-adapter支付结果回调到ftb2.2
+    :return:
+    '''
+    # 获取流量订单
+    aid = 'sergio123'
+    flow_order = flow.bm_create_flow_order('5b7cf4f565914cab86cf71ef9ca34e99',aid,'LFVSOP2TEST000353',1)
+    no = flow_order['data']['orderNo']
+    # 根据流量订单支付
+    res = pay.get_qr_code(aid, no, channel)
+    assert res['returnStatus'] == 'SUCCEED'
+    # 获取支付payNo
+    pay_no = pay.do_mysql_select(
+        'select pay_no from pay_order where order_no="{}" and is_effective=1'.format(no), 'fawvw_pay')
+    pay_no = pay_no[0]['pay_no']
+    # CP回调支付结果，支付成功
+    res = flow.cp_common_notify(id=flow.f.pyint(),category=1,status='1000_00',origin_id=pay_no)
+    assert res['status'] == '0000_0'
+    assert res['messages'][0] == '成功'
+
+
+@pytest.mark.flow
+@allure.suite('flow')
+@allure.title('cp-adapter支付结果回调到sop1')
+def test_cp_common_notify_sop1():
+    # CP回调支付结果，支付成功
+    res = flow.cp_common_notify(id=flow.f.pyint(), category=1, status='1000_00', origin_id=flow.f.md5())
+    assert res['status'] == '0000_0'
+    assert res['messages'][0] == '成功'
+
+
+@pytest.mark.flow
+@allure.suite('flow')
+@allure.title('cp-adapter签约结果回调')
+def test_cp_sign_result_notify():
+    res = flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=1,status=1)
+    assert res['status'] == '0000_0'
+    assert res['messages'][0] == '成功'
