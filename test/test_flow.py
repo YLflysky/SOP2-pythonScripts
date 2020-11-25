@@ -159,7 +159,7 @@ def test_pay_result_callback_failed():
 @pytest.mark.flow
 @allure.suite('flow')
 @allure.title('流量底层剩余流量提醒通知')
-def test_rest_flow_callback():
+def test_sim_notify():
     id = flow.f.pyint()
     date = flow.time_delta(formatted='%Y%m%d%H%M%S')
     rule = flow.f.pyfloat(positive=True,min_value=0.0,max_value=1.0)
@@ -169,7 +169,7 @@ def test_rest_flow_callback():
     vin = 'LFV2A11KXA3030241'
     res = flow.flow_sim_notify(id,date,rule,asset_type,asset_id,package,vin)
     assert res['messages'][0] == '成功'
-    sql = flow.do_mysql_select('select * from mosc_mqtt_message where service_id=8000 order by create_date desc limit 1 ','mosc_mqtt_center')
+    sql = flow.do_mysql_select('select * from mosc_mqtt_message where service_id=8000 order by create_date desc limit 1','mosc_mqtt_center')
     assert sql[0]['body']
     body = json.loads(sql[0]['body'])
     assert body['vin'] == vin
@@ -221,3 +221,28 @@ def test_cp_sign_result_notify():
     res = flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=1,status=1)
     assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
+
+@pytest.mark.flow
+@allure.suite('flow')
+@allure.title('cp-adapter流量达到阈值提醒回调ftb2.2')
+def test_cp_sim_notify_ftb22():
+    id = flow.f.pyint()
+    date = flow.time_delta(formatted='%Y%m%d%H%M%S')
+    rule = flow.f.pyfloat(positive=True, min_value=0.0, max_value=1.0)
+    asset_type = 'iccid'
+    acc_id = '102466test001x'
+    package = 'P1001123577'
+    res = flow.cp_sim_notify(id,date,rule,asset_type,acc_id,package_id=package)
+    assert res['status'] == '0000_0'
+    assert res['messages'][0] == '成功'
+
+
+@pytest.mark.flow
+@allure.suite('flow')
+@allure.title('cp-adapter流量达到阈值提醒回调失败场景')
+@pytest.mark.parametrize('param',[(1024,'20200101000000','0.1','iccid','123','P1001123577'),
+                                  (1024,'20200101000000','0.1','iccid','102466test001x','L123')]
+                         ,ids=['iccid无法获取vin','package不存在'])
+def test_cp_sim_notify_wrong(param):
+    res = flow.cp_sim_notify(param[0],param[1],param[2],param[3],param[4],param[5])
+    assert res['returnStatus'] == 'FAILED'
