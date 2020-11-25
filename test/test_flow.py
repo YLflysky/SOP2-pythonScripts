@@ -1,7 +1,7 @@
 import pytest
 import allure
 import random
-import sys
+import sys,os
 import json
 from flow.flow_api import Flow
 from order.payment import Payment
@@ -194,10 +194,14 @@ def test_cp_common_notify_ftb22(channel):
     pay_no = pay.do_mysql_select(
         'select pay_no from pay_order where order_no="{}" and is_effective=1'.format(no), 'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
-    # CP回调支付结果，支付成功
-    res = flow.cp_common_notify(id=flow.f.pyint(),category=1,status='1000_00',origin_id=pay_no)
-    assert res['status'] == '0000_0'
-    assert res['messages'][0] == '成功'
+    if os.getenv('ENV') == 'UAT':
+        # CP回调支付结果，支付成功
+        res = flow.cp_common_notify(id=flow.f.pyint(),category=1,status='1000_00',origin_id=pay_no)
+        assert res['status'] == '0000_0'
+        assert res['messages'][0] == '成功'
+    else:
+        print('不支持该环境回调')
+        sys.exit(-1)
 
 
 @pytest.mark.flow

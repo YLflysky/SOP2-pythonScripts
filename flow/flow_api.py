@@ -13,7 +13,6 @@ class Flow(Base):
     def assert_msg(self, code, body):
         print(body)
         assert code == 200
-        return body
 
     def bm_get_flow_detail(self, goods_id):
         '''
@@ -22,6 +21,7 @@ class Flow(Base):
         url = self.hu_url + '/goods/api/v2/products/{}/detail'.format(goods_id)
         code, body = self.do_get(url, params=None)
         self.assert_msg(code,body)
+        return body
 
     def flow_detail(self, goods):
         '''
@@ -31,25 +31,9 @@ class Flow(Base):
         param = {'goodsId': goods}
         c, b = self.do_get(url, param)
         self.assert_msg(c, b)
+        return b
 
 
-
-    def get_qr_code(self,ex_order,aid,order_no,channel,pay_no,sp_id='CMCC'):
-        '''
-        获取流量订单支付二维码
-        :param ex_order: 外部订单号
-        :param aid: 用户id
-        :param order_no: 订单编号
-        :param channel: 支付渠道
-        :param sp_id: CMCC
-        :param pay_no: 支付流水号
-        :return:
-        '''
-        url = self.flow_url+'/order/qrCode'
-        data = {'exOrderNo':ex_order,'aid':aid,'orderNo':order_no,'payChannel':channel,'spId':sp_id,'payNo':pay_no}
-
-        c,b = self.do_post(url,data)
-        self.assert_msg(c,b)
 
     def goods_list(self,categories:list):
         '''
@@ -61,6 +45,7 @@ class Flow(Base):
         param = {'categories':categories}
         c,b = self.do_get(url,param)
         self.assert_msg(c,b)
+        return b
 
     def bm_goods_list(self,aid,categories):
         '''
@@ -73,6 +58,7 @@ class Flow(Base):
         param = {'productType':categories}
         code,body = self.do_get(url,param)
         self.assert_msg(code,body)
+        return body
 
     def bm_create_flow_order(self,goods_id,aid,vin,quantity):
         '''
@@ -88,6 +74,7 @@ class Flow(Base):
         self.header['aid'] = aid
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
 
     def flow_sim_notify(self,id,date,rule,asset_type,asset_id,package_id,vin):
         '''
@@ -106,6 +93,7 @@ class Flow(Base):
                'assetId':asset_id,'packageId':package_id,'vin':vin}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
 
     def cp_sim_notify(self,id,date,rule,asset_type,asset_id,package_id):
         '''
@@ -123,6 +111,7 @@ class Flow(Base):
                 'assetId': asset_id, 'packageId': package_id}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
 
     def sign_result_callback(self, aid, channel, notify_type, status, enterprise='2100010000'):
         '''
@@ -139,6 +128,7 @@ class Flow(Base):
                 'contractStatus': status}
         c, b = self.do_post(url, data)
         self.assert_msg(c,b)
+        return b
 
     def cp_sign_result_notify(self,user_id,channel,notify_type,status,enterprise='2100010000'):
         '''
@@ -154,15 +144,17 @@ class Flow(Base):
         data = {'userId':user_id,'channel':channel,'enterpriseId':enterprise,'notifyType':notify_type,'contractStatus':status}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
 
     def common_callback(self, id, category, status, origin_id, additional_attrs,enterprise_id='2100010000',):
-        url = self.flow_url + '/cmcc/notify/commonNtify'
+        url = self.flow_url + '/cmcc/notify/commonNotification'
         data = {'enterpriseId': enterprise_id,
                 'multiRecords': [{'id': id, 'idCategory': category, 'status': status, 'originalRequestId': origin_id,
                                   'additionalAttrs':additional_attrs}]}
 
         c, b = self.do_post(url, data)
         self.assert_msg(c,b)
+        return b
 
     def cp_common_notify(self,id, category, status, origin_id,enterprise_id='2100010000',):
         '''
@@ -183,28 +175,30 @@ class Flow(Base):
 
         c, b = self.do_post(url, data)
         self.assert_msg(c,b)
+        return b
 
 if __name__ == '__main__':
     import os
     import random
     from order.payment import Payment
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     flow = Flow()
     pay = Payment()
-    # flow.get_qr_code('e00c66a3ad7a4964911cbaf475bcca9b','111','20201113094813034827392','ALI_PAY',flow.f.md5())
     success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
     # flow.flow_detail(100)
-    # flow.goods_list(['WIFI_FLOW'])
+    flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_flow_detail('268')
     # flow.bm_create_flow_order(goods_id='5b7cf4f565914cab86cf71ef9ca34e99',aid='qq995939534',vin='LFVSOP2TEST000353',quantity=1)
-    # pay.get_qr_code(aid='qq995939534',order_no='20201124130953606876544',channel='ALI_PAY')
+    pay.get_qr_code(aid='qq995939534',order_no='20201124172123669589824',channel='ALI_PAY')
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)
 
     # flow.flow_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
     # flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=2,status=1)
-    flow.cp_common_notify(id=1, category=1, status='1000_01', origin_id='20201124131211565196608',)
+    # flow.cp_common_notify(id=1, category=1, status='1000_00', origin_id='20201124162836367196608',)
+    # flow.cp_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
+    #                  asset_type='iccid',asset_id='898608000918cmcc0062',package_id='P1001123577')
