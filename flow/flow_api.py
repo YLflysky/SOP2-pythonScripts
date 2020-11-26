@@ -191,7 +191,7 @@ if __name__ == '__main__':
     # flow.flow_detail(100)
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_flow_detail('268')
-    # flow_order = flow.bm_create_flow_order(goods_id='5b7cf4f565914cab86cf71ef9ca34e99',aid='qq995939534',vin='LFVSOP2TEST000353',quantity=1)
+    flow_order = flow.bm_create_flow_order(goods_id='268',aid='qq995939534',vin='LFVSOP2TEST000353',quantity=1)
     # order_no = flow_order['data']['orderNo']
     # pay.get_qr_code(aid='qq995939534',order_no=order_no,channel='ALI_PAY')
     # flow.bm_goods_list('995939534','WIFI_FLOW')

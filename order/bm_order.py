@@ -71,7 +71,7 @@ class BMOrder(Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV']='UAT'
+    os.environ['ENV']='DEV'
     os.environ['GATE']='false'
     o = BMOrder()
     # o.order_count(vin=123,uid='469317')
@@ -84,4 +84,4 @@ if __name__ == '__main__':
     # o.update_bm_order(order_no='20201104154521856385024',vin='3FCECCBA6990DD8F4839403E77F14F85',userId='10000000312441',updateType='1',
     #                   orderEvent='就是我',businessState='NOTHING_TO_SAY')
     # o.reload_config()
-    o.bm_order_detail(aid='9351515',order_no='20201124142350661876544',vin=o.random_vin())
+    o.bm_order_detail(aid='9349643',order_no='M202007160901278277176514',vin=o.random_vin())
