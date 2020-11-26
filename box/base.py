@@ -400,6 +400,11 @@ class Base:
         assert 200 == code
         assert 'SUCCEED' == body['returnStatus']
 
+    def assert_bm_msg(self,code,body):
+        print(body)
+        assert 200 == code
+        assert body['code'] == 0
+
     def str_time(self, data_time: datetime.datetime):
         temp = data_time.strftime('%Y-%m-%d %H:%M:%S')
         return temp
