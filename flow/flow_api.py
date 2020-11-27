@@ -33,8 +33,6 @@ class Flow(Base):
         self.assert_msg(c, b)
         return b
 
-
-
     def goods_list(self,categories:list):
         '''
         flow服务获取商品列表
@@ -75,6 +73,8 @@ class Flow(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
         return b
+
+
 
     def flow_sim_notify(self,id,date,rule,asset_type,asset_id,package_id,vin):
         '''
@@ -182,7 +182,7 @@ if __name__ == '__main__':
     import random
     from order.payment import Payment
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'UAT'
     flow = Flow()
     pay = Payment()
     success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
@@ -191,15 +191,16 @@ if __name__ == '__main__':
     # flow.flow_detail(100)
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_flow_detail('268')
-    flow_order = flow.bm_create_flow_order(goods_id='253',aid='qq995939534',vin='LFVSOP2TEST000353',quantity=1)
-    order_no = flow_order['data']['orderNo']
-    pay.get_qr_code(aid='qq995939534',order_no=order_no,channel='ALI_PAY')
+    # aid = 'sergio8740'
+    # flow_order = flow.bm_create_flow_order(goods_id='253',aid=aid,vin='LFVSOP2TEST000353',quantity=1)
+    # order_no = flow_order['data']['orderNo']
+    # pay.free_qr_code(aid,order_no,channel='QR_ALIPAY_WITHHOLDING_PAYMENT',sp_id='CMCC')
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)
 
     # flow.flow_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
     # flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=2,status=1)
-    # flow.cp_common_notify(id=1, category=1, status='1000_00', origin_id='FTB20201126095621292978944',)
+    flow.cp_common_notify(id=1, category=1, status='1000_00', origin_id='FTB20201126095621292978944',)
     # flow.cp_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534cmcctest001x',package_id='P1001123577')

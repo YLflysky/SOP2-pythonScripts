@@ -249,7 +249,7 @@ def test_cp_sim_notify_ftb22():
     acc_id = '995939534cmcctest002x'
     package = 'P1001123577'
     res = flow.cp_sim_notify(id, date, rule, asset_type, acc_id, package_id=package)
-    assert res['status'] == '0000_0'
+    assert res['status'] == '000000'
     assert res['messages'][0] == '成功'
 
 

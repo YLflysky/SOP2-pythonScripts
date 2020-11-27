@@ -45,6 +45,7 @@ class Points(Base):
         data = {'aid':aid}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
 
     def bm_get_user_points(self,aid):
         '''
@@ -56,6 +57,7 @@ class Points(Base):
         url = self.hu_url + '/point/user/score'
         c,b = self.do_get(url,None)
         self.assert_bm_msg(c,b)
+        return b
 
     def get_points_stream(self,index,size,aid):
         '''
@@ -69,6 +71,7 @@ class Points(Base):
         url = self.p_url + '/is/cdp/user/score/score_change'
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
 
     def bm_get_points_stream(self,aid,index=1,size=10):
         '''
@@ -94,4 +97,5 @@ if __name__ == '__main__':
     # p.bm_get_user_level(aid='1234')
     # p.get_user_points(aid='1234')
     # p.bm_get_user_points(aid='1234')
-    p.bm_get_points_stream(aid='1234')
+    p.bm_get_points_stream(aid='123')
+    # p.get_points_stream(index=1,size=10,aid='1234')

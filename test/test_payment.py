@@ -198,7 +198,7 @@ callback_data_fail = [('trade_fail', '2018091361389377', 'qwer', pay.f.pyfloat(2
                       (
                           'trade_success', '20180913613893770', 'qwer', pay.f.pyfloat(2, 2, True), pay.time_delta(),
                           '123'),
-                      ('trade_success', '2018091361389377', None, pay.f.pyfloat(2, 2, True), pay.time_delta(),
+                      ('trade_success', '2018091361389377', '', pay.f.pyfloat(2, 2, True), pay.time_delta(),
                        '123'),
                       ('trade_success', '20180913613893770', 'qwer', pay.f.pyfloat(2, 2, True), None, '123')]
 
@@ -472,18 +472,6 @@ def test_sync_pay_stream_wrong(params):
 
 
 @allure.suite('payment')
-@allure.title('检查是否为FTB支付流水')
-@pytest.mark.payment
-@pytest.mark.parametrize('payNo',
-                         [('10086', True), ('bc8e0c91e25d4f1796b6c4336ad3fbb0', True),
-                          (pay.f.pyint(), False)],
-                         ids=['FTB订单', 'FTB订单', '非FTB订单'])
-def test_sync_check_route(payNo):
-    res = pay.check_route(payNo[0])
-    assert res['data'] == payNo[1]
-
-
-@allure.suite('payment')
 @allure.title('同步支付结果')
 @pytest.mark.payment
 def test_sync_pay_result():
@@ -498,7 +486,7 @@ def test_sync_pay_result():
     time = pay.time_delta()
     amount = pay.f.pyfloat(positive=True, right_digits=2, left_digits=4)
     res = pay.sync_pay_result(pay_no=no, ex_pay_no=ex_no, pay_time=time, amount=amount, origin='BM', channel='ALI_PAY',
-                              way='QR_PAY')
+                              way='QR_PAY',status='SUCCESS')
     try:
         assert res['returnStatus'] == 'SUCCEED'
         sql_pay = pay.do_mysql_select('select * from pay_order where pay_no="{}"'.format(no), 'fawvw_pay')

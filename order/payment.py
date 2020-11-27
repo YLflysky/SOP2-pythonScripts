@@ -80,19 +80,7 @@ class Payment(Base):
         self.assert_msg(code, body)
         return body
 
-    def check_route(self,ex_pay_no):
-        '''
-        检查是否为FTB的支付流水
-        :param ex_pay_no:支付流水号
-        :return:
-        '''
-        url = self.url + '/pay/checkRoute'
-        data = {'payNo':ex_pay_no}
-        code,body = self.do_get(url,data)
-        self.assert_msg(code,body)
-        return body
-
-    def sync_pay_result(self,pay_no,ex_pay_no,pay_time,amount,way,origin,channel,**kwargs):
+    def sync_pay_result(self,pay_no,ex_pay_no,pay_time,amount,way,origin,channel,status,**kwargs):
         '''
         支付服务同步支付结果接口
         :param pay_no: 支付编号
@@ -101,12 +89,13 @@ class Payment(Base):
         :param amount: 支付金额
         :param way: 支付方式
         :param origin:订单来源
+        :param status:支付状态
         :param kwargs:其他参数
         :return:
         '''
         url = self.url + '/pay/notify/payResult/sync'
         data = {'payNo':pay_no,'exPayNo':ex_pay_no,'payTime':pay_time,'payAmount':amount,'payWay':way,
-                'origin':origin,'payChannel':channel,**kwargs}
+                'origin':origin,'payChannel':channel,'payStatus':status,**kwargs}
         code,body = self.do_post(url,data)
         self.assert_msg(code,body)
         return body
@@ -123,6 +112,19 @@ class Payment(Base):
         c,b = self.do_get(url,params)
         self.assert_msg(c,b)
 
+    def free_qr_code(self, aid, order_no, sp_id, channel):
+        '''
+        获取签约并支付二维码
+        :param sp_id:CMCC
+        :param channel:支付渠道ALI_PAY,WECHAT_PAY
+        :param aid:用户id
+        :return:
+        '''
+
+        url = self.url + '/pay/payAndContractQrCode'
+        data = {'aid':aid,'orderNo':order_no,'spId':sp_id,'payType':channel}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
 
 if __name__ == '__main__':
     import os
@@ -131,10 +133,10 @@ if __name__ == '__main__':
     pay = Payment()
     # pay.pay_channel(aid='32432',order_no='20200907105829249819204')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
-    pay.get_qr_code(aid='9350187',order_no='20201125163449201876544',channel='WECHAT_PAY')
+    # pay.get_qr_code(aid='9350187',order_no='20201125163449201876544',channel='WECHAT_PAY')
     # pay.get_pay_result('20201112111106317868352','221')
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback('trade_success', '2019082466466108', '123456', receipt_amount=57.00, gmt_payment=pay.time_delta(),
     #                      trade_no=pay.f.pyint())
     # pay.cmcc_callback(aid='221',enterprise='2100010000',channel=1,notify_type=2,status=1)
-    # pay.sync_pay_result('20201124131211565196608','9409',pay.time_delta(),999,'QR_PAY','BM','ALI_PAY')
+    pay.sync_pay_result('20201124131211565196608','9409',pay.time_delta(),999,'QR_PAY','BM','ALI_PAY','SUCCESS')
