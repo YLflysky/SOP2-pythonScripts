@@ -126,6 +126,20 @@ class Payment(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
+    def free_pay(self,aid,order_no,code):
+        '''
+        免密支付接口
+        :param aid:用户id
+        :param order_no:订单号
+        :param code:协议码
+        :return:
+        '''
+        url = self.url + '/contract/pay'
+        data = {'aid':aid,'orderNo':order_no,'contractCode':code}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
+
+
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'

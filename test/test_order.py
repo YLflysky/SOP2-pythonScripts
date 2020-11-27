@@ -368,7 +368,7 @@ def test_sync_order_reservation():
         assert sql_res[0]['check_flag'] == '0'
     finally:
         pass
-        o.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
+        # o.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
 
 
 @allure.suite('order')

@@ -34,6 +34,7 @@ class Points(Base):
         url = self.hu_url + '/point/user/level'
         c,b = self.do_get(url,params=None)
         self.assert_bm_msg(c,b)
+        return b
 
     def get_user_points(self,aid):
         '''
@@ -87,6 +88,7 @@ class Points(Base):
         url = self.hu_url + '/point/user/detail'
         c, b = self.do_get(url, data)
         self.assert_bm_msg(c, b)
+        return b
 
 
 if __name__ == '__main__':

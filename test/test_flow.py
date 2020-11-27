@@ -125,9 +125,9 @@ def test_pay_result_callback(channel):
     pay_no = pay_no[0]['pay_no']
     success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': channel,
                     'paidTime': flow.time_delta(formatted='%Y%m%d%H%M%S')}
-    res = flow.common_callback(id=flow.f.pyint(), category=1, status='1000_00', origin_id=pay_no,
+    res = flow.common_callback(id=order_no, category=1, status='1000_00', origin_id=flow.f.md5(),
                                additional_attrs=success_attr)
-    assert res['status'] == '0000_0'
+    assert res['status'] == '000000'
     assert res['messages'][0] == '成功'
     sql = flow.do_mysql_select('select order_status from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
     assert sql[0]['order_status'] == 'PAY_SUCCESS'
@@ -159,9 +159,9 @@ def test_pay_result_callback_failed():
     pay_no = pay_no[0]['pay_no']
     success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': 'ALI_PAY',
                     'paidTime': flow.time_delta(formatted='%Y%m%d%H%M%S')}
-    res = flow.common_callback(id=flow.f.pyint(), category=1, status='1000_01', origin_id=pay_no,
+    res = flow.common_callback(id=order_no, category=1, status='1000_01', origin_id=flow.f.md5(),
                                additional_attrs=success_attr)
-    assert res['status'] == '0000_0'
+    assert res['status'] == '000000'
     assert res['messages'][0] == '成功'
     sql = flow.do_mysql_select('select order_status from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
     assert sql[0]['order_status'] == 'WAITING_PAY'
@@ -209,14 +209,13 @@ def test_cp_common_notify_ftb22(channel):
     pay_no = pay.do_mysql_select(
         'select pay_no from pay_order where order_no="{}" and is_effective=1'.format(no), 'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
-    if os.getenv('ENV') == 'UAT':
-        # CP回调支付结果，支付成功
-        res = flow.cp_common_notify(id=flow.f.pyint(), category=1, status='1000_00', origin_id=pay_no)
-        assert res['status'] == '0000_0'
-        assert res['messages'][0] == '成功'
-    else:
-        print('不支持该环境回调')
-        sys.exit(-1)
+    # CP回调支付结果，支付成功
+    res = flow.cp_common_notify(id=no, category=1, status='1000_00', origin_id=flow.f.md5())
+    assert res['status'] == '000000'
+    assert res['messages'][0] == '成功'
+    sql_res = flow.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no),'fawvw_pay')
+    assert sql_res[0]['pay_status'] == 'SUCCESS'
+    assert sql_res[0]['ex_pay_no'] == 'qq995939534'
 
 
 @pytest.mark.flow

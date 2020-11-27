@@ -32,7 +32,7 @@ def test_get_user_points():
 @allure.suite('points')
 @allure.title('底层获取用户积分使用明细')
 @pytest.mark.points
-def test_get_user_points():
+def test_get_points_stream():
     index = 1
     size = random.randint(1,10)
     res = p.get_points_stream(index,size,aid='123')
@@ -53,3 +53,27 @@ def test_bm_get_user_points(aid):
     res1 = p.get_user_points(aid)
     assert res['data']['point'] == res1['data'][0]['remainScore']
     lk.prt('获取用户剩余积分为->{}:{}'.format(aid,res['data']['point']))
+
+
+@allure.suite('points')
+@allure.title('BM车机端获取用户积分等级')
+@pytest.mark.points
+@pytest.mark.parametrize('aid',['123','1234'])
+def test_bm_get_user_points(aid):
+    res = p.bm_get_user_level(aid)
+    assert res['data']['levelCode']
+    assert res['data']['levelDesc']
+    lk.prt('获取用户等级为->{}:{}'.format(aid,res['data']['levelDesc']))
+
+
+@allure.suite('points')
+@allure.title('BM车机端获取用户积分使用明细')
+@pytest.mark.points
+@pytest.mark.parametrize('aid',['123','1234'])
+def test_bm_get_user_points(aid):
+    res = p.bm_get_points_stream(aid)
+    for stream in res['data']:
+        assert stream['sceneName']
+        assert stream['changeScore']
+        assert stream['changeTime']
+    lk.prt('获取用户积分使用明细为->{}:{}'.format(aid,res['data']))
