@@ -261,4 +261,7 @@ def test_cp_sim_notify_ftb22():
     , ids=['iccid无法获取vin', 'package不存在'])
 def test_cp_sim_notify_wrong(param):
     res = flow.cp_sim_notify(param[0], param[1], param[2], param[3], param[4], param[5])
-    assert res['returnStatus'] == 'FAILED'
+    if 'returnStatus' in res.keys():
+        assert res['returnStatus'] == 'FAILED'
+    elif 'status' in res.keys():
+        assert res['status'] == '0000_1'
