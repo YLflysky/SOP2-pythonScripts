@@ -22,6 +22,10 @@ class SpareShop(Base):
         return body
 
     def get_category_id(self):
+        '''
+        获取备件商城一级分类id
+        :return:
+        '''
         url = self.url + '/eshop/bonus/api/v1/goods/category'
         code,body = self.do_get(url,None)
         self.assert_msg(code,body)

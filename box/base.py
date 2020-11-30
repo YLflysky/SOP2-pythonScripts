@@ -158,13 +158,13 @@ class Base:
         pro_path = current_path[:current_path.find(pro_name + seperator) + len(pro_name + seperator)]
         return pro_path
 
-    def get_token(self, other='MA', username='18224077254', password='123456', vin='LFV3A23C1K3161804'):
-        if other == 'MA':
+    def get_token(self, tenant='MA', username='18224077254', password='123456', vin='LFV3A23C1K3161804'):
+        if tenant == 'MA':
             url = "https://otherbackend-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token"
-        elif other == 'BM':
+        elif tenant == 'BM':
             url = 'http://49.233.242.137:18031/sop2bm/hu/cm/user/api/v1/token'
         else:
-            raise ValueError('other is wrong')
+            raise ValueError('tenant id is not provided')
         headers = {
             'Content-Type': 'application/json',
             'TraceId': 'app-store#recommend-list#1527758664#X9G-11111.04.2099990054#12345678',
