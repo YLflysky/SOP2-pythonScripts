@@ -54,6 +54,7 @@ class BMPayment(Base):
         c,b = self.do_get(url,data)
         self.assert_msg(c,b)
 
+
 if __name__ == '__main__':
     import os
     from order.oder_api import Order

@@ -34,7 +34,7 @@ def test_get_user_points():
 @pytest.mark.points
 def test_get_points_stream():
     index = 1
-    size = random.randint(1,10)
+    size = random.randint(5,20)
     res = p.get_points_stream(index,size,aid='123')
     assert res['returnStatus'] == 'SUCCEED'
     length = len(res['data'])

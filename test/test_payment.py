@@ -364,7 +364,8 @@ def test_sync_pay_stream(enum):
 @allure.suite('payment')
 @allure.title('同步支付记录')
 @pytest.mark.payment
-def test_sync_pay_stream_xuantian():
+@pytest.mark.parametrize('status',['INIT','WAIT_BUYER_PAY','TRADE_SUCCESS','TRADE_CLOSED','TRADE_FINISHED'])
+def test_sync_pay_stream_xuantian(status):
     '''
     测试同步支付记录，选填参数测试
     '''
@@ -378,11 +379,10 @@ def test_sync_pay_stream_xuantian():
     discount = 0.99
     channel = 'ALI_PAY'
     pay_time = pay.time_delta()
-    status = 'FAILED'
-    origin = 'SOP1'
+    origin = 'BM'
     pay_way = 'APP'
     service_id = 'MUSIC'
-    sp_id = 'CLOUD_MUSIC'
+    sp_id = 'KUWO'
     buyer = pay.f.email()
     reason = pay.f.sentence()
     data = {'vin': vin, 'aid': aid, 'exOrderNo': ex_order, 'exPayNo': ex_pay_no, 'orderNo': order_no,
@@ -395,10 +395,11 @@ def test_sync_pay_stream_xuantian():
         sql_res = pay.do_mysql_select('select * from pay_order where ex_pay_no="{}"'.format(ex_pay_no), 'fawvw_pay')
         assert len(sql_res) == 1
         sql_res = sql_res[0]
+        assert sql_res['pay_status'] == status
         assert sql_res['buyer_account'] == buyer
         assert sql_res['fail_reason'] == reason
     finally:
-        pass
+        pay.do_mysql_exec('delete from pay_order where ex_pay_no="{}"'.format(ex_pay_no),'fawvw_pay')
 
 
 @allure.suite('payment')

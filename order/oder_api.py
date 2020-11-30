@@ -26,14 +26,14 @@ class Order(Base):
         '''
         底层添加订单服务
         '''
-        url = self.url + '/sm/order/v1/order/create'
+        url = self.url + '/sm/order/v1/order'
         num = random.randint(10000000000000000000, 99999999999999999999)
         businessInfo = {'productId': 'code_002', 'price': 111, 'quantity': 1}
-        data = {'orderCategory': '27262ysyat', 'spId': '0082', 'aid': '9349643',
-                'vehModelCode': '040804', 'businessInfo': businessInfo, 'vin': 'LFVSOP2TEST000018', 'serviceId': '08',
+        data = {'orderCategory': '110', 'spId': 'KUWO', 'aid': '9349643',
+                'vehModelCode': '040804', 'businessInfo': businessInfo, 'vin': 'LFVSOP2TEST000018', 'serviceId': 'MUSIC',
                 'orderType': 'BUSINESS', 'cpOrderNo': 'MA{}'.format(num), 'title': self.f.sentence(),
                 'businessState': 'PROCESSING', 'businessStateDesc': 'SUCCESS', 'amount': 1, 'payAmount': 1,
-                'timeout': 30, 'discountAmount': 1}
+                'timeout': 30, 'discountAmount': 1,'status':'WAITING_PAY'}
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
         return body['data']
@@ -215,14 +215,11 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = Order()
+    o.add_order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
     # o.del_order(order_no='20201020101920646233472',aid='1603160360456')
-    # fakers = o.f
-    # for f in fakers:
-    #     if 'py' in f:
-    #         print(f)
     # o.sync_order_pay('123',aid='')
-    o.order_detail(aid='9351515',order_no='20201124142350661876544')
+    # o.order_detail(aid='9351515',order_no='20201124142350661876544')
     # order_no = o.generate_order_no()['data']
     # o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
     #              serviceId='MUSIC',spId='CLOUD MUSIC',title='测试支付订单',payAmount=0.01,amount=0.01,

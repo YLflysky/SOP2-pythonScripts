@@ -224,17 +224,21 @@ def test_cp_common_notify_ftb22(channel):
 def test_cp_common_notify_sop1():
     # CP回调支付结果，支付成功
     res = flow.cp_common_notify(id=flow.f.pyint(), category=1, status='1000_00', origin_id=flow.f.md5())
-    assert res['status'] == '0000_0'
+    assert res['status'] == '0000_1'
     assert res['messages'][0] == '成功'
 
 
 @pytest.mark.flow
 @allure.suite('flow')
 @allure.title('cp-adapter签约结果回调')
-def test_cp_sign_result_notify():
-    res = flow.cp_sign_result_notify(user_id=flow.f.pyint(), channel=1, notify_type=1, status=1)
+@pytest.mark.parametrize('channel',[1,2],ids=['支付宝签约结果回调','微信签约结果回调'])
+def test_cp_sign_result_notify(channel):
+    aid = flow.f.pyint()
+    res = flow.cp_sign_result_notify(aid, channel=1, notify_type=1, status=1)
     assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
+    sql = flow.do_mysql_select('select * from contract_sign where aid="{}"'.format(aid),'fawvw_pay')
+    assert sql[0]['sign_status'] == 'OPEN'
 
 
 @pytest.mark.flow
