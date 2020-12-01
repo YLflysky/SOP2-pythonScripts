@@ -131,7 +131,7 @@ class Payment(Base):
         免密支付接口
         :param aid:用户id
         :param order_no:订单号
-        :param code:协议码
+        :param code:协议码 11101支付宝免密，12101微信免密
         :return:
         '''
         url = self.url + '/contract/pay'
@@ -142,7 +142,7 @@ class Payment(Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     pay = Payment()
     # pay.pay_channel(aid='32432',order_no='20200907105829249819204')

@@ -20,7 +20,7 @@ class Flow(Base):
         '''
         url = self.hu_url + '/goods/api/v2/products/{}/detail'.format(goods_id)
         code, body = self.do_get(url, params=None)
-        self.assert_msg(code,body)
+        self.assert_msg(code, body)
         return body
 
     def flow_detail(self, goods):
@@ -33,32 +33,32 @@ class Flow(Base):
         self.assert_msg(c, b)
         return b
 
-    def goods_list(self,categories:list):
+    def goods_list(self, categories: list):
         '''
         flow服务获取商品列表
         :param categories:商品类型，列表形式
         :return:
         '''
         url = self.flow_url + '/goods/list'
-        param = {'categories':categories}
-        c,b = self.do_get(url,param)
-        self.assert_msg(c,b)
+        param = {'categories': categories}
+        c, b = self.do_get(url, param)
+        self.assert_msg(c, b)
         return b
 
-    def bm_goods_list(self,aid,categories):
+    def bm_goods_list(self, aid, categories):
         '''
         BM车机端获取流量商品列表
         :param aid: 用户id
         :param categories: 商品类型，列表形式
         :return:
         '''
-        url = self.hu_url + '/goods/api/v2/users/{}/vins/{}/products/list'.format(aid,self.random_vin())
-        param = {'productType':categories}
-        code,body = self.do_get(url,param)
-        self.assert_msg(code,body)
+        url = self.hu_url + '/goods/api/v2/users/{}/vins/{}/products/list'.format(aid, self.random_vin())
+        param = {'productType': categories}
+        code, body = self.do_get(url, param)
+        self.assert_msg(code, body)
         return body
 
-    def bm_create_flow_order(self,goods_id,aid,vin,quantity):
+    def bm_create_flow_order(self, goods_id, aid, vin, quantity):
         '''
         BM车机端创建流量订单
         :param goods_id: 商品ID
@@ -68,15 +68,13 @@ class Flow(Base):
         :return:
         '''
         url = self.hu_url + '/goods/api/v1/orderCreate'
-        data = {'goodsId':goods_id,'userId':aid,'vin':vin,'quantity':quantity}
+        data = {'goodsId': goods_id, 'userId': aid, 'vin': vin, 'quantity': quantity}
         self.header['aid'] = aid
-        c,b = self.do_post(url,data)
-        self.assert_msg(c,b)
+        c, b = self.do_post(url, data)
+        self.assert_msg(c, b)
         return b
 
-
-
-    def flow_sim_notify(self,id,date,rule,asset_type,asset_id,package_id,vin):
+    def flow_sim_notify(self, id, date, rule, asset_type, asset_id, package_id, vin):
         '''
         流量使用达到阈值回调接口
         :param id:请求id
@@ -89,13 +87,13 @@ class Flow(Base):
         :return:
         '''
         url = self.flow_url + '/cmcc/notify/custSimNotification'
-        data ={'requestId':id,'requestDateTime':date,'notificationFlagRule':rule,'assetType':asset_type,
-               'assetId':asset_id,'packageId':package_id,'vin':vin}
-        c,b = self.do_post(url,data)
-        self.assert_msg(c,b)
+        data = {'requestId': id, 'requestDateTime': date, 'notificationFlagRule': rule, 'assetType': asset_type,
+                'assetId': asset_id, 'packageId': package_id, 'vin': vin}
+        c, b = self.do_post(url, data)
+        self.assert_msg(c, b)
         return b
 
-    def cp_sim_notify(self,id,date,rule,asset_type,asset_id,package_id):
+    def cp_sim_notify(self, id, date, rule, asset_type, asset_id, package_id):
         '''
         cp-adapter流量达到阈值回调接口，根据accId确定是否sop1的回调或者ftb2.2回调
         :param id: 当前请求的ID
@@ -109,8 +107,8 @@ class Flow(Base):
         url = self.cp_url + '/flow/notify/cust_sim_notification'
         data = {'requestId': id, 'requestDateTime': date, 'notificationFlagRule': rule, 'assetType': asset_type,
                 'assetId': asset_id, 'packageId': package_id}
-        c,b = self.do_post(url,data)
-        self.assert_msg(c,b)
+        c, b = self.do_post(url, data)
+        self.assert_msg(c, b)
         return b
 
     def sign_result_callback(self, aid, channel, notify_type, status, enterprise='2100010000'):
@@ -127,10 +125,10 @@ class Flow(Base):
         data = {'enterpriseId': enterprise, 'userId': aid, 'channel': channel, 'notifyType': notify_type,
                 'contractStatus': status}
         c, b = self.do_post(url, data)
-        self.assert_msg(c,b)
+        self.assert_msg(c, b)
         return b
 
-    def cp_sign_result_notify(self,user_id,channel,notify_type,status,enterprise='2100010000'):
+    def cp_sign_result_notify(self, user_id, channel, notify_type, status, enterprise='2100010000'):
         '''
         cp-adapter回调流量签约结果，同时回调到sop1和ftb2.2
         :param user_id: 用户id
@@ -141,22 +139,23 @@ class Flow(Base):
         :return:
         '''
         url = self.cp_url + '/flow/notify/contract_result_notify'
-        data = {'userId':user_id,'channel':channel,'enterpriseId':enterprise,'notifyType':notify_type,'contractStatus':status}
-        c,b = self.do_post(url,data)
-        self.assert_msg(c,b)
+        data = {'userId': user_id, 'channel': channel, 'enterpriseId': enterprise, 'notifyType': notify_type,
+                'contractStatus': status}
+        c, b = self.do_post(url, data)
+        self.assert_msg(c, b)
         return b
 
-    def common_callback(self, id, category, status, origin_id, additional_attrs,enterprise_id='2100010000',):
+    def common_callback(self, id, category, status, origin_id, additional_attrs, enterprise_id='2100010000', ):
         url = self.flow_url + '/cmcc/notify/commonNotification'
         data = {'enterpriseId': enterprise_id,
                 'multiRecords': [{'id': id, 'idCategory': category, 'status': status, 'originalRequestId': origin_id,
-                                  'additionalAttrs':additional_attrs}]}
+                                  'additionalAttrs': additional_attrs}]}
 
         c, b = self.do_post(url, data)
-        self.assert_msg(c,b)
+        self.assert_msg(c, b)
         return b
 
-    def cp_common_notify(self,id, category, status, origin_id,enterprise_id='2100010000',):
+    def cp_common_notify(self, id, category, status, origin_id, enterprise_id='2100010000', ):
         '''
         cp-adapter流量通用回调接口,根据originalRequestId回调到sop1或者ftb2.2
         :param id:单据号
@@ -174,7 +173,7 @@ class Flow(Base):
                                   'additionalAttrs': success_attr}]}
 
         c, b = self.do_post(url, data)
-        self.assert_msg(c,b)
+        self.assert_msg(c, b)
         return b
 
 
@@ -182,6 +181,7 @@ if __name__ == '__main__':
     import os
     import random
     from order.payment import Payment
+
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'SIT'
     flow = Flow()
@@ -192,11 +192,13 @@ if __name__ == '__main__':
     # flow.flow_detail(100)
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_flow_detail('268')
-    aid = flow.f.credit_card_number()
-    flow_order = flow.bm_create_flow_order(goods_id='253',aid=aid,vin='LFVSOP2TEST000353',quantity=1)
+    aid = '3715379042921191'
+    flow_order = flow.bm_create_flow_order(goods_id='254', aid=aid, vin='LFVSOP2TEST000353', quantity=1)
     order_no = flow_order['data']['orderNo']
-    pay.free_pay(aid,order_no,'11101')
-    # pay.free_qr_code(aid,order_no,channel='QR_ALIPAY_WITHHOLDING_PAYMENT',sp_id='CMCC')
+    pay.free_pay(aid,order_no,'12101')
+    # pay.free_qr_code(aid,order_no,channel='QR_WEIXIN_WITHHOLDING_PAYMENT',sp_id='CMCC')
+    # pay.get_qr_code(aid,order_no,'WECHAT_PAY')
+
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)
 

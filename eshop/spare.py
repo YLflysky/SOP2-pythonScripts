@@ -55,7 +55,7 @@ if __name__ == '__main__':
     shop = SpareShop()
     category = shop.get_category_id()
     # print(category)
-    # goods_id = shop.get_spare_list(category='all',index=10,size=20)
+    goods_id = shop.get_spare_list(category='all',index=10,size=20)
     # goods_id = goods_id['data'][0]['goodsId']
-    shop.get_spare_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')
+    # shop.get_spare_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')
 
