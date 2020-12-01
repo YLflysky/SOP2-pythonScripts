@@ -183,7 +183,7 @@ def test_sim_notify():
     res = flow.flow_sim_notify(id, date, rule, asset_type, asset_id, package, vin)
     assert res['messages'][0] == '成功'
     sql = flow.do_mysql_select(
-        'select * from mosc_mqtt_message where service_id=8000 order by create_date desc limit 1', 'mosc_mqtt_center')
+        'select * from mosc_mqtt_message where service_id=8000 order by create_date desc limit 1', 'ftb_base_mqtt_center')
     assert sql[0]['body']
     body = json.loads(sql[0]['body'])
     assert body['vin'] == vin

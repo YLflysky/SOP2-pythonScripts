@@ -59,7 +59,7 @@ def test_bm_get_user_points(aid):
 @allure.title('BM车机端获取用户积分等级')
 @pytest.mark.points
 @pytest.mark.parametrize('aid',['123','1234'])
-def test_bm_get_user_points(aid):
+def test_bm_get_user_level(aid):
     res = p.bm_get_user_level(aid)
     assert res['data']['levelCode']
     assert res['data']['levelDesc']
@@ -70,7 +70,7 @@ def test_bm_get_user_points(aid):
 @allure.title('BM车机端获取用户积分使用明细')
 @pytest.mark.points
 @pytest.mark.parametrize('aid',['123','1234'])
-def test_bm_get_user_points(aid):
+def test_bm_get_points_stream(aid):
     res = p.bm_get_points_stream(aid)
     for stream in res['data']:
         assert stream['sceneName']

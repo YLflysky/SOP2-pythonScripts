@@ -193,9 +193,9 @@ if __name__ == '__main__':
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_flow_detail('268')
     aid = flow.f.credit_card_number()
-    # flow_order = flow.bm_create_flow_order(goods_id='253',aid=aid,vin='LFVSOP2TEST000353',quantity=1)
-    # order_no = flow_order['data']['orderNo']
-    pay.free_pay(aid,'123','11101')
+    flow_order = flow.bm_create_flow_order(goods_id='253',aid=aid,vin='LFVSOP2TEST000353',quantity=1)
+    order_no = flow_order['data']['orderNo']
+    pay.free_pay(aid,order_no,'11101')
     # pay.free_qr_code(aid,order_no,channel='QR_ALIPAY_WITHHOLDING_PAYMENT',sp_id='CMCC')
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)

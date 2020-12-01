@@ -195,18 +195,15 @@ def test_ali_pay_cdp_callback_sop1():
 
 
 callback_data_fail = [('trade_fail', '2018091361389377', 'qwer', pay.f.pyfloat(2, 2, True), pay.time_delta(), '123'),
-                      (
-                          'trade_success', '20180913613893770', 'qwer', pay.f.pyfloat(2, 2, True), pay.time_delta(),
+                      ('trade_success', '20180913613893770', 'qwer', pay.f.pyfloat(2, 2, True), pay.time_delta(),
                           '123'),
-                      ('trade_success', '2018091361389377', '', pay.f.pyfloat(2, 2, True), pay.time_delta(),
-                       '123'),
                       ('trade_success', '20180913613893770', 'qwer', pay.f.pyfloat(2, 2, True), None, '123')]
 
 
 @allure.suite('payment')
-@allure.title('支付宝cdp回调')
+@allure.title('支付宝cdp回调异常情况')
 @pytest.mark.payment
-@pytest.mark.parametrize('d', callback_data_fail, ids=['trade_status错误', 'app_id错误', 'out_trade_no错误', '没传支付时间'])
+@pytest.mark.parametrize('d', callback_data_fail, ids=['trade_status错误', 'app_id错误', '没传支付时间'])
 def test_ali_pay_cdp_callback_wrong(d):
     '''
     测试获取支付宝cdp回调结果，异常情况测试
