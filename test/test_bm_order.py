@@ -144,42 +144,46 @@ def test_order_count_06():
 @allure.suite('order')
 @allure.title('BM同步订单信息')
 @pytest.mark.order
-@pytest.mark.parametrize('brand', ['VW', 'JETTA', 'AUDI'], ids=['brand为VW', 'brand为JETTA', 'brand为AUDI'])
-def test_sync_bm_order(brand):
+@pytest.mark.parametrize('info', [(107,'BIGBOX','CAR_WASH','VW'),
+                                  (105,'FLEETIN','GAS','JETTA'),
+                                  (104,'CN_BOOKING','HOTEL','AUDI')], ids=['洗车订单', '加油订单', '酒店订单'])
+def test_sync_bm_order(info):
     '''
     测试同步BM适配层订单
     '''
-    id = bm.f.pyint()
+    ex_order = bm.f.pyint()
     vin = bm.f.pyint()
     ext_info = bm.f.pydict(4, True, value_types=str)
     discount_amount = '10000'
     order_amount = bm.f.pyint(10086, 100000)
-    category = '111'
-    sp_id = '111'
-    service_id = 'CAR_WASH'
     title = bm.f.sentence()
     user_id = '123'
     status = 'INIT'
-    status_desc = 'jojo'
-    data = {'vin': vin, 'brand': brand, 'businessExtInfo': ext_info, 'discountAmount': discount_amount,
-            'orderAmount': order_amount,
-            'orderCategory': category, 'spId': sp_id, 'serviceId': service_id, 'title': title, 'userId': user_id,
-            'serviceOrderState': status, 'serviceOrderStateDesc': status_desc}
+    status_desc = bm.f.word()
+    create_time = bm.get_time_stamp()
+    goods = bm.f.md5()
+    data = {'vin': vin, 'brand': info[3], 'businessExtInfo': ext_info, 'discountAmount': discount_amount,
+            'orderAmount': order_amount,'goodsId':goods,
+            'orderCategory': info[0], 'spId': info[1], 'serviceId': info[2], 'title': title, 'userId': user_id,
+            'serviceOrderState': status, 'serviceOrderStateDesc': status_desc,'createdTime':create_time}
 
-    res = bm.sync_bm_order(id, data)
+    res = bm.sync_bm_order(ex_order, data)
     try:
         assert res['description'] == '成功'
         order_no = res['data']
         sql_res = bm.do_mysql_select('select * from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
         assert sql_res[0]['total_amount'] == float(order_amount / 100)
         assert sql_res[0]['discount_amount'] == 100.00
-        assert sql_res[0]['ex_order_no'] == str(id)
-        assert sql_res[0]['brand'] == brand
+        assert sql_res[0]['ex_order_no'] == str(ex_order)
+        assert sql_res[0]['brand'] == info[3]
+        assert sql_res[0]['sp_id'] == info[1]
+        assert sql_res[0]['service_id'] == info[2]
+        assert sql_res[0]['goods_id'] == goods
     finally:
         bm.do_mysql_exec(
             'delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),
             'fawvw_order')
-        bm.do_mysql_exec('delete from `order` where order_no="{}" and aid="{}"'.format(order_no, user_id), 'fawvw_order')
+        bm.do_mysql_exec('delete from `order` where ex_order_no="{}" and origin="BM"'.format(ex_order), 'fawvw_order')
 
 
 @allure.suite('order')

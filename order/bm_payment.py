@@ -52,18 +52,19 @@ class BMPayment(Base):
         url = self.hu_url + '/payment/api/v2/vins/{}/users/{}/orders/{}/payments/payChannel'.format(vin,aid,order_no)
         data = {'orderCategory':category}
         c,b = self.do_get(url,data)
-        self.assert_msg(c,b)
+        self.assert_bm_msg(c,b)
+        return b
 
 
 if __name__ == '__main__':
     import os
     from order.oder_api import Order
-    os.environ['ENV']='UAT'
+    os.environ['ENV']='SIT'
     os.environ['GATE']='false'
     order = Order()
 
     pay = BMPayment()
     # pay.get_pay_result(vin='123',order_no='orderNo0001',aid='00',category='102',roll_number=1)
-    # pay.get_pay_channel(vin='6WU7LOB55T2R5E5PL',aid='9642113',order_no='111124424523',category='107')
+    pay.get_pay_channel(vin='SO8OY5T6JXM7B76O6',aid='9351499',order_no='ftb20201202111244868753664',category='111')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
-    pay.get_qr_code(vin='123',aid='32432',order_no='20200907105829249819204',pay_type='11100',category='110')
+    # pay.get_qr_code(vin='123',aid='32432',order_no='20200907105829249819204',pay_type='11100',category='110')

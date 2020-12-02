@@ -145,9 +145,9 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     pay = Payment()
-    # pay.pay_channel(aid='32432',order_no='20200907105829249819204')
+    pay.pay_channel(aid='32432',order_no='20200907105829249819204')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
-    pay.get_qr_code(aid='9350187',order_no='ftb20201130094625277102400',channel='WECHAT_PAY')
+    # pay.get_qr_code(aid='9351499',order_no='ftb20201202105124690753664',channel='WECHAT_PAY')
     # pay.get_pay_result('20201112111106317868352','221')
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback('trade_success', '2019082466466108', '123456', receipt_amount=57.00, gmt_payment=pay.time_delta(),

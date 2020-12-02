@@ -69,7 +69,7 @@ def test_bm_get_user_level(aid):
 @allure.suite('points')
 @allure.title('BM车机端获取用户积分使用明细')
 @pytest.mark.points
-@pytest.mark.parametrize('aid',['123','1234'])
+@pytest.mark.parametrize('aid',['123','1234','221'])
 def test_bm_get_points_stream(aid):
     res = p.bm_get_points_stream(aid)
     for stream in res['data']:

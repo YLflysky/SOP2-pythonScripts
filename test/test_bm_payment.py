@@ -3,7 +3,7 @@ import allure
 from order.bm_payment import BMPayment
 from order.bm_order import BMOrder
 import json
-
+import random
 
 order = BMOrder()
 pay = BMPayment()
@@ -149,3 +149,33 @@ def test_bm_pay_result_wrong(data):
     '''
     res = pay.get_pay_result(data[0],data[1],data[2],data[3],data[4])
     assert 'error' in json.dumps(res)
+
+
+@allure.suite('payment')
+@allure.title('BM车机端获取支付方式')
+@pytest.mark.payment
+def test_bm_pay_channel_flow():
+    '''
+    测试获取流量订单支付方式，支持免密支付
+    :return:
+    '''
+    vin = 'SO8OY5T6JXM7B76O6'
+    aid = '9351499'
+    data = pay.do_mysql_select('select * from pay_order where service_id="FLOW" and sp_id="CMCC" and aid="{}"'.format(aid),'fawvw_pay')
+    data = random.choice(data)
+
+    order_no = data['order_no']
+    res = pay.get_pay_channel(vin,aid,order_no,category=111)
+    for l in res['data']['gatewayList']:
+        assert l['isSupportNoPasswordPay'] == 1
+
+
+@allure.suite('payment')
+@allure.title('BM车机端获取支付方式')
+@pytest.mark.payment
+def test_bm_pay_channel():
+    aid = '221'
+    no = 'ftb20201202062731777753664'
+    res = pay.get_pay_channel(pay.random_vin(),aid,no,category=105)
+    assert res['data']['preferGatewayCode'] in ('11','12')
+    assert res['data']['gatewayList']
