@@ -12,16 +12,16 @@ flow = Flow()
 
 
 @allure.suite('flow')
-@allure.title('BM车机端获取流量详情测试用例')
+@allure.title('BM车机端获取流量商品详情测试用例')
 @pytest.mark.flow
-@pytest.mark.parametrize('id', ['266', '254', '255', '85'])
+@pytest.mark.parametrize('id', ['266', '103', '255', '85'])
 def test_bm_flow_detail(id):
     res = flow.bm_get_flow_detail(id)
     assert res['code'] == 0
     sql = flow.do_mysql_select('SELECT g.*,f.description,c.goodsStatus from GOODS g,'
                                'FLOW_ATTRIBUTE f,GOODS_CONTROL c where 1=1 and g.id = c.goodsId and '
                                'g.goodsCodes=f.goodsCodes and c.goodsStatus="ALREADY_SHELVES" and g.id={}'.format(id),
-                               'fawvw_flow', 'SOP2')
+                               'fawvw_flow')
     assert res['data']['goodsName'] == sql[0]['goodsName']
     assert res['data']['descripiton'] == sql[0]['description']
     assert res['data']['termsOfserviceUrl'] == sql[0]['goodsUrl']
@@ -91,7 +91,9 @@ def test_sign_result_callback(param):
 @allure.suite('flow')
 @allure.title('免密签约结果回调')
 @pytest.mark.flow
-@pytest.mark.parametrize('d', [('221', 1, 1, 2), ('221', 1, 2, 1), ('221', 3, 1, 1)],
+@pytest.mark.parametrize('d', [('221', 1, 1, 2,'通知类型和签约状态不一致'),
+                               ('221', 1, 2, 1,'通知类型和签约状态不一致'),
+                               ('221', 3, 1, 1,'操作渠道不存在')],
                          ids=['状态为未签约，通知类型为签约', '状态为已签约，通知类型为解约', '支付渠道错误'])
 def test_sign_result_callback_wrong(d):
     '''
@@ -100,7 +102,7 @@ def test_sign_result_callback_wrong(d):
     '''
     res = flow.sign_result_callback(d[0], d[1], d[2], d[3])
     assert res['status'] == '0000_1'
-    assert res['messages'][0] == '失败'
+    assert res['messages'][0] == d[-1]
 
 
 @allure.suite('flow')
@@ -178,7 +180,7 @@ def test_sim_notify():
     rule = flow.f.pyfloat(positive=True, min_value=0.0, max_value=1.0)
     asset_type = 'iccid'
     asset_id = flow.f.md5()
-    package = 'P1001123577'
+    package = 'P1001146835'
     vin = 'LFV2A11KXA3030241'
     res = flow.flow_sim_notify(id, date, rule, asset_type, asset_id, package, vin)
     assert res['messages'][0] == '成功'
@@ -250,7 +252,7 @@ def test_cp_sim_notify_ftb22():
     rule = flow.f.pyfloat(positive=True, min_value=0.0, max_value=1.0)
     asset_type = 'iccid'
     acc_id = '995939534cmcctest002x'
-    package = 'P1001123577'
+    package = 'P1001146835'
     res = flow.cp_sim_notify(id, date, rule, asset_type, acc_id, package_id=package)
     assert res['status'] == '000000'
     assert res['messages'][0] == '成功'

@@ -192,12 +192,12 @@ if __name__ == '__main__':
     # flow.flow_detail(100)
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_flow_detail('268')
-    aid = flow.f.ssn()
-    # flow_order = flow.bm_create_flow_order(goods_id='254', aid=aid, vin='LFVSOP2TEST000353', quantity=1)
-    # order_no = flow_order['data']['orderNo']
+    aid = '123'
+    flow_order = flow.bm_create_flow_order(goods_id='254', aid=aid, vin='LFVSOP2TEST000353', quantity=1)
+    order_no = flow_order['data']['orderNo']
     # pay.free_pay(aid,order_no,'12101')
     # pay.free_qr_code(aid,order_no,channel='QR_WEIXIN_WITHHOLDING_PAYMENT',sp_id='CMCC')
-    pay.get_qr_code('682.907.4519x530','ftb20201202092434972753664','WECHAT_PAY')
+    pay.get_qr_code(aid,order_no,'WECHAT_PAY')
 
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid=flow.f.pyint(),channel=1,notify_type=2,status=1)

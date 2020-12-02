@@ -145,7 +145,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     pay = Payment()
-    pay.pay_channel(aid='32432',order_no='20200907105829249819204')
+    pay.pay_channel(aid='123',order_no='ftb20201202143049446753664')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
     # pay.get_qr_code(aid='9351499',order_no='ftb20201202105124690753664',channel='WECHAT_PAY')
     # pay.get_pay_result('20201112111106317868352','221')

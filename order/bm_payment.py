@@ -65,6 +65,6 @@ if __name__ == '__main__':
 
     pay = BMPayment()
     # pay.get_pay_result(vin='123',order_no='orderNo0001',aid='00',category='102',roll_number=1)
-    pay.get_pay_channel(vin='SO8OY5T6JXM7B76O6',aid='9351499',order_no='ftb20201202111244868753664',category='111')
+    pay.get_pay_channel(vin='LFVSOP2TEST000353',aid='123',order_no='ftb20201202143049446753664',category='111')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
     # pay.get_qr_code(vin='123',aid='32432',order_no='20200907105829249819204',pay_type='11100',category='110')

@@ -20,6 +20,9 @@ import sys
 import re
 import random
 from box.my_encoder import MyEncoder
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class Base:
 
