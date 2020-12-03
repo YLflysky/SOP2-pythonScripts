@@ -49,12 +49,17 @@ class Payment(Base):
         self.assert_msg(code, body)
         return body
 
-    def get_qr_code(self, aid, order_no, channel):
+    def get_qr_code(self, aid, order_no, channel,score=False):
         '''
-        获取支付二维码
+        支付底层获取支付二维码API
+        :param aid: 用户id
+        :param order_no: 订单号
+        :param channel: 支付渠道
+        :param score: 是否使用积分
+        :return:
         '''
         url = self.url + '/pay/qrCode'
-        params = {'aid': aid, 'orderNo': order_no, 'payChannel': channel}
+        params = {'aid': aid, 'orderNo': order_no, 'payChannel': channel,'useScore':score}
         code, body = self.do_get(url, params)
         self.assert_msg(code, body)
         return body
@@ -150,12 +155,13 @@ class Payment(Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     pay = Payment()
-    pay.pay_channel(aid='123',order_no='ftb20201202143049446753664')
+    aid = '122'
+    # pay.pay_channel(aid='18623459409',order_no='ftb20201203170458721753664')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
-    # pay.get_qr_code(aid='9351499',order_no='ftb20201202105124690753664',channel='WECHAT_PAY')
+    pay.get_qr_code(aid,order_no='ftb20201203175842120942080',channel='WECHAT_PAY')
     # pay.get_pay_result('20201112111106317868352','221')
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback('trade_success', '2019082466466108', '123456', receipt_amount=57.00, gmt_payment=pay.time_delta(),

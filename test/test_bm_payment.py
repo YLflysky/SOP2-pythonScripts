@@ -168,7 +168,7 @@ def test_bm_pay_channel_flow():
     order_no = data['order_no']
     res = pay.get_pay_channel(vin,aid,order_no,category=111)
     for l in res['data']['gatewayList']:
-        assert l['isSupportNoPasswordPay'] == 1
+        assert l['isSupportNoPasswordPay'] == '1'
 
 
 @allure.suite('payment')

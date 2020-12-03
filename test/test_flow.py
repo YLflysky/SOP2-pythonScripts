@@ -5,10 +5,12 @@ import sys, os
 import json
 from flow.flow_api import Flow
 from order.payment import Payment
+from order.bm_payment import BMPayment
 from box.lk_logger import lk
 
 pay = Payment()
 flow = Flow()
+bm_pay = BMPayment()
 
 
 @allure.suite('flow')
@@ -74,28 +76,60 @@ def test_bm_flow_detail_wrong(goods):
 @allure.suite('flow')
 @allure.title('免密签约结果回调')
 @pytest.mark.flow
-@pytest.mark.parametrize('param', [(flow.f.pyint(), 1, 1, 1, 'ALI_PAY', 'OPEN'),
-                                   (flow.f.pyint(), 2, 2, 2, 'WECHAT_PAY', 'CLOSE'),
-                                   (flow.f.pyint(), 2, 1, 1, 'WECHAT_PAY', 'OPEN'),
-                                   (flow.f.pyint(), 1, 2, 2, 'ALI_PAY', 'CLOSE')]
+@pytest.mark.parametrize('param', [ (1, 1, 1, 'ALI_PAY', 'OPEN'),
+                                   ( 2, 2, 2, 'WECHAT_PAY', 'CLOSE'),
+                                   ( 2, 1, 1, 'WECHAT_PAY', 'OPEN'),
+                                   ( 1, 2, 2, 'ALI_PAY', 'CLOSE')]
     , ids=['支付宝签约', '微信解约', '微信签约', '支付宝解约'])
-def test_sign_result_callback(param):
-    res = flow.sign_result_callback(param[0], param[1], param[2], param[3])
-    assert res['status'] == '0000_0'
-    assert res['messages'][0] == '成功'
-    sql = flow.do_mysql_select(
-        'select * from contract_sign where aid = "{}" and pay_channel="{}"'.format(param[0], param[4]), 'fawvw_pay')
-    assert sql[0]['sign_status'] == param[5]
+def test_sign_result_notify(param):
+    '''
+    流量底层签约结果回调
+    :param param: 测试数据
+    :return:
+    '''
+    aid = 'qq995939534'
+    res = flow.sign_result_callback(aid, param[0], param[1], param[2])
+    try:
+        assert res['status'] == '0000_0'
+        assert res['messages'][0] == '成功'
+        sql = flow.do_mysql_select(
+            'select * from contract_sign where aid = "{}" and pay_channel="{}"'.format(aid, param[3]), 'fawvw_pay')
+        assert sql[0]['sign_status'] == param[-1]
+        assert sql[0]['service_id'] == 'FLOW'
+        assert sql[0]['operator_id'] == 'CMCC'
+    finally:
+        flow.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="{}"'.format(aid,param[3]),'fawvw_pay')
 
 
 @allure.suite('flow')
-@allure.title('免密签约结果回调')
+@allure.title('免密签约成功影响获取支付方式字段')
+@pytest.mark.flow
+@pytest.mark.parametrize('param', [(1, 'AliPay'), (2, 'WeChat')],ids=['支付宝签约通知paychannel', '微信签约通知paychannel'])
+def test_sign_result_notify_success(param):
+    aid = '122'
+    vin = 'LFVSOP2TEST000353'
+    res = flow.sign_result_callback(aid, param[0], 1, 1)
+    try:
+        assert res['status'] == '0000_0'
+        assert res['messages'][0] == '成功'
+        order_no = flow.bm_create_flow_order(goods_id='253', aid=aid, vin=vin,quantity=1)['data']['orderNo']
+        pay_channel = bm_pay.get_pay_channel(vin,aid,order_no,category='111')
+        for gateway in pay_channel['data']['gatewayList']:
+            if gateway['payGatewayName'] == param[1]:
+                assert gateway['signAccount'] == aid
+                assert gateway['isSignWithhold'] == '101'
+    finally:
+        flow.do_mysql_exec('delete from contract_sign where aid="{}"'.format(aid),'fawvw_pay')
+
+
+@allure.suite('flow')
+@allure.title('免密签约结果回调异常情况')
 @pytest.mark.flow
 @pytest.mark.parametrize('d', [('221', 1, 1, 2,'通知类型和签约状态不一致'),
                                ('221', 1, 2, 1,'通知类型和签约状态不一致'),
                                ('221', 3, 1, 1,'操作渠道不存在')],
                          ids=['状态为未签约，通知类型为签约', '状态为已签约，通知类型为解约', '支付渠道错误'])
-def test_sign_result_callback_wrong(d):
+def test_sign_result_notify_wrong(d):
     '''
     测试免密签约回调异常情况
     :return:
@@ -115,8 +149,8 @@ def test_pay_result_callback(channel):
     :return:
     '''
     aid = 'qq995939534'
-    order_msg = flow.bm_create_flow_order(goods_id='253', aid=aid, vin='LFVSOP2TEST000353',
-                                          quantity=1)
+    order_msg = flow.bm_create_flow_order(goods_id='253', aid=aid, vin='LFVSOP2TEST000353',quantity=1)
+
     order_no = order_msg['data']['orderNo']
     # 根据流量订单支付
     res = pay.get_qr_code(aid, order_no, channel=channel)

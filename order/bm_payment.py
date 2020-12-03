@@ -10,14 +10,14 @@ class BMPayment(Base):
         self.hu_url = self.read_conf('sop2_env.conf',self.env,'hu_host')
         self.be_url = self.read_conf('sop2_env.conf',self.env,'be_host')
 
-    def get_qr_code(self,vin,aid,order_no,pay_type,category):
+    def get_qr_code(self,vin,aid,order_no,pay_type,category,score=False):
         '''
         BM车机端获取支付二维码
         '''
 
         url = self.hu_url + '/payment/api/v2/vins/{}/users/{}/orders/{}/payments/qrCode'.format(vin,aid,order_no)
 
-        data = {'payType':pay_type,'orderCategory':category}
+        data = {'payType':pay_type,'orderCategory':category,'useScore':score}
         c,b = self.do_get(url,data)
         print(b)
         return b
@@ -59,12 +59,13 @@ class BMPayment(Base):
 if __name__ == '__main__':
     import os
     from order.oder_api import Order
-    os.environ['ENV']='SIT'
+    os.environ['ENV']='DEV'
     os.environ['GATE']='false'
     order = Order()
-
     pay = BMPayment()
+    aid = '122'
+    vin = 'LFVSOP2TEST000353'
     # pay.get_pay_result(vin='123',order_no='orderNo0001',aid='00',category='102',roll_number=1)
-    pay.get_pay_channel(vin='LFVSOP2TEST000353',aid='123',order_no='ftb20201202143049446753664',category='111')
+    # pay.get_pay_channel(vin='LFVSOP2TEST000353',aid=aid,order_no='ftb20201203170458721753664',category='111')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
-    # pay.get_qr_code(vin='123',aid='32432',order_no='20200907105829249819204',pay_type='11100',category='110')
+    pay.get_qr_code(vin,aid,order_no='ftb20201203175842120942080',pay_type='11100',category='111')

@@ -47,7 +47,7 @@ class TencentCar(Base):
         :return:
         '''
         data = {'uid': uid, 'vin': vin}
-        url = self.url + '/mosc-tencent-mycar-sop2/api/v1/getBindInfo'
+        url = self.url + '/api/v1/getBindInfo'
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
         return body['data']
@@ -61,13 +61,18 @@ class TencentCar(Base):
         :param action:
         :return:
         '''
+        url = self.url + '/api/v1/bindNotice'
+        data = {'userid':aid,'vin':vin,'wecarid':wecar_id,'action':action}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
 
 if __name__ == '__main__':
 
     os.environ['GATE'] = 'true'
     os.environ['ENV'] = 'UAT'
     car = TencentCar()
-    car.unbind(aid='9349825',vin='LFV3A23C9L3046742')
+    # car.unbind(aid='9349825',vin='LFV3A23C9L3046742')
     # car.get_info(uid=190001,vin='LFVTESTMOSC000025')
+    car.bind_callback(aid='4614963',vin='TEZWVEVTVElDQVMzMDk3MzY=',wecar_id='TEZWVEVTVElDQVMzMDk3MzY',action='unbind')
 
 
