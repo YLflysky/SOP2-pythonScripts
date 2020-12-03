@@ -1,6 +1,7 @@
 import pytest
 import os
 from order.payment import Payment
+from order.oder_api import Order
 import random
 import time
 import json
@@ -8,33 +9,29 @@ import allure
 import sys
 
 pay = Payment()
-
+o = Order()
 
 @allure.suite('payment')
 @allure.title('获取支付结果')
 @pytest.mark.payment
-@pytest.mark.parametrize('d', [('1234', '1234'), ('1235', '1234'), ('20200907105829249819204', '32432'),
-                               ('efafea', '2222')],
-                         ids=['支付成功', '支付失败', '支付中', '成功'])
+@pytest.mark.parametrize('d', [('ftb20201202112131435753664', '9351499','SUCCESS'),
+                               ('ftb20201127151324000753664', 'qq995939534','FAILED'),
+                               ('20200907105829249819204', '32432','PROCESSING')],
+                         ids=['支付成功', '支付失败', '支付中'])
 def test_get_pay_result(d):
-    res = pay.get_pay_result(d[0], d[1])
+    res = pay.get_pay_result(order_no=d[0], aid=d[1])
     sql = pay.do_mysql_select('select * from pay_order where order_no="{}" order by pay_time desc limit 1'.format(d[0]),
                               'fawvw_pay')
     if sql[0]['buyer_account']:
         assert res['data']['buyerAccount'] == sql[0]['buyer_account']
     status = sql[0]['pay_status']
-    if status == 'SUCCESS':
-        assert res['data']['payResultStatus'] == '101'
-    elif status == 'FAILED':
-        assert res['data']['payResultStatus'] == '102'
-    else:
-        assert res['data']['payResultStatus'] == '100'
+    assert status == d[-1]
 
 
 @allure.suite('payment')
-@allure.title('获取支付结果')
+@allure.title('获取支付结果异常情况')
 @pytest.mark.payment
-@pytest.mark.parametrize('d', [(pay.f.pyint(), '123', '支付订单不存在'),
+@pytest.mark.parametrize('d', [(pay.f.pyint(), '123', 'Feign调用order获取订单数据错误'),
                                (None, '123', "Required String parameter 'orderNo' is not present"),
                                ('123', None, "Required String parameter 'aid' is not present")],
                          ids=['不存在订单', '不传orderNo', '不传aid'])
@@ -97,16 +94,20 @@ def test_get_pay_agreement_wrong(d):
 @allure.suite('payment')
 @allure.title('支付宝cdp回调')
 @pytest.mark.payment
-@pytest.mark.parametrize('d', [('9349643', 'M202007160901278277176514'), ('9642113', 'orderNo0001')],
-                         ids=['order_no=M202007160901278277176514', 'order_no=orderNo0001'])
-def test_ali_pay_cdp_callback_01(d):
+def test_ali_pay_cdp_callback_01():
     '''
     测试获取支付宝cdp回调结果，输入全部必填项
     '''
+    # 创建订单
+    aid = '469317'
+    order_no = o.generate_order_no()['data']
+    o.sync_order(aid=aid, orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
+                 serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,
+                 goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # 获取支付二维码，生成支付记录
-    pay_msg = pay.get_qr_code(d[0], d[1], 'ALI_PAY')
+    pay_msg = pay.get_qr_code(aid, order_no, 'ALI_PAY')
     pay_no = pay.do_mysql_select(
-        'select pay_no from pay_order where order_no="{}" and is_effective=1'.format(d[1]),
+        'select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),
         'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
     amount = pay_msg['data']['payAmount']
@@ -128,8 +129,8 @@ def test_ali_pay_cdp_callback_01(d):
         assert pay_res[0]['pay_time'] == pay_time
         assert pay_res[0]['pay_status'] == 'SUCCESS'
     finally:
-        pay.do_mysql_exec('delete from order_pay where order_no="{}"'.format(d[1]), 'fawvw_order')
-        pay.do_mysql_exec('delete from pay_order where order_no="{}" and is_effective=1'.format(d[1]), 'fawvw_pay')
+        pay.do_mysql_exec('delete from order_pay where order_no="{}"'.format(order_no), 'fawvw_order')
+        pay.do_mysql_exec('delete from pay_order where order_no="{}" and is_effective=1'.format(order_no), 'fawvw_pay')
 
 
 @allure.suite('payment')
@@ -139,11 +140,16 @@ def test_ali_pay_cdp_callback_02():
     '''
     测试获取支付宝cdp回调结果，回调参数加上选填项
     '''
-    aid='32432'
-    order_no='2603681151000'
+    # 创建订单
+    aid = '469317'
+    order_no = o.generate_order_no()['data']
+    o.sync_order(aid=aid, orderNo=order_no, ex='ex%s' % order_no, origin='SOP1', category='110',
+                 serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
+                 goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
+
+    # 获取支付二维码，生成支付记录
     status = 'trade_success'
     app_id = '2018091361389377'
-    # 获取支付二维码，生成支付记录
     pay_msg = pay.get_qr_code(aid, order_no, 'ALI_PAY')
     pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
@@ -217,95 +223,36 @@ def test_ali_pay_cdp_callback_wrong(d):
 @allure.suite('payment')
 @allure.title('免密签约结果回调')
 @pytest.mark.payment
-def test_cmcc_callback_01():
+@pytest.mark.parametrize('d',[('ALI_PAY','OPEN','OPEN'),('ALI_PAY','CLOSE','PAUSE'),
+                              ('WECHAT_PAY','OPEN','OPEN'),('WECHAT_PAY','CLOSE','PAUSE')]
+                         ,ids=['支付宝签约','支付宝解约','微信签约','微信解约'])
+def test_flow_sign_notify(d):
     '''
     测试回调免密支付结果接口--支付宝签约
     '''
     aid = pay.f.pyint()
-
-    pay.cmcc_callback(aid, '2100010000', 1, 1, 1)
+    pay.contract_sign_notify(aid, service='FLOW',operator='270001', channel=d[0], sign_status=d[1], pause_status=d[2])
     try:
         sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),
                                   'fawvw_pay')
-        assert sql[0]['pause_status'] == 'OPEN'
-        assert sql[0]['sign_status'] == 'OPEN'
+        assert sql[0]['pause_status'] == d[2]
+        assert sql[0]['sign_status'] == d[1]
     finally:
         pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid), 'fawvw_pay')
 
 
 @allure.suite('payment')
-@allure.title('免密签约结果回调')
+@allure.title('免密签约结果回调异常情况')
 @pytest.mark.payment
-def test_cmcc_callback_02():
-    '''
-    测试回调免密支付结果接口--支付宝解约
-    '''
-    aid = pay.f.pyint()
-
-    pay.cmcc_callback(aid, '2100010000', 1, 2, 2)
-    try:
-        sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),
-                                  'fawvw_pay')
-        assert sql[0]['pause_status'] == 'PAUSE'
-        assert sql[0]['sign_status'] == 'CLOSE'
-    finally:
-        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),
-                          'fawvw_pay')
-
-
-@allure.suite('payment')
-@allure.title('免密签约结果回调')
-@pytest.mark.payment
-def test_cmcc_callback_03():
-    '''
-    测试回调免密支付结果接口--微信签约
-    '''
-    aid = pay.f.pyint()
-
-    pay.cmcc_callback(aid, '2100010000', 2, 1, 1)
-    try:
-        sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="WECHAT_PAY"'.format(aid),
-                                  'fawvw_pay')
-        assert sql[0]['pause_status'] == 'OPEN'
-        assert sql[0]['sign_status'] == 'OPEN'
-    finally:
-        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="WECHAT_PAY"'.format(aid),
-                          'fawvw_pay')
-
-
-@allure.suite('payment')
-@allure.title('免密签约结果回调')
-@pytest.mark.payment
-def test_cmcc_callback_04():
-    '''
-    测试回调免密支付结果接口--微信解约
-    '''
-    aid = pay.f.pyint()
-
-    pay.cmcc_callback(aid, '2100010000', 2, 2, 2)
-    try:
-        sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="WECHAT_PAY"'.format(aid),
-                                  'fawvw_pay')
-        assert sql[0]['pause_status'] == 'PAUSE'
-        assert sql[0]['sign_status'] == 'CLOSE'
-    finally:
-        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="WECHAT_PAY"'.format(aid),
-                          'fawvw_pay')
-
-
-@allure.suite('payment')
-@allure.title('免密签约结果回调')
-@pytest.mark.payment
-@pytest.mark.parametrize('wrong', [('221', '2100010000', 2, 1, 2), ('221', '21000100001', 2, 1, 1),
-                                   ('221', '2100010000', 3, 1, 1), (None, '2100010000', 1, 1, 1)],
-                         ids=['输入类型和状态不一致', '输入enterprise错误', '输入channel错误', '不输入aid'])
+@pytest.mark.parametrize('wrong', [('221',None,'OPEN','PAUSE'), ('221','ALI_PAY',None,'OPEN'),('221', 'ALI_PAY1','OPEN','OPEN'),
+                                   ('221', 'ALI_PAY','OPEN1','OPEN'),('221', 'ALI_PAY','OPEN','OPEN1'), (None, 'ALI_PAY', 'OPEN','OPEN')],
+                         ids=['不输入channel','不输入签约状态', '输入channel错误', '输入签约状态错误','输入开启关闭状态错误','不输入aid'])
 def test_cmcc_callback_wrong(wrong):
     '''
     测试回调免密支付结果接口--异常情况
     '''
-    res = pay.cmcc_callback(aid=wrong[0], enterprise=wrong[1], channel=wrong[2], notify_type=wrong[3], status=wrong[4])
-    assert res['status'] == '0000_1'
-    assert res['message']
+    res = pay.contract_sign_notify(aid=wrong[0],service='FLOW',operator='270001', channel=wrong[1], sign_status=wrong[2], pause_status=wrong[3])
+    assert res['returnStatus'] == 'FAILED'
 
 
 @allure.suite('payment')

@@ -120,17 +120,18 @@ def test_bm_pay_agreement_wrong(param):
 @pytest.mark.payment
 @allure.suite('payment')
 @allure.title('BM适配层获取支付结果')
-@pytest.mark.parametrize('data',[('111','20200907105829249819204','32432','102',1,'100'),
-                                 (pay.random_vin(),'20201109132011110380928','221','111',1,'100'),
-                                 ('111','1235','1234','102',1,'102'),
-                                 ('111','20201027113016328225280','1603769416000','102',1,'101')],
-                         ids=['获取正在支付的支付结果','获取音乐订单支付','获取支付失败结果','支付成功'])
+@pytest.mark.parametrize('data',[('20200907105829249819204','32432','102','100'),
+                                 ('20201109132011110380928','221','105','100'),
+                                 ('ftb20201127151324000753664','qq995939534','111','102'),
+                                 ('ftb20201127113931728753664','qq995939534','111','101')],
+                         ids=['获取正在支付的支付结果','获取音乐订单支付','获取支付失败结果','获取流量订单支付结果'])
 def test_bm_pay_result(data):
     '''
     测试BM适配层获取支付结果
     '''
-    res = pay.get_pay_result(data[0],data[1],data[2],data[3],data[4])
-    sql = pay.do_mysql_select('select buyer_account from pay_order where order_no="{}"'.format(data[1]),'fawvw_pay')
+    vin = 'LFVSOP2TEST000353'
+    res = pay.get_pay_result(vin=vin,order_no=data[0],aid=data[1],category=data[2],roll_number=1)
+    sql = pay.do_mysql_select('select buyer_account from pay_order where order_no="{}"'.format(data[0]),'fawvw_pay')
     assert res['data']['payResultStatus'] == data[-1]
 
     assert res['data']['buyerAccount'] == sql[0]['buyer_account']

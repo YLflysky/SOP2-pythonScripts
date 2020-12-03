@@ -48,7 +48,7 @@ class Base:
         :return:
         '''
         self.header['Did'] = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
-        self.header['authorization'] = self.f.md5()
+        self.header['authorization'] = self.get_token()
         self.header['did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
 
     public_param = {

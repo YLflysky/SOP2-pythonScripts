@@ -59,13 +59,21 @@ class Payment(Base):
         self.assert_msg(code, body)
         return body
 
-    def cmcc_callback(self, aid, enterprise, channel, notify_type, status):
+    def contract_sign_notify(self, aid,service,operator,channel,sign_status,pause_status,**kwargs):
         '''
-        免密支付结果回调接口
+        支付底层免密签约/解约结果通知接口
+        :param aid:用户id
+        :param service:FLOW
+        :param operator:CMCC
+        :param channel:支付渠道
+        :param sign_status:签约状态
+        :param pause_status:免密开启关闭
+        :param kwargs:其他参数
+        :return:
         '''
-        url = self.url + '/contract/notify/cmcc'
-        param = {'enterpriseId': enterprise, 'userId': aid, 'channel': channel, 'notifyType': notify_type,
-                 'contractStatus': status}
+        url = self.url + '/contract/notify/sync_result'
+        param = {'serviceId': service, 'aid': aid, 'operatorId': operator, 'payChannel': channel,'signStatus':sign_status,
+                 'pauseStatus': pause_status,**kwargs}
 
         code, body = self.do_post(url, param)
         self.assert_msg(code, body)
@@ -152,5 +160,5 @@ if __name__ == '__main__':
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback('trade_success', '2019082466466108', '123456', receipt_amount=57.00, gmt_payment=pay.time_delta(),
     #                      trade_no=pay.f.pyint())
-    # pay.cmcc_callback(aid='221',enterprise='2100010000',channel=1,notify_type=2,status=1)
+    # pay.contract_sign_notify(aid='221',)
     # pay.sync_pay_result('20201124131211565196608','9409',pay.time_delta(),999,'QR_PAY','BM','ALI_PAY','SUCCESS')

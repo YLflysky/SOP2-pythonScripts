@@ -6,11 +6,8 @@ class TencentCar(Base):
     def __init__(self):
         super().__init__()
 
-        if self.gate:
-            self.url = self.read_conf('sop2_env.conf',self.env,'hu_host')+'/test-access/tm'
-        else:
-            print('暂时不支持的环境')
-            sys.exit(-1)
+
+        self.url = self.read_conf('ma_env.conf',self.env,'car_host')
 
     def assert_msg(self,code,body):
         print(body)
@@ -30,8 +27,14 @@ class TencentCar(Base):
         code,body = self.do_post(url,data)
         self.assert_msg(code,body)
 
-    def unbind(self,uid,vin):
-        data = {'uid': uid, 'vin': vin}
+    def unbind(self,aid,vin):
+        '''
+        解绑车辆
+        :param aid:用户id
+        :param vin: 车辆vin码
+        :return:
+        '''
+        data = {'uid': aid, 'vin': vin}
         url = self.url + '/api/v1/unBindAccount'
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
@@ -49,11 +52,22 @@ class TencentCar(Base):
         self.assert_msg(code, body)
         return body['data']
 
+    def bind_callback(self,aid,vin,wecar_id,action):
+        '''
+        绑定解绑通知回调接口
+        :param aid:
+        :param vin:
+        :param wecar_id:
+        :param action:
+        :return:
+        '''
+
 if __name__ == '__main__':
 
     os.environ['GATE'] = 'true'
     os.environ['ENV'] = 'UAT'
     car = TencentCar()
-    car.get_info(uid=190001,vin='LFVTESTMOSC000025')
+    car.unbind(aid='9349825',vin='LFV3A23C9L3046742')
+    # car.get_info(uid=190001,vin='LFVTESTMOSC000025')
 
 
