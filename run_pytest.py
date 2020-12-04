@@ -30,10 +30,11 @@ if __name__ == '__main__':
     else:
         marks = args.mark.split(',')
         if len(marks) > 1:
-            cmd = 'pytest -q ./test --alluredir /data/allure-results -m {}'.format(' or '.join(marks))
+            cmd = 'pytest -q ./test --alluredir /data/allure-results -m "{}"'.format(' or '.join(marks))
         elif len(marks) == 1:
-            cmd = 'pytest -q ./test --alluredir /data/allure-results -m {}'.format(marks[0])
+            cmd = 'pytest -q ./test --alluredir /data/allure-results -m "{}"'.format(marks[0])
         else:
             print('args error')
             sys.exit(-1)
+    print('执行的命名为:{}'.format(cmd))
     os.system(cmd)
