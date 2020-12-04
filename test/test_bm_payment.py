@@ -12,20 +12,20 @@ pay = BMPayment()
 @pytest.mark.payment
 @allure.suite('payment')
 @allure.title('BM适配层获取二维码')
-@pytest.mark.parametrize('code',['11101','12101'])
+@pytest.mark.parametrize('code',['11100','12100'],ids=['获取支付宝二维码','获取微信二维码'])
 def test_bm_get_qr_code(code):
     '''
     测试BM获取支付二维码
     '''
     # 同步一条音乐订单，用于获取支付二维码
-    id = order.f.pyint()
+    ex_order_no = order.f.pyint()
     goods_id = order.f.pyint()
-    vin = order.f.pyint()
+    vin = order.random_vin()
     ext_info = order.f.pydict(4, True, value_types=str)
     discount_amount = '10000'
     order_amount = order.f.pyint(10086, 100000)
     category = '111'
-    sp_id = 'CLOUD MUSIC'
+    sp_id = 'KUWO'
     service_id = 'MUSIC'
     title = order.f.sentence()
     user_id = '221'
@@ -36,7 +36,7 @@ def test_bm_get_qr_code(code):
             'orderCategory': category, 'spId': sp_id, 'serviceId': service_id, 'title': title, 'userId': user_id,
             'serviceOrderState': status, 'serviceOrderStateDesc': status_desc,'goodsId':goods_id}
     try:
-        res = order.sync_bm_order(id, data)
+        res = order.sync_bm_order(ex_order_no, data)
         order_no = res['data']
         # 更新订单来源为SOP1
         order.do_mysql_exec('update `order` set origin="SOP1",actual_pay_amount=0.01 where order_no="{}"'.format(order_no),'fawvw_order')
@@ -161,7 +161,7 @@ def test_bm_pay_channel_flow():
     :return:
     '''
     vin = 'SO8OY5T6JXM7B76O6'
-    aid = '9351499'
+    aid = '122'
     data = pay.do_mysql_select('select * from pay_order where service_id="FLOW" and sp_id="CMCC" and aid="{}"'.format(aid),'fawvw_pay')
     data = random.choice(data)
 
@@ -175,8 +175,8 @@ def test_bm_pay_channel_flow():
 @allure.title('BM车机端获取支付方式')
 @pytest.mark.payment
 def test_bm_pay_channel():
-    aid = '221'
-    no = 'ftb20201202062731777753664'
-    res = pay.get_pay_channel(pay.random_vin(),aid,no,category=105)
+    aid = '122'
+    no = 'ftb20201204113739602753664'
+    res = pay.get_pay_channel(pay.random_vin(),aid,no,category='111')
     assert res['data']['preferGatewayCode'] in ('11','12')
     assert res['data']['gatewayList']

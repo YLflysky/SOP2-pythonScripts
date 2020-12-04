@@ -169,9 +169,8 @@ class Order(Base):
 
         kafka_data = {'key': self.my_json_decoder(kafka_data)}
         msg = {'header': header, 'kafkaData': kafka_data}
-        host = '10.20.4.11:9092'
         topic = 'order-finished-remind-topic'
-        self.send_kafka_msg(host, topic, msg)
+        self.send_kafka_msg(topic, msg)
 
     def invoice_info(self, aid):
         url = self.url + '/sm/order/v1/invoice/header'
@@ -179,19 +178,31 @@ class Order(Base):
         code, body = self.do_get(url, data)
         self.assert_msg(code, body)
 
-    def apply_invoice(self, aid, order_no, duty_no, head, phone):
-
+    def apply_invoice(self, aid, order_no:list, duty_no, head, phone):
+        '''
+        order底层申请开票接口，目前支持加油订单
+        :param aid: 大众用户id
+        :param order_no: 订单编号
+        :param duty_no: 税号
+        :param head: 发票抬头
+        :param phone: 开票电话号码
+        :return:
+        '''
         url = self.url + '/sm/order/v1/invoice/apply'
         data = {
             'dutyNum': duty_no, 'email': self.f.email(), 'invoiceHead': head, 'phone': phone,
             'invoiceType': '0', 'orderId': order_no, 'remark': self.f.sentence(), 'tel': '02887676543'}
         self.header['aid'] = aid
-        code, body = self.do_post(url, data, )
+        code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
     def sync_refund(self, aid, ex_order_no):
-        sql_res = self.do_mysql_select('select aid,ex_order_no from `order`', db='fawvw_order')
-        sql_res = random.choice(sql_res)
+        '''
+        order底层同步发票接口
+        :param aid: 大众用户id
+        :param ex_order_no: 外部订单编号
+        :return:
+        '''
         url = self.url + '/sm/order/v1/order/sync/refund'
         data = {'aid': aid, 'exOrderNo': ex_order_no, 'refundAmount': '1',
                 'refundStatus': 'SUCCESS', 'origin': 'EP', 'refundChannel': 'CASH', 'refundType': 'REFUND'}
@@ -203,12 +214,11 @@ class Order(Base):
         同步支付结果
         '''
         url = self.url + '/sm/order/v1/order/sync/pay'
-        data = { 'payOrderNo': pay_no, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
+        data = {'payOrderNo': pay_no, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
                 'payType': 'APP', 'payTime': self.time_delta(),'payStatus':'SUCCESS',**kwargs}
         code,body = self.do_post(url,data)
-        print(body)
-
-
+        self.assert_msg(code,body)
+        return body
 
 
 if __name__ == '__main__':

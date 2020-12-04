@@ -112,15 +112,14 @@ def test_ali_pay_cdp_callback_01():
     pay_no = pay_no[0]['pay_no']
     amount = pay_msg['data']['payAmount']
     pay_time = pay.time_delta()
-    trade_no = pay.f.pyint()
+    trade_no = pay.f.md5()
     # 回调支付结果
     res = pay.ali_pay_callback('trade_success', '2018091361389377', pay_no, amount, pay_time, trade_no)
     try:
         assert res == 'success'
         # 检查支付结果同步到支付记录中
-        sql = pay.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no), 'fawvw_pay')
-        assert sql[0]['pay_status'] == 'SUCCESS'
-        assert sql[0]['ex_pay_no'] == str(trade_no)
+        res = pay.get_pay_result(order_no,aid)
+        assert res['payResultStatus'] == '101'
         # 检查支付结果同步到订单中
         pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
         assert pay_res[0]['pay_channel'] == 'ALI_PAY'
@@ -131,6 +130,7 @@ def test_ali_pay_cdp_callback_01():
     finally:
         pay.do_mysql_exec('delete from order_pay where order_no="{}"'.format(order_no), 'fawvw_order')
         pay.do_mysql_exec('delete from pay_order where order_no="{}" and is_effective=1'.format(order_no), 'fawvw_pay')
+        pay.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
 
 
 @allure.suite('payment')
@@ -180,7 +180,7 @@ def test_ali_pay_cdp_callback_02():
     finally:
         pay.do_mysql_exec('delete from order_pay where order_no="{}"'.format(order_no), 'fawvw_order')
         pay.do_mysql_exec('delete from pay_order where order_no="{}" and is_effective=1'.format(order_no), 'fawvw_pay')
-
+        pay.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
 
 
 @allure.suite('payment')
@@ -200,10 +200,9 @@ def test_ali_pay_cdp_callback_sop1():
     assert res == 'success'
 
 
-callback_data_fail = [('trade_fail', '2018091361389377', 'qwer', pay.f.pyfloat(2, 2, True), pay.time_delta(), '123'),
-                      ('trade_success', '20180913613893770', 'qwer', pay.f.pyfloat(2, 2, True), pay.time_delta(),
-                          '123'),
-                      ('trade_success', '20180913613893770', 'qwer', pay.f.pyfloat(2, 2, True), None, '123')]
+callback_data_fail = [('trade_fail', '2018091361389377', pay.time_delta()),
+                      ('trade_success', '20180913613893770', pay.time_delta()),
+                      ('trade_success', '20180913613893770', None)]
 
 
 @allure.suite('payment')
@@ -215,8 +214,8 @@ def test_ali_pay_cdp_callback_wrong(d):
     测试获取支付宝cdp回调结果，异常情况测试
     '''
 
-    res = pay.ali_pay_callback(trade_status=d[0], app_id=d[1], out_trade_no=d[2], receipt_amount=d[3], gmt_payment=d[4],
-                               trade_no=d[5])
+    res = pay.ali_pay_callback(trade_status=d[0], app_id=d[1], out_trade_no='qwer', receipt_amount='1.00', gmt_payment=d[2],
+                               trade_no='123')
     assert res == 'failure'
 
 
@@ -233,12 +232,12 @@ def test_flow_sign_notify(d):
     aid = pay.f.pyint()
     pay.contract_sign_notify(aid, service='FLOW',operator='270001', channel=d[0], sign_status=d[1], pause_status=d[2])
     try:
-        sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid),
+        sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="{}"'.format(aid,d[0]),
                                   'fawvw_pay')
         assert sql[0]['pause_status'] == d[2]
         assert sql[0]['sign_status'] == d[1]
     finally:
-        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="ALI_PAY"'.format(aid), 'fawvw_pay')
+        pay.do_mysql_exec('delete from contract_sign where aid="{}" and pay_channel="{}"'.format(aid,d[0]), 'fawvw_pay')
 
 
 @allure.suite('payment')
@@ -280,7 +279,7 @@ def test_sync_pay_stream(enum):
     origin = enum[3]
     pay_way = enum[2]
     service_id = 'MUSIC'
-    sp_id = 'CLOUD_MUSIC'
+    sp_id = 'KUWO'
     data = {'vin': vin, 'aid': aid, 'exOrderNo': ex_order, 'exPayNo': ex_pay_no, 'orderNo': order_no,
             'payAmount': pay_amount, 'orderAmount': order_amount, 'discountAmount': discount, 'payChannel': channel,
             'payStatus': status, 'payTime': pay_time, 'payWay': pay_way, 'serviceId': service_id, 'spId': sp_id,

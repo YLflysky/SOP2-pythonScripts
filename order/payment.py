@@ -124,6 +124,7 @@ class Payment(Base):
         params = {'aid':aid,'orderNo':order_no}
         c,b = self.do_get(url,params)
         self.assert_msg(c,b)
+        return b
 
     def free_qr_code(self, aid, order_no, sp_id, channel):
         '''
@@ -155,13 +156,13 @@ class Payment(Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     pay = Payment()
     aid = '122'
-    # pay.pay_channel(aid='18623459409',order_no='ftb20201203170458721753664')
+    pay.pay_channel(aid,order_no='ftb20201204113739602753664')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
-    pay.get_qr_code(aid,order_no='ftb20201203175842120942080',channel='WECHAT_PAY')
+    # pay.get_qr_code(aid,order_no='ftb20201203175842120942080',channel='WECHAT_PAY')
     # pay.get_pay_result('20201112111106317868352','221')
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback('trade_success', '2019082466466108', '123456', receipt_amount=57.00, gmt_payment=pay.time_delta(),

@@ -304,3 +304,15 @@ def test_cp_sim_notify_wrong(param):
         assert res['returnStatus'] == 'FAILED'
     elif 'status' in res.keys():
         assert res['status'] == '0000_1'
+
+
+@allure.suite('flow')
+@allure.title('测试流量订单使用积分，报错')
+def test_use_score():
+    aid = '123'
+    vin = 'LFVSOP2TEST000353'
+    order_no = flow.bm_create_flow_order(goods_id='254',aid=aid,vin=vin,quantity=1)['data']['orderNo']
+    res = pay.get_qr_code(aid,order_no,'ALI_PAY',True)
+    assert res['errorMessage'] == '订单不能使用积分'
+    res = bm_pay.get_pay_channel(vin,aid,order_no,'111')
+    assert 'scoreInfo' not in res['data'].keys()

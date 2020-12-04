@@ -218,10 +218,9 @@ class Base:
         try:
             response_body = json.loads(res.text)
         except Exception as e:
-            lk.prt('解析json字符串出错:', e)
-            lk.prt(res.text)
-        else:
-            return res.status_code, response_body
+            lk.prt('解析json字符串出错:{}不能转为字典'.format(res.text))
+            response_body = res.text
+        return res.status_code, response_body
 
     def do_post_file(self, url, params, data, file_path):
         '''

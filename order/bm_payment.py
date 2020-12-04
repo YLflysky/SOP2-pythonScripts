@@ -59,13 +59,13 @@ class BMPayment(Base):
 if __name__ == '__main__':
     import os
     from order.oder_api import Order
-    os.environ['ENV']='DEV'
+    os.environ['ENV']='SIT'
     os.environ['GATE']='false'
     order = Order()
     pay = BMPayment()
     aid = '122'
     vin = 'LFVSOP2TEST000353'
     # pay.get_pay_result(vin='123',order_no='orderNo0001',aid='00',category='102',roll_number=1)
-    # pay.get_pay_channel(vin='LFVSOP2TEST000353',aid=aid,order_no='ftb20201203170458721753664',category='111')
+    pay.get_pay_channel(vin,aid=aid,order_no='ftb20201204113739602753664',category='111')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
-    pay.get_qr_code(vin,aid,order_no='ftb20201203175842120942080',pay_type='11100',category='111')
+    # pay.get_qr_code(vin,aid,order_no='ftb20201203175842120942080',pay_type='11100',category='111')
