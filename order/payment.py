@@ -153,19 +153,37 @@ class Payment(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
+    def agreement_qr_code(self,aid,channel,service,sp,origin):
+        '''
+        支付底层获取免密签约二维码接口
+        :param aid:用户id
+        :param channel:支付渠道枚举ALI_PAY,WECHAT_PAY
+        :param service:服务Id
+        :param sp:供应商id
+        :param origin:订单来源
+        :return:
+        '''
+
+        url = self.url + '/contract/sign'
+        data = {'aid':aid,'payChannel':channel,'serviceId':service,'spId':sp,'origin':origin}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
+
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     pay = Payment()
     aid = '122'
-    pay.pay_channel(aid,order_no='ftb20201204113739602753664')
+    # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
+    # pay.agreement_qr_code(aid,'ALI_PAY','FLOW','CMCC','SOP1')
+    # pay.pay_channel(aid,order_no='ftb20201204113739602753664')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
-    # pay.get_qr_code(aid,order_no='ftb20201203175842120942080',channel='WECHAT_PAY')
+    # pay.get_qr_code(aid,order_no='ftb20201204155552470102400',channel='WECHAT_PAY')
     # pay.get_pay_result('20201112111106317868352','221')
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
-    # pay.ali_pay_callback('trade_success', '2019082466466108', '123456', receipt_amount=57.00, gmt_payment=pay.time_delta(),
+    # pay.ali_pay_callback('trade_success', '2018091361389377', 'ftb20201207095216444475136', receipt_amount=57.00, gmt_payment=pay.time_delta(),
     #                      trade_no=pay.f.pyint())
     # pay.contract_sign_notify(aid='221',)
     # pay.sync_pay_result('20201124131211565196608','9409',pay.time_delta(),999,'QR_PAY','BM','ALI_PAY','SUCCESS')

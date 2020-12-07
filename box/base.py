@@ -34,7 +34,6 @@ class Base:
 
         try:
             if os.getenv('GATE') == 'true':
-                self.add_header()
                 self.gate = True
             else:
                 self.gate = False
@@ -42,13 +41,13 @@ class Base:
             lk.prt('init error:{}'.format(e))
             return
 
-    def add_header(self):
+    def add_header(self,tenant,user,password,vin):
         '''
         添加网关header验证
         :return:
         '''
         self.header['Did'] = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
-        self.header['authorization'] = self.get_token()
+        self.header['authorization'] = self.get_token(tenant,user,password,vin)
         self.header['did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
 
     public_param = {
@@ -166,6 +165,8 @@ class Base:
             url = "https://otherbackend-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token"
         elif tenant == 'BM':
             url = 'http://49.233.242.137:18031/sop2bm/hu/cm/user/api/v1/token'
+        elif tenant == 'CLOUD':
+            url = "https://otherbackend-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token"
         else:
             raise ValueError('tenant id is not provided')
         headers = {
@@ -186,12 +187,15 @@ class Base:
         data = json.dumps(payload)
 
         try:
-            response = requests.post(url=url, data=data, headers=headers, verify=False)
+            lk.prt('post url is:{}'.format(url))
+            lk.prt('post header is:{}'.format(headers))
+            lk.prt('post data is :{}'.format(data))
+            res = requests.post(url=url, data=data, headers=headers, verify=False)
 
-            assert response.status_code == 200
-            content = json.loads(response.content)
-            token_type = content['data']['token_type']
-            access_token = content['data']['access_token']
+            assert res.status_code == 200
+            body = json.loads(res.text)
+            token_type = body['data']['token_type']
+            access_token = body['data']['access_token']
             return token_type + " " + access_token
         except Exception as e:
             raise Exception("Get token failed: {}".format(e))
@@ -273,12 +277,18 @@ class Base:
         :return: 请求结果
         '''
         if self.gate:
-            params = self._calc_digital_sign(url, params)
-        lk.prt('final get url is:{}'.format(url))
+            params = self._calc_digital_sign(url,params)
+            sign_url = self.get_sign_url(url,params)
+        lk.prt('final get url is:{}'.format(sign_url if self.gate else url))
         lk.prt('final get header is:{}'.format(self.header))
         lk.prt('final get param is:{}'.format(params))
         res = requests.get(url=url, params=params, headers=self.header, verify=False)
-        response_body = json.loads(res.text)
+
+        try:
+            response_body = json.loads(res.text)
+        except Exception as e:
+            lk.prt('解析json字符串出错:{}不能转为字典'.format(res.text))
+            response_body = res.text
         return res.status_code, response_body
 
     def do_delete(self, url, params):

@@ -119,7 +119,7 @@ def test_ali_pay_cdp_callback_01():
         assert res == 'success'
         # 检查支付结果同步到支付记录中
         res = pay.get_pay_result(order_no,aid)
-        assert res['payResultStatus'] == '101'
+        assert res['data']['payResultStatus'] == '101'
         # 检查支付结果同步到订单中
         pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
         assert pay_res[0]['pay_channel'] == 'ALI_PAY'
@@ -202,7 +202,7 @@ def test_ali_pay_cdp_callback_sop1():
 
 callback_data_fail = [('trade_fail', '2018091361389377', pay.time_delta()),
                       ('trade_success', '20180913613893770', pay.time_delta()),
-                      ('trade_success', '20180913613893770', None)]
+                      ('trade_success', '2018091361389377', None)]
 
 
 @allure.suite('payment')

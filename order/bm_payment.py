@@ -55,6 +55,21 @@ class BMPayment(Base):
         self.assert_bm_msg(c,b)
         return b
 
+    def get_agreement_qr_code(self,aid,vin,channel,service_id,sp_id):
+        '''
+        BM车机端获取免密签约二维码
+        :param aid:用户id
+        :param channel:支付渠道 1=支付宝 2=微信
+        :param service_id:服务id
+        :param sp_id:供应商id
+        :return:
+        '''
+        url = self.hu_url + '/payment/api/v1/vins/{}/users/{}/payments/agreementSignqr'.format(vin,aid)
+        self.header['serviceId'] = service_id
+        data = {'operatorId':sp_id,'payType':channel}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
+
 
 if __name__ == '__main__':
     import os
@@ -66,6 +81,7 @@ if __name__ == '__main__':
     aid = '122'
     vin = 'LFVSOP2TEST000353'
     # pay.get_pay_result(vin='123',order_no='orderNo0001',aid='00',category='102',roll_number=1)
-    pay.get_pay_channel(vin,aid=aid,order_no='ftb20201204113739602753664',category='111')
+    # pay.get_pay_channel(vin,aid=aid,order_no='ftb20201204113739602753664',category='111')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
     # pay.get_qr_code(vin,aid,order_no='ftb20201203175842120942080',pay_type='11100',category='111')
+    pay.get_agreement_qr_code(aid,vin,channel=2,service_id='FLOW',sp_id='CMCC')
