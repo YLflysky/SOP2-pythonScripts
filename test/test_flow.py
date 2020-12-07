@@ -315,4 +315,4 @@ def test_use_score():
     res = pay.get_qr_code(aid,order_no,'ALI_PAY',True)
     assert res['errorMessage'] == '订单不能使用积分'
     res = bm_pay.get_pay_channel(vin,aid,order_no,'111')
-    assert 'scoreInfo' not in res['data'].keys()
+    assert res['data']['scoreInfo'] is None

@@ -214,7 +214,7 @@ def test_ali_pay_cdp_callback_wrong(d):
     测试获取支付宝cdp回调结果，异常情况测试
     '''
 
-    res = pay.ali_pay_callback(trade_status=d[0], app_id=d[1], out_trade_no='qwer', receipt_amount='1.00', gmt_payment=d[2],
+    res = pay.ali_pay_callback(trade_status=d[0], app_id=d[1], out_trade_no='ftb123', receipt_amount='1.00', gmt_payment=d[2],
                                trade_no='123')
     assert res == 'failure'
 

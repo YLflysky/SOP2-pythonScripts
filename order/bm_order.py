@@ -97,10 +97,10 @@ if __name__ == '__main__':
             'discountAmount': '99',
             'orderAmount': '100', 'orderCategory': 105, 'serviceId': 'GAS', 'spId': 'FLEETIN', 'title': o.f.sentence(),
             'userId': '469317', 'serviceOrderState': 'FINISH', 'serviceOrderStateDesc': 'jojo','goodsId':o.f.md5()}
-    # o.sync_bm_order(o.f.md5(),data)
+    o.sync_bm_order(o.f.md5(),data)
     # o.order_count(vin='DEFAULT_VIN',uid='33')
     # o.update_bm_order(order_no='20201104154521856385024',vin='3FCECCBA6990DD8F4839403E77F14F85',userId='10000000312441',updateType='1',
     #                   orderEvent='就是我',businessState='NOTHING_TO_SAY')
     # o.reload_config()
     # o.bm_order_detail(aid='9351499',order_no='ftb20201202105124690753664',vin=o.random_vin())
-    o.music_order_create(tenant_id='VW',aid='4614928',vin='123456',goods='100',quantity=1)
+    # o.music_order_create(tenant_id='VW',aid='4614928',vin='123456',goods='100',quantity=1)
