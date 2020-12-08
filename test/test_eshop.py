@@ -1,10 +1,12 @@
 import pytest
 import allure
 import os
+import random
 from eshop.spare import SpareShop
+from eshop.smart_shop import SmartEShop
 
 spare = SpareShop()
-
+bm_shop = SmartEShop(tenant='BM')
 
 @pytest.mark.eshop
 @allure.suite('spare shop')
@@ -71,3 +73,44 @@ def test_get_spare_list_reverse():
         assert names[0] >= names[-1]
         with allure.step('goods'):
             allure.attach(str(names),'score')
+
+@allure.suite('eshop')
+@allure.title('智能设备商城底层获取一级类目')
+@pytest.mark.eshop
+def test_get_category_1():
+    res = bm_shop.category('FIRST_LEVEL',0)
+    assert len(res['data']) > 0
+    first = []
+    for d in res['data']:
+        assert d['grade'] == 0
+        first.append(d['name'])
+    with allure.step('一级分类列表'):
+        allure.attach(first,'list',attachment_type=allure.attachment_type.TEXT)
+
+
+@allure.suite('eshop')
+@allure.title('智能设备商城底层获取二级类目')
+@pytest.mark.eshop
+def test_get_category_2():
+    res1 = bm_shop.category('FIRST_LEVEL',0)
+    parent = random.choice(res1['data'])['id']
+    res = bm_shop.category('TWO_LEVEL',parent)
+    assert len(res['data']) > 0
+    for d in res['data']:
+        assert parent == d['parentId']
+        assert d['grade'] == 1
+
+
+@allure.suite('eshop')
+@allure.title('智能设备商城底层获取三级类目')
+@pytest.mark.eshop
+def test_get_category_3():
+    res1 = bm_shop.category('FIRST_LEVEL',0)
+    parent = random.choice(res1['data'])['id']
+    res2 = bm_shop.category('TWO_LEVEL',parent)
+    parent = random.choice(res2['data'])['id']
+    res = bm_shop.category('THREE_LEVEL',parent)
+    assert len(res['data']) > 0
+    for d in res['data']:
+        assert parent == d['parentId']
+        assert d['grade'] == 2
