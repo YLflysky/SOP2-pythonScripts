@@ -43,11 +43,6 @@ class SpareShop(Base):
         self.assert_msg(code,body)
 
 
-    def assert_msg(self, code, body):
-        print(body)
-        assert 200 == code
-        assert body['status'] == 'SUCCEED'
-
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'

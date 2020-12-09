@@ -114,3 +114,23 @@ def test_get_category_3():
     for d in res['data']:
         assert parent == d['parentId']
         assert d['grade'] == 2
+
+
+@allure.suite('eshop')
+@allure.title('智能设备商城获取商品类目异常情况')
+@pytest.mark.eshop
+@pytest.mark.parametrize('data',[('FIRST_LEVEL',1),('TWO_LEVEL',999),('THREE_LEVEL',999)])
+def test_category_wrong(data):
+    res = bm_shop.category(data[0],data[1])
+    if res['returnStatus'] == 'SUCCEED':
+        assert len(res['data']) == 0
+    else:
+        assert res['errorMessage']
+
+@allure.suite('eshop')
+@allure.title('智能设备商城获取商品详情')
+@pytest.mark.eshop
+@pytest.mark.parametrize('sku',['100002099880','100004466546','7360341','5066434'])
+def test_smart_eshop_detail(sku):
+    res = bm_shop.goods_detail(sku)
+    assert res['data']['skuId'] == sku

@@ -50,12 +50,14 @@ class SmartEShop(Base):
         data = {'skuId':sku_id,'cpId':cp_id}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
 
 
 if __name__ == '__main__':
 
-    os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'LOCAL'
+    os.environ['GATE'] = 'true'
+    os.environ['ENV'] = 'DEV'
     shop = SmartEShop(tenant='BM')
     # shop.category(category_type='FIRST_LEVEL',parent_id=0)
-    shop.goods_list()
+    shop.goods_list(keyword='京')
+    # shop.goods_detail(sku_id=100004466546,cp_id='123')

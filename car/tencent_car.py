@@ -8,6 +8,10 @@ class TencentCar(Base):
         self.url = self.read_conf('ma_env.conf',self.env,'car_host')
         self.add_header(tenant=self.env)
 
+    def assert_bm_msg(self,code,body):
+        print(body)
+        assert code == 200
+        assert body['code'] == '000000'
 
     def check_vin(self,vin=None):
 
@@ -63,11 +67,12 @@ class TencentCar(Base):
 
 if __name__ == '__main__':
 
-    os.environ['GATE'] = 'true'
+    os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'CLOUD'
     car = TencentCar()
-    # car.unbind(aid='9349825',vin='LFV3A23C9L3046742')
+    car.get_QRcode(uid=190001,vin='LFVTESTMOSC000025')
+    # car.unbind(aid='190001',vin='LFVTESTMOSC000025')
     # car.get_info(uid=190001,vin='LFVTESTMOSC000025')
-    car.bind_callback(aid='4614963',vin='TEZWVEVTVElDQVMzMDk3MzY=',wecar_id='TEZWVEVTVElDQVMzMDk3MzY',action='unbind')
+    # car.bind_callback(aid='4614963',vin='TEZWVEVTVElDQVMzMDk3MzY=',wecar_id='TEZWVEVTVElDQVMzMDk3MzY',action='unbind')
 
 

@@ -1,28 +1,37 @@
 
 from box.base import Base
-import os
+import os,sys
 from box.lk_logger import lk
 
 class Calendar(Base):
     '''
     BM日历API
     '''
-    def __init__(self,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311',aid='9350195'):
+    def __init__(self,tenant,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311',aid='9350195'):
         super().__init__()
-
-        self.url = self.read_conf('sop2_env.conf',self.env,'calendar_host')
 
         self.name = name
         self.password = password
         self.vin = vin
         self.uid = aid
-        self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
-        lk.prt('开始获取token...')
-        # self.header['Authorization']=self.get_token(self.name,self.password,self.vin)
-        self.header['deviceId']=self.device_id
-        self.header['uid']=self.uid
+        if tenant == 'BM':
+            self.url = self.read_conf('sop2_env.conf',self.env,'calendar_host')
 
+            self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
+            lk.prt('开始获取token...')
+            # self.header['Authorization']=self.get_token(self.name,self.password,self.vin)
+            self.header['deviceId'] = self.device_id
+            self.header['uid'] = self.uid
 
+        elif tenant == 'MA':
+            self.url = self.read_conf('ma_env.conf',tenant,'calendar_host')
+            self.add_header(tenant=tenant)
+        elif tenant == 'CLOUD':
+            self.url = self.read_conf('ma_env.conf',tenant,'calendar_host')
+            self.add_header(tenant=tenant)
+        else:
+            lk.prt('no such environment:{}'.format(tenant))
+            sys.exit(-1)
 
     def find_all_event(self,update_time):
         '''
@@ -109,7 +118,7 @@ class Calendar(Base):
 if __name__ == '__main__':
     os.environ['GATE']='false'
     os.environ['ENV']='UAT'
-    c = Calendar()
+    c = Calendar('CLOUD')
 
-    # c.mobile_sync('C')
-    c.mobile_find_all(c.uid)
+    c.mobile_sync('C')
+    # c.mobile_find_all(c.uid)

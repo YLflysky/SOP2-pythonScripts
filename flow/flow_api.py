@@ -183,21 +183,21 @@ if __name__ == '__main__':
     from order.payment import Payment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'DEV'
     flow = Flow()
     pay = Payment()
     aid = '122'
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
-    # flow.flow_detail(100)
+    flow.flow_detail(100)
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_flow_detail('268')
 
-    flow_order = flow.bm_create_flow_order(goods_id='253', aid=aid, vin='LFVSOP2TEST000353', quantity=1)
-    order_no = flow_order['data']['orderNo']
+    # flow_order = flow.bm_create_flow_order(goods_id='253', aid=aid, vin='LFVSOP2TEST000353', quantity=1)
+    # order_no = flow_order['data']['orderNo']
     # pay.free_pay(aid,order_no,'12101')
-    pay.free_qr_code(aid,order_no,channel='QR_WEIXIN_WITHHOLDING_PAYMENT',sp_id='CMCC')
+    # pay.free_qr_code(aid,order_no,channel='QR_WEIXIN_WITHHOLDING_PAYMENT',sp_id='CMCC')
     # pay.get_qr_code(aid,order_no,'WECHAT_PAY')
 
     # flow.bm_goods_list('995939534','WIFI_FLOW')

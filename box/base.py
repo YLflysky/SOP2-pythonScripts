@@ -98,10 +98,11 @@ class Base:
         else:
             return None
 
-    def _calc_digital_sign(self, url, params):
+    def _calc_digital_sign(self, url:str, params):
         """计算签名
 
-        - :param uri: 【必填】带计算前面的uri, 类型：string
+        :param url 【必填】请求的地址，根据此获取需要签名的uri
+        :param params 签名的参数
         - :return: 返回附加的url
         """
         if params is None:
@@ -110,10 +111,8 @@ class Base:
         sign_timestamp = str(int(time.time() * 1000))
         temp = str(uuid.uuid1())
         nonce = temp.replace("-", "")
-
-        # 1.获取资源路径
-        resource_uri = url.replace(self.match_url(url), "")
-
+        resource_uri = url.replace(self.match_url(url),"")
+        resource_uri = resource_uri.replace('/test-access/tm/','')
         lk.prt('需要签名的uri为:{}'.format(resource_uri))
         # 2.获取查询参数
         url_query_dict = params
@@ -147,7 +146,6 @@ class Base:
     def get_sign_url(self,url,param):
         sign_dict = self._calc_digital_sign(url,param)
         final_url = url + '?'+parse.urlencode(sign_dict)
-        lk.prt('验签之后的url为:{}'.format(final_url))
         return final_url
 
     def get_pro_path(self):
@@ -480,7 +478,7 @@ class Base:
 
 
 if __name__ == '__main__':
-    url = 'http://120.53.131.100:18040/pay/notify/v1/aliPayQrCallBack'
+    url = 'https://otherbackend-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token'
     b = Base()
     # print(b.my_json_decoder(url))
     res = b.match_url(url)
