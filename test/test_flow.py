@@ -18,7 +18,7 @@ bm_pay = BMPayment()
 @pytest.mark.flow
 @pytest.mark.parametrize('id', ['266', '103', '255', '85'])
 def test_bm_flow_detail(id):
-    res = flow.bm_get_flow_detail(id)
+    res = flow.bm_get_goods_detail(id)
     assert res['code'] == 0
     sql = flow.do_mysql_select('SELECT g.*,f.description,c.goodsStatus from GOODS g,'
                                'FLOW_ATTRIBUTE f,GOODS_CONTROL c where 1=1 and g.id = c.goodsId and '
@@ -44,7 +44,7 @@ def test_flow_detail(goods_id):
 
 @pytest.mark.flow
 @allure.suite('flow')
-@allure.title('用户获取流量列表》》获取流量详情')
+@allure.title('用户获取商品列表》》获取商品详情')
 @pytest.mark.parametrize('category', ['MUSIC_VIP', 'RADIO_VIP', 'WIFI_FLOW', 'MEDIA_FLOW', 'PAID_CONTENT'])
 def test_goods_list_detail(category):
     # 获取WIFI流量列表
@@ -54,13 +54,13 @@ def test_goods_list_detail(category):
         if len(category_list['goods']) > 0:
             for x in category_list['goods']:
                 ids = x['goodsId']
-                res = flow.bm_get_flow_detail(ids)
+                res = flow.bm_get_goods_detail(ids)
                 assert res['data']['goodsName']
                 assert res['data']['price'] is not None
 
 
 @allure.suite('flow')
-@allure.title('BM车机端获取流量详情')
+@allure.title('BM车机端获取商品详情')
 @pytest.mark.flow
 @pytest.mark.parametrize('goods', [None, flow.f.pyint(), '261', '246'],
                          ids=['不输入商品编号', '不存在的编号', '商品已下架', '商品未上架'])
@@ -69,7 +69,7 @@ def test_bm_flow_detail_wrong(goods):
     BM车机端获取流量详情，异常情况
     :return:
     '''
-    res = flow.bm_get_flow_detail(goods)
+    res = flow.bm_get_goods_detail(goods)
     assert res['code'] != 0
 
 
