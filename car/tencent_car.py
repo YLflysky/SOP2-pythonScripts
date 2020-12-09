@@ -65,12 +65,25 @@ class TencentCar(Base):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
+    def check_vin(self,vin):
+        '''
+        检验vin码是否可用
+        :param vin:
+        :return:
+        '''
+        url = self.url + '/api/v1/checkVin'
+        data = {'vin':vin}
+        c,b = self.do_post(url,data)
+        self.assert_bm_msg(c,b)
+
+
 if __name__ == '__main__':
 
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'CLOUD'
     car = TencentCar()
-    car.get_QRcode(uid=190001,vin='LFVTESTMOSC000025')
+    car.check_vin(vin='LFVTESTMOSC000025')
+    # car.get_QRcode(uid=190001,vin='LFVTESTMOSC000025')
     # car.unbind(aid='190001',vin='LFVTESTMOSC000025')
     # car.get_info(uid=190001,vin='LFVTESTMOSC000025')
     # car.bind_callback(aid='4614963',vin='TEZWVEVTVElDQVMzMDk3MzY=',wecar_id='TEZWVEVTVElDQVMzMDk3MzY',action='unbind')

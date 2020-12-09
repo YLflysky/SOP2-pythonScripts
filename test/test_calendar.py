@@ -3,7 +3,7 @@ from calendar_file.canlendar_api import Calendar
 import allure
 import random
 
-c = Calendar()
+c = Calendar('BM')
 
 
 @pytest.fixture()
@@ -21,6 +21,7 @@ def log_time(func):
     return make_decorater
 
 
+@log_time
 @allure.suite('calendar')
 @allure.title('add event')
 @pytest.mark.calendar
