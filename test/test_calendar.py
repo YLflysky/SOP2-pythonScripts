@@ -23,7 +23,7 @@ def log_time(func):
 
 @log_time
 @allure.suite('calendar')
-@allure.title('add event')
+@allure.title('BM车机端新增用户日历事件')
 @pytest.mark.calendar
 def test_add_event_01():
     '''

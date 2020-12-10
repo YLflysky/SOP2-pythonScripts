@@ -14,6 +14,7 @@ class Calendar(Base):
         self.password = password
         self.vin = vin
         self.uid = aid
+        self.tenant = tenant
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'calendar_host')
 
@@ -64,12 +65,19 @@ class Calendar(Base):
         url = self.url + '/api/v1/calendar/event/delete'
         data = {'id':event_id}
         code,body = self.do_delete(url,data)
-        self.assert_msg(code,body)
+        if self.tenant == 'BM':
+            self.assert_msg(code,body)
+        else:
+            assert code == 200
+            assert body['code'] == '000000'
+            assert body['description'] == '成功'
 
     def update_event(self,event_id,s,e,**kwargs):
         url = self.url + '/api/v1/calendar/event/modify'
         data = {'id':event_id,'eventStartTime':s,'eventEndTime':e,**kwargs}
         code,body = self.do_post(url,data)
+        assert code == 200
+        print(body)
         return body
 
     def get_event_list(self,data):
@@ -82,11 +90,22 @@ class Calendar(Base):
         return body
 
     def get_last_time(self,uid,deviceId):
+        '''
+        车机端获取用户最后更新时间接口
+        :param uid: 用户id，header中
+        :param deviceId: 设备id，header中
+        :return:
+        '''
         url = self.url + '/api/v1/calendar/event/getEventLastUpdatedTime'
         self.header['uid'] = uid
         self.header['deviceId'] = deviceId
         code,body = self.do_get(url,None)
-        self.assert_msg(code,body)
+        if self.tenant == 'BM':
+            self.assert_msg(code,body)
+        else:
+            print(body)
+            assert code == 200
+            assert body['code'] == '000000'
         return body
 
     def event_list_by_rule(self,api_type,st,et,uid,deviceId):

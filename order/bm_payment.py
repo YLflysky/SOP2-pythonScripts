@@ -70,6 +70,19 @@ class BMPayment(Base):
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
 
+    def free_pay(self,aid,vin,order_no,useScore=False):
+        '''
+        BM车机端免密支付接口
+        :param aid:大众用户id
+        :param vin:车辆vin码
+        :param order_no:订单号
+        :return:
+        '''
+        url = self.hu_url + '/order/api/v2/vins/{}/users/{}/orders/{}/payments/withholdPayment'.format(aid,vin,order_no)
+        data = {'userScore':useScore}
+        c,b = self.do_post(url,data)
+        self.assert_bm_msg(c,b)
+
 
 if __name__ == '__main__':
     import os
@@ -78,10 +91,10 @@ if __name__ == '__main__':
     os.environ['GATE']='false'
     order = Order()
     pay = BMPayment()
-    aid = '122'
-    vin = 'LFVSOP2TEST000353'
+    aid = '9351499'
+    vin = 'SO8OY5T6JXM7B76O6'
     # pay.get_pay_result(vin='123',order_no='orderNo0001',aid='00',category='102',roll_number=1)
     # pay.get_pay_channel(vin,aid=aid,order_no='ftb20201204113739602753664',category='111')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
-    # pay.get_qr_code(vin,aid,order_no='ftb20201203175842120942080',pay_type='11100',category='111')
-    pay.get_agreement_qr_code(aid,vin,channel=2,service_id='FLOW',sp_id='CMCC')
+    pay.get_qr_code(vin,aid,order_no='ftb20201210105333938753664',pay_type='11103',category='111')
+    # pay.get_agreement_qr_code(aid,vin,channel=2,service_id='FLOW',sp_id='CMCC')
