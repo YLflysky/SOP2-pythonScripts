@@ -89,7 +89,7 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     # o.order_count(vin=123,uid='469317')

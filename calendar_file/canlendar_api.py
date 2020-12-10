@@ -116,9 +116,10 @@ class Calendar(Base):
 
 
 if __name__ == '__main__':
-    os.environ['GATE']='false'
-    os.environ['ENV']='UAT'
-    c = Calendar('CLOUD')
+    os.environ['GATE'] = 'true'
+    os.environ['ENV'] = 'UAT'
+    c = Calendar(tenant='CLOUD',name='19900001174',password='111111',aid='4614962',vin='TESTOAOT111122064')
 
-    c.mobile_sync('C')
-    # c.mobile_find_all(c.uid)
+    # c.mobile_sync('C')
+    # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
+    c.find_all_event(update_time=c.get_time_stamp(days=9))

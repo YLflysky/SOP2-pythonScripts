@@ -10,6 +10,11 @@ class SpareShop(Base):
 
         self.url = self.read_conf('sop2_env.conf',self.env,'hu_host')
 
+    def assert_msg(self, code, body):
+        print(body)
+        assert 200 == code
+        assert body['status'] == 'SUCCEED'
+
     def get_spare_list(self,category,index,size,**kwargs):
         '''
         获取备件商城列表
@@ -48,7 +53,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
     shop = SpareShop()
-    category = shop.get_category_id()
+    # category = shop.get_category_id()
     # print(category)
     goods_id = shop.get_spare_list(category='all',index=10,size=20)
     # goods_id = goods_id['data'][0]['goodsId']

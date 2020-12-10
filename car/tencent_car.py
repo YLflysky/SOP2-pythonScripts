@@ -82,10 +82,12 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'CLOUD'
     car = TencentCar()
-    car.check_vin(vin='LFVTESTMOSC000025')
-    # car.get_QRcode(uid=190001,vin='LFVTESTMOSC000025')
+    uid = 'sergio'
+    vin = 'LFVTESTMOSC000025'
+    # car.check_vin(vin='LFVTESTMOSC000025')
+    car.get_QRcode(uid,vin)
     # car.unbind(aid='190001',vin='LFVTESTMOSC000025')
-    # car.get_info(uid=190001,vin='LFVTESTMOSC000025')
+    # car.get_info(uid='sergio',vin='LFVTESTMOSC000025')
     # car.bind_callback(aid='4614963',vin='TEZWVEVTVElDQVMzMDk3MzY=',wecar_id='TEZWVEVTVElDQVMzMDk3MzY',action='unbind')
 
 
