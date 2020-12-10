@@ -223,6 +223,7 @@ def test_sim_notify():
     assert sql[0]['body']
     body = json.loads(sql[0]['body'])
     assert body['vin'] == vin
+    assert sql[0]['create_date'] > flow.time_delta(seconds=-20)
 
 
 @pytest.mark.flow
@@ -290,6 +291,9 @@ def test_cp_sim_notify_ftb22():
     res = flow.cp_sim_notify(id, date, rule, asset_type, acc_id, package_id=package)
     assert res['status'] == '000000'
     assert res['messages'][0] == '成功'
+    sql = flow.do_mysql_select('select * from mosc_mqtt_message where service_id=8000 order by create_date desc limit 1',
+                               'ftb_base_mqtt_center')
+    assert sql[0]['create_date'] > flow.time_delta(seconds=-20)
 
 
 @pytest.mark.flow

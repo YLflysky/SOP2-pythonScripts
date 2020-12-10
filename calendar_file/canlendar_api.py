@@ -141,4 +141,4 @@ if __name__ == '__main__':
 
     # c.mobile_sync('C')
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
-    c.find_all_event(update_time=c.get_time_stamp(days=9))
+    c.find_all_event(update_time=c.get_time_stamp(days=-1))

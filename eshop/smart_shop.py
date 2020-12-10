@@ -38,7 +38,6 @@ class SmartEShop(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
-
     def goods_detail(self,sku_id,cp_id=None):
         '''
         根据sku_id查询商品详情
@@ -56,8 +55,8 @@ class SmartEShop(Base):
 if __name__ == '__main__':
 
     os.environ['GATE'] = 'true'
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'SIT'
     shop = SmartEShop(tenant='BM')
     # shop.category(category_type='FIRST_LEVEL',parent_id=0)
-    shop.goods_list(keyword='京')
-    # shop.goods_detail(sku_id=100004466546,cp_id='123')
+    # shop.goods_list(keyword='京')
+    shop.goods_detail(sku_id=100004466546,cp_id='123')
