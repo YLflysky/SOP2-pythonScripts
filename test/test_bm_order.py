@@ -1,10 +1,12 @@
 import pytest
 import allure
 from order.bm_order import BMOrder
+from order.order_api import Order
 import random
 import json
 
 bm = BMOrder()
+o = Order()
 
 
 def setup_module():
@@ -245,6 +247,29 @@ def test_bm_order_detail_token():
     :param d:
     :return:
     '''
-    token = 'eyJraWQiOiJiYzEzZjMzNy05MjY3LTQyNTktYTQzZS02NmZkY2Q4MTc4NzQiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2lkcC11YXQubW9zYy5mYXctdncuY29tIiwiYW1yIjoicHdkIiwidHlwZSI6IkFUIiwiYXVkIjpbIlZXR01CQjAxQ05BUFAxIiwiYXV0b25hdmkuY29tIiwiWDlHLTEwMjE3LjA2LjE5OTk5OTAwMTIiXSwic3ViIjoiOTM1MTUyNCIsImlhdCI6MTYwNDkyMzUzOSwidmVyIjoiMC4wLjEiLCJ2aW4iOiJDMzE1MkQwMkZGMjlBRDgzRkI5MjJBQzE0QTRCOUM3QyIsImV4cCI6MTYwNTA5NjMzOSwianRpIjoiOTczZDI0NDAtNTRmNy00YjYyLTg1ZDgtMWEzYWU4MzNhMjM5IiwiY29yIjoiQ04iLCJhaWQiOiI5MzUxNTI0IiwidG50IjoiVldfSFVfQ05TM19YOUctMTAyMTcuMDYuMTk5OTk5MDAxMl92My4wLjFfdjAuMC4xIiwiaWR0LWlkIjoiNDEyYzQwOTktMGZkYy00MmNjLTljYjEtZWQxY2EyNWE0OTliIiwic2NwIjoiYWNjb3VudCIsInJ0LWlkIjoiY2I1ODhkMjMtMjY2NC00MWJjLTllZjUtZmIwOTM1NzIwMjc5In0.jc2jdPTpob0T1k-fUYTfDTjmZlkwdJo1QdPpyxgjKVyd6x1DiG6Pt3OZd7qngrx_2FJOoN2k8KGvdHIxhqe4EA'
+    token = 'eyJraWQiOiJiYzEzZjMzNy05MjY3LTQyNTktYTQzZS02NmZkY2Q4MTc4NzQiLCJhbGciOiJSUzI1NiJ9.' \
+            'eyJpc3MiOiJodHRwczovL2lkcC11YXQubW9zYy5mYXctdncuY29tIiwiYW1yIjoicHdkIiwidHlwZSI6Ik' \
+            'FUIiwiYXVkIjpbIlZXR01CQjAxQ05BUFAxIiwiYXV0b25hdmkuY29tIiwiWDlHLTEwMjE3LjA2LjE5OTk5OTA' \
+            'wMTIiXSwic3ViIjoiOTM1MTUyNCIsImlhdCI6MTYwNDkyMzUzOSwidmVyIjoiMC4wLjEiLCJ2aW4iOiJDMzE1Mk' \
+            'QwMkZGMjlBRDgzRkI5MjJBQzE0QTRCOUM3QyIsImV4cCI6MTYwNTA5NjMzOSwianRpIjoiOTczZDI0NDAtNTRm' \
+            'Ny00YjYyLTg1ZDgtMWEzYWU4MzNhMjM5IiwiY29yIjoiQ04iLCJhaWQiOiI5MzUxNTI0IiwidG50IjoiVldfSF' \
+            'VfQ05TM19YOUctMTAyMTcuMDYuMTk5OTk5MDAxMl92My4wLjFfdjAuMC4xIiwiaWR0LWlkIjoiNDEyYzQwOTkt' \
+            'MGZkYy00MmNjLTljYjEtZWQxY2EyNWE0OTliIiwic2NwIjoiYWNjb3VudCIsInJ0LWlkIjoiY2I1ODhkMjMtMj' \
+            'Y2NC00MWJjLTllZjUtZmIwOTM1NzIwMjc5In0.jc2jdPTpob0T1k-fUYTfDTjmZlkwdJo1QdPpyxgjKVyd6x1D' \
+            'iG6Pt3OZd7qngrx_2FJOoN2k8KGvdHIxhqe4EA'
     res = bm.bm_order_detail(None, order_no='111124424523', vin=bm.random_vin(), token=token)
     assert res['data']['orderCategory']
+
+
+@allure.suite('order')
+@allure.title('BM车机端取消EP美食订单')
+@pytest.mark.order
+def test_bm_cancel_ep_order():
+    aid = 'qq995939534'
+    ex_order_No = o.f.pyint(100000,10000000)
+    food_order = o.sync_order(aid=aid, origin='EP', ex=ex_order_No,category='113',
+                 serviceId='FOOD', spId='MEITUAN', title='测试支付订单', payAmount=0.01, amount=0.01,
+                 goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
+
+    order_no = food_order['data']
+    bm.bm_cancel_order(aid,order_no)

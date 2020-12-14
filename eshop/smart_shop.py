@@ -37,6 +37,7 @@ class SmartEShop(Base):
         data = {'pageNo':no,'pageSize':size,**kwargs}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
 
     def goods_detail(self,sku_id,cp_id=None):
         '''
@@ -54,9 +55,9 @@ class SmartEShop(Base):
 
 if __name__ == '__main__':
 
-    os.environ['GATE'] = 'true'
+    os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'SIT'
     shop = SmartEShop(tenant='BM')
     # shop.category(category_type='FIRST_LEVEL',parent_id=0)
-    # shop.goods_list(keyword='京')
-    shop.goods_detail(sku_id=100004466546,cp_id='123')
+    shop.goods_list(categoryId='1')
+    # shop.goods_detail(sku_id=100004466546,cp_id='123')

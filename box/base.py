@@ -196,6 +196,7 @@ class Base:
             access_token = body['data']['access_token']
             return token_type + " " + access_token
         except Exception as e:
+            print(res.text)
             raise Exception("Get token failed: {}".format(e))
 
     def _is_json(self, string):
@@ -250,11 +251,10 @@ class Base:
         self.header['Content-type'] = 'application/json; charset=utf-8'
         return res.status_code, response_body
 
-    def do_put(self, url, params, data):
+    def do_put(self, url, data,params=None):
         if self.gate:
             params = self._calc_digital_sign(url, params)
-        else:
-            self.header = {'Content-Type': 'application/json'}
+            url = self.get_sign_url(url,params)
         lk.prt('final put url is:{}'.format(url))
         if isinstance(data, dict):
             data = json.dumps(data, ensure_ascii=False)
@@ -264,7 +264,11 @@ class Base:
         if data is not None:
             data = data.encode('utf-8')
         res = requests.put(url=url, params=params, data=data, headers=self.header, verify=False)
-        response_body = json.loads(res.text)
+        try:
+            response_body = json.loads(res.text)
+        except Exception as e:
+            lk.prt('解析json字符串出错:{}不能转为字典'.format(res.text))
+            response_body = res.text
         return res.status_code, response_body
 
     def do_get(self, url, params):
@@ -413,7 +417,7 @@ class Base:
     def assert_bm_msg(self,code,body):
         print(body)
         assert 200 == code
-        assert body['code'] == 0
+        assert body['code'] == '0'
 
     def str_time(self, data_time: datetime.datetime):
         temp = data_time.strftime('%Y-%m-%d %H:%M:%S')

@@ -132,5 +132,34 @@ def test_category_wrong(data):
 @pytest.mark.eshop
 @pytest.mark.parametrize('sku',['100002099880','100004466546','7360341','5066434'])
 def test_smart_eshop_detail(sku):
-    res = bm_shop.goods_detail(sku)
+    cp = bm_shop.f.word()
+    res = bm_shop.goods_detail(sku,cp)
     assert res['data']['skuId'] == sku
+    assert res['data']['cpId'] == cp
+
+
+@allure.suite('eshop')
+@allure.title('智能设备商城获取商品列表')
+@pytest.mark.eshop
+@pytest.mark.parametrize('sort',['desc','asc'])
+def test_smart_eshop_detail_01(sort):
+
+    res = bm_shop.goods_list(no=1,size=10,sortName='price',sort=sort)
+    prices = []
+    for x in res['data']:
+        prices.append(x['price'])
+    print(prices)
+
+
+@allure.suite('eshop')
+@allure.title('智能设备商城获取商品列表')
+@pytest.mark.eshop
+@pytest.mark.parametrize('key',['京','京鱼座音箱'])
+def test_smart_eshop_detail_02(key):
+
+    res = bm_shop.goods_list(no=1,size=10,keyword=key)
+    assert res['totalCount'] == len(res['data'])
+    for x in res['data']:
+        assert key in x['skuName']
+
+

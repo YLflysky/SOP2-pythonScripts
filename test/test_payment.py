@@ -1,7 +1,7 @@
 import pytest
 import os
 from order.payment import Payment
-from order.oder_api import Order
+from order.order_api import Order
 import random
 import time
 import json

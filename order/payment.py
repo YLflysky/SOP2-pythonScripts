@@ -126,7 +126,7 @@ class Payment(Base):
         self.assert_msg(c,b)
         return b
 
-    def free_qr_code(self, aid, order_no, sp_id, channel):
+    def free_qr_code(self, aid, order_no, sp_id, channel,use_socre=False):
         '''
         获取签约并支付二维码
         :param sp_id:CMCC

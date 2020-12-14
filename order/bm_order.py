@@ -11,11 +11,6 @@ class BMOrder(Base):
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
         self.be_url = self.read_conf('sop2_env.conf', self.env, 'be_host')
 
-    def assert_msg(self, code, body):
-        print(body)
-        assert code == 200
-        assert body['description'] == '成功'
-
     def order_count(self, vin, uid, **kwargs):
         '''
         according to the order status,time returns the order quantity
@@ -34,7 +29,7 @@ class BMOrder(Base):
         '''
         url = self.hu_url + '/order/api/v2/order/map/reload'
         code, body = self.do_get(url, None)
-        self.assert_msg(code, body)
+        self.assert_bm_msg(code, body)
 
     def sync_bm_order(self, bm_order_id, data):
         '''
@@ -43,7 +38,7 @@ class BMOrder(Base):
         url = self.be_url + '/order/api/v2/orders/{}/sync'.format(bm_order_id)
 
         code, body = self.do_post(url, data)
-        self.assert_msg(code, body)
+        self.assert_bm_msg(code, body)
         return body
 
     def update_bm_order(self, order_no, vin, userId, updateType, **kwargs):
@@ -53,7 +48,7 @@ class BMOrder(Base):
         url = self.be_url + '/order/api/v2/orders/{}/status'.format(order_no)
         params = {'vin': vin, 'userId': userId, 'updateType': updateType, **kwargs}
         code, body = self.do_put(url, None, params)
-        self.assert_msg(code, body)
+        self.assert_bm_msg(code, body)
 
     def bm_order_detail(self, aid, order_no, vin, token=None):
         '''
@@ -65,7 +60,7 @@ class BMOrder(Base):
         else:
             self.header['Authorization'] = token
         code, body = self.do_get(url, None)
-        self.assert_msg(code, body)
+        self.assert_bm_msg(code, body)
         return body
 
     def music_order_create(self, tenant_id, aid, vin, goods, quantity):
@@ -85,11 +80,24 @@ class BMOrder(Base):
         print(b)
         return b
 
+    def bm_cancel_order(self,aid,order_no):
+        '''
+        BM车机端取消订单
+        :param aid: 大众用户Id
+        :param order_no:订单号
+        :return:
+        '''
+        url = self.hu_url + '/order/api/v1/orders/{}/cancel'.format(order_no)
+        self.header['aid'] = aid
+        self.header['Authorization'] = self.get_token(tenant='BM',username='19900001143',password='000000',vin='LFV3A24F793091695')
+        c,b = self.do_put(url,None)
+        self.assert_bm_msg(c,b)
+
 
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     # o.order_count(vin=123,uid='469317')
@@ -98,7 +106,8 @@ if __name__ == '__main__':
             "serviceId": "serviceId002", "serviceOrderState": "serviceOrderState002",
             "serviceOrderStateDesc": "serviceOrderStateDesc002", "spId": "spId002", "title": "title_test002",
             "userId": "U002", "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509"}
-    o.sync_bm_order(o.f.md5(), data)
+    # o.sync_bm_order(o.f.md5(), data)
+    o.bm_cancel_order(aid='4614931',order_no='ftb20201203160039247753664')
     # o.order_count(vin='DEFAULT_VIN',uid='33')
     # o.update_bm_order(order_no='20201104154521856385024',vin='3FCECCBA6990DD8F4839403E77F14F85',userId='10000000312441',updateType='1',
     #                   orderEvent='就是我',businessState='NOTHING_TO_SAY')

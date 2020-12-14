@@ -284,8 +284,8 @@ def test_mobile_sync_01(cud):
     '''
     mobile_event = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': cud,
                     'eventStartTime': c.get_time_stamp(days=-10), 'eventEndTime': c.get_time_stamp(days=10)}
-    data = {'currentTime': c.get_time_stamp(), 'events': [mobile_event]}
-    res = c.mobile_sync(data)
+    time = c.get_time_stamp()
+    res = c.mobile_sync(time,[mobile_event])
     assert res['data']['syncCounts'] == '1'
 
 
@@ -304,8 +304,8 @@ def test_mobile_sync_02():
     mobile_event3 = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': 'D',
                      'eventStartTime': c.get_time_stamp(seconds=10), 'eventEndTime': c.get_time_stamp(seconds=20),
                      'remarks': c.f.sentence(),'allday':False}
-    data = {'currentTime': c.get_time_stamp(), 'events': [mobile_event1, mobile_event2, mobile_event3]}
-    res = c.mobile_sync(data)
+    time = c.get_time_stamp()
+    res = c.mobile_sync(time,[mobile_event1,mobile_event2,mobile_event3])
     assert res['data']['syncCounts'] == '3'
 
 

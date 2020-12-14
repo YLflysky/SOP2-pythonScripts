@@ -9,7 +9,7 @@ class Order(Base):
     def __init__(self):
         super().__init__()
         if self.gate:
-            self.header['Authorization'] = self.get_token(other='BM')
+            self.add_header(tenant='BM')
 
         self.url = self.read_conf('sop2_env.conf', self.env, 'be_host')
 
@@ -64,7 +64,13 @@ class Order(Base):
 
     def sync_order(self,ex,origin,aid,category,**kwargs):
         '''
-        同步订单接口
+        订单底层同步订单接口
+        :param ex: 外部订单号
+        :param origin: 订单来源
+        :param aid: 大众用户id
+        :param category: 订单类型
+        :param kwargs: 其他参数
+        :return:
         '''
         url = self.url + '/sm/order/v1/order/sync'
         data = {'exOrderNo':ex,'origin':origin,'aid':aid,'orderCategory':category,**kwargs}

@@ -190,3 +190,18 @@ def test_add_event_05():
     e = c.get_time_stamp(days=3)
     body = c.add_event(s, e, rrule='Only Once1')
     assert body['errorMessage'] == 'rule resolve error'
+
+
+@pytest.mark.calendar
+@allure.suite('ma-calendar')
+@allure.title('APP同步MA用户日历事件')
+@pytest.mark.parametrize('cud', ['C', 'U', 'D'])
+def test_mobile_sync_01(cud):
+    '''
+    输入一个event，同步事件
+    '''
+    mobile_event = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': cud,
+                    'eventStartTime': c.get_time_stamp(days=-10), 'eventEndTime': c.get_time_stamp(days=10)}
+    time = c.get_time_stamp()
+    res = c.mobile_sync(time,[mobile_event])
+    assert res['data']['syncCounts'] == 1

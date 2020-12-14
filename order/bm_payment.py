@@ -10,9 +10,16 @@ class BMPayment(Base):
         self.hu_url = self.read_conf('sop2_env.conf',self.env,'hu_host')
         self.be_url = self.read_conf('sop2_env.conf',self.env,'be_host')
 
-    def get_qr_code(self,vin,aid,order_no,pay_type,category,score=False):
+    def get_qr_code(self,vin,aid,order_no,pay_type,category,score=None):
         '''
         BM车机端获取支付二维码
+        :param vin: 车辆vin
+        :param aid: 大众用户id
+        :param order_no: 订单号
+        :param pay_type: 支付方式11100支付宝12100微信11103支付宝支付并签约12103微信支付并签约
+        :param category:订单类型
+        :param score:是否使用积分Y使用N不使用
+        :return:
         '''
 
         url = self.hu_url + '/payment/api/v2/vins/{}/users/{}/orders/{}/payments/qrCode'.format(vin,aid,order_no)
@@ -86,7 +93,7 @@ class BMPayment(Base):
 
 if __name__ == '__main__':
     import os
-    from order.oder_api import Order
+    from order.order_api import Order
     os.environ['ENV']='SIT'
     os.environ['GATE']='false'
     order = Order()

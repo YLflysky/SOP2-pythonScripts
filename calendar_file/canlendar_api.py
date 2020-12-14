@@ -120,10 +120,22 @@ class Calendar(Base):
         assert 200 == code
         return body
 
-    def mobile_sync(self,data):
+    def mobile_sync(self,current_time,events:list):
+        '''
+        APP同步用户日历事件
+        :param current_time: long类型时间戳
+        :param events: 事件，列表类型
+        :return:
+        '''
         url = self.url + '/public/calendar/event/sync'
+        data = {'currentTime':current_time,'events':events}
         c,b = self.do_post(url,data)
-        self.assert_msg(c,b)
+        if self.tenant == 'BM':
+            self.assert_msg(c,b)
+        else:
+            print(b)
+            assert b['statusCode'] == '0'
+            assert b['statusMessage'] == '成功'
         return b
 
     def mobile_find_all(self,uid):
@@ -138,7 +150,8 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'true'
     os.environ['ENV'] = 'UAT'
     c = Calendar(tenant='CLOUD',name='19900001174',password='111111',aid='4614962',vin='TESTOAOT111122064')
+    c.mobile_find_all(uid=c.uid)
 
     # c.mobile_sync('C')
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
-    c.find_all_event(update_time=c.get_time_stamp(days=-1))
+    # c.find_all_event(update_time=c.get_time_stamp(days=-1))
