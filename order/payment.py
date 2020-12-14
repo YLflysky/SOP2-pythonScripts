@@ -1,5 +1,8 @@
 from box.base import Base
-
+import hashlib
+import xmltodict
+import json
+from box import xml_utils
 
 class Payment(Base):
     '''
@@ -48,6 +51,37 @@ class Payment(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
         return body
+
+    def weixin_cdp_callback(self,out_trade_no,nonce):
+
+        url = self.second_url + '/pay/notify/v1/weixinQrCallBack'
+        time_stmp = self.time_delta(formatted='%Y%m%d%H%M%S')
+        data = """
+        <xml>
+            <appid>1wx999bec97951ce212</appid>
+            <attach>支付测试</attach>
+            <bank_type>CMC</bank_type>
+            <is_subscribe>Y</is_subscribe>
+            <mch_id>11525507701</mch_id>
+            <nonce_str>{}</nonce_str>
+            <openid>oUpF8uMEb4qRXf22hE3X68TekukE</openid>
+            <out_trade_no>{}</out_trade_no>
+            <result_code>SUCCESS</result_code>
+            <return_code>SUCCESS</return_code>
+            <time_end>{}</time_end>
+            <total_fee>1</total_fee>
+            <cash_fee>0</cash_fee>
+            <trade_type>JSAPI</trade_type>
+            <transaction_id>1004400740201409030005092168</transaction_id>
+        </xml>
+        """.format(nonce,out_trade_no,time_stmp)
+        self.header['Content-type'] = 'application/xml; charset=utf-8'
+        data_sign = self.xml_to_json(data)['xml']
+        sign = self.weixin_sign('abcd1234abcd1234abcd1234abcd1234',data_sign)
+        data = xml_utils.add_note(data,'sign',sign)
+
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
 
     def get_qr_code(self, aid, order_no, channel,score=False):
         '''
@@ -169,6 +203,31 @@ class Payment(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
+    def weixin_sign(self,sign_key,data_str:dict):
+        keys_list = list(data_str.keys())
+        keys_list.sort(key=None, reverse=False)
+        string_a = ''
+        for dict_key in keys_list:
+            string_a = string_a + dict_key + '=' + data_str.get(dict_key) + '&'
+        string_a = string_a.rstrip('&')
+        print(string_a)
+        string_sign_temp = string_a + "&key=" + sign_key
+        print('stringSignTemp:' + string_sign_temp)
+        sign_MD5 = hashlib.md5(string_sign_temp.encode("UTF-8")).hexdigest().upper()
+        print("sign_MD5=", sign_MD5)
+        return sign_MD5
+
+    def xml_to_json(self,xml_str):
+        '''
+        xml字符串转为字典
+        :param xml_str:
+        :return:
+        '''
+
+        xml_parse = xmltodict.parse(xml_str)
+        json_str = json.dumps(xml_parse,indent=1)
+        print(json_str)
+        return json.loads(json_str)
 
 if __name__ == '__main__':
     import os
@@ -176,6 +235,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     pay = Payment()
     aid = '122'
+    pay.weixin_cdp_callback(out_trade_no='2020112616231517932768',nonce=pay.f.md5())
     # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
     # pay.agreement_qr_code(aid,'ALI_PAY','FLOW','CMCC','SOP1')
     # pay.pay_channel(aid,order_no='ftb20201204113739602753664')

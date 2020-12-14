@@ -63,10 +63,14 @@ class Base:
 
             - :return:返回时间戳
             """
-        temp_time = self.time_delta(formartted,days, seconds, microseconds, milliseconds, minutes, hours, weeks)
-        time_array = time.strptime(temp_time, formartted)
-        time_stamp = str(int(time.mktime(time_array)) * 1000)
+        stamp = self.get_second_time_stamp(formartted,days, seconds, microseconds, milliseconds, minutes, hours, weeks)
+        time_stamp = str(int(stamp) * 1000)
         return time_stamp
+
+    def get_second_time_stamp(self,formartted='%Y-%m-%d %H:%M:%S', days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
+        temp_time = self.time_delta(formartted, days, seconds, microseconds, milliseconds, minutes, hours, weeks)
+        time_array = time.strptime(temp_time, formartted)
+        return str(int(time.mktime(time_array)))
 
     def _sign_time(self):
 

@@ -20,9 +20,9 @@ class Calendar(Base):
 
             self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
             lk.prt('开始获取token...')
-            # self.header['Authorization']=self.get_token(self.name,self.password,self.vin)
-            self.header['deviceId'] = self.device_id
-            self.header['uid'] = self.uid
+            self.header['Authorization']=self.get_token('BM',self.name,self.password,self.vin)
+            # self.header['deviceId'] = self.device_id
+            # self.header['uid'] = self.uid
 
         elif tenant == 'MA':
             self.url = self.read_conf('ma_env.conf',tenant,'calendar_host')
@@ -147,11 +147,12 @@ class Calendar(Base):
 
 
 if __name__ == '__main__':
-    os.environ['GATE'] = 'true'
+    os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
-    c = Calendar(tenant='CLOUD',name='19900001174',password='111111',aid='4614962',vin='TESTOAOT111122064')
-    c.mobile_find_all(uid=c.uid)
-
+    # ma_c = Calendar(tenant='CLOUD',name='19900001174',password='111111',aid='4614962',vin='TESTOAOT111122064')
+    # ma_c.mobile_find_all(uid=ma_c.uid)
+    c = Calendar(tenant='BM')
     # c.mobile_sync('C')
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
-    # c.find_all_event(update_time=c.get_time_stamp(days=-1))
+    c.find_detail(39235)
+    c.find_all_event(update_time=None)

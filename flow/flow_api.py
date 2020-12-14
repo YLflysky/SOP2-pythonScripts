@@ -184,7 +184,7 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     flow = Flow()
     pay = Payment()
     bm_pay = BMPayment()
@@ -198,7 +198,7 @@ if __name__ == '__main__':
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
 
-    flow_order = flow.bm_create_flow_order(goods_id='253', aid=aid, vin=vin, quantity=1)
+    # flow_order = flow.bm_create_flow_order(goods_id='253', aid=aid, vin=vin, quantity=1)
     # order_no = flow_order['data']['orderNo']
     # pay.free_pay(aid,order_no,'12101')
     # pay.free_qr_code(aid=aid,order_no='ftb20201210163554967942080',sp_id='CMCC',channel='QR_WEIXIN_SIGN')
@@ -211,6 +211,6 @@ if __name__ == '__main__':
     # flow.flow_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
     # flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=2,status=2)
-    # flow.cp_common_notify(id=1, category=1, status='1000_00', origin_id='FTB20201126095621292978944',)
+    flow.cp_common_notify(id=1, category=1, status='1000_00', origin_id='FTB20201126095621292978944',)
     # flow.cp_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534cmcctest001x',package_id='P1001123577')

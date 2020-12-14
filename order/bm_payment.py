@@ -94,7 +94,7 @@ class BMPayment(Base):
 if __name__ == '__main__':
     import os
     from order.order_api import Order
-    os.environ['ENV']='SIT'
+    os.environ['ENV']='DEV'
     os.environ['GATE']='false'
     order = Order()
     pay = BMPayment()
