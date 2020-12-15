@@ -100,9 +100,8 @@ def test_smart_eshop_list_03(category2):
 @pytest.mark.eshop
 @pytest.mark.parametrize('category3',[[842,758,967,870]])
 def test_smart_eshop_list_04(category3):
-
     res = ma_shop.goods_list(no=1,size=10,category3Ids=category3)
-    assert res['total'] == len(res['data']) == 4
+    assert res['total'] == len(res['data'])
 
 
 @allure.suite('ma-eshop')
