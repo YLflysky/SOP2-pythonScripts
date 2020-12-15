@@ -107,14 +107,24 @@ class SmartEShop(Base):
         self.assert_msg(c,b)
         return b
 
+    def refresh_category_and_goods_detail(self):
+        '''
+        清除商品缓存信息接口
+        :return:
+        '''
+        url = self.url + '/public/v1/oss/manage/refresh_category_and_prod_detail'
+        c,b = self.do_get(url,None)
+        self.assert_msg(c,b)
+
 
 if __name__ == '__main__':
 
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'DEV'
-    shop = SmartEShop(tenant='MA')
+    shop = SmartEShop(tenant='BM')
+    shop.refresh_category_and_goods_detail()
     # shop.category()
     # shop.category2(13996)
     # shop.category3(14015)
-    shop.goods_list(no=1,size=2)
+    # shop.goods_list(no=1,size=2)
     # shop.goods_detail(sku_id=100004466546,cp_id='123')
