@@ -34,8 +34,6 @@ class Calendar(Base):
             self.header['Authorization'] = self.get_token(
                 'http://huaa-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token',
                                                         self.name,self.password,self.vin)
-            self.header['uid'] = self.uid
-            self.header['deviceId'] = self.device_id
 
     def find_all_event(self,update_time):
         '''
