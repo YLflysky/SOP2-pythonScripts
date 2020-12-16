@@ -75,6 +75,7 @@ def test_get_spare_list_reverse():
         with allure.step('goods'):
             allure.attach(str(names),'score')
 
+
 @allure.suite('eshop')
 @allure.title('智能设备商城底层获取一级类目')
 @pytest.mark.eshop
@@ -83,7 +84,8 @@ def test_get_category_1():
     assert len(res['data']) > 0
     first = []
     for d in res['data']:
-        assert d['grade'] == 0
+        assert d['id']
+        assert d['name']
         first.append(d['name'])
     with allure.step('一级分类列表'):
         allure.attach(first,'list',attachment_type=allure.attachment_type.TEXT)
@@ -93,28 +95,24 @@ def test_get_category_1():
 @allure.title('智能设备商城底层获取二级类目')
 @pytest.mark.eshop
 def test_get_category_2():
-    res1 = bm_shop.category()
-    parent = random.choice(res1['data'])['id']
-    res = bm_shop.category2(parent)
+    res = bm_shop.category2()
     assert len(res['data']) > 0
     for d in res['data']:
-        assert parent == d['parentId']
-        assert d['grade'] == 1
+        assert d['id']
+        assert d['name']
 
 
 @allure.suite('eshop')
 @allure.title('智能设备商城底层获取三级类目')
 @pytest.mark.eshop
 def test_get_category_3():
-    res1 = bm_shop.category()
-    parent = random.choice(res1['data'])['id']
-    res2 = bm_shop.category2(parent)
+    res2 = bm_shop.category2()
     parent = random.choice(res2['data'])['id']
     res = bm_shop.category3(parent)
     assert len(res['data']) > 0
     for d in res['data']:
-        assert parent == d['parentId']
-        assert d['grade'] == 2
+        assert d['ia']
+        assert d['name']
 
 
 @allure.suite('eshop')

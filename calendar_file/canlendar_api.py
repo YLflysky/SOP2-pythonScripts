@@ -18,21 +18,17 @@ class Calendar(Base):
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'calendar_host')
 
-            # self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
+            self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
             # lk.prt('开始获取token...')
             # self.header['Authorization']=self.get_token('BM',self.name,self.password,self.vin)
-            # self.header['deviceId'] = self.device_id
-            # self.header['uid'] = self.uid
+            self.header['deviceId'] = self.device_id
+            self.header['uid'] = self.uid
 
         elif tenant == 'MA':
-            self.url = self.read_conf('ma_env.conf',tenant,'calendar_host')
+            self.env = 'UAT'
+            self.gate = True
+            self.url = self.read_conf('ma_env.conf',self.env,'calendar_host')
             self.add_header()
-        elif tenant == 'CLOUD':
-            self.url = self.read_conf('ma_env.conf',tenant,'calendar_host')
-            self.add_header()
-        else:
-            lk.prt('no such environment:{}'.format(tenant))
-            sys.exit(-1)
 
     def find_all_event(self,update_time):
         '''

@@ -3,7 +3,7 @@ from calendar_file.canlendar_api import Calendar
 import allure
 import random
 
-c = Calendar(tenant='CLOUD',name='18280024450',password='Qq111111',aid='9350195',vin='LFVSOP2TEST000311')
+c = Calendar(tenant='MA',name='18280024450',password='Qq111111',aid='9350195',vin='LFVSOP2TEST000311')
 
 
 @pytest.fixture()

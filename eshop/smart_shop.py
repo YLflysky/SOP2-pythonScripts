@@ -34,15 +34,14 @@ class SmartEShop(Base):
         self.assert_msg(c,b)
         return b
 
-    def category2(self,parentId):
+    def category2(self):
         '''
         商品二级类目查询
         :param parentId: 一级类目id
         :return:
         '''
         url = self.url + '/public/v1/smart4jd/search/category2'
-        data = {'category1ID':parentId}
-        c, b = self.do_get(url, data)
+        c, b = self.do_get(url, None)
         self.assert_msg(c, b)
         return b
 
@@ -102,9 +101,9 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
     shop = SmartEShop(tenant='MA')
-    # shop.refresh_category_and_goods_detail()
-    shop.category()
-    # shop.category2(737)
+    shop.refresh_category_and_goods_detail()
+    # shop.category()
+    # shop.category2()
     # shop.category3(14015)
     # shop.goods_list(no=1,size=2)
     # shop.goods_detail(sku_id=100004466546,cp_id='123')

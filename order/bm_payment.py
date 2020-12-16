@@ -77,7 +77,7 @@ class BMPayment(Base):
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
 
-    def free_pay(self,aid,vin,order_no,useScore=False):
+    def free_pay(self,aid,vin,order_no,channel,useScore=False):
         '''
         BM车机端免密支付接口
         :param aid:大众用户id
@@ -86,8 +86,8 @@ class BMPayment(Base):
         :return:
         '''
         url = self.hu_url + '/payment/order/api/v2/vins/{}/users/{}/orders/{}/payments/withholdPayment'.format(aid,vin,order_no)
-        data = {'userScore':useScore}
-        c,b = self.do_post(url,data)
+        data = {'agreementProductCode':channel,'userScore':useScore}
+        c,b = self.do_put(url,data)
         self.assert_bm_msg(c,b)
 
 
