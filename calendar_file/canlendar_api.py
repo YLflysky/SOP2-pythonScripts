@@ -14,11 +14,12 @@ class Calendar(Base):
         self.password = password
         self.vin = vin
         self.uid = aid
+        self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
         self.tenant = tenant
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'calendar_host')
 
-            self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
+
             # lk.prt('开始获取token...')
             # self.header['Authorization']=self.get_token('BM',self.name,self.password,self.vin)
             self.header['deviceId'] = self.device_id
@@ -28,10 +29,11 @@ class Calendar(Base):
             self.env = 'UAT'
             self.gate = True
             self.url = self.read_conf('ma_env.conf',self.env,'calendar_host')
-            self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
             lk.prt('开始获取token...')
-            self.add_header()
+            self.header['Authorization']=self.get_token('http://huaa-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token',
+                                                        self.name,self.password,self.vin)
             self.header['uid'] = self.uid
+            self.header['deviceId'] = self.device_id
 
     def find_all_event(self,update_time):
         '''

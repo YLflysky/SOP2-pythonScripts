@@ -200,8 +200,10 @@ def test_mobile_sync_01(cud):
     '''
     输入一个event，同步事件
     '''
-    mobile_event = {'localEventId': ma_calendar.f.pyint(100, 1000), 'cudStatus': cud,
-                    'eventStartTime': ma_calendar.get_time_stamp(days=-10), 'eventEndTime': ma_calendar.get_time_stamp(days=10)}
+    mobile_event = {'localEventId': ma_calendar.f.pyint(100, 1000),
+                    'cudStatus': cud,
+                    'eventStartTime': ma_calendar.get_time_stamp(days=-10),
+                    'eventEndTime': ma_calendar.get_time_stamp(days=10)}
     time = ma_calendar.get_time_stamp()
     res = ma_calendar.mobile_sync(time,[mobile_event])
     assert res['data']['syncCounts'] == 1
