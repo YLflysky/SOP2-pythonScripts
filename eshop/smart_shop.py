@@ -103,8 +103,8 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     shop = SmartEShop(tenant='MA')
     # shop.refresh_category_and_goods_detail()
-    # shop.category()
+    shop.category()
     # shop.category2(737)
     # shop.category3(14015)
-    shop.goods_list(no=1,size=2)
+    # shop.goods_list(no=1,size=2)
     # shop.goods_detail(sku_id=100004466546,cp_id='123')

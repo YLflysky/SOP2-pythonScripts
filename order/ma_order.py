@@ -6,9 +6,10 @@ class MAOrder(Base):
         super().__init__()
         self.env = 'UAT'
         self.gate = True
+        self.vin = 'LFVTESTMOSC000096'
         self.url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
         self.add_header(url='http://huaa-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token',
-                        user='15843013681', password='aa123456', vin='LFVTESTMOSC000096')
+                        user='15843013681', password='aa123456', vin=self.vin)
 
     def assert_msg(self, code, body):
         print(body)
@@ -19,22 +20,20 @@ class MAOrder(Base):
         url = self.url + '/api/v1/createOrder'
         data = {
              "goodsId":"17",
-		    "vin":"LFVTESTMOSC000096",
+		    "vin":self.vin,
 		    "orderCategory":"MUSIC_VIP",
 		    "count":1,
             "durationDays": 1,
-
-
         }
         c, b = self.do_post(url, data)
         self.assert_msg(c, b)
 
-    def get_qr_code(self, order_no):
+    def get_qr_code(self, order_no,channel):
         url = self.url + '/api/v1/getQRCodeImage'
         data = {
             "vin": "LFV2A11KXA3030241",
             "orderNo": order_no,
-            "payType": "12100"
+            "payType": channel
         }
         c, b = self.do_post(url, data)
         self.assert_msg(c, b)
@@ -72,5 +71,5 @@ class MAOrder(Base):
 if __name__ == '__main__':
     ma_order = MAOrder()
     # ma_order.create_order()
-    ma_order.get_qr_code('M202012151838599385478193')
+    ma_order.get_qr_code('M202012161032131252290028',channel='11100')
     # ma_order.alipay_callback()
