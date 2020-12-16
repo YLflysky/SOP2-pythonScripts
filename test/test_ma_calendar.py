@@ -189,7 +189,7 @@ def test_add_event_05():
     s = c.get_time_stamp(days=2)
     e = c.get_time_stamp(days=3)
     body = c.add_event(s, e, rrule='Only Once1')
-    assert body['errorMessage'] == 'rule resolve error'
+    assert body['statusMessage'] == 'rule resolve error'
 
 
 @pytest.mark.calendar

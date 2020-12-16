@@ -209,7 +209,7 @@ def test_callback_order():
     info = {'name': 'waka waka', 'age': 18}
     o.do_mysql_exec('delete from `order` where ex_order_no="{}"'.format(ep_order), 'fawvw_order')
 
-    o.sync_order_kafka(ep_order, info, cp="NX_ENGINE")
+    o.sync_order_kafka(ep_order, info, cp="NX_ENGINE",tenant='ASTERIX')
     time.sleep(2.0)
     sql_res = o.do_mysql_select(
         'select d.detail,o.* '

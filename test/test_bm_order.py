@@ -157,7 +157,7 @@ def test_sync_bm_order(info):
     测试同步BM适配层订单
     '''
     ex_order = bm.f.pyint()
-    vin = bm.f.pyint()
+    vin = '0D07D9A7A091ECD31AD9CB3F1DA429B1'
     ext_info = bm.f.pydict(4, True, value_types=str)
     discount_amount = '10000'
     order_amount = bm.f.pyint(10086, 100000)

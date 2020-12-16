@@ -88,7 +88,7 @@ def test_get_category_1():
         assert d['name']
         first.append(d['name'])
     with allure.step('一级分类列表'):
-        allure.attach(first,'list',attachment_type=allure.attachment_type.TEXT)
+        allure.attach(str(first),'list',attachment_type=allure.attachment_type.TEXT)
 
 
 @allure.suite('eshop')
@@ -111,7 +111,7 @@ def test_get_category_3():
     res = bm_shop.category3(parent)
     assert len(res['data']) > 0
     for d in res['data']:
-        assert d['ia']
+        assert d['id']
         assert d['name']
 
 

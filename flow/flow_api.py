@@ -184,7 +184,7 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'SIT'
     flow = Flow()
     pay = Payment()
     bm_pay = BMPayment()
@@ -200,7 +200,7 @@ if __name__ == '__main__':
 
     # flow_order = flow.bm_create_flow_order(goods_id='253', aid=aid, vin=vin, quantity=1)
     # order_no = flow_order['data']['orderNo']
-    bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','12103')
+    bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','11101')
     # pay.free_qr_code(aid=aid,order_no='ftb20201210163554967942080',sp_id='CMCC',channel='QR_WEIXIN_SIGN')
     # bm_pay.get_qr_code(vin,aid,'ftb20201211102538436753664',pay_type='12103',category='111',score='N')
     # pay.get_qr_code(aid,order_no,'WECHAT_PAY')

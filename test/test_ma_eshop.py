@@ -18,7 +18,7 @@ def test_get_category_1():
         assert d['id']
         first.append(d['name'])
     with allure.step('一级分类列表'):
-        allure.attach(first,'list',attachment_type=allure.attachment_type.TEXT)
+        allure.attach(str(first),'list',attachment_type=allure.attachment_type.TEXT)
 
 
 @allure.suite('ma-eshop')
