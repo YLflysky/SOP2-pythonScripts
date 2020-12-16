@@ -16,7 +16,7 @@ def set_up_add_event():
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端获取用户所有日历事件')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 def test_find_all():
     res = ma_calendar.find_all_event(update_time=None)
     assert res['data']['events']
@@ -24,7 +24,7 @@ def test_find_all():
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端获取用户单个日历详情')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 def test_find_detail(set_up_add_event):
     res = ma_calendar.find_detail(id=set_up_add_event)
     assert res['data']['origin'] == 'HU'
@@ -32,21 +32,21 @@ def test_find_detail(set_up_add_event):
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端删除用户日历事件')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 def test_del_event(set_up_add_event):
     ma_calendar.del_event(event_id=set_up_add_event)
 
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端更新用户日历事件')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 def test_update_event(set_up_add_event):
     s = ma_calendar.get_time_stamp(days=2)
     e = ma_calendar.get_time_stamp(days=3)
     ma_calendar.update_event(set_up_add_event,s=s,e=e)
 
 
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 @allure.suite('ma-calendar')
 @allure.title('MA车机端获取用户最后更新时间')
 @pytest.mark.parametrize('uid', [ma_calendar.uid, '123456', '4606930', '4608048', '4608147'])
@@ -60,7 +60,7 @@ def test_get_last_time(uid):
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端获取用户事件列表，根据apiType')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 @pytest.mark.parametrize('t', ['TYPE_ONE', 'TYPE_TWO', 'TYPE_THREE'])
 def test_get_event_list_type(t):
     '''
@@ -73,7 +73,7 @@ def test_get_event_list_type(t):
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端获取用户事件列表，根据开始结束时间')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 def test_get_event_list_date():
     '''
     查询指定时间段时间列表,输入Date
@@ -94,7 +94,7 @@ def test_get_event_list_date():
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端新增用户日历事件')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 def test_add_event_01():
     '''
     输入全部必填项，添加日历事件
@@ -113,7 +113,7 @@ def test_add_event_01():
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端新增用户日历事件')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 def test_add_event_02():
     '''
     输入全部必填项，输入全部选填项
@@ -152,7 +152,7 @@ def test_add_event_02():
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端新增用户日历事件')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 def test_add_event_03():
     '''
     输入开始时间在结束时间之后，报错
@@ -166,7 +166,7 @@ def test_add_event_03():
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端新增用户日历事件')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 def test_add_event_04():
     '''
     传入rrule
@@ -181,7 +181,7 @@ def test_add_event_04():
 
 @allure.suite('ma-calendar')
 @allure.title('MA车机端新增用户日历事件')
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 def test_add_event_05():
     '''
     传入错误的rrule
@@ -192,7 +192,7 @@ def test_add_event_05():
     assert body['statusMessage'] == 'rule resolve error'
 
 
-@pytest.mark.calendar
+@pytest.mark.ma_calendar
 @allure.suite('ma-calendar')
 @allure.title('APP同步MA用户日历事件')
 @pytest.mark.parametrize('cud', ['C', 'U', 'D'])

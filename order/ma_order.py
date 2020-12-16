@@ -71,5 +71,5 @@ class MAOrder(Base):
 if __name__ == '__main__':
     ma_order = MAOrder()
     # ma_order.create_order()
-    # ma_order.get_qr_code('M202012161349036176061605',channel='12100')
+    ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()

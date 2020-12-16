@@ -47,7 +47,7 @@ class BMOrder(Base):
         '''
         url = self.be_url + '/order/api/v2/orders/{}/status'.format(order_no)
         params = {'vin': vin, 'userId': userId, 'updateType': updateType, **kwargs}
-        code, body = self.do_put(url, None, params)
+        code, body = self.do_put(url,params)
         self.assert_bm_msg(code, body)
 
     def bm_order_detail(self, aid, order_no, vin, token=None):
