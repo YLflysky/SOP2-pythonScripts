@@ -8,7 +8,7 @@ class Team(TencentCar):
     def __init__(self):
         super().__init__()
         if self.gate:
-            self.url = self.read_conf('sop2_env.conf', self.env, 'hu_host') + '/test-access/tm'
+            self.url = self.read_conf('ma_env.conf', self.env, 'hu_host') + '/test-access/tm'
         else:
             lk.prt('can not resolve local environment')
             sys.exit(-1)

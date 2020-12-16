@@ -26,10 +26,10 @@ class Calendar(Base):
 
         elif tenant == 'MA':
             self.url = self.read_conf('ma_env.conf',tenant,'calendar_host')
-            self.add_header(tenant=tenant)
+            self.add_header()
         elif tenant == 'CLOUD':
             self.url = self.read_conf('ma_env.conf',tenant,'calendar_host')
-            self.add_header(tenant=tenant)
+            self.add_header()
         else:
             lk.prt('no such environment:{}'.format(tenant))
             sys.exit(-1)

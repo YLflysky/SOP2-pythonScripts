@@ -124,7 +124,7 @@ class Order(Base):
         return body
 
 
-    def sync_order_kafka(self, ep_order_id, business_info: dict, domain='GAS', cp='NX_ENGINE'):
+    def sync_order_kafka(self, ep_order_id, business_info: dict, tenant,domain='GAS', cp='NX_ENGINE'):
         '''
         从EP通过callback同步订单
         :param ep_order_id: ep订单编号
@@ -142,7 +142,7 @@ class Order(Base):
                       "businessState": "SUCCESS_PAY", "price": 6.0,
                       "createdTime": 1600312755440, "timeout": 10, "orderStatus": "WAITING_PAY",
                       "orderSubStatus": "DONE",
-                      "delete": False, 'tenantId': 'FTB', 'epOrderId': ep_order_id, 'payStatus': 'SUCCESS_PAY',
+                      "delete": False, 'tenantId': tenant, 'epOrderId': ep_order_id, 'payStatus': 'SUCCESS_PAY',
                       "info": business_info, "discountAmount": 0, 'epOrderCode': ep_order_id,
                       "domainId": domain, 'orderCategory': '105'}
 
@@ -236,10 +236,10 @@ if __name__ == '__main__':
     # o.del_order(order_no='20201020101920646233472',aid='1603160360456')
     # o.sync_order_pay('123',aid='')
     # o.order_detail(aid='9351515',order_no='20201124142350661876544')
-    # order_no = o.generate_order_no()['data']
-    # o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
-    #              serviceId='MUSIC',spId='CLOUD MUSIC',title='测试支付订单',payAmount=0.01,amount=0.01,
-    #              goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
+    order_no = o.generate_order_no()['data']
+    o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
+                 serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,
+                 goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # o.sync_refund('111333','202009247772089433')
     # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
     #                 head='钛马信息技术有限公司', phone='18888888888')
@@ -257,5 +257,5 @@ if __name__ == '__main__':
     # o.teardown_sync(orderNo, serial)
     # res = o.invoice_detail(aid='123',serial_no='qwer1')
     # print(res)
-    info = {'name': 'waka waka', 'age': 18}
-    o.sync_order_kafka(ep_order_id=9959,business_info=info)
+    # info = {'name': 'waka waka', 'age': 18}
+    # o.sync_order_kafka(ep_order_id=9959,business_info=info,tenant='ASTERIX')

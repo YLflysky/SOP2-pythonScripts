@@ -41,22 +41,16 @@ class Base:
             lk.prt('init error:{}'.format(e))
             return
 
-    def add_header(self,tenant='MA',user='18224077254',password='123456',vin='LFV3A23C1K3161804'):
+    def add_header(self,url='http://huaa-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token',
+                   user='18224077254',password='123456',vin='LFV3A23C1K3161804'):
         '''
         添加网关header验证
         :return:
         '''
         self.header['Did'] = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
-        self.header['authorization'] = self.get_token(tenant,user,password,vin)
+        self.header['authorization'] = self.get_token(url,user,password,vin)
         self.header['did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
 
-    public_param = {
-        #  "appId": "666666",
-        # "os": "android",
-        "packageName": "com.faw-vw.hu",
-        "userModel": "DEFAULT",
-
-    }
 
     def get_time_stamp(self,formartted='%Y-%m-%d %H:%M:%S', days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
         """获取时间戳
@@ -102,22 +96,31 @@ class Base:
         else:
             return None
 
-    def _calc_digital_sign(self, url:str, params):
+    def get_resource_uri(self, url):
+        """从url中获取资源路径用于计算签名"""
+        pattern1 = "^((http://)|(https://)).*?.com"  # 提取域名部分
+        pattern2 = "^((http://)|(https://))(\\d+\\.\\d+\\.\\d+\\.\\d+):(\\d+)"  # 提取IP和端口部分
+        s1 = re.sub(pattern1, '', url)
+        s2 = re.sub(pattern2, '', s1)
+        s2 = s2.replace('/test-access/tm', '')
+        if s2.startswith('/'):
+            return s2[1:]
+        return s2
+
+    def _calc_digital_sign(self, url, params):
         """计算签名
 
-        :param url 【必填】请求的地址，根据此获取需要签名的uri
-        :param params 签名的参数
+        - :param uri: 【必填】带计算前面的uri, 类型：string
         - :return: 返回附加的url
         """
         if params is None:
             params = {}
+        resource_uri = self.get_resource_uri(url)
         # 生成时间戳和nonce
         sign_timestamp = str(int(time.time() * 1000))
         temp = str(uuid.uuid1())
         nonce = temp.replace("-", "")
-        resource_uri = url.replace(self.match_url(url),"")
-        resource_uri = resource_uri.replace('/test-access/tm/','')
-        lk.prt('需要签名的uri为:{}'.format(resource_uri))
+
         # 2.获取查询参数
         url_query_dict = params
         # 3.添加签名时间，排序
@@ -136,21 +139,22 @@ class Base:
             parm_list.append(temp)
 
         catent = "_".join(parm_list)
+        lk.prt("In calc digital sign, catent is: {}".format(catent))
         # 5.添加应用资源和secret_key
         last_url_encode = resource_uri + "_" + catent + "_" + "b9784ddc19aa9ec47d2dfa1dfbca7934"
 
+        lk.prt("In calc digital sign, last_url is: {}".format(last_url_encode))
         # 计算MD5
         last_url_encode = parse.quote(last_url_encode.encode(), safe='')
+        lk.prt("In calc digital sign, last_url_encode is: {}".format(last_url_encode))
         my_md5 = hashlib.md5()
         my_md5.update(last_url_encode.encode())
         digital_sign = my_md5.hexdigest()
+        # self.log.info("In calc digital sign, digital_sign is: {}".format(digital_sign))
         url_query_dict["sign"] = digital_sign
+
         return url_query_dict
 
-    def get_sign_url(self,url,param):
-        sign_dict = self._calc_digital_sign(url,param)
-        final_url = url + '?'+parse.urlencode(sign_dict)
-        return final_url
 
     def get_pro_path(self):
         if 'win' in sys.platform:
@@ -162,15 +166,8 @@ class Base:
         pro_path = current_path[:current_path.find(pro_name + seperator) + len(pro_name + seperator)]
         return pro_path
 
-    def get_token(self, tenant='MA', username='18224077254', password='123456', vin='LFV3A23C1K3161804'):
-        if tenant == 'MA':
-            url = "https://otherbackend-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token"
-        elif tenant == 'BM':
-            url = 'http://49.233.242.137:18031/sop2bm/hu/cm/user/api/v1/token'
-        elif tenant == 'CLOUD':
-            url = "https://otherbackend-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token"
-        else:
-            raise ValueError('tenant id is not provided')
+    def get_token(self, url, username, password, vin):
+
         headers = {
             'Content-Type': 'application/json',
             'TraceId': 'app-store#recommend-list#1527758664#X9G-11111.04.2099990054#12345678',
@@ -187,13 +184,11 @@ class Base:
             "vin": vin
         }
         data = json.dumps(payload)
-
+        lk.prt('post url is:{}'.format(url))
+        lk.prt('post header is:{}'.format(headers))
+        lk.prt('post data is :{}'.format(data))
+        res = requests.post(url=url, data=data, headers=headers, verify=False)
         try:
-            lk.prt('post url is:{}'.format(url))
-            lk.prt('post header is:{}'.format(headers))
-            lk.prt('post data is :{}'.format(data))
-            res = requests.post(url=url, data=data, headers=headers, verify=False)
-
             assert res.status_code == 200
             body = json.loads(res.text)
             token_type = body['data']['token_type']
@@ -213,7 +208,6 @@ class Base:
     def do_post(self, url, data, params=None, **kwargs):
         if self.gate:
             params = self._calc_digital_sign(url, params)
-            url = url + '?' + parse.urlencode(params)
         lk.prt('final post url is:{}'.format(url))
         if isinstance(data, dict):
             data = json.dumps(data, ensure_ascii=False)
@@ -258,7 +252,6 @@ class Base:
     def do_put(self, url, data,params=None):
         if self.gate:
             params = self._calc_digital_sign(url, params)
-            url = self.get_sign_url(url,params)
         lk.prt('final put url is:{}'.format(url))
         if isinstance(data, dict):
             data = json.dumps(data, ensure_ascii=False)
@@ -284,8 +277,7 @@ class Base:
         '''
         if self.gate:
             params = self._calc_digital_sign(url,params)
-            sign_url = self.get_sign_url(url,params)
-        lk.prt('final get url is:{}'.format(sign_url if self.gate else url))
+        lk.prt('final get url is:{}'.format(url))
         lk.prt('final get header is:{}'.format(self.header))
         lk.prt('final get param is:{}'.format(params))
         res = requests.get(url=url, params=params, headers=self.header, verify=False)

@@ -10,7 +10,10 @@ class SmartEShop(Base):
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'smart_eshop_host')
         elif tenant == 'MA':
+            self.env= 'UAT'
+            self.gate = True
             self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host')
+            self.add_header()
         else:
             print('no such tenant...')
             sys.exit(-1)
@@ -25,12 +28,8 @@ class SmartEShop(Base):
         商品类目查询
         :return:
         '''
-        if self.tenant == 'BM':
-            url = self.url + '/public/v1/smart4jd/search/category'
-        elif self.tenant == 'MA':
-            url = self.url + '/api/v1/search/category'
-        else:
-            return
+
+        url = self.url + '/public/v1/smart4jd/search/category'
         c,b = self.do_get(url,None)
         self.assert_msg(c,b)
         return b
@@ -41,12 +40,7 @@ class SmartEShop(Base):
         :param parentId: 一级类目id
         :return:
         '''
-        if self.tenant == 'BM':
-            url = self.url + '/public/v1/smart4jd/search/category2'
-        elif self.tenant == 'MA':
-            url = self.url + '/api/v1/search/category2'
-        else:
-            return
+        url = self.url + '/public/v1/smart4jd/search/category2'
         data = {'category1ID':parentId}
         c, b = self.do_get(url, data)
         self.assert_msg(c, b)
@@ -58,12 +52,8 @@ class SmartEShop(Base):
         :param parentId: 二级类目id
         :return:
         '''
-        if self.tenant == 'BM':
-            url = self.url + '/public/v1/smart4jd/search/category3'
-        elif self.tenant == 'MA':
-            url = self.url + '/api/v1/search/category3'
-        else:
-            return
+
+        url = self.url + '/public/v1/smart4jd/search/category3'
         data = {'category2ID':parentId}
         c, b = self.do_get(url, data)
         self.assert_msg(c, b)
@@ -77,12 +67,7 @@ class SmartEShop(Base):
         :param kwargs:
         :return:
         '''
-        if self.tenant == 'BM':
-            url = self.url + '/public/v1/smart4jd/search/list'
-        elif self.tenant == 'MA':
-            url = self.url + '/api/v1/search/list'
-        else:
-            return
+        url = self.url + '/public/v1/smart4jd/search/list'
         data = {**kwargs}
         params = {'pageNo':no,'pageSize':size}
         c,b = self.do_post(url,data,params)
@@ -96,12 +81,7 @@ class SmartEShop(Base):
         :param cp_id:
         :return:
         '''
-        if self.tenant == 'BM':
-            url = self.url + '/public/v1/smart4jd/search/details'
-        elif self.tenant == 'MA':
-            url = self.url + '/api/v1/search/details'
-        else:
-            return
+        url = self.url + '/public/v1/smart4jd/search/details'
         data = {'skuId':sku_id,'cpId':cp_id}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
@@ -120,11 +100,11 @@ class SmartEShop(Base):
 if __name__ == '__main__':
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'DEV'
-    shop = SmartEShop(tenant='BM')
+    os.environ['ENV'] = 'UAT'
+    shop = SmartEShop(tenant='MA')
     # shop.refresh_category_and_goods_detail()
     # shop.category()
     # shop.category2(737)
     # shop.category3(14015)
-    # shop.goods_list(no=1,size=2)
-    shop.goods_detail(sku_id=100004466546,cp_id='123')
+    shop.goods_list(no=1,size=2)
+    # shop.goods_detail(sku_id=100004466546,cp_id='123')

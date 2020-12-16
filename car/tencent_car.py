@@ -6,7 +6,7 @@ class TencentCar(Base):
     def __init__(self):
         super().__init__()
         self.url = self.read_conf('ma_env.conf',self.env,'car_host')
-        self.add_header(tenant=self.env)
+        self.add_header()
 
     def assert_bm_msg(self,code,body):
         print(body)

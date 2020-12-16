@@ -229,18 +229,19 @@ class Payment(Base):
         print(json_str)
         return json.loads(json_str)
 
+
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     pay = Payment()
-    aid = '122'
-    pay.weixin_cdp_callback(out_trade_no='2020112616231517932768',nonce=pay.f.md5())
+    aid = '9351524'
+    # pay.weixin_cdp_callback(out_trade_no='ftb2020112616231517932768',nonce=pay.f.md5())
     # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
     # pay.agreement_qr_code(aid,'ALI_PAY','FLOW','CMCC','SOP1')
     # pay.pay_channel(aid,order_no='ftb20201204113739602753664')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
-    # pay.get_qr_code(aid,order_no='ftb20201204155552470102400',channel='WECHAT_PAY')
+    pay.get_qr_code(aid,order_no='ftb20201215183343415102400',channel='WECHAT_PAY')
     # pay.get_pay_result('20201112111106317868352','221')
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback('trade_success', '2018091361389377', 'ftb20201207095216444475136', receipt_amount=57.00, gmt_payment=pay.time_delta(),
