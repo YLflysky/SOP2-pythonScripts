@@ -49,12 +49,11 @@ def test_update_event(set_up_add_event):
 @pytest.mark.ma_calendar
 @allure.suite('ma-calendar')
 @allure.title('MA车机端获取用户最后更新时间')
-@pytest.mark.parametrize('uid', [ma_calendar.uid, '123456', '4606930', '4608048', '4608147'])
-def test_get_last_time(uid):
+def test_get_last_time():
     '''
     获取日历最近一次更新时间
     '''
-    body = ma_calendar.get_last_time(uid, deviceId=ma_calendar.tenant)
+    body = ma_calendar.get_last_time(ma_calendar.uid, deviceId=ma_calendar.device_id)
     assert body['data']['updateTime'] is not None
 
 
