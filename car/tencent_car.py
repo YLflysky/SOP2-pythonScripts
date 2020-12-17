@@ -85,9 +85,9 @@ if __name__ == '__main__':
     uid = 'sergio'
     vin = 'LFVTESTMOSC000025'
     # car.check_vin(vin)
-    # car.get_QRcode(uid,vin)
+    car.get_QRcode(uid,vin)
     # car.unbind(aid='190001',vin='LFVTESTMOSC000025')
-    car.get_info(uid,vin)
+    # car.get_info(uid,vin)
     # car.bind_callback(aid='4614963',vin='TEZWVEVTVElDQVMzMDk3MzY=',wecar_id='TEZWVEVTVElDQVMzMDk3MzY',action='unbind')
 
 

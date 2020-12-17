@@ -179,5 +179,16 @@ def test_smart_eshop_list_04():
     assert res['totalCount'] == len(res['data'])
 
 
+@allure.suite('eshop')
+@allure.title('智能设备商城获取商品列表》》商品详情')
+@pytest.mark.eshop
+def test_smart_eshop_detail():
+    goods_list = bm_shop.goods_list()
+    sku = random.choice(goods_list['data'])
+    res = bm_shop.goods_detail(sku['skuId'],sku['cpId'])
+    assert res['data']['skuId'] == sku['skuId']
+    assert res['data']['cpId'] == 'JD_OPEN'
+
+
 
 

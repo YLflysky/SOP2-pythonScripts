@@ -55,6 +55,17 @@ def test_smart_eshop_detail(sku):
 
 
 @allure.suite('ma-eshop')
+@allure.title('MA智能设备商城获取商品列表》》商品详情')
+@pytest.mark.eshop
+def test_smart_eshop_detail():
+    goods_list = ma_shop.goods_list()
+    sku = random.choice(goods_list['data'])
+    res = ma_shop.goods_detail(sku['skuId'],sku['cpId'])
+    assert res['data']['skuId'] == sku['skuId']
+    assert res['data']['cpId'] == 'JD_OPEN'
+
+
+@allure.suite('ma-eshop')
 @allure.title('MA智能设备商城获取商品列表，根据价格排序')
 @pytest.mark.eshop
 @pytest.mark.parametrize('sort',['desc','asc'])
