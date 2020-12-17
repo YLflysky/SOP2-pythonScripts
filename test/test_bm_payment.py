@@ -20,7 +20,7 @@ def test_bm_get_qr_code(code):
     # 同步一条音乐订单，用于获取支付二维码
     ex_order_no = order.f.pyint()
     goods_id = order.f.pyint()
-    vin = order.random_vin()
+    vin = '0D07D9A7A091ECD31AD9CB3F1DA429B1'
     ext_info = order.f.pydict(4, True, value_types=str)
     discount_amount = '10000'
     order_amount = order.f.pyint(10086, 100000)

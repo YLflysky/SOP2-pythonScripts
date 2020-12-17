@@ -5,13 +5,15 @@ import os,sys
 class TencentCar(Base):
     def __init__(self):
         super().__init__()
+        self.env = 'UAT'
+        self.gate = True
         self.url = self.read_conf('ma_env.conf',self.env,'car_host')
-        self.add_header()
+        self.add_header(url=self.read_conf('ma_env.conf',self.env,'token_host'))
 
     def assert_bm_msg(self,code,body):
         print(body)
         assert code == 200
-        assert body['code'] == '000000'
+
 
     def check_vin(self,vin=None):
 
@@ -79,15 +81,13 @@ class TencentCar(Base):
 
 if __name__ == '__main__':
 
-    os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'CLOUD'
     car = TencentCar()
     uid = 'sergio'
     vin = 'LFVTESTMOSC000025'
-    # car.check_vin(vin='LFVTESTMOSC000025')
-    car.get_QRcode(uid,vin)
+    # car.check_vin(vin)
+    # car.get_QRcode(uid,vin)
     # car.unbind(aid='190001',vin='LFVTESTMOSC000025')
-    # car.get_info(uid='sergio',vin='LFVTESTMOSC000025')
+    car.get_info(uid,vin)
     # car.bind_callback(aid='4614963',vin='TEZWVEVTVElDQVMzMDk3MzY=',wecar_id='TEZWVEVTVElDQVMzMDk3MzY',action='unbind')
 
 

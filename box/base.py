@@ -41,8 +41,8 @@ class Base:
             lk.prt('init error:{}'.format(e))
             return
 
-    def add_header(self,url='http://huaa-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token',
-                   user='18224077254',password='123456',vin='LFV3A23C1K3161804'):
+    def add_header(self,url,user='18224077254',password='123456',vin='LFV3A23C1K3161804'):
+
         '''
         添加网关header验证
         :return:

@@ -86,7 +86,7 @@ def test_smart_eshop_list_03():
     categories = ma_shop.category2()['data']
     for x in categories:
         res = ma_shop.goods_list(no=1,size=10,category2Id=x['id'])
-        assert res['total'] == len(res['data'])
+        assert res['total'] == len(res['data']) != 0
 
 
 @allure.suite('ma-eshop')

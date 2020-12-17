@@ -89,7 +89,8 @@ class BMOrder(Base):
         '''
         url = self.hu_url + '/order/api/v1/orders/{}/cancel'.format(order_no)
         self.header['aid'] = aid
-        self.header['Authorization'] = self.get_token(tenant='BM',username='19900001143',password='000000',vin='LFV3A24F793091695')
+        token_url = self.read_conf('sop2_env.conf',self.env,'token_host')
+        self.header['Authorization'] = self.get_token(token_url,username='19900001143',password='000000',vin='H6LZ8FUH6U662V48S')
         c,b = self.do_put(url,None)
         self.assert_bm_msg(c,b)
 

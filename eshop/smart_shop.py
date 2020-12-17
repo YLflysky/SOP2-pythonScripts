@@ -13,7 +13,7 @@ class SmartEShop(Base):
             self.env= 'UAT'
             self.gate = True
             self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host')
-            self.add_header()
+            self.add_header(self.read_conf('ma_env.conf',self.env,'token_host'))
         else:
             print('no such tenant...')
             sys.exit(-1)
@@ -99,11 +99,11 @@ class SmartEShop(Base):
 if __name__ == '__main__':
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
-    shop = SmartEShop(tenant='MA')
+    os.environ['ENV'] = 'SIT'
+    shop = SmartEShop(tenant='BM')
     shop.refresh_category_and_goods_detail()
     # shop.category()
     # shop.category2()
     # shop.category3(14015)
-    # shop.goods_list(no=1,size=2)
+    # shop.goods_list(no=1,size=2,category2Id=102000)
     # shop.goods_detail(sku_id=100004466546,cp_id='123')

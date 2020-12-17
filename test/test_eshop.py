@@ -154,11 +154,11 @@ def test_smart_eshop_list_02(key):
 @allure.suite('eshop')
 @allure.title('智能设备商城获取商品列表，根据category2查询')
 @pytest.mark.eshop
-@pytest.mark.parametrize('category2',[12345,738,828,794])
-def test_smart_eshop_list_03(category2):
-
-    res = bm_shop.goods_list(no=1,size=10,category2Id=category2)
-    assert res['totalCount'] == len(res['data']) != 0
+def test_smart_eshop_list_03():
+    categories = bm_shop.category2()['data']
+    for x in categories:
+        res = bm_shop.goods_list(no=1,size=10,category2Id=x['id'])
+        assert res['totalCount'] == len(res['data'])
 
 
 @allure.suite('eshop')

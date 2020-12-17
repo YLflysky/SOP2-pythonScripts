@@ -259,17 +259,3 @@ def test_bm_order_detail_token():
             'iG6Pt3OZd7qngrx_2FJOoN2k8KGvdHIxhqe4EA'
     res = bm.bm_order_detail(None, order_no='111124424523', vin=bm.random_vin(), token=token)
     assert res['data']['orderCategory']
-
-
-@allure.suite('order')
-@allure.title('BM车机端取消EP美食订单')
-@pytest.mark.order
-def test_bm_cancel_ep_order():
-    aid = 'qq995939534'
-    ex_order_No = o.f.pyint(100000,10000000)
-    food_order = o.sync_order(aid=aid, origin='EP', ex=ex_order_No,category='113',
-                 serviceId='FOOD', spId='MEITUAN', title='测试支付订单', payAmount=0.01, amount=0.01,
-                 goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
-
-    order_no = food_order['data']
-    bm.bm_cancel_order(aid,order_no)

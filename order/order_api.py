@@ -9,7 +9,7 @@ class Order(Base):
     def __init__(self):
         super().__init__()
         if self.gate:
-            self.add_header(tenant='BM')
+            self.add_header(url=self.read_conf('sop2_env.conf', self.env, 'token_host'))
 
         self.url = self.read_conf('sop2_env.conf', self.env, 'be_host')
 
