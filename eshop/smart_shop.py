@@ -10,9 +10,9 @@ class SmartEShop(Base):
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'smart_eshop_host')
         elif tenant == 'MA':
-            self.env= 'UAT'
+            self.env = 'UAT'
             self.gate = True
-            self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host')
+            self.url = self.read_conf('ma_env.conf', self.env, 'smart_eshop_host')
             self.add_header(self.read_conf('ma_env.conf',self.env,'token_host'))
         else:
             print('no such tenant...')
