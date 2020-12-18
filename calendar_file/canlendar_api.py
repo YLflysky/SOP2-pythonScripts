@@ -21,7 +21,7 @@ class Calendar(Base):
 
             self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
             # lk.prt('开始获取token...')
-            self.header['Authorization']=self.get_token('BM',self.name,self.password,self.vin)
+            # self.header['Authorization']=self.get_token('BM',self.name,self.password,self.vin)
             self.header['deviceId'] = self.device_id
             self.header['uid'] = self.uid
 

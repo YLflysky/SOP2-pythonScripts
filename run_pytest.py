@@ -32,7 +32,12 @@ if __name__ == '__main__':
         if len(marks) > 1:
             cmd = 'pytest -q ./test --alluredir /data/allure-results -m "{}"'.format(' or '.join(marks))
         elif len(marks) == 1:
-            cmd = 'pytest -q ./test --alluredir /data/allure-results -m "{}"'.format(marks[0])
+            if marks[0] == 'bm':
+                cmd = 'pytest -q ./test/test_bm --alluredir /data/allure-results'
+            elif marks[0] == 'ma':
+                cmd = 'pytest -q ./test/test_ma --alluredir /data/allure-results'
+            else:
+                cmd = 'pytest -q ./test --alluredir /data/allure-results -m "{}"'.format(marks[0])
         else:
             print('args error')
             sys.exit(-1)
