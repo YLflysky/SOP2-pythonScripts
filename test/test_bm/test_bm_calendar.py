@@ -21,7 +21,6 @@ def log_time(func):
     return make_decorater
 
 
-@log_time
 @allure.suite('calendar')
 @allure.title('BM车机端新增用户日历事件')
 @pytest.mark.calendar
@@ -46,7 +45,7 @@ def test_add_event_01():
 
 
 @allure.suite('calendar')
-@allure.title('add event')
+@allure.title('BM车机端新增用户日历事件》》输入全部必填项')
 @pytest.mark.calendar
 def test_add_event_02():
     '''
@@ -86,7 +85,7 @@ def test_add_event_02():
 
 
 @allure.suite('calendar')
-@allure.title('add event')
+@allure.title('BM车机端新增用户日历事件》》异常')
 @pytest.mark.calendar
 def test_add_event_03():
     '''
@@ -100,7 +99,7 @@ def test_add_event_03():
 
 
 @allure.suite('calendar')
-@allure.title('add event')
+@allure.title('BM车机端新增用户日历事件》》传入rrule')
 @pytest.mark.calendar
 def test_add_event_04():
     '''
@@ -117,7 +116,7 @@ def test_add_event_04():
 
 
 @allure.suite('calendar')
-@allure.title('add event')
+@allure.title('BM车机端新增用户日历事件》》传入错误的rrule')
 @pytest.mark.calendar
 def test_add_event_05():
     '''
@@ -130,7 +129,7 @@ def test_add_event_05():
 
 
 @allure.suite('calendar')
-@allure.title('update event')
+@allure.title('BM车机端更新用户日历事件')
 @pytest.mark.calendar
 def test_update_event():
     s = c.get_time_stamp()
@@ -147,7 +146,7 @@ def test_update_event():
 
 
 @allure.suite('calendar')
-@allure.title('find all')
+@allure.title('BM车机端查询用户所有事件')
 @pytest.mark.calendar
 @pytest.mark.parametrize('t', [1601203105641, None])
 def test_find_all(t):
@@ -159,7 +158,7 @@ def test_find_all(t):
 
 
 @allure.suite('calendar')
-@allure.title('find detail')
+@allure.title('BM车机端查询用户事件详情')
 @pytest.mark.calendar
 def test_find_detail_success():
     '''
@@ -178,7 +177,7 @@ def test_find_detail_success():
 
 
 @allure.suite('calendar')
-@allure.title('find detail')
+@allure.title('BM车机端查询用户事件详情>>异常')
 @pytest.mark.calendar
 @pytest.mark.parametrize('id', [123, 'abc', 1, 2, 3])
 def test_find_detail_fail(id):
@@ -190,7 +189,7 @@ def test_find_detail_fail(id):
 
 
 @allure.suite('calendar')
-@allure.title('get list')
+@allure.title('BM车机端获取用户事件列表')
 @pytest.mark.calendar
 @pytest.mark.parametrize('t', ['TYPE_ONE', 'TYPE_TWO', 'TYPE_THREE'])
 def test_get_event_list_01(t):
@@ -203,7 +202,7 @@ def test_get_event_list_01(t):
 
 
 @allure.suite('calendar')
-@allure.title('get list')
+@allure.title('BM车机端获取用户事件列表')
 @pytest.mark.calendar
 def test_get_event_list_02():
     '''
@@ -222,7 +221,7 @@ def test_get_event_list_02():
 
 
 @allure.suite('calendar')
-@allure.title('get list')
+@allure.title('BM车机端获取用户事件列表')
 @pytest.mark.calendar
 def test_get_event_list_03():
     '''
@@ -234,7 +233,7 @@ def test_get_event_list_03():
 
 
 @allure.suite('calendar')
-@allure.title('get list')
+@allure.title('BM车机端获取用户事件列表')
 @pytest.mark.calendar
 def test_get_event_list_04():
     '''
@@ -247,7 +246,7 @@ def test_get_event_list_04():
 
 @pytest.mark.calendar
 @allure.suite('calendar')
-@allure.title('last time')
+@allure.title('BM车机端获取用户最后更新时间')
 @pytest.mark.parametrize('uid', [c.uid, '123456', '4606930', '4608048', '4608147'])
 def test_get_last_time(uid):
     '''
