@@ -16,15 +16,9 @@ class MAOrder(Base):
         assert 200 == code
         assert body['status'] == 'SUCCEED'
 
-    def create_order(self):
+    def create_order(self,goods_id,category,count,**kwargs):
         url = self.url + '/api/v1/createOrder'
-        data = {
-             "goodsId":"17",
-		    "vin":self.vin,
-		    "orderCategory":"MUSIC_VIP",
-		    "count":1,
-            "durationDays": 1,
-        }
+        data = {'goodsId':goods_id,'vin':self.vin,'orderCategory':category,'count':count,**kwargs}
         c, b = self.do_post(url, data)
         self.assert_msg(c, b)
 
@@ -37,6 +31,9 @@ class MAOrder(Base):
         }
         c, b = self.do_post(url, data)
         self.assert_msg(c, b)
+
+    def get_goods_list(self):
+        url = self.url + ''
 
     def alipay_callback(self):
         url = self.url + 'mos/internal/alipayQrCallBack'
@@ -70,6 +67,6 @@ class MAOrder(Base):
 
 if __name__ == '__main__':
     ma_order = MAOrder()
-    # ma_order.create_order()
-    ma_order.get_qr_code('M202012161532571906927437',channel='11100')
+    ma_order.create_order(goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',count=1,)
+    # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()

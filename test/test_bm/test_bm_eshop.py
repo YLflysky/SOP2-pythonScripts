@@ -2,7 +2,7 @@ import pytest
 import allure
 import os
 import random
-from eshop.spare import SpareShop
+from eshop.eshop import SpareShop
 from eshop.smart_shop import SmartEShop
 
 spare = SpareShop()

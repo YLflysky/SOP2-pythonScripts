@@ -3,7 +3,7 @@ from calendar_file.canlendar_api import Calendar
 import allure
 import random
 
-ma_calendar = Calendar(tenant='MA',name='18280024450',password='Qq111111',aid='9350195',vin='LFVSOP2TEST000311')
+ma_calendar = Calendar(tenant='MA')
 
 
 @pytest.fixture()
@@ -14,7 +14,7 @@ def set_up_add_event():
     res = ma_calendar.add_event(start_time=start_time, end_time=end_time)
     return res['data']['id']
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端获取用户所有日历事件')
 @pytest.mark.ma_calendar
 def test_find_all():
@@ -22,7 +22,7 @@ def test_find_all():
     assert res['data']['events']
 
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端获取用户单个日历详情')
 @pytest.mark.ma_calendar
 def test_find_detail(set_up_add_event):
@@ -30,14 +30,14 @@ def test_find_detail(set_up_add_event):
     assert res['data']['origin'] == 'HU'
 
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端删除用户日历事件')
 @pytest.mark.ma_calendar
 def test_del_event(set_up_add_event):
     ma_calendar.del_event(event_id=set_up_add_event)
 
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端更新用户日历事件')
 @pytest.mark.ma_calendar
 def test_update_event(set_up_add_event):
@@ -47,7 +47,7 @@ def test_update_event(set_up_add_event):
 
 
 @pytest.mark.ma_calendar
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端获取用户最后更新时间')
 def test_get_last_time():
     '''
@@ -57,7 +57,7 @@ def test_get_last_time():
     assert body['data']['updateTime'] is not None
 
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端获取用户事件列表，根据apiType')
 @pytest.mark.ma_calendar
 @pytest.mark.parametrize('t', ['TYPE_ONE', 'TYPE_TWO', 'TYPE_THREE'])
@@ -70,7 +70,7 @@ def test_get_event_list_type(t):
     assert len(body['data']['events']) > 0
 
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端获取用户事件列表，根据开始结束时间')
 @pytest.mark.ma_calendar
 def test_get_event_list_date():
@@ -91,7 +91,7 @@ def test_get_event_list_date():
     print('测试通过：实际日历区间:{},期望日历区间:{}'.format(actual, expect))
 
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端新增用户日历事件')
 @pytest.mark.ma_calendar
 def test_add_event_01():
@@ -110,7 +110,7 @@ def test_add_event_01():
         ma_calendar.del_event(event_id=calendar_id)
 
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端新增用户日历事件')
 @pytest.mark.ma_calendar
 def test_add_event_02():
@@ -149,7 +149,7 @@ def test_add_event_02():
         ma_calendar.del_event(event_id=calendar_id)
 
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端新增用户日历事件')
 @pytest.mark.ma_calendar
 def test_add_event_03():
@@ -163,7 +163,7 @@ def test_add_event_03():
     assert body['statusMessage'] == 'wrong date range'
 
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端新增用户日历事件')
 @pytest.mark.ma_calendar
 def test_add_event_04():
@@ -178,7 +178,7 @@ def test_add_event_04():
     assert detail['data']['rrule'] == 'Only Once'
 
 
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('MA车机端新增用户日历事件')
 @pytest.mark.ma_calendar
 def test_add_event_05():
@@ -192,7 +192,7 @@ def test_add_event_05():
 
 
 @pytest.mark.ma_calendar
-@allure.suite('ma-calendar')
+@allure.suite('test_ma-calendar')
 @allure.title('APP同步MA用户日历事件')
 @pytest.mark.parametrize('cud', ['C', 'U', 'D'])
 def test_mobile_sync_01(cud):

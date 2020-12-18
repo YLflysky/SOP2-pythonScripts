@@ -21,7 +21,7 @@ class Calendar(Base):
 
             self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
             # lk.prt('开始获取token...')
-            # self.header['Authorization']=self.get_token('BM',self.name,self.password,self.vin)
+            self.header['Authorization']=self.get_token('BM',self.name,self.password,self.vin)
             self.header['deviceId'] = self.device_id
             self.header['uid'] = self.uid
 
@@ -31,9 +31,8 @@ class Calendar(Base):
             self.device_id = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
             self.url = self.read_conf('ma_env.conf',self.env,'calendar_host')
             lk.prt('开始获取token...')
-            self.header['Authorization'] = self.get_token(
-                'http://huaa-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token',
-                                                        self.name,self.password,self.vin)
+            self.header['Authorization'] = self.get_token(self.read_conf('ma_env.conf',self.env,'token_host')
+                ,self.name,self.password,self.vin)
             self.header['Did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
 
     def find_all_event(self,update_time):
@@ -153,7 +152,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     # ma_c = Calendar(tenant='CLOUD',name='19900001174',password='111111',aid='4614962',vin='TESTOAOT111122064')
     # ma_c.mobile_find_all(uid=ma_c.uid)
-    c = Calendar(tenant='BM')
+    c = Calendar(tenant='MA')
     # c.mobile_sync('C')
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
     c.find_detail(39235)

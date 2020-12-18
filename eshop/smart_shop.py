@@ -99,7 +99,7 @@ class SmartEShop(Base):
 if __name__ == '__main__':
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'UAT'
     shop = SmartEShop(tenant='BM')
     # shop.refresh_category_and_goods_detail()
     # shop.category()

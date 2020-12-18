@@ -184,7 +184,7 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'DEV'
     flow = Flow()
     pay = Payment()
     bm_pay = BMPayment()
@@ -196,12 +196,12 @@ if __name__ == '__main__':
     # flow.flow_detail(263)
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_goods_detail('100')
-    # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
+    flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
 
-    flow_order = flow.bm_create_flow_order(goods_id='253', aid=aid, vin=vin, quantity=1)
-    order_no = flow_order['data']['orderNo']
+    # flow_order = flow.bm_create_flow_order(goods_id='253', aid=aid, vin=vin, quantity=1)
+    # order_no = flow_order['data']['orderNo']
     # bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','11101')
-    bm_pay.get_qr_code(vin,aid,order_no,pay_type='12103',category='111',score='N')
+    # bm_pay.get_qr_code(vin,aid,order_no,pay_type='12103',category='111',score='N')
     # pay.get_qr_code(aid,order_no,'WECHAT_PAY')
 
     # flow.bm_goods_list('995939534','WIFI_FLOW')

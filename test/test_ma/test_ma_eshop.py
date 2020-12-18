@@ -7,7 +7,7 @@ from eshop.smart_shop import SmartEShop
 ma_shop = SmartEShop(tenant='MA')
 
 
-@allure.suite('ma-eshop')
+@allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城底层获取一级类目')
 @pytest.mark.eshop
 def test_get_category_1():
@@ -21,7 +21,7 @@ def test_get_category_1():
         allure.attach(str(first),'list',attachment_type=allure.attachment_type.TEXT)
 
 
-@allure.suite('ma-eshop')
+@allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城底层获取二级类目')
 @pytest.mark.eshop
 def test_get_category_2():
@@ -31,7 +31,7 @@ def test_get_category_2():
         assert d['id']
 
 
-@allure.suite('ma-eshop')
+@allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城底层获取三级类目')
 @pytest.mark.eshop
 def test_get_category_3():
@@ -43,7 +43,7 @@ def test_get_category_3():
         assert d['id']
 
 
-@allure.suite('ma-eshop')
+@allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城获取商品详情')
 @pytest.mark.eshop
 @pytest.mark.parametrize('sku',['100002099880','100004466546','7360341','5066434'])
@@ -54,7 +54,7 @@ def test_smart_eshop_detail(sku):
     assert res['data']['cpId'] == cp
 
 
-@allure.suite('ma-eshop')
+@allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城获取商品列表》》商品详情')
 @pytest.mark.eshop
 def test_smart_eshop_detail():
@@ -65,7 +65,7 @@ def test_smart_eshop_detail():
     assert res['data']['cpId'] == 'JD_OPEN'
 
 
-@allure.suite('ma-eshop')
+@allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城获取商品列表，根据价格排序')
 @pytest.mark.eshop
 @pytest.mark.parametrize('sort',['desc','asc'])
@@ -78,7 +78,7 @@ def test_smart_eshop_list_01(sort):
     print(prices)
 
 
-@allure.suite('ma-eshop')
+@allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城获取商品列表，根据关键字查询')
 @pytest.mark.eshop
 @pytest.mark.parametrize('key',['京','京鱼座音箱'])
@@ -90,7 +90,7 @@ def test_smart_eshop_list_02(key):
         assert key in x['skuName']
 
 
-@allure.suite('ma-eshop')
+@allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城获取商品列表，根据category2查询')
 @pytest.mark.eshop
 def test_smart_eshop_list_03():
@@ -100,7 +100,7 @@ def test_smart_eshop_list_03():
         assert res['total'] == len(res['data']) != 0
 
 
-@allure.suite('ma-eshop')
+@allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城获取商品列表，根据category3查询')
 @pytest.mark.eshop
 @pytest.mark.parametrize('category3',[[842,758,967,870]])
@@ -109,7 +109,7 @@ def test_smart_eshop_list_04(category3):
     assert res['total'] == len(res['data'])
 
 
-@allure.suite('ma-eshop')
+@allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城获取商品列表，同时传入category2和category3，报错')
 @pytest.mark.eshop
 def test_smart_eshop_list_05():
