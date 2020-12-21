@@ -95,9 +95,9 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     os.environ['gate'] = 'false'
     p = Points()
-    p.get_user_level(aid='123',system_key='267C13173FE04A57AX',tenant='VW')
+    # p.get_user_level(aid='123',system_key='267C13173FE04A57AX',tenant='VW')
     # p.bm_get_user_level(aid='1234')
-    # p.get_user_points(aid='1234')
+    p.get_user_points(aid='914')
     # p.bm_get_user_points(aid='1234')
     # p.bm_get_points_stream(aid='123')
     # p.get_points_stream(index=1,size=10,aid='1234')

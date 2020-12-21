@@ -207,6 +207,6 @@ if __name__ == '__main__':
     # flow.flow_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
     # flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=2,status=2)
-    # flow.cp_common_notify(id=1, category=1, status='1000_00', origin_id='FTB20201126095621292978944',)
+    # flow.cp_common_notify(id=1, category=1, status='1000_00', origin_id='20201126095621292978944',)
     # flow.cp_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534cmcctest001x',package_id='P1001123577')

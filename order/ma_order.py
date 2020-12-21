@@ -1,7 +1,7 @@
 from box.base import Base
 
 
-class MAOrder(Base):
+class H5Order(Base):
     def __init__(self):
         super().__init__()
         self.env = 'UAT'
@@ -65,8 +65,35 @@ class MAOrder(Base):
         assert 200 == c
 
 
+class MAOrder(H5Order):
+    def __init__(self):
+        super().__init__()
+        self.env = 'UAT'
+        self.gate = True
+        self.vin = 'LFVTESTMOSC000096'
+        self.url = self.read_conf('ma_env.conf', self.env, 'mosc_order')
+        self.add_header(url=self.read_conf('ma_env.conf',self.env,'token_host'),
+                        user='15843013681', password='aa123456', vin=self.vin)
+
+    def create_ma_order(self, goods_id, category, aid,quantity,point=False, **kwargs):
+        url = self.url + '/internal/v2/goods/creatOrder'
+        data = {'aid':aid,'goodsId': goods_id, 'vin': self.vin, 'durationTimes':1,
+                'orderCategory': category, 'quantity': quantity,'usedPoint':point, **kwargs}
+        c, b = self.do_post(url, data)
+        self.assert_msg(c, b)
+        return b
+
+    def get_goods_list(self):
+        url = self.url + '/internal/v2/goods/list'
+
+
+
 if __name__ == '__main__':
-    ma_order = MAOrder()
-    ma_order.create_order(goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',count=1,)
+    # h5_order = H5Order()
+    # h5_order.create_order(goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',count=1,)
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
+    aid = '914'
+    ma_order = MAOrder()
+    order_no = ma_order.create_ma_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,)['order_no']
+    # ma_order.get_qr_code(order_no,channel='11100')
