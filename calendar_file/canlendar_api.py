@@ -154,6 +154,6 @@ if __name__ == '__main__':
     # ma_c.mobile_find_all(uid=ma_c.uid)
     c = Calendar(tenant='MA')
     # c.mobile_sync('C')
-    # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
+    c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
     c.find_detail(39235)
     c.find_all_event(update_time=None)

@@ -8,7 +8,7 @@ class MAOrder(Base):
         self.gate = True
         self.vin = 'LFVTESTMOSC000096'
         self.url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
-        self.add_header(url='http://huaa-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token',
+        self.add_header(url=self.read_conf('ma_env.conf',self.env,'token_host'),
                         user='15843013681', password='aa123456', vin=self.vin)
 
     def assert_msg(self, code, body):

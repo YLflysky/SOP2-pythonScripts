@@ -183,11 +183,11 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'SIT'
     flow = Flow()
     bm_pay = BMPayment()
-    aid = '10086'
-    vin = 'LFVSOP2TEST000353'
+    aid = '9351499'
+    vin = 'SO8OY5T6JXM7B76O6'
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
@@ -196,7 +196,7 @@ if __name__ == '__main__':
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
 
-    flow_order = flow.bm_create_flow_order(goods_id='253', aid=aid, vin=vin, quantity=1)
+    flow_order = flow.bm_create_flow_order(goods_id='254', aid=aid, vin=vin, quantity=1)
     order_no = flow_order['data']['orderNo']
     # bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','11101')
     bm_pay.get_qr_code(vin,aid,order_no,pay_type='12103',category='111',score='N')

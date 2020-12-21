@@ -5,7 +5,7 @@ import random
 from eshop.eshop import SpareShop
 from eshop.smart_shop import SmartEShop
 
-spare = SpareShop()
+spare = SpareShop(tenant='BM')
 bm_shop = SmartEShop(tenant='BM')
 
 
