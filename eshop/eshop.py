@@ -95,7 +95,7 @@ if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'DEV'
-    shop = PointsShop('BM')
+    shop = PointsShop('MA')
     category = shop.get_category_id()
     print(category)
     # goods_id = shop.get_spare_list(category='all')

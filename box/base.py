@@ -50,6 +50,7 @@ class Base:
         self.header['Did'] = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
         self.header['authorization'] = self.get_token(url,user,password,vin)
         self.header['did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
+        self.header['Timestamp'] = self.get_time_stamp()
 
 
     def get_time_stamp(self,formartted='%Y-%m-%d %H:%M:%S', days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
@@ -127,8 +128,8 @@ class Base:
         url_query_dict["appkey"] = "3717440806"
         url_query_dict["signt"] = sign_timestamp
         url_query_dict["nonce"] = nonce
-        url_query_dict["userModel"] = "DEFAULT"
-        url_query_dict["os"] = "android"
+        # url_query_dict["userModel"] = "DEFAULT"
+        # url_query_dict["os"] = "android"
         # 排序并生成字符串
         key_sort = sorted(url_query_dict.keys())
 
@@ -277,7 +278,8 @@ class Base:
         '''
         if self.gate:
             params = self._calc_digital_sign(url,params)
-        lk.prt('final get url is:{}'.format(url))
+            final_url = url + '?'+parse.urlencode(params)
+        lk.prt('final get url is:{}'.format(final_url if self.gate else url))
         lk.prt('final get header is:{}'.format(self.header))
         lk.prt('final get param is:{}'.format(params))
         res = requests.get(url=url, params=params, headers=self.header, verify=False)

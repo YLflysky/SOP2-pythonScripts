@@ -152,8 +152,8 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     # ma_c = Calendar(tenant='CLOUD',name='19900001174',password='111111',aid='4614962',vin='TESTOAOT111122064')
     # ma_c.mobile_find_all(uid=ma_c.uid)
-    c = Calendar(tenant='MA')
+    c = Calendar(tenant='BM')
     # c.mobile_sync('C')
-    c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
-    c.find_detail(39235)
+    # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
+    # c.find_detail(39235)
     c.find_all_event(update_time=None)
