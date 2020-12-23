@@ -5,7 +5,17 @@ user_ma:
     15330011918
 
   password:
-    000000
+    Lpf123456
 
   vin:
     LFVTEST1231231231
+
+user_bm:
+  aid:
+    914
+  user:
+    15566938326
+  password:
+    test1234
+  vin:
+    TESTWECHAT6026067

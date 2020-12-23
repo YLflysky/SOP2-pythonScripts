@@ -2,7 +2,7 @@ import pytest
 import allure
 import os
 import random
-from eshop.eshop import SpareShop
+from eshop.eshop import SpareShop,PointsShop
 from eshop.smart_shop import SmartEShop
 
 spare = SpareShop(tenant='BM')
@@ -17,7 +17,7 @@ def test_get_spare_category():
     测试获取备件商城category
     '''
     res = spare.get_category_id()
-    assert res in ['all','1993','37','32','31','1994','927','790','2','1995','764','1']
+    assert res
 
 
 @pytest.mark.eshop
@@ -32,8 +32,8 @@ def test_get_spare_list():
     if res['total'] != 0:
         names = []
         for good in res['data']:
-            assert 'score' in good.keys()
-            assert 'applyNumber' in good.keys()
+            assert 'price' in good.keys()
+            assert 'mainPhoto' in good.keys()
             names.append(good['goodsName'])
         with allure.step('goods'):
             allure.attach(str(names),'goods_name')
@@ -45,16 +45,15 @@ def test_get_spare_list_sort():
     '''
     测试获取备件列表，测试排序
     '''
-    res = spare.get_spare_list(category='all',index=1,size=100,sort='asc',sortName='score')
+    res = spare.get_spare_list(category='all',index=1,size=100,sort='asc',sortName='price')
     if res['total'] != 0:
         names = []
         for good in res['data']:
-            assert 'score' in good.keys()
-            assert 'applyNumber' in good.keys()
-            names.append(good['score'])
+            assert 'price' in good.keys()
+            names.append(good['price'])
         assert names[-1] >= names[0]
         with allure.step('goods'):
-            allure.attach(str(names),'score')
+            allure.attach(str(names),'price')
 
 
 @pytest.mark.eshop
@@ -64,16 +63,15 @@ def test_get_spare_list_reverse():
     '''
     测试获取备件列表，测试倒序排序
     '''
-    res = spare.get_spare_list(category='all',index=1,size=100,sort='desc',sortName='score')
+    res = spare.get_spare_list(category='all',index=1,size=100,sort='desc',sortName='price')
     if res['total'] != 0:
         names = []
         for good in res['data']:
-            assert 'score' in good.keys()
-            assert 'applyNumber' in good.keys()
-            names.append(good['score'])
+            assert 'price' in good.keys()
+            names.append(good['price'])
         assert names[0] >= names[-1]
         with allure.step('goods'):
-            allure.attach(str(names),'score')
+            allure.attach(str(names),'price')
 
 
 @allure.suite('eshop')

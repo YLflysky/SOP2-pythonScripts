@@ -98,9 +98,11 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
+    aid = '4614907'
+    vin = 'BMTESTZ9AUOGCF4KK'
     # o.order_count(vin=123,uid='469317')
     data = {"brand": "VW", "businessExtInfo": {"message": "\u6269\u5c55\u5b57\u6bb5\u6d4b\u8bd5"},
             "createdTime": "1601346979941", "discountAmount": "2000", "orderAmount": "20000", "orderCategory": "99",
@@ -113,5 +115,5 @@ if __name__ == '__main__':
     # o.update_bm_order(order_no='20201104154521856385024',vin='3FCECCBA6990DD8F4839403E77F14F85',userId='10000000312441',updateType='1',
     #                   orderEvent='就是我',businessState='NOTHING_TO_SAY')
     # o.reload_config()
-    o.bm_order_detail(aid='9351499',order_no='ftb20201222104119755753664',vin=o.random_vin())
-    # o.music_order_create(tenant_id='VW',aid='4614928',vin='123456',goods='100',quantity=1)
+    # o.bm_order_detail(aid=aid,order_no='ftb20201223095909585102400',vin=vin)
+    o.music_order_create(tenant_id='VW',aid=aid,vin=vin,goods='101',quantity=1)

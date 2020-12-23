@@ -77,8 +77,8 @@ def test_get_event_list_date():
     '''
     查询指定时间段时间列表,输入Date
     '''
-    start = 1598240339000
-    end = 1598240340000
+    start = 1599466345000
+    end = 1616746345000
     data = {'apiType': 'TYPE_ONE', 'startDate': start, 'endDate': end}
     body = ma_calendar.get_event_list(data)
     assert len(body['data']['events']) > 0
@@ -160,7 +160,7 @@ def test_add_event_03():
     e = ma_calendar.get_time_stamp(days=1)
     body = ma_calendar.add_event(s, e)
 
-    assert body['statusMessage'] == 'wrong date range'
+    assert body['description'] == 'wrong date range'
 
 
 @allure.suite('test_ma-calendar')

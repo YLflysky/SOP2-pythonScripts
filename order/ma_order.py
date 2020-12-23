@@ -100,7 +100,7 @@ if __name__ == '__main__':
     from point.points import Points
     import os
 
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     aid = '4614183'
     ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
