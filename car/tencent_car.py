@@ -82,8 +82,8 @@ class TencentCar(Base):
 if __name__ == '__main__':
 
     car = TencentCar()
-    uid = 'sergio'
-    vin = 'LFVTESTMOSC000025'
+    uid = 'X9G-10128.11.1990010018'
+    vin = 'BVWTDMC4220050137'
     # car.check_vin(vin)
     car.get_QRcode(uid,vin)
     # car.unbind(aid='190001',vin='LFVTESTMOSC000025')

@@ -183,11 +183,12 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     flow = Flow()
     bm_pay = BMPayment()
-    aid = '9351499'
-    vin = 'SO8OY5T6JXM7B76O6'
+    aid = 'sergio9351499'
+    vin = 'LFVTESTMOSC052726'
+    iccid = '89860117715506052726'
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
@@ -196,10 +197,10 @@ if __name__ == '__main__':
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
 
-    flow_order = flow.bm_create_flow_order(goods_id='254', aid=aid, vin=vin, quantity=1)
+    flow_order = flow.bm_create_flow_order(goods_id='247', aid=aid, vin=vin, quantity=1)
     order_no = flow_order['data']['orderNo']
     # bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','11101')
-    bm_pay.get_qr_code(vin,aid,order_no,pay_type='12103',category='111',score='N')
+    bm_pay.get_qr_code(vin,aid,order_no,pay_type='12100',category='111',score='N')
 
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid,channel=1,notify_type=1,status=1)
@@ -207,6 +208,6 @@ if __name__ == '__main__':
     # flow.flow_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
     # flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=2,status=2)
-    # flow.cp_common_notify(id=1, category=1, status='1000_00', origin_id='20201126095621292978944',)
+    # flow.cp_common_notify(id='ftb20201223140635885102400', category=1, status='1000_00', origin_id=flow.f.md5())
     # flow.cp_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534cmcctest001x',package_id='P1001123577')

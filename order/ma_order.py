@@ -108,8 +108,8 @@ if __name__ == '__main__':
     # h5_order.create_order(goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',count=1,)
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
-    # order_no = ma_order.create_ma_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True)['data']
-    # ma_order.get_ma_qr_code('20201222165431583802816',pay_type='11100')
+    order_no = ma_order.create_ma_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False)['data']
+    # ma_order.get_ma_qr_code('20201224133501931917504',pay_type='11100')
 
-    p = Points()
-    p.get_user_points(aid)
+    # p = Points()
+    # p.get_user_points(aid)
