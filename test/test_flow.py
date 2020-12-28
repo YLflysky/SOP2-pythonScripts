@@ -232,7 +232,7 @@ def test_sim_notify():
 @allure.title('cp-adapter支付结果回调到ftb2.2')
 def test_cp_common_notify_ftb22(channel):
     '''
-    测试cp-adapter支付结果回调到ftb2.2
+    测试cp-adapter支付结果回调到ftb2.2，回调支付成功
     :return:
     '''
     # 获取流量订单
@@ -253,6 +253,34 @@ def test_cp_common_notify_ftb22(channel):
     sql_res = flow.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no),'fawvw_pay')
     assert sql_res[0]['pay_status'] == 'SUCCESS'
     assert sql_res[0]['ex_pay_no'] == 'qq995939534'
+
+
+@pytest.mark.flow
+@pytest.mark.parametrize('channel', ['ALI_PAY', 'WECHAT_PAY'])
+@allure.suite('flow')
+@allure.title('cp-adapter支付结果回调到ftb2.2,category=2,status=2000_00')
+def test_cp_common_notify_2000(channel):
+    '''
+    测试cp-adapter支付结果回调到ftb2.2，回调套餐开通成功
+    :return:
+    '''
+    # 获取流量订单
+    aid = 'sergio123'
+    flow_order = flow.bm_create_flow_order('253', aid, 'LFVSOP2TEST000353', 1)
+    no = flow_order['data']['orderNo']
+    # 根据流量订单支付
+    res = pay.get_qr_code(aid, no, channel)
+    assert res['returnStatus'] == 'SUCCEED'
+    # 获取支付payNo
+    pay_no = pay.do_mysql_select(
+        'select pay_no from pay_order where order_no="{}" and is_effective=1'.format(no), 'fawvw_pay')
+    pay_no = pay_no[0]['pay_no']
+    # 通用接口回调，套餐开通成功回调
+    res = flow.cp_common_notify(id=no, category=2, status='2000_00', origin_id=flow.f.md5(),channel=channel)
+    assert res['status'] == '000000'
+    assert res['messages'][0] == '成功'
+    sql_res = flow.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no),'fawvw_pay')
+    assert sql_res[0]['pay_status'] == 'SUCCESS'
 
 
 @pytest.mark.flow

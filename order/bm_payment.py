@@ -98,10 +98,10 @@ if __name__ == '__main__':
     os.environ['GATE']='false'
     order = Order()
     pay = BMPayment()
-    aid = '9351524'
-    vin = 'BMTESTZ9AUOGCF4KK'
+    aid = '9353213'
+    vin = 'BMTESTLFDDGU8ZDFP'
     # pay.get_pay_result(vin='123',order_no='orderNo0001',aid='00',category='102',roll_number=1)
-    pay.get_pay_channel(vin,aid='sergio9351499',order_no='ftb20201224103409748753664',category='111')
+    pay.get_pay_channel(vin,aid,order_no='ftb20201228095828390102400',category='111')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
     # pay.get_qr_code(vin,aid,order_no='ftb20201210105333938753664',pay_type='11103',category='111')
     # pay.get_agreement_qr_code(aid,vin,channel=2,service_id='FLOW',sp_id='CMCC')

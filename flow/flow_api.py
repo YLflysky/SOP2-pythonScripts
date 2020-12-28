@@ -111,6 +111,26 @@ class Flow(Base):
         self.assert_msg(c, b)
         return b
 
+    def cp_over_due_notify(self,asset_id,asset_type,package_code,effective_time,expired_time):
+        '''
+        cp-adapter流量到期提醒回调接口，根据asset_id确定是否sop1的回调或者ftb2.2回调
+        :param asset_id:卡的id
+        :param asset_type:卡的类型，ICCID,IMSI, MSISDN,VIN，一般为ICCID
+        :param package_code:套餐代码
+        :param effective_time:生效时间yyyyMMdd HHmmss
+        :param expired_time:失效时间yyyyMMdd HHmmss
+        :return:
+        '''
+
+        url = self.cp_url + '/flow/notify/package_overdue_notification'
+        detail = {'assetType':asset_type,'assetId':asset_id,'packageCode':package_code,'effectiveTime':effective_time,
+                  'expiredTime':expired_time}
+        data = {'packageOverdueDetail':[detail]}
+
+        c,b = self.do_post(url,data)
+        self.assert_msg(c, b)
+        return b
+
     def sign_result_callback(self, aid, channel, notify_type, status, enterprise='2100010000'):
         '''
         流量底层免密签约结果回调
@@ -155,23 +175,25 @@ class Flow(Base):
         self.assert_msg(c, b)
         return b
 
-    def cp_common_notify(self, id, category, status, origin_id, enterprise_id='2100010000', ):
+    def cp_common_notify(self, id, category, status, origin_id, channel='ALI_PAY',enterprise_id='2100010000', ):
         '''
         cp-adapter流量通用回调接口,根据originalRequestId回调到sop1或者ftb2.2
         :param id:单据号
         :param category:单据类型1表示支付结果
-        :param status:单据状态1000_00表示支付成功,1000_01支付失败
+        :param status:单据状态1000_00表示支付成功,1000_01支付失败,2000_00表示服务开通成功
         :param origin_id:原请求流水号
         :param enterprise_id:企业编号
+        :param channel:支付成功时返回,ALI_PAY,WECHAT_PAY
         :return:
         '''
         url = self.cp_url + '/flow/notify/common_notification'
-        success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': 'ALI_PAY',
-                        'paidTime': self.time_delta(formatted='%Y%m%d%H%M%S')}
+        records = [{'id': id, 'idCategory': category, 'status': status, 'originalRequestId': origin_id}]
+        if status == '1000_00':
+            success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': channel,
+                            'paidTime': self.time_delta(formatted='%Y%m%d%H%M%S')}
+            records[0].update({'additionalAttrs':success_attr})
         data = {'enterpriseId': enterprise_id,
-                'multiRecords': [{'id': id, 'idCategory': category, 'status': status, 'originalRequestId': origin_id,
-                                  'additionalAttrs': success_attr}]}
-
+                'multiRecords': records}
         c, b = self.do_post(url, data)
         self.assert_msg(c, b)
         return b
@@ -186,9 +208,12 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     flow = Flow()
     bm_pay = BMPayment()
-    aid = 'sergio9351499'
-    vin = 'LFVTESTMOSC052726'
-    iccid = '89860117715506052726'
+    aid = '9351484'
+    sit_vin = 'SO8OY5T6JXM7B76O6'
+    sit_goods_id = 253
+    uat_goods_id = 254
+    uat_vin = 'LFVTESTMOSC989216'
+    uat_iccid = '18559372278'
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
@@ -197,17 +222,19 @@ if __name__ == '__main__':
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
 
-    flow_order = flow.bm_create_flow_order(goods_id='247', aid=aid, vin=vin, quantity=1)
-    order_no = flow_order['data']['orderNo']
+    # flow_order = flow.bm_create_flow_order(goods_id=uat_goods_id, aid=aid, vin=uat_vin, quantity=1)
+    # order_no = flow_order['data']['orderNo']
     # bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','11101')
-    bm_pay.get_qr_code(vin,aid,order_no,pay_type='12100',category='111',score='N')
-
+    # bm_pay.get_qr_code(sit_vin,aid,order_no,pay_type='12100',category='111',score='N')
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid,channel=1,notify_type=1,status=1)
 
     # flow.flow_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
     # flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=2,status=2)
-    # flow.cp_common_notify(id='ftb20201223140635885102400', category=1, status='1000_00', origin_id=flow.f.md5())
+    # flow.cp_common_notify(id='ftb20201228102158094475136', category=1, status='1000_00', origin_id=flow.f.md5(),channel='WECHAT_PAY')
     # flow.cp_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
-    #                  asset_type='iccid',asset_id='995939534cmcctest001x',package_id='P1001123577')
+    #                  asset_type='iccid',asset_id=iccid,package_id='P1001183210')
+    # flow.cp_over_due_notify(asset_id=iccid,asset_type='iccid',package_code='P1001183210',
+    #                         effective_time=flow.time_delta(formatted='%Y%m%d%H%M%S',days=-10),
+    #                         expired_time=flow.time_delta(formatted='%Y%m%d%H%M%S',days=1))
