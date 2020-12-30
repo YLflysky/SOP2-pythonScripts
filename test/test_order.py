@@ -279,7 +279,7 @@ def test_sync_order_01(order_status):
 @allure.suite('order')
 @allure.title('同步订单信息')
 @pytest.mark.order
-@pytest.mark.parametrize('order_type', ['RESERVATION', 'COMMODITY', 'BUSINESS'])
+@pytest.mark.parametrize('order_type', ['COMMODITY', 'BUSINESS'])
 def test_sync_order_02(order_type):
     '''
     同步订单接口测试，订单类型枚举
@@ -352,6 +352,7 @@ def test_sync_order_all_params():
 @allure.suite('order')
 @allure.title('同步预约单')
 @pytest.mark.order
+@pytest.mark.skip(reason='预约单自动化暂停')
 def test_sync_order_reservation():
     '''
     测试同步订单为预约单轮询检查订单状态功能

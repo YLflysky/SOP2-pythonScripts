@@ -142,7 +142,7 @@ class Base:
         catent = "_".join(parm_list)
         lk.prt("In calc digital sign, catent is: {}".format(catent))
         # 5.添加应用资源和secret_key
-        last_url_encode = resource_uri + "_" + catent + "_" + "b9784ddc19aa9ec47d2dfa1dfbca7934"
+        last_url_encode = resource_uri + "_" + catent + "_" + "F5Pw4vnV7ISCZZhY8gEk7JIYPY4l9b1M"
 
         lk.prt("In calc digital sign, last_url is: {}".format(last_url_encode))
         # 计算MD5

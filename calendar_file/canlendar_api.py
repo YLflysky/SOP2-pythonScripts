@@ -16,12 +16,13 @@ class Calendar(Base):
         self.uid = aid
 
         self.tenant = tenant
+        self.mobile_url = self.read_conf('sop2_env.conf',self.env,'one_app_host')
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'calendar_host')
 
             self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
             # lk.prt('开始获取token...')
-            # self.header['Authorization']=self.get_token('BM',self.name,self.password,self.vin)
+            self.header['Authorization']=self.get_token(self.read_conf('sop2_env.conf',self.env,'token_host'),self.name,self.password,self.vin)
             self.header['deviceId'] = self.device_id
             self.header['uid'] = self.uid
 
@@ -30,6 +31,7 @@ class Calendar(Base):
             self.gate = True
             self.device_id = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
             self.url = self.read_conf('ma_env.conf',self.env,'calendar_host')
+
             lk.prt('开始获取token...')
             self.header['Authorization'] = self.get_token(self.read_conf('ma_env.conf',self.env,'token_host')
                 ,self.name,self.password,self.vin)
@@ -140,7 +142,7 @@ class Calendar(Base):
         return b
 
     def mobile_find_all(self,uid):
-        url = self.url + '/public/calendar/event/findAll'
+        url = self.mobile_url + '/oneapp/calendar/public/event/findAll'
         self.header['uid']=uid
         code,body = self.do_get(url,None)
         self.assert_msg(code,body)
@@ -148,12 +150,12 @@ class Calendar(Base):
 
 
 if __name__ == '__main__':
-    os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
+    os.environ['GATE'] = 'true'
+    os.environ['ENV'] = 'DEV'
     # ma_c = Calendar(tenant='CLOUD',name='19900001174',password='111111',aid='4614962',vin='TESTOAOT111122064')
     # ma_c.mobile_find_all(uid=ma_c.uid)
     c = Calendar(tenant='BM')
     # c.mobile_sync('C')
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
     # c.find_detail(39235)
-    c.find_all_event(update_time=None)
+    c.mobile_find_all(uid=c.uid)

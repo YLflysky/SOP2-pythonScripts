@@ -18,7 +18,15 @@ class MAOrder(Base):
         assert body['status'] == 'SUCCEED'
 
 
-    def create_order(self, goods_id, category, count, **kwargs):
+    def create_h5_order(self, goods_id, category, count, **kwargs):
+        '''
+        payment-h5创建商品订单
+        :param goods_id:
+        :param category:
+        :param count:
+        :param kwargs:
+        :return:
+        '''
         url = self.payment_url + '/api/v1/createOrder'
         data = {'goodsId': goods_id, 'vin': self.vin, 'orderCategory': category, 'count': count, **kwargs}
         c, b = self.do_post(url, data)
@@ -72,10 +80,38 @@ class MAOrder(Base):
         print(b)
         assert 200 == c
 
-    def create_ma_order(self, goods_id, category, aid, quantity, point=False, **kwargs):
+    def create_order(self, goods_id, category, aid, quantity, point=False, **kwargs):
+        '''
+        mosc-order底层创建商品订单接口
+        :param goods_id:
+        :param category:
+        :param aid:
+        :param quantity:
+        :param point:
+        :param kwargs:
+        :return:
+        '''
         url = self.url + '/mosc-order/internal/v2/goods/creatOrder'
-        data = {'aid': aid, 'goodsId': goods_id, 'vin': self.vin, 'durationTimes': 1,
+        data = {'aid': aid, 'goodsId': goods_id, 'vin': self.vin,
                 'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
+        c, b = self.do_post(url, data)
+        print(b)
+        return b
+
+    def ma_create_order(self, aid,goods_id, category, quantity,point=False,**kwargs):
+        '''
+        MA车机端创建商品订单接口》》车机端接口
+        :param goods_id:商品ID，orderCategory为PAID_CONTENT，priceType为2时，为专辑号，priceType为1时，为音频编号用“,”隔开其他均为商品ID
+        :param category:商品类型（MUSIC_VIP，RADIO_VIP，WIFI_FLOW，MEDIA_FLOW，PAID_CONTENT）
+        :param price_type:支付方式1音频,2整张专辑orderCategor为PAID_CONTENT，priceType必传
+        :param quantity:商品数量
+        :param point:是否使用积分抵扣
+        :param kwargs:
+        :return:
+        '''
+        url = self.url + '/mos/payment/api/v1/orderCreate'
+        data = { 'userId':aid,'goodsId': goods_id, 'vin': self.vin,'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
+
         c, b = self.do_post(url, data)
         print(b)
         return b
@@ -108,7 +144,7 @@ if __name__ == '__main__':
     # h5_order.create_order(goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',count=1,)
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
-    order_no = ma_order.create_ma_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False)['data']
+    order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1)['data']
     # ma_order.get_ma_qr_code('20201224133501931917504',pay_type='11100')
 
     # p = Points()
