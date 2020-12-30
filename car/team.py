@@ -5,8 +5,8 @@ import os, sys
 
 
 class Team(TencentCar):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,tenant):
+        super().__init__(tenant)
         if self.gate:
             self.url = self.read_conf('ma_env.conf', self.env, 'hu_host') + '/test-access/tm'
         else:
@@ -71,7 +71,7 @@ class Team(TencentCar):
 if __name__ == '__main__':
     os.environ['GATE'] = 'true'
     os.environ['ENV'] = 'UAT'
-    t = Team()
+    t = Team('MA')
     uid=1234567
     vin='0000'
     open_id = t.get_info(uid,vin)['weChatOpenId']

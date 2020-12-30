@@ -5,8 +5,8 @@ class BMPayment(Base):
     '''
     BM适配层支付服务API
     '''
-    def __init__(self):
-        super().__init__()
+    def __init__(self,tenant='BM'):
+        super().__init__(tenant)
         self.hu_url = self.read_conf('sop2_env.conf',self.env,'hu_host')
         self.be_url = self.read_conf('sop2_env.conf',self.env,'be_host')
 
@@ -96,8 +96,8 @@ if __name__ == '__main__':
     from order.order_api import Order
     os.environ['ENV']='UAT'
     os.environ['GATE']='false'
-    order = Order()
-    pay = BMPayment()
+    order = Order('BM')
+    pay = BMPayment('BM')
     aid = '9353213'
     vin = 'BMTESTLFDDGU8ZDFP'
     # pay.get_pay_result(vin='123',order_no='orderNo0001',aid='00',category='102',roll_number=1)

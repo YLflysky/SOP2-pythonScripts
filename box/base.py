@@ -26,7 +26,8 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class Base:
 
-    def __init__(self):
+    def __init__(self,tenant):
+        self.tenant = tenant
         self.env = os.getenv('ENV')
         self.header = {}
         self.header['Content-type'] = 'application/json; charset=utf-8'
@@ -142,8 +143,14 @@ class Base:
         catent = "_".join(parm_list)
         lk.prt("In calc digital sign, catent is: {}".format(catent))
         # 5.添加应用资源和secret_key
-        last_url_encode = resource_uri + "_" + catent + "_" + "F5Pw4vnV7ISCZZhY8gEk7JIYPY4l9b1M"
-
+        secret_key_ma = 'b9784ddc19aa9ec47d2dfa1dfbca7934'
+        secret_key_bm = 'F5Pw4vnV7ISCZZhY8gEk7JIYPY4l9b1M'
+        if self.tenant == 'MA':
+            last_url_encode = resource_uri + "_" + catent + "_" + secret_key_ma
+        elif self.tenant == 'BM':
+            last_url_encode = resource_uri + "_" + catent + "_" + secret_key_bm
+        else:
+            return
         lk.prt("In calc digital sign, last_url is: {}".format(last_url_encode))
         # 计算MD5
         last_url_encode = parse.quote(last_url_encode.encode(), safe='')
@@ -481,7 +488,7 @@ class Base:
 
 if __name__ == '__main__':
     url = 'https://otherbackend-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token'
-    b = Base()
+    b = Base(tenant='BM')
     # print(b.my_json_decoder(url))
     res = b.match_url(url)
     print(res)

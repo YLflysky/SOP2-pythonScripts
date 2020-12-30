@@ -310,10 +310,9 @@ def test_mobile_sync_02():
 
 @pytest.mark.calendar
 @allure.suite('calendar')
-@allure.title('mobile')
-@pytest.mark.parametrize('u',[c.uid,'123456','4606718'])
-def test_mobile_find_all(u):
-    res = c.mobile_find_all(uid=u)
-    print('uid为{}的事件个数为:{}'.format(u,len(res['events'])))
-    assert len(res['events']) >= 0
+@allure.title('app端查看用户所有日历事件')
+def test_mobile_find_all():
+    res = c.mobile_find_all()
+    sql_res = c.do_mysql_select('select count(1) as events from calendar_event where uid ="{}"'.format(c.uid),'fawvw_calendar')
+    assert len(res['events']) == sql_res[0]['events']
 

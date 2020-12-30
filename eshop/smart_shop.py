@@ -5,8 +5,7 @@ import os,sys
 class SmartEShop(Base):
 
     def __init__(self,tenant):
-        super().__init__()
-        self.tenant = tenant
+        super().__init__(tenant)
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'smart_eshop_host')
         elif tenant == 'MA':

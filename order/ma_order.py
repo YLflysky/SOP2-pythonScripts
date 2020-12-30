@@ -1,8 +1,8 @@
 from box.base import Base
 
 class MAOrder(Base):
-    def __init__(self, aid, user, password, vin):
-        super().__init__()
+    def __init__(self, tenant,aid, user, password, vin):
+        super().__init__(tenant)
         self.env = 'UAT'
         self.gate = True
         self.vin = vin
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     aid = '4614183'
-    ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
+    ma_order = MAOrder('MA',aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
     # h5_order.get_goods_detail(goods_code=17)
     # h5_order.create_order(goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',count=1,)
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')

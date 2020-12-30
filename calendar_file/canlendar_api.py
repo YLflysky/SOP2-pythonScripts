@@ -8,23 +8,21 @@ class Calendar(Base):
     BM日历API
     '''
     def __init__(self,tenant,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311',aid='9350195'):
-        super().__init__()
+        super().__init__(tenant)
 
         self.name = name
         self.password = password
         self.vin = vin
         self.uid = aid
 
-        self.tenant = tenant
         self.mobile_url = self.read_conf('sop2_env.conf',self.env,'one_app_host')
         if tenant == 'BM':
+            self.gate = True
             self.url = self.read_conf('sop2_env.conf',self.env,'calendar_host')
-
             self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
             # lk.prt('开始获取token...')
             self.header['Authorization']=self.get_token(self.read_conf('sop2_env.conf',self.env,'token_host'),self.name,self.password,self.vin)
             self.header['deviceId'] = self.device_id
-            self.header['uid'] = self.uid
 
         elif tenant == 'MA':
             self.env = 'UAT'
@@ -130,7 +128,7 @@ class Calendar(Base):
         :param events: 事件，列表类型
         :return:
         '''
-        url = self.url + '/public/calendar/event/sync'
+        url = self.mobile_url + '/oneapp/calendar/public/event/sync'
         data = {'currentTime':current_time,'events':events}
         c,b = self.do_post(url,data)
         if self.tenant == 'BM':
@@ -141,11 +139,15 @@ class Calendar(Base):
             assert b['statusMessage'] == '成功'
         return b
 
-    def mobile_find_all(self,uid):
+    def mobile_find_all(self):
+        '''
+        app获取用户所有事件接口
+        :return:
+        '''
         url = self.mobile_url + '/oneapp/calendar/public/event/findAll'
-        self.header['uid']=uid
         code,body = self.do_get(url,None)
-        self.assert_msg(code,body)
+        print(body)
+        assert code == 200
         return body['data']
 
 
@@ -155,7 +157,6 @@ if __name__ == '__main__':
     # ma_c = Calendar(tenant='CLOUD',name='19900001174',password='111111',aid='4614962',vin='TESTOAOT111122064')
     # ma_c.mobile_find_all(uid=ma_c.uid)
     c = Calendar(tenant='BM')
-    # c.mobile_sync('C')
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
     # c.find_detail(39235)
-    c.mobile_find_all(uid=c.uid)
+    c.mobile_find_all()

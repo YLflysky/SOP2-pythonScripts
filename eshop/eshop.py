@@ -5,8 +5,8 @@ class EShop(Base):
     '''
     商城API
     '''
-    def __init__(self):
-        super().__init__()
+    def __init__(self,tenant):
+        super().__init__(tenant)
         self.url = None
 
     def assert_msg(self, code, body):
@@ -51,7 +51,7 @@ class PointsShop(EShop):
     积分商城API
     '''
     def __init__(self,tenant):
-        super().__init__()
+        super().__init__(tenant)
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'eshop_host')
         elif tenant == 'MA':
@@ -66,7 +66,7 @@ class SpareShop(EShop):
     备件商城API
     '''
     def __init__(self,tenant):
-        super().__init__()
+        super().__init__(tenant)
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'eshop_host2')
         elif tenant == 'MA':

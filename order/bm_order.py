@@ -6,8 +6,8 @@ class BMOrder(Base):
     BM适配层订单服务API
     '''
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self,tenant='BM'):
+        super().__init__(tenant)
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
         self.be_url = self.read_conf('sop2_env.conf', self.env, 'be_host')
 
@@ -98,7 +98,7 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     aid = '4614907'
@@ -112,8 +112,8 @@ if __name__ == '__main__':
     # o.sync_bm_order(o.f.md5(), data)
     # o.bm_cancel_order(aid='4614931',order_no='ftb20201203160039247753664')
     # o.order_count(vin='DEFAULT_VIN',uid='33')
-    # o.update_bm_order(order_no='20201104154521856385024',vin='3FCECCBA6990DD8F4839403E77F14F85',userId='10000000312441',updateType='1',
-    #                   orderEvent='就是我',businessState='NOTHING_TO_SAY')
+    o.update_bm_order(order_no='ftb20201230142447543475136',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId='9351549',updateType='1',
+                      serviceOrderState='success',serviceOrderStateDesc='已完成')
     # o.reload_config()
     # o.bm_order_detail(aid=aid,order_no='ftb20201223095909585102400',vin=vin)
-    o.music_order_create(tenant_id='VW',aid=aid,vin=vin,goods='101',quantity=1)
+    # o.music_order_create(tenant_id='VW',aid=aid,vin=vin,goods='101',quantity=1)

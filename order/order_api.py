@@ -6,8 +6,8 @@ import json
 
 class Order(Base):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self,tenant='BM'):
+        super().__init__(tenant)
         if self.gate:
             self.add_header(url=self.read_conf('sop2_env.conf', self.env, 'token_host'))
 

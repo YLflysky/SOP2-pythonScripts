@@ -4,7 +4,7 @@ from box.base import Base
 class Flow(Base):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(tenant='BM')
 
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
         self.flow_url = self.read_conf('sop2_env.conf', self.env, 'flow_host')
