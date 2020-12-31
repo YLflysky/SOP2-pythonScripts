@@ -158,6 +158,19 @@ def test_find_all(t):
 
 
 @allure.suite('calendar')
+@allure.title('BM车机端查询用户所有事件>>验证能查询出app同步的事件')
+@pytest.mark.calendar
+def test_find_all():
+    '''
+    获取用户全部日历信息，输入时间
+    '''
+    body = c.find_all_event(update_time=None)
+    sql = c.do_mysql_select('select count(1) as events from calendar_event where uid ="9350195" and cud_status in ("C","U")','fawvw_calendar')
+    assert len(body['data']['events']) == sql[0]['events']
+    print('用户所有日历事件个数:{}'.format(sql[0]['events']))
+
+
+@allure.suite('calendar')
 @allure.title('BM车机端查询用户事件详情')
 @pytest.mark.calendar
 def test_find_detail_success():
@@ -276,17 +289,19 @@ def test_event_list_by_rule_01(api):
 @pytest.mark.calendar
 @allure.suite('calendar')
 @allure.title('mobile')
-@pytest.mark.parametrize('cud', ['C', 'U', 'D'])
+@pytest.mark.parametrize('cud', ['C', 'U'])
 def test_mobile_sync_01(cud):
     '''
-    输入一个event，同步事件
+    输入一个event，同步事件,cud为C或者D
     '''
-    mobile_event = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': cud,
+    l_id = c.f.pyint(100, 1000)
+    mobile_event = {'localEventId': l_id, 'cudStatus': cud,
                     'eventStartTime': c.get_time_stamp(days=-10), 'eventEndTime': c.get_time_stamp(days=10)}
     time = c.get_time_stamp()
     res = c.mobile_sync(time,[mobile_event])
-    assert res['data']['syncCounts'] == '1'
-
+    assert res['data']['syncCounts'] == 1
+    sql_res = c.do_mysql_select('select * from calendar_event where uid="{}" and local_event_id="{}"'.format(c.uid,l_id),'fawvw_calendar')
+    assert sql_res[0]['origin'] == 'APP'
 
 @pytest.mark.calendar
 @allure.suite('calendar')
@@ -300,7 +315,7 @@ def test_mobile_sync_02():
 
     mobile_event2 = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': 'U',
                      'eventStartTime': c.get_time_stamp(seconds=10), 'eventEndTime': c.get_time_stamp(seconds=20)}
-    mobile_event3 = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': 'D',
+    mobile_event3 = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': 'C',
                      'eventStartTime': c.get_time_stamp(seconds=10), 'eventEndTime': c.get_time_stamp(seconds=20),
                      'remarks': c.f.sentence(),'allday':False}
     time = c.get_time_stamp()
@@ -313,6 +328,6 @@ def test_mobile_sync_02():
 @allure.title('app端查看用户所有日历事件')
 def test_mobile_find_all():
     res = c.mobile_find_all()
-    sql_res = c.do_mysql_select('select count(1) as events from calendar_event where uid ="{}"'.format(c.uid),'fawvw_calendar')
+    sql_res = c.do_mysql_select('select count(1) as events from calendar_event where uid ="{}" and origin="APP"'.format(c.uid),'fawvw_calendar')
     assert len(res['events']) == sql_res[0]['events']
 

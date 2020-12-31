@@ -82,11 +82,11 @@ class TencentCar(Base):
 if __name__ == '__main__':
 
     car = TencentCar(tenant='MA')
-    uid = '13811825464'
+    uid = '4613615'
     vin = 'LFVSOP2TEST000007'
     # car.check_vin(vin)
     car.get_QRcode(uid,vin)
-    # car.unbind(aid='190001',vin=vin)
+    # car.unbind(uid,vin=vin)
     # car.get_info(uid,vin)
     # car.bind_callback(aid='4614963',vin='TEZWVEVTVElDQVMzMDk3MzY=',wecar_id='TEZWVEVTVElDQVMzMDk3MzY',action='unbind')
 

@@ -14,6 +14,7 @@ class Calendar(Base):
         self.password = password
         self.vin = vin
         self.uid = aid
+        self.header['uid'] = aid
 
         self.mobile_url = self.read_conf('sop2_env.conf',self.env,'one_app_host')
         if tenant == 'BM':
@@ -132,7 +133,8 @@ class Calendar(Base):
         data = {'currentTime':current_time,'events':events}
         c,b = self.do_post(url,data)
         if self.tenant == 'BM':
-            self.assert_msg(c,b)
+            print(b)
+            assert c == 200
         else:
             print(b)
             assert b['statusCode'] == '0'
