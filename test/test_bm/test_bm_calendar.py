@@ -320,7 +320,7 @@ def test_mobile_sync_02():
                      'remarks': c.f.sentence(),'allday':False}
     time = c.get_time_stamp()
     res = c.mobile_sync(time,[mobile_event1,mobile_event2,mobile_event3])
-    assert res['data']['syncCounts'] == '3'
+    assert res['data']['syncCounts'] == 3
 
 
 @pytest.mark.calendar

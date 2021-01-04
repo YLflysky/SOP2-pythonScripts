@@ -205,7 +205,7 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     flow = Flow()
     bm_pay = BMPayment()
     aid = '9351539'

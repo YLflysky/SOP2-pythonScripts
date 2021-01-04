@@ -194,7 +194,7 @@ def test_add_event_05():
 @pytest.mark.ma_calendar
 @allure.suite('test_ma-calendar')
 @allure.title('APP同步MA用户日历事件')
-@pytest.mark.parametrize('cud', ['C', 'U', 'D'])
+@pytest.mark.parametrize('cud', ['C', 'U'],ids=['app新增日历事件','app修改日历事件'])
 def test_mobile_sync_01(cud):
     '''
     输入一个event，同步事件

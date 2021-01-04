@@ -129,7 +129,10 @@ class Calendar(Base):
         :param events: 事件，列表类型
         :return:
         '''
-        url = self.mobile_url + '/oneapp/calendar/public/event/sync'
+        if self.tenant == 'BM':
+            url = self.mobile_url + '/oneapp/calendar/public/event/sync'
+        else:
+            url = self.url + '/public/calendar/event/sync'
         data = {'currentTime':current_time,'events':events}
         c,b = self.do_post(url,data)
         if self.tenant == 'BM':
@@ -146,7 +149,10 @@ class Calendar(Base):
         app获取用户所有事件接口
         :return:
         '''
-        url = self.mobile_url + '/oneapp/calendar/public/event/findAll'
+        if self.tenant == 'BM':
+            url = self.mobile_url + '/oneapp/calendar/public/event/findAll'
+        else:
+            url = self.url + '/public/calendar/event/findAll'
         code,body = self.do_get(url,None)
         print(body)
         assert code == 200
@@ -155,10 +161,11 @@ class Calendar(Base):
 
 if __name__ == '__main__':
     os.environ['GATE'] = 'true'
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'SIT'
     # ma_c = Calendar(tenant='CLOUD',name='19900001174',password='111111',aid='4614962',vin='TESTOAOT111122064')
     # ma_c.mobile_find_all(uid=ma_c.uid)
-    c = Calendar(tenant='BM')
+    c = Calendar(tenant='MA')
+    # c.find_all_event(update_time=None)
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp())
-    # c.find_detail(39235)
+    # c.find_detail(3)
     c.mobile_find_all()
