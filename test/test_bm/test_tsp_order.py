@@ -133,3 +133,41 @@ def test_tsp_list_06(no):
     assert 'actualPayAmount' in data.keys()
     assert data['orderStatus']
     assert data['createTime']
+
+
+@allure.suite('tsp_order')
+@allure.title('tsp导出订单，传入orderCategoryList')
+@pytest.mark.tsp_order
+def test_tsp_export():
+    category_list = ['111,102']
+    res = tsp.order_export(aid='1111',name='sergio',brand='VW',orderCategoryList=category_list)
+    assert '102' in res
+    assert '111' in res
+
+
+@allure.suite('tsp_order')
+@allure.title('tsp导出订单，传入exOrderNo模糊查询')
+@pytest.mark.tsp_order
+def test_tsp_export():
+    res = tsp.order_export(aid='1111',name='sergio',brand='VW',exOrderNo='2020092406063019761440')
+    assert '2020092406063019761440' in res
+    assert 'BM' in res
+
+
+@allure.suite('tsp_order')
+@allure.title('tsp导出订单，传入开始结束时间')
+@pytest.mark.tsp_order
+def test_tsp_export():
+    res = tsp.order_export(aid='1111',name='sergio',brand='VW',orderNo='ftb2021',startTime=tsp.time_delta(days=-10),endTime=tsp.time_delta())
+    # assert '2020092406063019761440' in res
+    assert 'BM' in res
+
+
+@allure.suite('tsp_order')
+@allure.title('tsp导出订单，传入orderStatusList')
+@pytest.mark.tsp_order
+def test_tsp_export():
+    status = ['FINISH']
+    res = tsp.order_export(aid='1111',name='sergio',brand='VW',orderStatusList=status)
+    assert 'FINISH' in res
+    assert 'BM' in res

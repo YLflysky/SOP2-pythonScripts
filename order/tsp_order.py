@@ -19,18 +19,21 @@ class TSPOrder(Base):
         self.assert_msg(c,b)
         return b
 
-    def order_export(self,aid,size=10,no=1,**kwargs):
+    def order_export(self,aid,name,brand,**kwargs):
         '''
         tsp根据条件获取订单列表
         :param kwargs:
         :return:
         '''
         url = self.url + '/tsp/order/export'
-        data = {'pageSize':size,'pageNo':no,**kwargs}
-        self.header['aid'] = aid
+        data = {'brand':brand,**kwargs}
+        self.header['userId'] = aid
+        self.header['userName'] = name
         c,b = self.do_get(url,data)
-        self.assert_msg(c,b)
+        assert c == 200
+        print(b)
         return b
+
 
 if __name__ == '__main__':
     import os
@@ -38,6 +41,6 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'DEV'
     tsp = TSPOrder()
     # tsp.order_list()
-    tsp.order_export(aid='9642113')
+    tsp.order_export(aid='9642113',name='sergio',brand='VW',orderNo='ftb20201229')
 
 

@@ -294,7 +294,7 @@ class Base:
         try:
             response_body = json.loads(res.text)
         except Exception as e:
-            lk.prt('解析json字符串出错:{}不能转为字典'.format(res.text))
+            lk.prt('解析json字符串出错:\n{}'.format(res.text))
             response_body = res.text
         return res.status_code, response_body
 
