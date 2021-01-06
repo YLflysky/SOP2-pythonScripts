@@ -18,7 +18,7 @@ class MAOrder(Base):
         assert body['status'] == 'SUCCEED'
 
 
-    def create_h5_order(self, goods_id, category, count, **kwargs):
+    def create_h5_order(self, goods_id, vin,category, count, **kwargs):
         '''
         payment-h5创建商品订单
         :param goods_id:
@@ -28,7 +28,7 @@ class MAOrder(Base):
         :return:
         '''
         url = self.payment_url + '/api/v1/createOrder'
-        data = {'goodsId': goods_id, 'vin': self.vin, 'orderCategory': category, 'count': count, **kwargs}
+        data = {'goodsId': goods_id, 'vin': vin, 'orderCategory': category, 'count': count, **kwargs}
         c, b = self.do_post(url, data)
         self.assert_msg(c, b)
 
@@ -113,12 +113,14 @@ if __name__ == '__main__':
     aid = '4614183'
     ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
     # h5_order.get_goods_detail(goods_code=17)
-    # h5_order.create_order(goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',count=1,)
+    # ma_order.create_h5_order(goods_id='17',category='MUSIC_VIP',count=1,
+    #                          usedPoint=True,goodsAmount='19.9',deductionPoint=45,deductionAmount='4.5',actualPayAmount='15.4',
+    #                          durationDays=1,vin='LFVTESTMOSC052726')
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
-    # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1)['data']
+    order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1)['data']
     # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1)['data']
-    # ma_order.get_ma_qr_code('20210105095539584131072',pay_type='12100')
+    # ma_order.get_ma_qr_code('20210106102444716155648',pay_type='12100')
 
     p = Points()
     p.get_user_points(aid)

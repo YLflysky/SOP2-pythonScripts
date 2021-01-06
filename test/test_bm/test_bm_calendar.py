@@ -148,19 +148,22 @@ def test_update_event():
 @allure.suite('calendar')
 @allure.title('BM车机端查询用户所有事件')
 @pytest.mark.calendar
-@pytest.mark.parametrize('t', [1601203105641, None])
+@pytest.mark.parametrize('t', [c.get_time_stamp(days=-1), None])
 def test_find_all(t):
     '''
     获取用户全部日历信息，输入时间
     '''
     body = c.find_all_event(update_time=t)
     assert len(body['data']['events']) > 0
+    if t:
+        event = random.choice(body['data']['events'])
+        assert event['updateTime'] > t
 
 
 @allure.suite('calendar')
 @allure.title('BM车机端查询用户所有事件>>验证能查询出app同步的事件')
 @pytest.mark.calendar
-def test_find_all():
+def test_find_all_app():
     '''
     获取用户全部日历信息，输入时间
     '''
@@ -221,7 +224,7 @@ def test_get_event_list_02():
     '''
     查询指定时间段时间列表,输入Date
     '''
-    data = {'apiType': 'TYPE_ONE', 'startDate': '1602210000', 'endDate': '1602291000'}
+    data = {'apiType': 'TYPE_ONE', 'startDate': '1601255559000', 'endDate': '1618535559000'}
     body = c.get_event_list(data)
     assert len(body['data']['events']) > 0
     num = random.choice(body['data']['events'])

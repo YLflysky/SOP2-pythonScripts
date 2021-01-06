@@ -178,6 +178,7 @@ def test_sync_pay():
 @allure.suite('order')
 @allure.title('申请开票')
 @pytest.mark.order
+@pytest.mark.skip
 def test_apply_invoice():
     '''
     测试申请开发票接口
@@ -315,7 +316,7 @@ def test_sync_order_03(origin):
 @allure.suite('order')
 @allure.title('同步订单信息>>同步待支付订单，超时后状态改为EXPIRE')
 @pytest.mark.order
-def test_sync_order_all_params():
+def test_sync_order_expire():
     '''
     同步订单信息，输入所有参数
     :return:
@@ -345,7 +346,7 @@ def test_sync_order_all_params():
     order_no = order['data']
     sql = o.do_mysql_select('select * from `order` where ex_order_no="{}" and origin="{}"'.format(ex,origin),'fawvw_order')
     assert len(sql) == 1
-    time.sleep(60)
+    time.sleep(70)
     assert sql[0]['expire_time'] < o.time_delta()
     assert sql[0]['order_status'] == 'EXPIRE'
 
