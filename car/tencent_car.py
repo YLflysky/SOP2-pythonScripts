@@ -3,7 +3,7 @@ import os,sys
 
 
 class TencentCar(Base):
-    def __init__(self,tenant):
+    def __init__(self,tenant='MA'):
         super().__init__(tenant)
         self.env = 'UAT'
         self.gate = True
@@ -81,8 +81,8 @@ class TencentCar(Base):
 
 if __name__ == '__main__':
 
-    car = TencentCar(tenant='MA')
-    uid = '4613615'
+    car = TencentCar()
+    uid = '9349628'
     vin = 'LFVSOP2TEST000007'
     # car.check_vin(vin)
     car.get_QRcode(uid,vin)

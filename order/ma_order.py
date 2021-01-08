@@ -18,20 +18,6 @@ class MAOrder(Base):
         assert body['status'] == 'SUCCEED'
 
 
-    def create_h5_order(self, goods_id, vin,category, count, **kwargs):
-        '''
-        payment-h5创建商品订单
-        :param goods_id:
-        :param category:
-        :param count:
-        :param kwargs:
-        :return:
-        '''
-        url = self.payment_url + '/api/v1/createOrder'
-        data = {'goodsId': goods_id, 'vin': vin, 'orderCategory': category, 'count': count, **kwargs}
-        c, b = self.do_post(url, data)
-        self.assert_msg(c, b)
-
     def get_qr_code(self, order_no, channel):
         url = self.payment_url + '/api/v1/getQRCodeImage'
         data = {
@@ -70,7 +56,7 @@ class MAOrder(Base):
         print(b)
         return b
 
-    def ma_create_order(self, aid,goods_id, category, quantity,point=False,**kwargs):
+    def ma_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
         '''
         MA车机端创建商品订单接口》》车机端接口
         :param goods_id:商品ID，orderCategory为PAID_CONTENT，priceType为2时，为专辑号，priceType为1时，为音频编号用“,”隔开其他均为商品ID
@@ -82,7 +68,7 @@ class MAOrder(Base):
         :return:
         '''
         url = self.url + '/mos/payment/api/v1/orderCreate'
-        data = { 'userId':aid,'goodsId': goods_id, 'vin': self.vin,'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
+        data = {'userId':aid,'goodsId': goods_id, 'vin':vin,'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
 
         c, b = self.do_post(url, data)
         print(b)
@@ -118,9 +104,10 @@ if __name__ == '__main__':
     #                          durationDays=1,vin='LFVTESTMOSC052726')
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
-    order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1)['data']
+    ma_order.ma_create_order(aid=aid,vin=ma_order.vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationTimes=1,point=False)
+    # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=6)['data']
     # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1)['data']
-    # ma_order.get_ma_qr_code('20210106102444716155648',pay_type='12100')
+    # ma_order.get_ma_qr_code('20210107132712503163840',pay_type='12100')
 
-    p = Points()
-    p.get_user_points(aid)
+    # p = Points()
+    # p.get_user_points(aid)

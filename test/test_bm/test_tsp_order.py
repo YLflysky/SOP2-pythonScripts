@@ -176,7 +176,7 @@ def test_tsp_export_category():
 def test_tsp_export_orderNo():
     res = tsp.order_export(aid='1111',name='sergio',brand='VW',exOrderNo='2020092406063019761440')
     assert '2020092406063019761440' in res
-    assert 'BM' in res
+    assert 'HU' in res
 
 
 @allure.suite('tsp_order')
@@ -185,7 +185,7 @@ def test_tsp_export_orderNo():
 def test_tsp_export_time():
     res = tsp.order_export(aid='1111',name='sergio',brand='VW',orderNo='ftb2021',startTime=tsp.time_delta(days=-10),endTime=tsp.time_delta())
     # assert '2020092406063019761440' in res
-    assert 'BM' in res
+    assert 'HU' in res
 
 
 @allure.suite('tsp_order')
@@ -195,7 +195,7 @@ def test_tsp_export_status():
     status = ['FINISH']
     res = tsp.order_export(aid='1111',name='sergio',brand='VW',orderStatusList=status)
     assert 'FINISH' in res
-    assert 'BM' in res
+    assert 'HU' in res
 
 @allure.suite('tsp_order')
 @allure.title('tsp导出订单，传入phoneNumber')
@@ -203,5 +203,5 @@ def test_tsp_export_status():
 def test_tsp_export_phone():
     res = tsp.order_export(phoneNumber='19113484983',aid='123',name='sergio',brand='VW')
     assert 'FINISH' in res
-    assert 'BM' in res
+    assert 'HU' in res
     assert '19113484983' in res

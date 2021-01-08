@@ -233,7 +233,7 @@ if __name__ == '__main__':
     o = Order()
     # o.add_order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
-    # o.del_order(order_no='20201020101920646233472',aid='1603160360456')
+    o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
     # o.sync_order_pay('123',aid='')
     # o.order_detail(aid='9351515',order_no='20201124142350661876544')
     # order_no = o.generate_order_no()['data']
