@@ -7,6 +7,7 @@ from flow.flow_api import Flow
 from order.payment import Payment
 from order.bm_payment import BMPayment
 from box.lk_logger import lk
+import time
 
 pay = Payment()
 flow = Flow()
@@ -218,12 +219,15 @@ def test_sim_notify():
     vin = 'LFV2A11KXA3030241'
     res = flow.flow_sim_notify(id, date, rule, asset_type, asset_id, package, vin)
     assert res['messages'][0] == '成功'
+    msg_time = flow.time_delta()
+    time.sleep(10)
     sql = flow.do_mysql_select(
         'select * from mosc_mqtt_message where service_id=8000 order by create_date desc limit 1', 'ftb_base_mqtt_center')
     assert sql[0]['body']
     body = json.loads(sql[0]['body'])
     assert body['vin'] == vin
-    assert sql[0]['create_date'] > flow.time_delta(seconds=-20)
+    assert sql[0]['create_date'] > msg_time
+    print('消息推送到消息中心时间:{}'.format(sql[0]['create_date']))
 
 
 @pytest.mark.flow

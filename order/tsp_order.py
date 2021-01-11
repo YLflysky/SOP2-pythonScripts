@@ -30,17 +30,17 @@ class TSPOrder(Base):
         self.header['userId'] = aid
         self.header['userName'] = name
         c,b = self.do_get(url,data)
-        assert c == 200
         print(b)
+        assert c == 200
         return b
 
 
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'SIT'
     tsp = TSPOrder()
     # tsp.order_list()
-    tsp.order_export(aid='9642113',name='sergio',brand='VW',orderNo='ftb20201229')
+    tsp.order_export(aid='111',name='111',brand='VW',orderNo='ftb20201229')
 
 
