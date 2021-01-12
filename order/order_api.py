@@ -202,25 +202,25 @@ class Order(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def sync_refund(self, aid, ex_order_no):
+    def sync_refund(self, aid, ex_order_no,origin,status):
         '''
-        order底层同步发票接口
+        order底层同步退款信息接口
         :param aid: 大众用户id
         :param ex_order_no: 外部订单编号
         :return:
         '''
         url = self.url + '/sm/order/v1/order/sync/refund'
         data = {'aid': aid, 'exOrderNo': ex_order_no, 'refundAmount': '1',
-                'refundStatus': 'SUCCESS', 'origin': 'EP', 'refundChannel': 'CASH', 'refundType': 'REFUND'}
+                'refundStatus': status, 'origin': origin, 'refundChannel': 'CASH', 'refundType': 'REFUND'}
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def sync_order_pay(self, pay_no, **kwargs):
+    def sync_order_pay(self, pay_no,aid,order_no, **kwargs):
         '''
         同步支付结果
         '''
         url = self.url + '/sm/order/v1/order/sync/pay'
-        data = {'payOrderNo': pay_no, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
+        data = {'payOrderNo': pay_no,'orderNo':order_no,'aid':aid, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
                 'payType': 'APP', 'payTime': self.time_delta(),'payStatus':'SUCCESS',**kwargs}
         code,body = self.do_post(url,data)
         self.assert_msg(code,body)
@@ -233,23 +233,17 @@ if __name__ == '__main__':
     o = Order()
     # o.add_order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
-    o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
-    # o.sync_order_pay('123',aid='')
+    # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
+    o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='1603160360456',order_no='20201020101920646233472')
     # o.order_detail(aid='9351515',order_no='20201124142350661876544')
     # order_no = o.generate_order_no()['data']
     # o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
     #              serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,
     #              goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
-    # o.sync_refund('111333','202009247772089433')
+    # o.sync_refund('9642113','233564422',origin='EP',status='FAILED')
     # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
     #                 head='钛马信息技术有限公司', phone='18888888888')
-    # ex = ExternalOrder()
-    # ex.ex_order_sync()
-    # ex_order_no_list = o.do_mysql_select(
-    #     'SELECT o.ex_order_no from `order` as o WHERE o.id not IN(SELECT order_id from order_invoice_relation) and o.origin="EP"',
-    #     db='fawvw_order')
-    # print(ex_order_no_list)
-    # orderNo = random.choice(ex_order_no_list)['ex_order_no']
+
     # serial = random.randint(1000000, 10000000)
     # o.sync_invoice(orderNo, serial)
     # sql = o.do_mysql_select('select * from order_invoice where serial="{}"'.format(serial),'fawvw_order')

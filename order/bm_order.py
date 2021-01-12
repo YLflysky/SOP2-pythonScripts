@@ -114,12 +114,12 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     aid = '9349485'
     vin = 'BMTESTNC8UHS3GPH5'
-    o.order_list(vin,aid,pageSize=100)
+    # o.order_list(vin,aid,pageSize=100)
     # o.order_count(vin=123,uid='469317')
     # data = {"brand": "VW", "businessExtInfo": {"message": "扩展字段测试"},
     #         "createdTime": "1601346979941", "discountAmount": "2000", "orderAmount": "20000", "orderCategory": "99",
@@ -132,5 +132,5 @@ if __name__ == '__main__':
     # o.update_bm_order(order_no='ftb20201230142447543475136',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId='9351549',updateType='1',
     #                   serviceOrderState='success',serviceOrderStateDesc='已完成')
     # o.reload_config()
-    # o.bm_order_detail(aid='1609895297000',order_no='ftb20210106090819861770048',vin=vin)
+    o.bm_order_detail(aid='1610403945536',order_no='ftb20210112062545591860160',vin=None)
     # o.music_order_create(tenant_id='VW',aid=aid,vin=vin,goods='101',quantity=1)

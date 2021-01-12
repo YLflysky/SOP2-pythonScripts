@@ -40,7 +40,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'SIT'
     tsp = TSPOrder()
-    # tsp.order_list()
-    tsp.order_export(aid='111',name='111',brand='VW',orderNo='ftb20201229')
+    tsp.order_list(size=10000)
+    # tsp.order_export(aid='111',name='111',brand='VW',orderNo='ftb20201229')
 
 

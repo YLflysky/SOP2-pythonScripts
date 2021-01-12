@@ -233,12 +233,12 @@ class Payment(Base):
 if __name__ == '__main__':
     import os
     from order.order_api import Order
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
     pay = Payment()
     order = Order()
     aid = '9351524'
-    pay.weixin_cdp_callback(out_trade_no='ftb2020112616231517932768',nonce=pay.f.md5())
+    # pay.weixin_cdp_callback(out_trade_no='ftb20210112154052195913408',nonce=pay.f.md5())
     # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
     # pay.agreement_qr_code(aid,'ALI_PAY','FLOW','CMCC','SOP1')
     # pay.pay_channel(aid,order_no='ftb20201204113739602753664')
@@ -253,4 +253,5 @@ if __name__ == '__main__':
     # pay.ali_pay_callback('trade_success', '2018091361389377', '20201207095216444475136', receipt_amount=57.00, gmt_payment=pay.time_delta(),
     #                      trade_no=pay.f.pyint())
     # pay.contract_sign_notify(aid='221',)
-    # pay.sync_pay_result('20201124131211565196608','9409',pay.time_delta(),999,'QR_PAY','BM','ALI_PAY','SUCCESS')
+    pay.sync_pay_result(pay_no='ftb20210112154054172663552',ex_pay_no='yinli18623459409',pay_time=pay.time_delta(),
+                        amount=999,way='QR_PAY',origin='BM',channel='ALI_PAY',status='SUCCESS')

@@ -16,7 +16,6 @@ class Calendar(Base):
         self.uid = aid
         self.header['uid'] = aid
 
-        self.mobile_url = self.read_conf('sop2_env.conf',self.env,'one_app_host')
         if tenant == 'BM':
             self.gate = True
             self.url = self.read_conf('sop2_env.conf',self.env,'calendar_host')
@@ -24,6 +23,7 @@ class Calendar(Base):
             # lk.prt('开始获取token...')
             self.header['Authorization']=self.get_token(self.read_conf('sop2_env.conf',self.env,'token_host'),self.name,self.password,self.vin)
             self.header['deviceId'] = self.device_id
+            self.mobile_url = self.read_conf('sop2_env.conf', self.env, 'one_app_host')
 
         elif tenant == 'MA':
             self.env = 'UAT'
@@ -35,6 +35,8 @@ class Calendar(Base):
             self.header['Authorization'] = self.get_token(self.read_conf('ma_env.conf',self.env,'token_host')
                 ,self.name,self.password,self.vin)
             self.header['Did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
+
+            self.mobile_url = self.read_conf('ma_env.conf', self.env, 'one_app_host')
 
     def find_all_event(self,update_time):
         '''
@@ -132,7 +134,7 @@ class Calendar(Base):
         if self.tenant == 'BM':
             url = self.mobile_url + '/oneapp/calendar/public/event/sync'
         else:
-            url = self.url + '/public/calendar/event/sync'
+            url = self.mobile_url + '/public/calendar/event/sync'
         data = {'currentTime':current_time,'events':events}
         c,b = self.do_post(url,data)
         if self.tenant == 'BM':
@@ -152,7 +154,7 @@ class Calendar(Base):
         if self.tenant == 'BM':
             url = self.mobile_url + '/oneapp/calendar/public/event/findAll'
         else:
-            url = self.url + '/public/calendar/event/findAll'
+            url = self.mobile_url + '/public/calendar/event/findAll'
         code,body = self.do_get(url,None)
         print(body)
         assert code == 200
@@ -161,11 +163,14 @@ class Calendar(Base):
 
 if __name__ == '__main__':
     os.environ['GATE'] = 'true'
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     # ma_c = Calendar(tenant='CLOUD',name='19900001174',password='111111',aid='4614962',vin='TESTOAOT111122064')
     # ma_c.mobile_find_all(uid=ma_c.uid)
-    c = Calendar(tenant='MA')
-    c.find_all_event(update_time=None)
+    c = Calendar(tenant='BM')
+    # c.find_all_event(update_time=None)
+    event = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
+                     'eventStartTime': c.get_time_stamp(days=-1), 'eventEndTime': c.get_time_stamp(days=1)}
+    c.mobile_sync(current_time=None,events=[event])
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10))
     # c.find_detail(39355)
     # c.mobile_find_all()

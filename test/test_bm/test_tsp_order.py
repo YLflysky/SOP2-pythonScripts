@@ -29,6 +29,7 @@ def test_tsp_list_01():
     assert data['spName'] is not None
     assert data['clientType'] == 'HU'
     assert data['phoneNumber'] is not None
+    assert data['aid'] is not None
 
 @allure.suite('tsp_order')
 @allure.title('tsp获取订单列表，传入开始结束时间')
