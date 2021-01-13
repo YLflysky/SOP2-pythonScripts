@@ -198,6 +198,18 @@ class Flow(Base):
         self.assert_msg(c, b)
         return b
 
+    def remain_flow(self,flow_type,vin):
+        '''
+        查询车机端剩余流量
+        :param flow_type: 流量类型media,wifi
+        :param vin: 车辆vin码
+        :return:
+        '''
+
+        url = self.hu_url + '/flow/api/v1/dataflow/vehicles/{}/types/{}/remain'.format(vin,flow_type)
+        c,b = self.do_get(url,None)
+        self.assert_msg(c,b)
+
 
 if __name__ == '__main__':
     import os
@@ -210,8 +222,8 @@ if __name__ == '__main__':
     bm_pay = BMPayment()
     aid = '9351484'
     goods_id = 255
-    vin = 'BMTESTYAYWS26GQ4T'
-    iccid = '95425650264'
+    vin = 'LFVTESTMOSC989216'
+    iccid = '18559372278'
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
@@ -219,10 +231,11 @@ if __name__ == '__main__':
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
+    # flow.remain_flow(flow_type='wifi',vin='BMTESTYAYWS26GQ4T')
 
-    flow_order = flow.bm_create_flow_order(goods_id=goods_id, aid=aid, vin=vin, quantity=1)
-    order_no = flow_order['data']['orderNo']
-    bm_pay.get_qr_code(vin,aid,order_no,pay_type='12100',category='112',score='N')
+    # flow_order = flow.bm_create_flow_order(goods_id=goods_id, aid=aid, vin=vin, quantity=1)
+    # order_no = flow_order['data']['orderNo']
+    bm_pay.get_qr_code(vin,aid,order_no='ftb20210113151237165114688',pay_type='11100',category='112',score='N')
     # bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','11101')
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid,channel=1,notify_type=1,status=1)

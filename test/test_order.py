@@ -164,12 +164,12 @@ def test_sync_pay():
     '''
     测试同步支付结果
     '''
-    sql = o.do_mysql_select('select aid,order_no from  `order` where del_flag=0', 'fawvw_order')
+    sql = o.do_mysql_select('select aid,order_no from  `order` where del_flag=0 and order_status="WAITING_PAY"', 'fawvw_order')
     sql = random.choice(sql)
     aid = sql['aid']
     order_no = sql['order_no']
     pay_no = o.f.md5()
-    o.sync_order_pay(pay_no,aid=aid,order_no=order_no)
+    o.sync_order_pay(pay_no,aid=aid,order_no=order_no,pay_status='SUCCESS')
     res = o.do_mysql_select('select count(1) from order_pay where pay_no = "{}"'.format(pay_no), 'fawvw_order')
     assert len(res) == 1
     o.do_mysql_exec('delete from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
@@ -439,3 +439,34 @@ def test_del_order_02():
     aid = order['aid']
     res = o.del_order(no, aid)
     assert res['errorMessage'] == '订单不存在'
+
+
+@allure.suite('order')
+@allure.title('处理权益开通kafka消息')
+@pytest.mark.order
+@pytest.mark.parametrize('d',[('RIGHTS_OPEN','1002','已完成'),('RIGHTS_OPEN','sergio test','sergio test desc'),
+                              ('RIGHTS_OPEN',None,None),('CALLBACK','1002','已完成'),('RIGHTS_OPEN','1002',None),
+                              ('RIGHTS_OPEN',None,'已完成')],
+                         ids=['权益开通+业务改变','权益开通+业务改变2','权益开通','错误的event','不填业务状态描述','不填业务状态'])
+def test_rights_open_kafka(d):
+    '''
+    处理权益开通kafka消息
+    '''
+    order_no = o.add_order()
+    o.business_kafka(order_no,event_type=d[0],business_state=d[1],business_state_desc=d[2])
+    sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(order_no),'fawvw_order')
+    try:
+        if d[0] == 'RIGHTS_OPEN':
+            assert sql_res[0]['order_status'] == 'FINISH'
+            if d[1]:
+                assert sql_res[0]['business_status'] == d[1]
+            if d[2]:
+                assert sql_res[0]['business_status_desc'] == d[2]
+        else:
+            return
+    finally:
+        o.do_mysql_exec(
+            'delete from order_detail where order_id=(select id from `order` where order_no="{}")'.format(order_no),
+            'fawvw_order')
+        o.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no),'fawvw_order')
+

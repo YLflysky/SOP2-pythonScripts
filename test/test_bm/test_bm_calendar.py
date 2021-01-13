@@ -291,7 +291,7 @@ def test_event_list_by_rule_01(api):
 
 @pytest.mark.calendar
 @allure.suite('calendar')
-@allure.title('mobile')
+@allure.title('app同步日历事件>>单个事件')
 @pytest.mark.parametrize('cud', ['C', 'U'])
 def test_mobile_sync_01(cud):
     '''
@@ -308,7 +308,7 @@ def test_mobile_sync_01(cud):
 
 @pytest.mark.calendar
 @allure.suite('calendar')
-@allure.title('mobile')
+@allure.title('app同步日历事件>>多个事件')
 def test_mobile_sync_02():
     '''
     输入多个event，同步事件

@@ -27,13 +27,13 @@ class Order(Base):
         底层添加订单服务
         '''
         url = self.url + '/sm/order/v1/order'
-        num = random.randint(10000000000000000000, 99999999999999999999)
-        businessInfo = {'productId': 'code_002', 'price': 111, 'quantity': 1}
+        num = self.generate_order_no()
+        businessInfo = self.f.pydict(value_types=str)
         data = {'orderCategory': '110', 'spId': 'KUWO', 'aid': '9349643',
-                'vehModelCode': '040804', 'businessInfo': businessInfo, 'vin': 'LFVSOP2TEST000018', 'serviceId': 'MUSIC',
+                'vehModelCode': '川A2PH71', 'businessInfo': businessInfo, 'vin': 'LFVSOP2TEST000018', 'serviceId': 'MUSIC',
                 'orderType': 'BUSINESS', 'cpOrderNo': 'MA{}'.format(num), 'title': self.f.sentence(),
-                'businessState': 'PROCESSING', 'businessStateDesc': 'SUCCESS', 'amount': 1, 'payAmount': 1,
-                'timeout': 30, 'discountAmount': 1,'status':'WAITING_PAY'}
+                'businessState': '业务状态', 'businessStateDesc': '业务状态描述', 'amount': 1.00, 'payAmount': 0.01,
+                'timeout': 30, 'discountAmount': 0.99,'status':'WAITING_PAY'}
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
         return body['data']
@@ -215,26 +215,62 @@ class Order(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def sync_order_pay(self, pay_no,aid,order_no, **kwargs):
+    def sync_order_pay(self, pay_no,aid,order_no, pay_status,**kwargs):
         '''
         同步支付结果
         '''
         url = self.url + '/sm/order/v1/order/sync/pay'
         data = {'payOrderNo': pay_no,'orderNo':order_no,'aid':aid, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
-                'payType': 'APP', 'payTime': self.time_delta(),'payStatus':'SUCCESS',**kwargs}
+                'payType': 'APP', 'payTime': self.time_delta(),'payStatus':pay_status,**kwargs}
         code,body = self.do_post(url,data)
         self.assert_msg(code,body)
         return body
 
+    def business_kafka(self,order_no,event_type,business_state,business_state_desc):
+        '''
+        模拟业务系统发送kafka权益开通消息，
+        :param order_no:ms订单号
+        :param event_type:事件类型,权益开通才处理
+        :param business_state:业务状态
+        :param business_state_desc:业务状态描述
+        :return:
+        '''
+        kafka_data = {'orderNo':order_no,
+                      'evenType':event_type,
+                      'occurTime':self.get_time_stamp(),
+                      'businessState':business_state,
+                      'businessStateDesc':business_state_desc}
+
+        topic = 'Order_Origin_Business_System_Event'
+        self.send_kafka_msg(topic, kafka_data,host='SOP2')
+
+    def java_business_kafka(self,order_no,event_type,business_state,business_state_desc):
+        '''
+        调用接口模拟业务系统发送KAFKA消息
+        :param order_no:
+        :param event_type:
+        :param business_state:
+        :param business_state_desc:
+        :return:
+        '''
+        url = self.url + '/sm/order/v1/consumer/testOrderOriginBusinessSystemEventMsg'
+        kafka_data = {'orderNo': order_no,
+                      'evenType': event_type,
+                      'occurTime': self.get_time_stamp(),
+                      'businessState': business_state,
+                      'businessStateDesc': business_state_desc}
+
+        c,b = self.do_post(url,kafka_data)
+        self.assert_msg(c,b)
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'DEV'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = Order()
     # o.add_order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
     # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
-    o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='1603160360456',order_no='20201020101920646233472')
+    # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
     # o.order_detail(aid='9351515',order_no='20201124142350661876544')
     # order_no = o.generate_order_no()['data']
     # o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
@@ -253,3 +289,4 @@ if __name__ == '__main__':
     # print(res)
     # info = {'name': 'waka waka', 'age': 18}
     # o.sync_order_kafka(ep_order_id=9959,business_info=info,tenant='ASTERIX')
+    o.business_kafka(order_no='78675824282251835979',event_type='RIGHTS_OPEN',business_state='开通完成',business_state_desc='音乐服务开通完成')
