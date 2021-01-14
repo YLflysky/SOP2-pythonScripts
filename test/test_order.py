@@ -339,15 +339,13 @@ def test_sync_order_expire():
     business_info = {'business':'music'}
     coupon_id = '123456'
     coupon_amount = 0.01
-    order = o.sync_order(ex,origin,aid,category,serviceId=service,spId=sp,businessState=business_state,businessStateDesc=business_state_desc,
+    o.sync_order(ex,origin,aid,category,serviceId=service,spId=sp,businessState=business_state,businessStateDesc=business_state_desc,
                  title=title,orderStatus=status,orderCategory=category,orderType='COMMODITY',amount=amount,discountAmount=discount_amount,
                  payAmount=actual_amount,vin=vin,vehModelCode='川A88888',info=info,businessInfo=business_info,couponId=coupon_id,
                  couponAmount=coupon_amount,timeout=1,goodsId='123456',)
-    order_no = order['data']
     sql = o.do_mysql_select('select * from `order` where ex_order_no="{}" and origin="{}"'.format(ex,origin),'fawvw_order')
     assert len(sql) == 1
     time.sleep(70)
-    assert sql[0]['expire_time'] < o.time_delta()
     assert sql[0]['order_status'] == 'EXPIRE'
 
 @allure.suite('order')

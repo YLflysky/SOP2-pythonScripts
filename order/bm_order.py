@@ -139,16 +139,16 @@ if __name__ == '__main__':
     o = BMOrder()
     aid = '9349485'
     vin = 'BMTESTNC8UHS3GPH5'
-    o.bm_update_pay(bm_order='1610505959000',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
-                    pay_time=o.time_delta(),order_amount=0.01,orderStatus='FINISH')
+    # o.bm_update_pay(bm_order='1610505959000',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
+    #                 pay_time=o.time_delta(),order_amount=0.01,orderStatus='FINISH')
     # o.order_list(vin,aid,pageSize=100)
     # o.order_count(vin=123,uid='469317')
-    # data = {"brand": "VW", "businessExtInfo": {"message": "扩展字段测试"},
-    #         "createdTime": "1601346979941", "discountAmount": "2000", "orderAmount": "20000", "orderCategory": "99",
-    #         "serviceId": "serviceId002", "serviceOrderState": "serviceOrderState002",
-    #         "serviceOrderStateDesc": "serviceOrderStateDesc002", "spId": "spId002", "title": "title_test002",
-    #         "userId": aid, "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509"}
-    # o.sync_bm_order(o.get_time_stamp(), data)
+    data = {"brand": "VW", "businessExtInfo": {"message": "扩展字段测试"},
+            "createdTime": "1601346979941", "discountAmount": "2000", "orderAmount": "20000", "orderCategory": "99",
+            "serviceId": "serviceId002", "serviceOrderState": "serviceOrderState002",
+            "serviceOrderStateDesc": "serviceOrderStateDesc002", "spId": "spId002", "title": "title_test002",
+            "userId": aid, "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509",'orderStatus':'PAY_FAILED'}
+    o.sync_bm_order(o.get_time_stamp(), data)
     # o.bm_cancel_order(aid='4614931',order_no='ftb20201203160039247753664')
     # o.order_count(vin='DEFAULT_VIN',uid='33')
     # o.update_bm_order(order_no='ftb20201230142447543475136',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId='9351549',updateType='1',

@@ -89,6 +89,34 @@ class MAOrder(Base):
         print(b)
         assert c == 200
 
+    def sync_order(self,vin,aid,service_id,sp_id,order_type,ex_order,category,title,
+                   business_state,desc,amount,discount,pay_amount,business_info,**kwargs):
+        '''
+        MA提供的外部订单同步结果
+        :param vin:
+        :param aid:
+        :param service_id:
+        :param sp_id:
+        :param order_type:
+        :param ex_order:
+        :param category:
+        :param title:
+        :param business_state:
+        :param desc:
+        :param amount:
+        :param discount:
+        :param pay_amount:
+        :param business_info:
+        :return:
+        '''
+        url = self.url + '/mosc-order-ma/external/v2/sync/order'
+        data = {'vin':vin,'aid':aid,'serviceId':service_id,'spId':sp_id,'orderType':order_type,'exOrderNo':ex_order,
+                'orderCategory':category,'title':title,'businessState':business_state,'businessStateDesc':desc,
+                'amount':amount,'payAmount':pay_amount,'discountAmount':discount,'businessInfo':business_info,**kwargs}
+
+        c,b = self.do_post(url,data)
+        print(b)
+        assert c == 200
 
 if __name__ == '__main__':
     from point.points import Points
@@ -98,13 +126,18 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     aid = '4614183'
     ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
-    # h5_order.get_goods_detail(goods_code=17)
+    # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
+    # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349824',service_id='09',sp_id='090002',
+    #                     order_type='BUSINESS',ex_order=ma_order.f.md5(),category='09',title='标准洗车-五座轿车',
+    #                     business_state='0',desc='待支付',
+    #                     amount=35.00,discount=4.10,pay_amount=30.90,timeout=1,
+    #                     business_info=info)
     # ma_order.create_h5_order(goods_id='17',category='MUSIC_VIP',count=1,
     #                          usedPoint=True,goodsAmount='19.9',deductionPoint=45,deductionAmount='4.5',actualPayAmount='15.4',
     #                          durationDays=1,vin='LFVTESTMOSC052726')
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
-    ma_order.ma_create_order(aid=aid,vin=ma_order.vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationTimes=1,point=False)
+    # ma_order.ma_create_order(aid=aid,vin=ma_order.vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationTimes=1,point=False)
     # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=6)['data']
     # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1)['data']
     # ma_order.get_ma_qr_code('20210107132712503163840',pay_type='12100')

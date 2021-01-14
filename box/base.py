@@ -109,7 +109,7 @@ class Base:
             return s2[1:]
         return s2
 
-    def _calc_digital_sign(self, url, params):
+    def _calc_digital_sign(self, url, params,gateway='HU'):
         """计算签名
 
         - :param uri: 【必填】带计算前面的uri, 类型：string
@@ -143,14 +143,13 @@ class Base:
         catent = "_".join(parm_list)
         lk.prt("In calc digital sign, catent is: {}".format(catent))
         # 5.添加应用资源和secret_key
-        secret_key_ma = 'b9784ddc19aa9ec47d2dfa1dfbca7934'
-        secret_key_bm = 'F5Pw4vnV7ISCZZhY8gEk7JIYPY4l9b1M'
-        if self.tenant == 'MA':
-            last_url_encode = resource_uri + "_" + catent + "_" + secret_key_ma
-        elif self.tenant == 'BM':
-            last_url_encode = resource_uri + "_" + catent + "_" + secret_key_bm
+        secret_key = 'b9784ddc19aa9ec47d2dfa1dfbca7934'
+        secret_key_app = 'F5Pw4vnV7ISCZZhY8gEk7JIYPY4l9b1M'
+        if gateway == 'HU':
+            last_url_encode = resource_uri + "_" + catent + "_" + secret_key
         else:
-            return
+            last_url_encode = resource_uri + "_" + catent + "_" + secret_key_app
+
         lk.prt("In calc digital sign, last_url is: {}".format(last_url_encode))
         # 计算MD5
         last_url_encode = parse.quote(last_url_encode.encode(), safe='')
@@ -213,9 +212,9 @@ class Base:
             return False
         return True
 
-    def do_post(self, url, data, params=None, **kwargs):
+    def do_post(self, url, data, params=None,gateway='HU', **kwargs):
         if self.gate:
-            params = self._calc_digital_sign(url, params)
+            params = self._calc_digital_sign(url, params,gateway)
         lk.prt('final post url is:{}'.format(url))
         if isinstance(data, dict):
             data = json.dumps(data, ensure_ascii=False)
@@ -276,7 +275,7 @@ class Base:
             response_body = res.text
         return res.status_code, response_body
 
-    def do_get(self, url, params):
+    def do_get(self, url, params,gateway='HU'):
         '''
         执行requests.get请求
         :param url: 请求地址
@@ -284,7 +283,7 @@ class Base:
         :return: 请求结果
         '''
         if self.gate:
-            params = self._calc_digital_sign(url,params)
+            params = self._calc_digital_sign(url,params,gateway)
             final_url = url + '?'+parse.urlencode(params)
         lk.prt('final get url is:{}'.format(final_url if self.gate else url))
         lk.prt('final get header is:{}'.format(self.header))

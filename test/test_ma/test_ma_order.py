@@ -11,6 +11,7 @@ ma = MAOrder(aid='4614183',user='15330011918',password='000000',vin='LFVTEST1231
 @pytest.mark.parametrize('data',[(1,19.9,'酷我VIP-1个月'),(3,57,'酷我VIP-3个月'),
                                  (6,108,'酷我VIP-6个月'),(12,204,'酷我VIP-12个月')],
                          ids=['1个月vip','三个月vip','六个月vip','12个月vip'])
+@pytest.mark.skip(reason='无法连接MA数据库')
 def test_create_music_vip(data):
     aid = ma.aid
     order_no = ma.create_order(goods_id=17,category='MUSIC_VIP',aid=aid,quantity=1,point=False,durationTimes=data[0])['data']

@@ -156,21 +156,23 @@ def test_sync_bm_order(info):
     '''
     测试同步BM适配层订单
     '''
-    ex_order = bm.f.pyint()
+    ex_order = bm.f.md5()
     vin = '0D07D9A7A091ECD31AD9CB3F1DA429B1'
     ext_info = bm.f.pydict(4, True, value_types=str)
     discount_amount = '10000'
     order_amount = bm.f.pyint(10086, 100000)
     title = bm.f.sentence()
     user_id = '123'
-    status = 'INIT'
-    status_desc = bm.f.word()
+    state = '业务状态'
+    status_desc = '业务状态描述'
+    all_status = ['INIT', 'PROCESSING', 'PAY_FAILED', 'WAITING_PAY', 'RESERVED', 'CANCEL', 'REFUND_SUCCESS', 'EXPIRE', 'FINISH', 'REFUND_FAILED', 'REFUNDING', 'PAY_SUCCESS']
     create_time = bm.get_time_stamp()
     goods = bm.f.md5()
+    status = random.choice(all_status)
     data = {'vin': vin, 'brand': info[3], 'businessExtInfo': ext_info, 'discountAmount': discount_amount,
-            'orderAmount': order_amount, 'goodsId': goods,
+            'orderAmount': order_amount, 'goodsId': goods,'orderStatus':status,
             'orderCategory': info[0], 'spId': info[1], 'serviceId': info[2], 'title': title, 'userId': user_id,
-            'serviceOrderState': status, 'serviceOrderStateDesc': status_desc, 'createdTime': create_time}
+            'serviceOrderState': state, 'serviceOrderStateDesc': status_desc, 'createdTime': create_time}
 
     res = bm.sync_bm_order(ex_order, data)
     try:
@@ -184,6 +186,7 @@ def test_sync_bm_order(info):
         assert sql_res[0]['sp_id'] == info[1]
         assert sql_res[0]['service_id'] == info[2]
         assert sql_res[0]['goods_id'] == goods
+        assert sql_res[0]['order_status'] == status
     finally:
         bm.do_mysql_exec(
             'delete from order_detail where order_id =(select id from `order` where order_no="{}")'.format(order_no),

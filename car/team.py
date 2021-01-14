@@ -5,16 +5,14 @@ import os, sys
 
 
 class Team(TencentCar):
-    def __init__(self,tenant):
-        super().__init__(tenant)
-        if self.gate:
-            self.url = self.read_conf('ma_env.conf', self.env, 'hu_host') + '/test-access/tm'
-        else:
-            lk.prt('can not resolve local environment')
-            sys.exit(-1)
+    def __init__(self):
+        super().__init__()
+
+        self.hu_url = self.read_conf('ma_env.conf', self.env, 'hu_host')
+        self.url =self.hu_url + '/mosc-group-driving-sop2'
 
     def position(self,name):
-        url = self.url + '/mosc-group-driving-sop2/api/v1/groups/actions/report_position_info'
+        url = self.url + '/api/v1/groups/actions/report_position_info'
         data = {
             "travelid": "5880329234961",
             "ownername": name,
@@ -40,42 +38,52 @@ class Team(TencentCar):
             }
         }
         c, b = self.do_post(url, data=data)
-        self.assert_msg(code=c, body=b)
+        self.assert_ma_msg(code=c, body=b)
 
     def create_group(self,uid,vin):
-        url = self.url + '/mosc-group-driving-sop2/api/v1/createGroup'
+        url = self.url + '/api/v1/createGroup'
         data = {'accountId':uid,'vin':vin,'longitude':float(self.f.longitude()),'latitude':float(self.f.latitude()),}
         code,body = self.do_post(url,data)
-        self.assert_msg(code,body)
+        self.assert_ma_msg(code,body)
         return body['data']
 
     def find_last_group(self,uid,vin):
-        url = self.url + '/mosc-group-driving-sop2/api/v1/findLastGroup'
+        url = self.url + '/api/v1/findLastGroup'
         data = {'vin':vin,'accountId':uid}
         code,body = self.do_post(url,data)
         self.assert_msg(code,body)
         return body['data']
 
     def join_team(self,accountId,vin,group_id,invite):
-        url = self.url + '/mosc-group-driving-sop2/api/v1/joinGroup'
+        url = self.url + '/api/v1/joinGroup'
         data = {'accountId':accountId,'vin':vin,'longitude':float(self.f.longitude()),'latitude':float(self.f.latitude()),
                 'invitePassword':invite,'groupId':group_id}
         code,body = self.do_post(url,data=data)
         self.assert_msg(code,body)
 
+    def get_hash_vin(self,vin):
+        '''
+        根据vin 获取 hash vin
+        :param vin:
+        :return:
+        '''
+        url = self.hu_url + '/vehicle/vehicleCustomerExpand/getEncryptionVinByVin'
+        data = {'vin':vin}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
 
 
 
 
 
 if __name__ == '__main__':
-    os.environ['GATE'] = 'true'
-    os.environ['ENV'] = 'UAT'
-    t = Team('MA')
-    uid=1234567
-    vin='0000'
-    open_id = t.get_info(uid,vin)['weChatOpenId']
-    print(open_id)
+    t = Team()
+    uid='9349628'
+    vin='LFVSOP2TEST000007'
+    # t.get_hash_vin(vin)
+    t.create_group(uid,vin)
+    # open_id = t.get_info(uid,vin)['weChatOpenId']
+    # print(open_id)
     # groupId = t.find_last_group(uid,vin)['groupId']
     # invite_pwd = t.find_last_group(uid,vin)['invitePassword']
     # t.join_team(accountId=uid,vin=vin,group_id=groupId,invite=invite_pwd)

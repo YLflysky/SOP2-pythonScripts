@@ -10,7 +10,7 @@ class TencentCar(Base):
         self.url = self.read_conf('ma_env.conf',self.env,'car_host')
         self.add_header(url=self.read_conf('ma_env.conf',self.env,'token_host'))
 
-    def assert_bm_msg(self,code,body):
+    def assert_ma_msg(self,code,body):
         print(body)
         assert code == 200
 
@@ -67,23 +67,13 @@ class TencentCar(Base):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
-    def check_vin(self,vin):
-        '''
-        检验vin码是否可用
-        :param vin:
-        :return:
-        '''
-        url = self.url + '/api/v1/checkVin'
-        data = {'vin':vin}
-        c,b = self.do_post(url,data)
-        self.assert_bm_msg(c,b)
 
 
 if __name__ == '__main__':
 
     car = TencentCar()
-    uid = '9349628'
-    vin = 'LFVSOP2TEST000007'
+    uid = '8130372'
+    vin = 'LFV2B2A18L5411118'
     # car.check_vin(vin)
     car.get_QRcode(uid,vin)
     # car.unbind(uid,vin=vin)
