@@ -80,8 +80,8 @@ if __name__ == '__main__':
     t = Team()
     uid='9349628'
     vin='LFVSOP2TEST000007'
-    # t.get_hash_vin(vin)
-    t.create_group(uid,vin)
+    t.get_hash_vin(vin='LFVSOP2TESTLY0002')
+    # t.create_group(uid,vin)
     # open_id = t.get_info(uid,vin)['weChatOpenId']
     # print(open_id)
     # groupId = t.find_last_group(uid,vin)['groupId']

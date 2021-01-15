@@ -90,17 +90,47 @@ class BMPayment(Base):
         c,b = self.do_put(url,data)
         self.assert_bm_msg(c,b)
 
+    def be_sync_result(self,vin,aid,bm_order_no,bm_pay_no,order_no,pay_amount,
+                       order_amount,channel,status,pay_time,pay_way,service,sp,**kwargs):
+        '''
+        BM后台同步支付记录API
+        :param vin: 车架号
+        :param aid: 一汽大众账号id
+        :param bm_order_no: BM订单号
+        :param bm_pay_no: BM支付流水号
+        :param order_no: 一汽大众订单号
+        :param pay_amount: 支付金额（分）
+        :param order_amount: 订单金额（分）
+        :param channel: 支付渠道 ALI_PAY,WECHAT_PAY
+        :param status: 支付状态 INIT,WAIT_BUYER_PAY,TRADE_SUCCESS,TRADE_CLOSED,TRADE_FINISHED,TRADE_FAILED
+        :param pay_time: 订单支付时间（yyyy-MM-dd HH:mm:ss）
+        :param pay_way:支付方式 FREE_PASS_PAY QR_PAY
+        :param service:
+        :param sp:
+        :param kwargs:
+        :return:
+        '''
+        url = self.be_url + '/payment/api/v1/pay_order/sync'
+        data = {'vin':vin,'userId':aid,'bmOrderNo':bm_order_no,'bmPayNo':bm_pay_no,'orderNo':order_no,'payAmount':pay_amount,
+                'orderAmount':order_amount,'payChannel':channel,'payStatus':status,'payTime':pay_time,'payWay':pay_way,
+                'serviceId':service,'spId':sp,**kwargs}
+
+        c,b = self.do_post(url,data)
+        self.assert_bm_msg(c,b)
+
 
 if __name__ == '__main__':
     import os
     from order.order_api import Order
-    os.environ['ENV']='UAT'
+    os.environ['ENV']='SIT'
     os.environ['GATE']='false'
     order = Order()
     pay = BMPayment()
     aid = '9353213'
     vin = 'BMTESTLFDDGU8ZDFP'
-    pay.get_pay_result(vin='LFVTESTMOSC989216',order_no='ftb20210113104218446114688',aid='9351484',category='112',roll_number=1)
+    pay.be_sync_result(vin='5E5F5EDBD91F4BF8462AE2DE2E89B509',aid='9349485',bm_order_no='bm001',bm_pay_no='bm_pay_001',order_no='ftb20210115135413613139264',pay_amount=1,order_amount=100,discountAmount=99,
+                       channel='WECHAT_PAY',status='TRADE_SUCCESS',pay_time=pay.time_delta(),pay_way='QR_PAY',service='GAS',sp='111')
+    # pay.get_pay_result(vin='LFVTESTMOSC989216',order_no='ftb20210113104218446114688',aid='9351484',category='112',roll_number=1)
     # pay.get_pay_channel(vin,aid,order_no='ftb20201228100413387102400',category='111')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
     # pay.get_qr_code(vin,aid,order_no='ftb20201210105333938753664',pay_type='11103',category='111')

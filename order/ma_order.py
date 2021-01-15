@@ -118,6 +118,39 @@ class MAOrder(Base):
         print(b)
         assert c == 200
 
+    def update_status_finish(self,order_no):
+        '''
+        更改订单状态为FINISHED
+        :param order_no:
+        :return:
+        '''
+
+        url = self.url + '/mosc-order-ma/external/v2/sync/rightsOpen'
+
+        data = {'orderNo':order_no}
+        c,b = self.do_post(url,data)
+        print(b)
+        assert c == 200
+        assert b['returnStatus'] == 'SUCCEED'
+
+    def update_business(self,order_no,status,desc):
+        '''
+        修改订单业务状态API
+        :param order_no:订单号
+        :param status: 业务状态
+        :param desc: 业务状态描述
+        :return:
+        '''
+        url = self.url + '/mosc-order-ma/external/v2/update/businessState'
+
+        data = {'orderNo': order_no,'businessState':status,'businessStateDesc':desc}
+        c, b = self.do_post(url, data)
+        print(b)
+        assert c == 200
+        assert b['returnStatus'] == 'SUCCEED'
+
+
+
 if __name__ == '__main__':
     from point.points import Points
     import os
@@ -126,6 +159,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     aid = '4614183'
     ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
+    ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
     # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
     # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349824',service_id='09',sp_id='090002',
     #                     order_type='BUSINESS',ex_order=ma_order.f.md5(),category='09',title='标准洗车-五座轿车',
@@ -138,9 +172,9 @@ if __name__ == '__main__':
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
     # ma_order.ma_create_order(aid=aid,vin=ma_order.vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationTimes=1,point=False)
-    # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=6)['data']
+    # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1)['data']
     # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1)['data']
-    # ma_order.get_ma_qr_code('20210107132712503163840',pay_type='12100')
+    # ma_order.get_ma_qr_code('20210115103406461180224',pay_type='12100')
 
     # p = Points()
     # p.get_user_points(aid)

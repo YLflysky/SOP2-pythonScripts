@@ -463,8 +463,9 @@ def test_rights_open_kafka(d):
         else:
             return
     finally:
-        o.do_mysql_exec(
-            'delete from order_detail where order_id=(select id from `order` where order_no="{}")'.format(order_no),
-            'fawvw_order')
-        o.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no),'fawvw_order')
+        pass
+        # o.do_mysql_exec(
+        #     'delete from order_detail where order_id=(select id from `order` where order_no="{}")'.format(order_no),
+        #     'fawvw_order')
+        # o.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no),'fawvw_order')
 

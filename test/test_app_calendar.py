@@ -21,9 +21,10 @@ event = {'localEventId':event_id , 'cudStatus': 'C','rrule':'Only Once',
 @pytest.mark.app_calendar
 def test_tenant():
     sop1_c = Calendar('SOP1', name, password, 'LFVSOP2TESTLY0010', aid)
-    w37_c = Calendar('37W', name, password, 'LFVSOP2TESTLY0011', aid)
     assert sop1_c.get_tenant_by_vin() == 'SOP1'
     lk.prt('check SOP1 tenant success')
+
+    w37_c = Calendar('37W', name, password, 'LFVSOP2TESTLY0011', aid)
     assert w37_c.get_tenant_by_vin() == '37W'
     lk.prt('check 37W tenant success')
 
@@ -53,7 +54,7 @@ def test_sop2_bm_app_sync_event():
 
 
 @allure.suite('calendar')
-@allure.title('测试SOP2BM车型通过APP同步日历事件')
+@allure.title('测试SOP2MA车型通过APP同步日历事件')
 @pytest.mark.app_calendar
 def test_sop2_ma_app_sync_event():
     ma_c = Calendar('MA', name, password, 'LFVSOP2TESTLY0002', aid)

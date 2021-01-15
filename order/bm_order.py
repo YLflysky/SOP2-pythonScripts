@@ -147,7 +147,7 @@ if __name__ == '__main__':
             "createdTime": "1601346979941", "discountAmount": "2000", "orderAmount": "20000", "orderCategory": "99",
             "serviceId": "serviceId002", "serviceOrderState": "serviceOrderState002",
             "serviceOrderStateDesc": "serviceOrderStateDesc002", "spId": "spId002", "title": "title_test002",
-            "userId": aid, "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509",'orderStatus':'PAY_FAILED'}
+            "userId": aid, "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509",'orderStatus':None}
     o.sync_bm_order(o.get_time_stamp(), data)
     # o.bm_cancel_order(aid='4614931',order_no='ftb20201203160039247753664')
     # o.order_count(vin='DEFAULT_VIN',uid='33')
