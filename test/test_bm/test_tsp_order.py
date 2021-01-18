@@ -44,7 +44,7 @@ def test_tsp_list_02():
     res = tsp.order_list(startTime=st,endTime=et,size=10,no=1)
     data = random.choice(res['data'])
     assert data['orderCategory']
-    assert data['origin']
+    assert 'origin' in data.keys()
     assert data['title']
     assert data['orderNo']
     assert data['exOrderNo']

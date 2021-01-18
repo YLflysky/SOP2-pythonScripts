@@ -36,7 +36,7 @@ def test_add_event_01():
         'select uid,origin,start_time,end_time from calendar_event where id={}'.format(calendar_id),
         db='fawvw_calendar')
     try:
-        assert sql_res[0]['uid'] == '9350195'
+        assert sql_res[0]['uid'] == c.uid
         assert sql_res[0]['origin'] == 'HU'
         assert sql_res[0]['start_time'] == c.stamp_to_str(start_time)
         assert sql_res[0]['end_time'] == c.stamp_to_str(end_time)
@@ -73,7 +73,7 @@ def test_add_event_02():
         'select * from calendar_event where id={}'.format(calendar_id),
         db='fawvw_calendar')
     try:
-        assert sql_res[0]['uid'] == '9350195'
+        assert sql_res[0]['uid'] == c.uid
         assert sql_res[0]['origin'] == 'HU'
         assert sql_res[0]['start_time'] == c.stamp_to_str(start_time)
         assert sql_res[0]['end_time'] == c.stamp_to_str(end_time)
@@ -268,7 +268,7 @@ def test_get_last_time(uid):
     '''
     获取日历最近一次更新时间
     '''
-    body = c.get_last_time(uid, c.device_id)
+    body = c.get_last_time()
     assert body['data']['updateTime'] is not None
 
 

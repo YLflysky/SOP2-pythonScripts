@@ -14,10 +14,9 @@ class Calendar(Base):
         self.password = password
         self.vin = vin
         self.uid = aid
-        self.header['uid'] = aid
+        # self.header['uid'] = aid
         self.mobile_url = self.read_conf('sop2_env.conf', self.env, 'one_app_host')
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
-
 
         if tenant == 'BM':
             self.gate = True
@@ -25,7 +24,7 @@ class Calendar(Base):
             self.url = self.read_conf('sop2_env.conf', self.env, 'calendar_host')
             # lk.prt('开始获取token...')
             self.header['Authorization']=self.get_token(self.read_conf('sop2_env.conf',self.env,'token_host'),self.name,self.password,self.vin)
-            self.header['deviceId'] = self.device_id
+            self.header['Did'] = self.device_id
 
         else:
             self.env = 'UAT'
@@ -93,7 +92,7 @@ class Calendar(Base):
         print(body)
         return body
 
-    def get_last_time(self,uid,deviceId):
+    def get_last_time(self):
         '''
         车机端获取用户最后更新时间接口
         :param uid: 用户id，header中
@@ -101,8 +100,7 @@ class Calendar(Base):
         :return:
         '''
         url = self.url + '/api/v1/calendar/event/getEventLastUpdatedTime'
-        self.header['uid'] = uid
-        self.header['deviceId'] = deviceId
+
         code,body = self.do_get(url,None)
         if self.tenant == 'BM':
             self.assert_msg(code,body)
@@ -134,13 +132,8 @@ class Calendar(Base):
         url = self.mobile_url + '/oneapp/calendar/public/event/sync'
         data = {'currentTime':current_time,'events':events}
         c,b = self.do_post(url,data,gateway='APP')
-        if self.tenant == 'BM':
-            print(b)
-            assert c == 200
-        else:
-            print(b)
-            assert b['statusCode'] == '0'
-            assert b['statusMessage'] == '成功'
+        print(b)
+        assert c == 200
         return b
 
     def mobile_find_all(self):
@@ -173,15 +166,15 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'true'
     os.environ['ENV'] = 'SIT'
     b = Base(tenant='BM')
-    # bm_c = Calendar(tenant='BM',name='13353116624',password='000000',vin='LFVSOP2TESTLY0003',aid='9353497')
+    bm_c = Calendar(tenant='BM',name='13353116624',password='000000',vin='LFVSOP2TESTLY0003',aid='9353497')
     # bm_c.get_last_time(bm_c.uid,deviceId=None)
-    # bm_c.get_tenant_by_vin()
-    ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
-    ma_c.get_tenant_by_vin()
+    bm_c.get_tenant_by_vin()
+    # ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
+    # ma_c.get_tenant_by_vin()
     # c.find_all_event(update_time=None)
     event = {'localEventId': b.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
                      'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
-    ma_c.mobile_sync(current_time=None,events=[event])
+    bm_c.mobile_sync(current_time=None,events=[event])
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10))
     # c.find_detail(39355)
     # c.mobile_find_all()

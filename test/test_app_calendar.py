@@ -20,13 +20,11 @@ event = {'localEventId':event_id , 'cudStatus': 'C','rrule':'Only Once',
 @allure.title('测试账号的项目类型是否正确')
 @pytest.mark.app_calendar
 def test_tenant():
-    sop1_c = Calendar('SOP1', name, password, 'LFVSOP2TESTLY0010', aid)
-    assert sop1_c.get_tenant_by_vin() == 'SOP1'
-    lk.prt('check SOP1 tenant success')
 
-    w37_c = Calendar('37W', name, password, 'LFVSOP2TESTLY0011', aid)
-    assert w37_c.get_tenant_by_vin() == '37W'
-    lk.prt('check 37W tenant success')
+
+    sop1_c = Calendar('SOP1.5', name, password, 'LFVSOP2TESTLY0011', aid)
+    assert sop1_c.get_tenant_by_vin() == 'SOP1.5'
+    lk.prt('check SOP1 tenant success')
 
 def assert_results():
     '''
@@ -51,8 +49,6 @@ def test_sop2_bm_app_sync_event():
     res = bm_c.mobile_sync(current_time=None,events=[event])
     assert_results()
 
-
-
 @allure.suite('calendar')
 @allure.title('测试SOP2MA车型通过APP同步日历事件')
 @pytest.mark.app_calendar
@@ -62,3 +58,13 @@ def test_sop2_ma_app_sync_event():
     lk.prt('check SOP2MA tenant success')
     res = ma_c.mobile_sync(current_time=None,events=[event])
     assert_results()
+
+
+@allure.suite('calendar')
+@allure.title('测试37W车型通过APP同步日历事件')
+@pytest.mark.app_calendar
+def test_37w_app_sync_event():
+    w37_c = Calendar('37W', name, password, 'LFVSOP2TESTLY0010', aid)
+    assert w37_c.get_tenant_by_vin() == '37W'
+    lk.prt('check 37W tenant success')
+    res = w37_c.mobile_sync(current_time=None,events=[event])

@@ -220,7 +220,7 @@ class Order(Base):
         同步支付结果
         '''
         url = self.url + '/sm/order/v1/order/sync/pay'
-        data = {'payOrderNo': pay_no,'orderNo':order_no,'aid':aid, 'payChannel': 'WE_CHAT', 'payAmount': '1.00',
+        data = {'payOrderNo': pay_no,'orderNo':order_no,'aid':aid, 'payChannel': 'WECHAT_PAY', 'payAmount': '1.00',
                 'payType': 'APP', 'payTime': self.time_delta(),'payStatus':pay_status,**kwargs}
         code,body = self.do_post(url,data)
         self.assert_msg(code,body)
