@@ -19,3 +19,9 @@ user_bm:
     test1234
   vin:
     TESTWECHAT6026067
+
+uat:
+  vin:
+    LFVTESTMOSC989216
+  iccid:
+    18559372278

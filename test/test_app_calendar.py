@@ -16,15 +16,9 @@ event_id = random.randint(10000, 100000)
 event = {'localEventId':event_id , 'cudStatus': 'C','rrule':'Only Once',
                      'eventStartTime': base.get_time_stamp(days=-1), 'eventEndTime': base.get_time_stamp(days=1)}
 
-@allure.suite('calendar')
-@allure.title('测试账号的项目类型是否正确')
-@pytest.mark.app_calendar
-def test_tenant():
 
 
-    sop1_c = Calendar('SOP1.5', name, password, 'LFVSOP2TESTLY0011', aid)
-    assert sop1_c.get_tenant_by_vin() == 'SOP1.5'
-    lk.prt('check SOP1 tenant success')
+
 
 def assert_results():
     '''
@@ -68,3 +62,13 @@ def test_37w_app_sync_event():
     assert w37_c.get_tenant_by_vin() == '37W'
     lk.prt('check 37W tenant success')
     res = w37_c.mobile_sync(current_time=None,events=[event])
+
+
+@allure.suite('calendar')
+@allure.title('测试SOP1车型通过APP同步日历事件')
+@pytest.mark.app_calendar
+def test_sop1_app_sync_event():
+    sop1_c = Calendar('SOP1.5', name, password, 'LFVSOP2TESTLY0011', aid)
+    assert sop1_c.get_tenant_by_vin() == 'SOP1.5'
+    lk.prt('check SOP1 tenant success')
+    res = sop1_c.mobile_sync(current_time=None,events=[event])

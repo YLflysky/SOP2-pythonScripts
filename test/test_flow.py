@@ -226,7 +226,7 @@ def test_sim_notify():
     assert sql[0]['body']
     body = json.loads(sql[0]['body'])
     assert body['vin'] == vin
-    assert sql[0]['create_date'] > msg_time
+    assert sql[0]['create_date'] >= msg_time
     print('消息推送到消息中心时间:{}'.format(sql[0]['create_date']))
 
 

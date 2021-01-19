@@ -3,7 +3,7 @@ from calendar_file.canlendar_api import Calendar
 import allure
 import random
 
-ma_calendar = Calendar(tenant='MA')
+ma_calendar = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
 
 
 @pytest.fixture()
@@ -53,7 +53,7 @@ def test_get_last_time():
     '''
     获取日历最近一次更新时间
     '''
-    body = ma_calendar.get_last_time(ma_calendar.uid, deviceId=ma_calendar.device_id)
+    body = ma_calendar.get_last_time()
     assert body['data']['updateTime'] is not None
 
 

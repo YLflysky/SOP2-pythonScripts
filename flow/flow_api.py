@@ -217,13 +217,13 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     flow = Flow()
     bm_pay = BMPayment()
-    aid = '9351484'
-    goods_id = 253
-    vin = 'LFVSOP2TEST000353'
-    iccid = '18559372278'
+    aid = '9353460'
+    goods_id = 255
+    vin = 'LFVTESTMOSC989216'
+    iccid = '82872888912'
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
@@ -233,7 +233,7 @@ if __name__ == '__main__':
     # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
     # flow.remain_flow(flow_type='wifi',vin='BMTESTYAYWS26GQ4T')
 
-    # flow_order = flow.bm_create_flow_order(goods_id=goods_id, aid=aid, vin=vin, quantity=1)
+    flow_order = flow.bm_create_flow_order(goods_id=goods_id, aid=aid, vin=vin, quantity=1)
     # order_no = flow_order['data']['orderNo']
     # bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='11100',category='112',score='N')
     # bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','11101')
@@ -243,7 +243,7 @@ if __name__ == '__main__':
     # flow.flow_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
     # flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=2,status=2)
-    flow.cp_common_notify(id='ftb2021011316202115457344', category=1, status='1000_00', origin_id=flow.f.md5(),channel='WECHAT_PAY')
+    # flow.cp_common_notify(id='ftb2021011316202115457344', category=1, status='1000_00', origin_id=flow.f.md5(),channel='WECHAT_PAY')
     # flow.cp_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.2,
     #                  asset_type='iccid',asset_id=uat_iccid,package_id='P1001149798')
     # flow.cp_over_due_notify(asset_id=iccid,asset_type='iccid',package_code='P1001183210',

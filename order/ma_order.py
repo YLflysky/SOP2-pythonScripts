@@ -159,7 +159,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     aid = '4614183'
     ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
-    ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
+    # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
     # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
     # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349824',service_id='09',sp_id='090002',
     #                     order_type='BUSINESS',ex_order=ma_order.f.md5(),category='09',title='标准洗车-五座轿车',

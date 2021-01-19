@@ -14,7 +14,7 @@ class Calendar(Base):
         self.password = password
         self.vin = vin
         self.uid = aid
-        # self.header['uid'] = aid
+        self.header['aid'] = aid
         self.mobile_url = self.read_conf('sop2_env.conf', self.env, 'one_app_host')
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
 
@@ -164,7 +164,7 @@ class Calendar(Base):
 
 if __name__ == '__main__':
     os.environ['GATE'] = 'true'
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     b = Base(tenant='BM')
     bm_c = Calendar(tenant='BM',name='13353116624',password='000000',vin='LFVSOP2TESTLY0003',aid='9353497')
     # bm_c.get_last_time(bm_c.uid,deviceId=None)
