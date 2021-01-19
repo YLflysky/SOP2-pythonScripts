@@ -215,13 +215,13 @@ class Order(Base):
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
-    def sync_order_pay(self, pay_no,aid,order_no, pay_status,**kwargs):
+    def sync_order_pay(self, pay_no,aid,order_no, pay_status,channel,**kwargs):
         '''
         同步支付结果
         '''
         url = self.url + '/sm/order/v1/order/sync/pay'
-        data = {'payOrderNo': pay_no,'orderNo':order_no,'aid':aid, 'payChannel': 'WECHAT_PAY', 'payAmount': '1.00',
-                'payType': 'APP', 'payTime': self.time_delta(),'payStatus':pay_status,**kwargs}
+        data = {'payNo': pay_no,'orderNo':order_no,'aid':aid, 'payChannel': channel, 'payAmount': '1.00',
+                'payType': 'APP', 'payTime': self.time_delta(),'payStatus':pay_status,'payWay':'QR_PAY',**kwargs}
         code,body = self.do_post(url,data)
         self.assert_msg(code,body)
         return body
@@ -289,4 +289,4 @@ if __name__ == '__main__':
     # print(res)
     # info = {'name': 'waka waka', 'age': 18}
     # o.sync_order_kafka(ep_order_id=9959,business_info=info,tenant='ASTERIX')
-    o.business_kafka(order_no='78675824282251835979',event_type='RIGHTS_OPEN',business_state='开通完成',business_state_desc='音乐服务开通完成')
+    # o.business_kafka(order_no='78675824282251835979',event_type='RIGHTS_OPEN',business_state='开通完成',business_state_desc='音乐服务开通完成')

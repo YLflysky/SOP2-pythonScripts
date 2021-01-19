@@ -149,6 +149,18 @@ class MAOrder(Base):
         assert c == 200
         assert b['returnStatus'] == 'SUCCEED'
 
+    def order_detail(self,aid,order_no,vin):
+        '''
+        MA车机端获取订单详情
+        :param aid:
+        :param order_no:
+        :return:
+        '''
+
+        url = self.url + '/mosc-order-ma/order/api/v2/vins/{}/users/{}/orders/{}'.format(vin,aid,order_no)
+
+        c,b = self.do_get(url,None)
+        self.assert_bm_msg(c,b)
 
 
 if __name__ == '__main__':
@@ -159,6 +171,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     aid = '4614183'
     ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
+    ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
     # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
     # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349824',service_id='09',sp_id='090002',

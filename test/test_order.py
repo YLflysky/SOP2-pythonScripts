@@ -452,6 +452,7 @@ def test_rights_open_kafka(d):
     '''
     order_no = o.add_order()
     o.business_kafka(order_no,event_type=d[0],business_state=d[1],business_state_desc=d[2])
+    time.sleep(2.0)
     sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(order_no),'fawvw_order')
     try:
         if d[0] == 'RIGHTS_OPEN':

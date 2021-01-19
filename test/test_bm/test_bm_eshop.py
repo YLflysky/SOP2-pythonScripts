@@ -146,7 +146,7 @@ def test_smart_eshop_list_02(key):
     res = bm_shop.goods_list(no=1,size=10,keyword=key)
     assert res['totalCount'] == len(res['data'])
     for x in res['data']:
-        assert x['skuName']
+        assert key in x['skuName']
 
 
 @allure.suite('eshop')
