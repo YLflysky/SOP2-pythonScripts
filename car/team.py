@@ -61,6 +61,24 @@ class Team(TencentCar):
         code,body = self.do_post(url,data=data)
         self.assert_msg(code,body)
 
+    def join_last_group(self,account,vin,group,longitude,latitude):
+        '''
+        加入最近一次组队
+        :param account:
+        :param vin:
+        :param group:
+        :param longtitude:
+        :param latitude:
+        :return:
+        '''
+
+        url = self.url + '/api/v1/joinLastGroup'
+
+        data = {'accountId':account,'vin':vin,'groupId':group,'longitude':longitude,'latitude':latitude}
+
+        c,b = self.do_post(url,data)
+        self.assert_ma_msg(c,b)
+
     def get_hash_vin(self,vin):
         '''
         根据vin 获取 hash vin
@@ -87,4 +105,5 @@ if __name__ == '__main__':
     # groupId = t.find_last_group(uid,vin)['groupId']
     # invite_pwd = t.find_last_group(uid,vin)['invitePassword']
     # t.join_team(accountId=uid,vin=vin,group_id=groupId,invite=invite_pwd)
+    t.join_last_group(account='9349829',group='5728304453166',longitude='116.388729',latitude='39.871198',vin='LFVSOP2TEST000048')
     # t.position(name='sergio')

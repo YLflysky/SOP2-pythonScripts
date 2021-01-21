@@ -92,7 +92,7 @@ def test_get_event_list_date():
 
 
 @allure.suite('test_ma-calendar')
-@allure.title('MA车机端新增用户日历事件')
+@allure.title('MA车机端新增用户日历事件>>输入必填项')
 @pytest.mark.ma_calendar
 def test_add_event_01():
     '''
@@ -111,7 +111,7 @@ def test_add_event_01():
 
 
 @allure.suite('test_ma-calendar')
-@allure.title('MA车机端新增用户日历事件')
+@allure.title('MA车机端新增用户日历事件>>输入全部参数')
 @pytest.mark.ma_calendar
 def test_add_event_02():
     '''
@@ -150,7 +150,7 @@ def test_add_event_02():
 
 
 @allure.suite('test_ma-calendar')
-@allure.title('MA车机端新增用户日历事件')
+@allure.title('MA车机端新增用户日历事件>>输入开始时间在结束时间之后，报错')
 @pytest.mark.ma_calendar
 def test_add_event_03():
     '''
@@ -160,11 +160,11 @@ def test_add_event_03():
     e = ma_calendar.get_time_stamp(days=1)
     body = ma_calendar.add_event(s, e)
 
-    assert body['description'] == 'wrong date range'
+    assert body['errorMessage'] == 'wrong date range'
 
 
 @allure.suite('test_ma-calendar')
-@allure.title('MA车机端新增用户日历事件')
+@allure.title('MA车机端新增用户日历事件>>传入rrule为Only Once')
 @pytest.mark.ma_calendar
 def test_add_event_04():
     '''
@@ -179,7 +179,7 @@ def test_add_event_04():
 
 
 @allure.suite('test_ma-calendar')
-@allure.title('MA车机端新增用户日历事件')
+@allure.title('MA车机端新增用户日历事件>>传入错误的rrule，报错')
 @pytest.mark.ma_calendar
 def test_add_event_05():
     '''
@@ -188,7 +188,7 @@ def test_add_event_05():
     s = ma_calendar.get_time_stamp(days=2)
     e = ma_calendar.get_time_stamp(days=3)
     body = ma_calendar.add_event(s, e, rrule='Only Once1')
-    assert body['statusMessage'] == 'rule resolve error'
+    assert body['errorMessage'] == 'rule resolve error'
 
 
 @pytest.mark.ma_calendar

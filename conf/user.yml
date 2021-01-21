@@ -25,3 +25,47 @@ uat:
     LFVTESTMOSC989216
   iccid:
     18559372278
+
+uat1:
+  name: 金红
+  phone: 13770614790
+  vin: LFVSOP2TEST000331
+  iccid: 898608000918cmcc0040
+
+uat2:
+  name: 鲍勇
+  phone: 15301887122
+  vin: 0U7QJUB32MACVB3UI
+  iccid: 15052396629
+
+uat3:
+  name: ~
+  aid: !!str 9353750
+  phone: 18201615175
+  password: 000000
+  vin:  LFVSOP2TESTLY0014
+  iccid: 15052396629
+
+uat_zqs:
+  name: 周秋实
+  aid: !!str 9351484
+  phone: ~
+  password: ~
+  vin:  LFVTESTMOSC989216
+  iccid: 18559372278
+
+uat_te1:
+  name: 王月
+  aid: !!str 4614233
+  phone: 15144142651
+  password: Qq111111
+  vin: LFV2A2BUXL4651255
+  iccid: 89860802092031013415
+
+uat_te2:
+  name: D.K
+  aid: !!str 4608272
+  phone: 18646085616
+  password: Qq111111
+  vin: LFV1A23C6L3309793
+  iccid: 89860802092030564991

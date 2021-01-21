@@ -493,7 +493,7 @@ class Base:
         abs_path = os.path.join(file_dir,file_name)
         with open(abs_path,'r',encoding='utf-8') as obj:
             data = obj.read()
-            return yaml.load(data)
+            return yaml.load(data,Loader=yaml.FullLoader)
 
 
 
