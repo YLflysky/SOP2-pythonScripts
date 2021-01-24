@@ -134,7 +134,7 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     aid = '9349485'
@@ -148,11 +148,11 @@ if __name__ == '__main__':
             "serviceId": "serviceId002", "serviceOrderState": "serviceOrderState002",
             "serviceOrderStateDesc": "serviceOrderStateDesc002", "spId": "spId002", "title": "title_test002",
             "userId": aid, "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509",'orderStatus':None}
-    o.sync_bm_order(o.get_time_stamp(), data)
+    # o.sync_bm_order(o.get_time_stamp(), data)
     # o.bm_cancel_order(aid='4614931',order_no='ftb20201203160039247753664')
     # o.order_count(vin='DEFAULT_VIN',uid='33')
-    # o.update_bm_order(order_no='ftb20201230142447543475136',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId='9351549',updateType='1',
-    #                   serviceOrderState='success',serviceOrderStateDesc='已完成')
+    o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
+                      businessState='success',businessStateDesc='已完成')
     # o.reload_config()
     # o.bm_order_detail(aid='1610403945536',order_no='ftb20210112062545591860160',vin=None)
     # o.music_order_create(tenant_id='VW',aid=aid,vin=vin,goods='101',quantity=1)

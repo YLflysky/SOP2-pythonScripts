@@ -49,10 +49,10 @@ uat3:
 uat_zqs:
   name: 周秋实
   aid: !!str 9351484
-  phone: ~
-  password: ~
+  phone: 13482172676
+  password: 000000
   vin:  LFVTESTMOSC989216
-  iccid: 18559372278
+  iccid: !!str 18559372278
 
 uat_te1:
   name: 王月

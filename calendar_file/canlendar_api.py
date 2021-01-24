@@ -129,6 +129,7 @@ class Calendar(Base):
         :param events: 事件，列表类型
         :return:
         '''
+        self.header['vin'] = self.vin
         url = self.mobile_url + '/oneapp/calendar/public/event/sync'
         data = {'currentTime':current_time,'events':events}
         c,b = self.do_post(url,data,gateway='APP')
@@ -141,7 +142,7 @@ class Calendar(Base):
         app获取用户所有事件接口
         :return:
         '''
-
+        self.header['vin'] = self.vin
         url = self.mobile_url + '/oneapp/calendar/public/event/findAll'
         code,body = self.do_get(url,None,gateway='APP')
         print(body)
@@ -166,15 +167,15 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'true'
     os.environ['ENV'] = 'UAT'
     b = Base(tenant='BM')
-    bm_c = Calendar(tenant='BM',name='13353116624',password='000000',vin='LFVSOP2TESTLY0003',aid='9353497')
+    # bm_c = Calendar(tenant='BM',name='13353116624',password='000000',vin='LFVSOP2TESTLY0003',aid='9353497')
     # bm_c.get_last_time(bm_c.uid,deviceId=None)
-    bm_c.get_tenant_by_vin()
-    # ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
+    # bm_c.get_tenant_by_vin()
+    ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
     # ma_c.get_tenant_by_vin()
     # c.find_all_event(update_time=None)
     event = {'localEventId': b.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
                      'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
-    bm_c.mobile_sync(current_time=None,events=[event])
+    ma_c.mobile_sync(current_time=None,events=[event])
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10))
     # c.find_detail(39355)
-    # c.mobile_find_all()
+    # ma_c.mobile_find_all()

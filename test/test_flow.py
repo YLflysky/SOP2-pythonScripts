@@ -352,3 +352,33 @@ def test_use_score():
     assert res['errorMessage'] == '订单不能使用积分'
     res = bm_pay.get_pay_channel(vin,aid,order_no,'111')
     assert res['data']['scoreInfo'] is None
+
+
+@pytest.mark.flow
+@allure.suite('flow')
+@allure.title('用户免密签约成功后>>查询签约结果')
+@pytest.mark.parametrize('aid',['995939534','123'])
+def test_get_cp_sign_result_wx(aid):
+    '''
+    测试查询微信支付签约结果根据cp实时查询
+    :return:
+    '''
+    # 查询签约成功的用户结果
+    res = flow.get_sign_result(aid=aid,sp_id='CMCC',channel='WECHAT_PAY')
+    assert res['data']['payChannel'] == 'WECHAT_PAY'
+    assert res['data']['signStatus'] == 'OPEN'
+
+
+@pytest.mark.flow
+@allure.suite('flow')
+@pytest.mark.parametrize('channel',['WECHAT_PAY','ALI_PAY'])
+@allure.title('用户未免密签约>>查询签约结果为CLOSE')
+def test_get_cp_sign_result_close(channel):
+    '''
+    测试查询签约结果为CLOSE
+    :return:
+    '''
+    # 查询签约成功的用户结果
+    res = flow.get_sign_result(aid=flow.f.md5(),sp_id='CMCC',channel=channel)
+    assert res['data']['payChannel'] == channel
+    assert res['data']['signStatus'] == 'CLOSE'

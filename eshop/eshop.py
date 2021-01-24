@@ -14,9 +14,9 @@ class EShop(Base):
         assert 200 == code
         assert body['status'] == 'SUCCEED'
 
-    def get_spare_list(self,category,index=1,size=10,**kwargs):
+    def get_list(self,category,index=1,size=10,**kwargs):
         '''
-        获取备件商城列表
+        获取商城列表
         '''
         url = self.url + '/goods/search'
         param = {'pageIndex':index,'pageSize':size}
@@ -95,10 +95,10 @@ if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
-    shop = PointsShop('MA')
-    category = shop.get_category_id()
+    shop = SpareShop('BM')
+    # category = shop.get_category_id()
     # print(category)
-    # shop.get_spare_list('all',size=100)
+    shop.get_list('all',size=100)
     # goods_id = shop.get_spare_list(category='all')
     # goods_id = goods_id['data'][0]['goodsId']
     # shop.get_spare_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')

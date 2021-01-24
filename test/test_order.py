@@ -169,7 +169,7 @@ def test_sync_pay():
     aid = sql['aid']
     order_no = sql['order_no']
     pay_no = o.f.md5()
-    o.sync_order_pay(pay_no,aid=aid,order_no=order_no,pay_status='SUCCESS')
+    o.sync_order_pay(pay_no,aid=aid,order_no=order_no,pay_status='SUCCESS',channel='ALI_PAY')
     res = o.do_mysql_select('select count(1) from order_pay where pay_no = "{}"'.format(pay_no), 'fawvw_order')
     assert len(res) == 1
     o.do_mysql_exec('delete from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
