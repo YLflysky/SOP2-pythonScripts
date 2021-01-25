@@ -234,12 +234,12 @@ if __name__ == '__main__':
     flow = Flow()
     bm_pay = BMPayment()
     user_data = flow.read_yml('../conf','user.yml')
-    user_data = user_data['uat1']
+    user_data = user_data['uat4']
     aid = '1234'
     goods_id = 255
     vin = user_data['vin']
     iccid = user_data['iccid']
-    # flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
+    # flow.get_sign_result(aid,sp_id='CMCC',channel='ALI_PAY')
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
@@ -247,11 +247,11 @@ if __name__ == '__main__':
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
-    # flow.remain_flow(flow_type='wifi',vin='BMTESTYAYWS26GQ4T')
+    # flow.remain_flow(flow_type='media',vin='LFVTESTMOSC989216')
 
-    # flow_order = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)
+    flow_order = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)
     # order_no = flow_order['data']['orderNo']
-    bm_pay.get_qr_code(vin,aid,order_no='ftb2021012410054289090112',pay_type='11100',category='112',score='N')
+    # bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='11103',category='112',score='N')
     # bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','11101')
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid,channel=1,notify_type=1,status=1)

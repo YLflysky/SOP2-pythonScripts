@@ -46,6 +46,14 @@ uat3:
   vin:  LFVSOP2TESTLY0014
   iccid: 15052396629
 
+uat4:
+  name: 颜虎
+  aid: !!str ~
+  phone: 13428792800
+  password: Aa12345678
+  vin: ZHFPZ1DQ7M3APDW5Y
+  iccid: 91930823863
+
 uat_zqs:
   name: 周秋实
   aid: !!str 9351484

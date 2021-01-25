@@ -51,7 +51,7 @@ class Team(TencentCar):
         url = self.url + '/api/v1/findLastGroup'
         data = {'vin':vin,'accountId':uid}
         code,body = self.do_post(url,data)
-        self.assert_msg(code,body)
+        self.assert_bm_msg(code,body)
         return body['data']
 
     def join_team(self,accountId,vin,group_id,invite):
@@ -96,14 +96,14 @@ class Team(TencentCar):
 
 if __name__ == '__main__':
     t = Team()
-    uid='9349628'
-    vin='LFVSOP2TEST000007'
-    t.get_hash_vin(vin='LFVSOP2TESTLY0002')
+    uid='9349829'
+    vin='LFVSOP2TEST000048'
+    # t.get_hash_vin(vin='LFVSOP2TESTLY0002')
     # t.create_group(uid,vin)
     # open_id = t.get_info(uid,vin)['weChatOpenId']
     # print(open_id)
-    # groupId = t.find_last_group(uid,vin)['groupId']
+    groupId = t.find_last_group(uid,vin)['groupId']
     # invite_pwd = t.find_last_group(uid,vin)['invitePassword']
-    # t.join_team(accountId=uid,vin=vin,group_id=groupId,invite=invite_pwd)
-    t.join_last_group(account='9349829',group='5728304453166',longitude='116.388729',latitude='39.871198',vin='LFVSOP2TEST000048')
+    # t.join_team(accountId=uid,vin=vin,group_id='53011910083707',invite=invite_pwd)
+    t.join_last_group(account='9349829',group=groupId,longitude='116.388729',latitude='39.871198',vin='LFVSOP2TEST000048')
     # t.position(name='sergio')
