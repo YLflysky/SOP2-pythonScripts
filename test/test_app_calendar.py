@@ -72,3 +72,5 @@ def test_sop1_app_sync_event():
     assert sop1_c.get_tenant_by_vin() == 'SOP1.5'
     lk.prt('check SOP1 tenant success')
     res = sop1_c.mobile_sync(current_time=None,events=[event])
+
+

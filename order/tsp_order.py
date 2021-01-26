@@ -26,7 +26,7 @@ class TSPOrder(Base):
         :return:
         '''
         url = self.url + '/tsp/order/export'
-        data = {'brand':brand,**kwargs}
+        data = {'brand':brand,'userId':aid,'userName':name,**kwargs}
         self.header['userId'] = aid
         self.header['userName'] = name
         c,b = self.do_get(url,data)
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'SIT'
     tsp = TSPOrder()
-    tsp.order_list(size=10000)
-    # tsp.order_export(aid='111',name='111',brand='VW',orderNo='ftb20201229')
+    # tsp.order_list(size=10000)
+    tsp.order_export(aid='111',name='111',brand='VW',orderNo='ftb20201229')
 
 

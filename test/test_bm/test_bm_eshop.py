@@ -28,7 +28,7 @@ def test_get_spare_list():
     测试获取备件列表
     '''
     category = spare.get_category_id()
-    res = spare.get_spare_list(category=category,index=1,size=100)
+    res = spare.get_list(category=category,index=1,size=100)
     if res['total'] != 0:
         names = []
         for good in res['data']:
@@ -45,7 +45,7 @@ def test_get_spare_list_sort():
     '''
     测试获取备件列表，测试排序
     '''
-    res = spare.get_spare_list(category='all',index=1,size=100,sort='asc',sortName='price')
+    res = spare.get_list(category='all',index=1,size=100,sort='asc',sortName='price')
     if res['total'] != 0:
         names = []
         for good in res['data']:
@@ -63,7 +63,7 @@ def test_get_spare_list_reverse():
     '''
     测试获取备件列表，测试倒序排序
     '''
-    res = spare.get_spare_list(category='all',index=1,size=100,sort='desc',sortName='price')
+    res = spare.get_list(category='all',index=1,size=100,sort='desc',sortName='price')
     if res['total'] != 0:
         names = []
         for good in res['data']:
@@ -74,7 +74,7 @@ def test_get_spare_list_reverse():
             allure.attach(str(names),'price')
 
 
-@allure.suite('eshop')
+@allure.suite('smart_eshop')
 @allure.title('智能设备商城底层获取一级类目')
 @pytest.mark.eshop
 def test_get_category_1():
@@ -89,7 +89,7 @@ def test_get_category_1():
         allure.attach(str(first),'list',attachment_type=allure.attachment_type.TEXT)
 
 
-@allure.suite('eshop')
+@allure.suite('smart_eshop')
 @allure.title('智能设备商城底层获取二级类目')
 @pytest.mark.eshop
 def test_get_category_2():
@@ -100,7 +100,7 @@ def test_get_category_2():
         assert d['name']
 
 
-@allure.suite('eshop')
+@allure.suite('smart_eshop')
 @allure.title('智能设备商城底层获取三级类目')
 @pytest.mark.eshop
 def test_get_category_3():
@@ -113,7 +113,7 @@ def test_get_category_3():
         assert d['name']
 
 
-@allure.suite('eshop')
+@allure.suite('smart_eshop')
 @allure.title('智能设备商城获取商品详情')
 @pytest.mark.eshop
 @pytest.mark.parametrize('sku',['100002099880','100004466546','7360341','5066434'])
@@ -124,7 +124,7 @@ def test_smart_eshop_detail(sku):
     assert res['data']['cpId'] == cp
 
 
-@allure.suite('eshop')
+@allure.suite('smart_eshop')
 @allure.title('智能设备商城获取商品列表，根据价格排序')
 @pytest.mark.eshop
 @pytest.mark.parametrize('sort',['desc','asc'])
@@ -137,7 +137,7 @@ def test_smart_eshop_list_01(sort):
     print(prices)
 
 
-@allure.suite('eshop')
+@allure.suite('smart_eshop')
 @allure.title('智能设备商城获取商品列表，根据关键字查询')
 @pytest.mark.eshop
 @pytest.mark.parametrize('key',['京','京鱼座音箱'])
@@ -149,7 +149,7 @@ def test_smart_eshop_list_02(key):
         assert key in x['skuName']
 
 
-@allure.suite('eshop')
+@allure.suite('smart_eshop')
 @allure.title('智能设备商城获取商品列表，根据category2查询')
 @pytest.mark.eshop
 def test_smart_eshop_list_03():
@@ -159,7 +159,7 @@ def test_smart_eshop_list_03():
         assert res['totalCount'] == len(res['data'])
 
 
-@allure.suite('eshop')
+@allure.suite('smart_eshop')
 @allure.title('智能设备商城获取商品列表，根据category3查询')
 @pytest.mark.eshop
 @pytest.mark.parametrize('category3',[[842,758,967,870]])
@@ -169,7 +169,7 @@ def test_smart_eshop_list_04(category3):
     assert res['totalCount'] == len(res['data']) == 4
 
 
-@allure.suite('eshop')
+@allure.suite('smart_eshop')
 @allure.title('智能设备商城获取商品列表，同时传入category2和category3，报错')
 @pytest.mark.eshop
 def test_smart_eshop_list_04():
@@ -177,7 +177,7 @@ def test_smart_eshop_list_04():
     assert res['errorMessage']
 
 
-@allure.suite('eshop')
+@allure.suite('smart_eshop')
 @allure.title('智能设备商城获取商品列表》》商品详情')
 @pytest.mark.eshop
 def test_smart_eshop_detail():

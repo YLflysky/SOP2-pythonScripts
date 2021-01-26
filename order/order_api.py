@@ -230,16 +230,21 @@ class Order(Base):
         '''
         模拟业务系统发送kafka权益开通消息，
         :param order_no:ms订单号
-        :param event_type:事件类型,权益开通才处理
+        :param event_type:事件类型,处理类型RIGHTS_OPEN,CREATION,UPDATE_BUSINESS_STATUS
         :param business_state:业务状态
         :param business_state_desc:业务状态描述
         :return:
         '''
-        kafka_data = {'orderNo':order_no,
-                      'evenType':event_type,
-                      'occurTime':self.get_time_stamp(),
-                      'businessState':business_state,
-                      'businessStateDesc':business_state_desc}
+        if event_type in('RIGHTS_OPEN','CREATION'):
+            kafka_data = {
+                          'evenType':event_type,
+                          'occurTime':self.get_time_stamp(),
+                          'data':{'orderNo':order_no}}
+        else:
+            kafka_data = {
+                'evenType': event_type,
+                'occurTime': self.get_time_stamp(),
+                'data': {'orderNo': order_no,'businessState':business_state,'businessStateDesc':business_state_desc}}
 
         topic = 'Order_Origin_Business_System_Event'
         self.send_kafka_msg(topic, kafka_data,host='SOP2')
@@ -267,7 +272,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = Order()
-    o.add_order()
+    order_no = o.add_order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
     # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
     # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
@@ -289,4 +294,4 @@ if __name__ == '__main__':
     # print(res)
     # info = {'name': 'waka waka', 'age': 18}
     # o.sync_order_kafka(ep_order_id=9959,business_info=info,tenant='ASTERIX')
-    # o.business_kafka(order_no='78675824282251835979',event_type='RIGHTS_OPEN',business_state='开通完成',business_state_desc='音乐服务开通完成')
+    o.business_kafka(order_no=order_no,event_type='RIGHTS_OPEN',business_state='开通完成',business_state_desc='音乐服务开通完成')

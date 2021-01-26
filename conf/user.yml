@@ -29,6 +29,7 @@ uat:
 uat1:
   name: 金红
   phone: 13770614790
+  aid: !!str 9350963
   vin: LFVSOP2TEST000331
   iccid: 898608000918cmcc0040
 
@@ -48,7 +49,7 @@ uat3:
 
 uat4:
   name: 颜虎
-  aid: !!str ~
+  aid: !!str 9353450
   phone: 13428792800
   password: Aa12345678
   vin: ZHFPZ1DQ7M3APDW5Y

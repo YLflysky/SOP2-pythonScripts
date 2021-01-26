@@ -168,9 +168,11 @@ class MAOrder(Base):
         c,b = self.do_get(url,None)
         self.assert_bm_msg(c,b)
 
-    def sop1_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
+
+
+    def ma_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
         '''
-        SOP1车机端创建商品订单接口》》车机端接口
+        SOP2MA车机端创建商品订单接口》》车机端接口
         :param goods_id:商品ID，orderCategory为PAID_CONTENT，priceType为2时，为专辑号，priceType为1时，为音频编号用“,”隔开其他均为商品ID
         :param category:商品类型（MUSIC_VIP，RADIO_VIP，WIFI_FLOW，MEDIA_FLOW，PAID_CONTENT）
         :param price_type:支付方式1音频,2整张专辑orderCategor为PAID_CONTENT，priceType必传
@@ -179,9 +181,8 @@ class MAOrder(Base):
         :param kwargs:
         :return:
         '''
-        url = self.url + '/mos/payment/api/v1/orderCreate'
+        url = self.url + '/mosc-order-ma/order/mos/order/api/v1/create'
         data = {'userId':aid,'goodsId': goods_id, 'vin':vin,'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
-
         c, b = self.do_post(url, data)
         print(b)
         return b
@@ -205,11 +206,11 @@ if __name__ == '__main__':
     #                     business_state='0',desc='待支付',
     #                     amount=5.00,discount=0.25,pay_amount=4.75,timeout=1000,
     #                     business_info=info)
-    ma_order.sync_order_pay(aid='9349824',order_no='20210125150147517405504',pay_order_no='1234',channel='WECHAT_PAY',pay_type='QR_CODE',
-                            pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02)
+    # ma_order.sync_order_pay(aid='9349824',order_no='20210125150147517405504',pay_order_no='1234',channel='WECHAT_PAY',pay_type='QR_CODE',
+    #                         pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02)
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
-    # order_no = ma_order.sop1_create_order(aid=aid,vin='LFV2A11KXA3030241',goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
+    order_no = ma_order.ma_create_order(aid=aid,vin='LFV2A11KXA3030241',goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
     # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1)['data']
     # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1)['data']
     # ma_order.get_ma_qr_code(order_no['data'],pay_type='11103')

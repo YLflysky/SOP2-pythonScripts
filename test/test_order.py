@@ -440,27 +440,31 @@ def test_del_order_02():
 
 
 @allure.suite('order')
-@allure.title('处理权益开通kafka消息')
+@allure.title('测试消费kafka消息更改订单状态')
 @pytest.mark.order
-@pytest.mark.parametrize('d',[('RIGHTS_OPEN','1002','已完成'),('RIGHTS_OPEN','sergio test','sergio test desc'),
-                              ('RIGHTS_OPEN',None,None),('CALLBACK','1002','已完成'),('RIGHTS_OPEN','1002',None),
-                              ('RIGHTS_OPEN',None,'已完成')],
-                         ids=['权益开通+业务改变','权益开通+业务改变2','权益开通','错误的event','不填业务状态描述','不填业务状态'])
+@pytest.mark.parametrize('d',[('UPDATE_BUSINESS_STATUS','1002','已完成'),('UPDATE_BUSINESS_STATUS','sergio test','sergio test desc'),
+                              ('RIGHTS_OPEN',None,None),('CALLBACK','1002','已完成'),('UPDATE_BUSINESS_STATUS','1002',None),
+                              ('UPDATE_BUSINESS_STATUS',None,'已完成'),('CREATION',None,None)],
+                         ids=['业务改变','业务改变2','权益开通','错误的event','不填业务状态描述','不填业务状态','创建订单'])
 def test_rights_open_kafka(d):
     '''
-    处理权益开通kafka消息
+    测试消费kafka消息
     '''
     order_no = o.add_order()
     o.business_kafka(order_no,event_type=d[0],business_state=d[1],business_state_desc=d[2])
     time.sleep(2.0)
+    print('暂停两秒消费kafka消息')
     sql_res = o.do_mysql_select('select * from `order` where order_no="{}"'.format(order_no),'fawvw_order')
     try:
         if d[0] == 'RIGHTS_OPEN':
             assert sql_res[0]['order_status'] == 'FINISH'
+        elif d[0] == 'UPDATE_BUSINESS_STATUS':
             if d[1]:
                 assert sql_res[0]['business_status'] == d[1]
             if d[2]:
                 assert sql_res[0]['business_status_desc'] == d[2]
+        elif d[0] == 'CREATION':
+            assert len(sql_res) == 1
         else:
             return
     finally:

@@ -3,7 +3,7 @@ import allure
 import random
 import sys, os
 import json
-from flow.flow_api import Flow
+from flow.flow import Flow
 from order.payment import Payment
 from order.bm_payment import BMPayment
 from box.lk_logger import lk
