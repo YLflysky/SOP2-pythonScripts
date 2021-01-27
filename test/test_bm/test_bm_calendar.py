@@ -168,7 +168,7 @@ def test_find_all_app():
     获取用户全部日历信息，输入时间
     '''
     body = c.find_all_event(update_time=None)
-    sql = c.do_mysql_select('select count(1) as events from calendar_event where uid ="9350195" and cud_status in ("C","U") and rrule_expiration_date> NOW()','fawvw_calendar')
+    sql = c.do_mysql_select('select count(1) as events from calendar_event where uid ="9353497" and cud_status in ("C","U") and rrule_expiration_date> NOW()','fawvw_calendar')
     assert len(body['data']['events']) == sql[0]['events']
     print('用户所有日历事件个数:{}'.format(sql[0]['events']))
 

@@ -210,6 +210,12 @@ class Flow(Base):
         c,b = self.do_get(url,None)
         self.assert_msg(c,b)
 
+    def bm_flow_list(self,aid,vin):
+        self.header['aid'] = aid
+        url = self.hu_url + '/flow/api/v1/dataflow/users/{}/vehicles/{}/detail'.format(aid, vin)
+        c, b = self.do_get(url, None)
+        self.assert_msg(c, b)
+
     def get_sign_result(self,aid,sp_id,channel):
         '''
         流量底层获取签约结果
@@ -230,16 +236,16 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     flow = Flow()
     bm_pay = BMPayment()
     user_data = flow.read_yml('../conf','user.yml')
     user_data = user_data['uat4']
-    aid = '9353450'
+    aid = '9353263'
     goods_id = 255
-    vin = user_data['vin']
+    vin = 'LFVTESTMOSC989216'
     iccid = user_data['iccid']
-    flow.get_sign_result(aid,sp_id='CMCC',channel='ALI_PAY')
+    # flow.get_sign_result(aid,sp_id='CMCC',channel='ALI_PAY')
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
@@ -247,7 +253,8 @@ if __name__ == '__main__':
     # flow.goods_list(['WIFI_FLOW'])
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
-    # flow.remain_flow(flow_type='media',vin='LFVTESTMOSC989216')
+    # flow.bm_flow_list(aid,vin)
+    flow.remain_flow(flow_type='media',vin='LFVTESTMOSC989216')
 
     # flow_order = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)
     # order_no = flow_order['data']['orderNo']

@@ -105,22 +105,20 @@ def test_sign_result_notify(param):
 @allure.suite('flow')
 @allure.title('免密签约成功影响获取支付方式字段')
 @pytest.mark.flow
-@pytest.mark.parametrize('param', [(1, 'AliPay'), (2, 'WeChat')],ids=['支付宝签约通知paychannel', '微信签约通知paychannel'])
-def test_sign_result_notify_success(param):
+def test_sign_result_notify_success():
     aid = '122'
     vin = 'LFVSOP2TEST000353'
-    res = flow.sign_result_callback(aid, param[0], 1, 1)
-    try:
-        assert res['status'] == '0000_0'
-        assert res['messages'][0] == '成功'
-        order_no = flow.bm_create_flow_order(goods_id='253', aid=aid, vin=vin,quantity=1)['data']['orderNo']
-        pay_channel = bm_pay.get_pay_channel(vin,aid,order_no,category='111')
-        for gateway in pay_channel['data']['gatewayList']:
-            if gateway['payGatewayName'] == param[1]:
-                assert gateway['signAccount'] == aid
-                assert gateway['isSignWithhold'] == '101'
-    finally:
-        flow.do_mysql_exec('delete from contract_sign where aid="{}"'.format(aid),'fawvw_pay')
+    lk.prt('aid="122" 已经微信签约，支付宝不能签约')
+    order_no = flow.bm_create_flow_order(goods_id='253', aid=aid, vin=vin,quantity=1)['data']['orderNo']
+    pay_channel = bm_pay.get_pay_channel(vin,aid,order_no,category='111')
+    for gateway in pay_channel['data']['gatewayList']:
+        if gateway['payGatewayName'] == 'WeChat':
+            assert gateway['signAccount'] == aid
+            assert gateway['isSignWithhold'] == '101'
+
+        else:
+            assert gateway['signAccount'] is None
+            assert gateway['isSignWithhold'] == '100'
 
 
 @allure.suite('flow')
@@ -321,7 +319,6 @@ def test_cp_sim_notify_ftb22():
     acc_id = '995939534cmcctest002x'
     package = 'P1001146835'
     res = flow.cp_sim_notify(id, date, rule, asset_type, acc_id, package_id=package)
-    assert res['status'] == '000000'
     assert res['messages'][0] == '成功'
     sql = flow.do_mysql_select('select * from mosc_mqtt_message where service_id=8000 order by create_date desc limit 1',
                                'ftb_base_mqtt_center')

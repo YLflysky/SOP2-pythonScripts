@@ -152,7 +152,7 @@ def test_tsp_list_07(no):
     res = tsp.order_list(phoneNumber=no,size=10,no=1)
     data = random.choice(res['data'])
     assert data['orderCategory']
-    assert data['origin']
+    assert 'origin' in data.keys()
     assert 'title' in data.keys()
     assert data['orderNo']
     assert no in data['phoneNumber']
