@@ -15,15 +15,15 @@ class Calendar(Base):
         self.vin = vin
         self.uid = aid
         self.header['aid'] = aid
-        self.mobile_url = self.read_conf('sop2_env.conf', self.env, 'one_app_host')
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
 
         if tenant == 'BM':
-            self.gate = True
             self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
             self.url = self.read_conf('sop2_env.conf', self.env, 'calendar_host')
             # lk.prt('开始获取token...')
-            self.header['Authorization']=self.get_token(self.read_conf('sop2_env.conf',self.env,'token_host'),self.name,self.password,self.vin)
+            if self.gate:
+                token_url = self.read_conf('sop2_env.conf',self.env,'token_host')
+                self.header['Authorization']=self.get_token(token_url,self.name,self.password,self.vin)
             self.header['Did'] = self.device_id
 
         else:
@@ -33,9 +33,9 @@ class Calendar(Base):
             self.url = self.read_conf('ma_env.conf',self.env,'calendar_host')
 
             lk.prt('开始获取token...')
-            self.header['Authorization'] = self.get_token(self.read_conf('ma_env.conf',self.env,'token_host')
-                ,self.name,self.password,self.vin)
-            self.header['Did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
+            token_url = self.read_conf('ma_env.conf', self.env, 'token_host')
+            self.header['Authorization'] = self.get_token(token_url,self.name,self.password,self.vin)
+            self.header['Did'] = self.device_id
 
     def find_all_event(self,update_time):
         '''
@@ -122,60 +122,22 @@ class Calendar(Base):
         assert 200 == code
         return body
 
-    def mobile_sync(self,current_time,events:list):
-        '''
-        APP同步用户日历事件
-        :param current_time: long类型时间戳
-        :param events: 事件，列表类型
-        :return:
-        '''
-        self.header['vin'] = self.vin
-        url = self.mobile_url + '/oneapp/calendar/public/event/sync'
-        data = {'currentTime':current_time,'events':events}
-        c,b = self.do_post(url,data,gateway='APP')
-        print(b)
-        assert c == 200
-        return b
-
-    def mobile_find_all(self):
-        '''
-        app获取用户所有事件接口
-        :return:
-        '''
-        self.header['vin'] = self.vin
-        url = self.mobile_url + '/oneapp/calendar/public/event/findAll'
-        code,body = self.do_get(url,None,gateway='APP')
-        print(body)
-        assert code == 200
-        return body['data']
-
-    def get_tenant_by_vin(self):
-        '''
-        根据vin码获取到是哪个项目的车型
-        :return:
-        '''
-        url = self.hu_url + '/vs/ftb-vehicle/public/v1/tenant/get_by_vin'
-        data = {'vin':self.vin}
-        c,b = self.do_get(url,data)
-        self.assert_bm_msg(c,b)
-        return b['data']['tenantId']
-
 
 
 
 if __name__ == '__main__':
-    os.environ['GATE'] = 'true'
+    os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'SIT'
     b = Base(tenant='BM')
-    bm_c = Calendar(tenant='BM',name='13353116624',password='000000',vin='LFVSOP2TESTLY0003',aid='9353497')
-    # bm_c.get_last_time(bm_c.uid,deviceId=None)
-    # bm_c.get_tenant_by_vin()
+    bm_c = Calendar(tenant='MA')
+    print(bm_c.gate)
+    bm_c.get_last_time()
     # ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
     # ma_c.get_tenant_by_vin()
     # c.find_all_event(update_time=None)
-    event = {'localEventId': b.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
-                     'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
-    bm_c.mobile_sync(current_time=None,events=[event])
+    # event = {'localEventId': b.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
+    #                  'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
+    # bm_c.mobile_sync(current_time=None,events=[event])
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10))
     # c.find_detail(39355)
     # ma_c.mobile_find_all()

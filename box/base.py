@@ -56,7 +56,7 @@ class Base:
 
 
     def get_time_stamp(self,formartted='%Y-%m-%d %H:%M:%S', days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
-        """获取时间戳
+        """获取毫秒级时间戳
 
             - :return:返回时间戳
             """
@@ -65,6 +65,18 @@ class Base:
         return time_stamp
 
     def get_second_time_stamp(self,formartted='%Y-%m-%d %H:%M:%S', days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
+        '''
+        获取秒级时间戳
+        :param formartted:
+        :param days:
+        :param seconds:
+        :param microseconds:
+        :param milliseconds:
+        :param minutes:
+        :param hours:
+        :param weeks:
+        :return:
+        '''
         temp_time = self.time_delta(formartted, days, seconds, microseconds, milliseconds, minutes, hours, weeks)
         time_array = time.strptime(temp_time, formartted)
         return str(int(time.mktime(time_array)))
@@ -106,6 +118,7 @@ class Base:
         s1 = re.sub(pattern1, '', url)
         s2 = re.sub(pattern2, '', s1)
         s2 = s2.replace('/test-access/tm', '')
+        # s2 = s2.replace('/test/mosc-client/one-app-gateway/one/one-app', '')
         if s2.startswith('/'):
             return s2[1:]
         return s2
@@ -154,11 +167,10 @@ class Base:
         lk.prt("In calc digital sign, last_url is: {}".format(last_url_encode))
         # 计算MD5
         last_url_encode = parse.quote(last_url_encode.encode(), safe='')
-        lk.prt("In calc digital sign, last_url_encode is: {}".format(last_url_encode))
         my_md5 = hashlib.md5()
         my_md5.update(last_url_encode.encode())
         digital_sign = my_md5.hexdigest()
-        # self.log.info("In calc digital sign, digital_sign is: {}".format(digital_sign))
+        lk.prt("In calc digital sign, digital_sign is: {}".format(digital_sign))
         url_query_dict["sign"] = digital_sign
 
         return url_query_dict
@@ -174,36 +186,48 @@ class Base:
         pro_path = current_path[:current_path.find(pro_name + seperator) + len(pro_name + seperator)]
         return pro_path
 
-    def get_token(self, url, username, password, vin):
+    def get_token(self, url, username, password, vin,client='HU'):
 
-        headers = {
-            'Content-Type': 'application/json',
-            'TraceId': 'app-store#recommend-list#1527758664#X9G-11111.04.2099990054#12345678',
-            'Did': 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'}
-
-        payload = {
-            "grant_type": "password",
-            "username": username,
-            "password": password,
-            "client_id": "X9G-11111.04.2099990054",
-            "response_type": "token id_token",
-            "scope": "openid",
-            "login_type": "HU",
-            "vin": vin
-        }
+        if client == 'HU':
+            headers = {
+                'Content-Type': 'application/json',
+                'TraceId': 'app-store#recommend-list#1527758664#X9G-11111.04.2099990054#12345678',
+                'Did': 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'}
+            payload = {
+                "grant_type": "password",
+                "username": username,
+                "password": password,
+                "client_id": "X9G-11111.04.2099990054",
+                "response_type": "token id_token",
+                "scope": "openid",
+                "login_type": "HU",
+                "vin": vin
+            }
+        elif client == 'APP':
+            headers = {
+                'Content-Type': 'application/json',
+                'x-namespace-code': 'cdp-uat',
+                'x-microservice-name': 'api-gateway',
+                'Did': 'VW_APP_iPhone_2f6394adc4a50a1317bb39579899fdde2b708f95eec31621230c24acc120f078_12.4.1_3.0.7.t2.2'}
+            payload = {
+                "account": username,
+                "password": password,
+                "scope": "openid profile mbb",
+            }
+        else:
+            return
         data = json.dumps(payload)
         lk.prt('post url is:{}'.format(url))
         lk.prt('post header is:{}'.format(headers))
         lk.prt('post data is :{}'.format(data))
-        res = requests.post(url=url, data=data, headers=headers, verify=False)
+        code,body = self.do_post(url=url, data=data, headers=headers,gateway='APP')
         try:
-            assert res.status_code == 200
-            body = json.loads(res.text)
+            assert code == 200
             token_type = body['data']['token_type']
             access_token = body['data']['access_token']
             return token_type + " " + access_token
         except Exception as e:
-            print(res.text)
+            print(body)
             raise Exception("Get token failed: {}".format(e))
 
     def _is_json(self, string):
@@ -213,7 +237,7 @@ class Base:
             return False
         return True
 
-    def do_post(self, url, data, params=None,gateway='HU', **kwargs):
+    def do_post(self, url, data, params=None,gateway='HU',headers=None, **kwargs):
         if self.gate:
             params = self._calc_digital_sign(url, params,gateway)
         lk.prt('final post url is:{}'.format(url))
@@ -222,8 +246,9 @@ class Base:
         print(type(data), data)
         if data is not None:
             data = data.encode('utf-8')
-        lk.prt('final post header is:{}'.format(self.header))
-        res = requests.post(url=url, data=data, params=params, headers=self.header, verify=True, **kwargs)
+        headers = headers if headers else self.header
+        lk.prt('final post header is:{}'.format(headers))
+        res = requests.post(url=url, data=data, params=params, headers=headers, verify=True, **kwargs)
         try:
             response_body = json.loads(res.text)
         except Exception as e:
