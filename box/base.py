@@ -20,10 +20,10 @@ import sys
 import re
 import random
 from box.my_encoder import MyEncoder
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-import yaml
+# from requests.packages.urllib3.exceptions import InsecureRequestWarning
+# import yaml
 
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+# requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class Base:
 
@@ -484,16 +484,16 @@ class Base:
         '''
         return json.dumps(data,cls=MyEncoder,indent=4)
 
-    def read_yml(self,file_dir,file_name):
-        '''
-
-        :param path:
-        :return:
-        '''
-        abs_path = os.path.join(file_dir,file_name)
-        with open(abs_path,'r',encoding='utf-8') as obj:
-            data = obj.read()
-            return yaml.load(data,Loader=yaml.FullLoader)
+    # def read_yml(self,file_dir,file_name):
+    #     '''
+    #
+    #     :param path:
+    #     :return:
+    #     '''
+    #     abs_path = os.path.join(file_dir,file_name)
+    #     with open(abs_path,'r',encoding='utf-8') as obj:
+    #         data = obj.read()
+    #         return yaml.load(data,Loader=yaml.FullLoader)
 
 
 

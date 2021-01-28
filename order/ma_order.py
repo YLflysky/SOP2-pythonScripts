@@ -208,9 +208,9 @@ if __name__ == '__main__':
     #                     business_info=info)
     # ma_order.sync_order_pay(aid='9349824',order_no='20210125150147517405504',pay_order_no='1234',channel='WECHAT_PAY',pay_type='QR_CODE',
     #                         pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02)
-    # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
+    ma_order.get_qr_code('20210128095057761245760',channel='11101')
     # ma_order.alipay_callback()
-    order_no = ma_order.ma_create_order(aid='9349867',vin='LFVSOP2TEST000084',goods_id='1010500000113868',category='RADIO_VIP',quantity=1,point=False)
+    # order_no = ma_order.ma_create_order(aid='9349867',vin='LFVSOP2TEST000084',goods_id='1010500000113868',category='RADIO_VIP',quantity=1,point=False)
     # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1)['data']
     # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1)['data']
     # ma_order.get_ma_qr_code(order_no['data'],pay_type='11103')

@@ -46,7 +46,13 @@ class Calendar(Base):
         code,body = self.do_get(url,data)
         print(body)
         return body
-
+    def create_app_order(self,vin,goodsID,orderCategory,userId):
+        url=  'http://49.233.242.137:18020/oneapp/order/v1/create'
+        data ={'vin':vin,'goodsID':goodsID,'orderCategory':orderCategory,"priceType":"1","usedPoint":'true',"userId":userId,"durationTimes":"11"}
+        # data = {"vin":"LFVSOP2TEST000353","goodsId":"1010500100000535429","orderCategory":"RADIO_VIP","priceType":"1","usedPoint":'true',"quantity":'1',"userId":"9350041","durationTimes":"11"}
+        code,body = self.do_post(url,data)
+        print(body)
+        return body
     def find_detail(self,id):
         """
         获取用户单个日历事件详情
@@ -169,13 +175,15 @@ if __name__ == '__main__':
     b = Base(tenant='BM')
     bm_c = Calendar(tenant='BM',name='13353116624',password='000000',vin='LFVSOP2TESTLY0003',aid='9353497')
     # bm_c.get_last_time(bm_c.uid,deviceId=None)
-    # bm_c.get_tenant_by_vin()
+    bm_c.get_tenant_by_vin()
     # ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
     # ma_c.get_tenant_by_vin()
+    bm_c.create_app_order(vin='LFVSOP2TEST000353',goodsID='1010500100000535429',orderCategory='RADIO_VIP',userId='9350041')
+
     # c.find_all_event(update_time=None)
-    event = {'localEventId': b.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
-                     'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
-    bm_c.mobile_sync(current_time=None,events=[event])
+    # event = {'localEventId': b.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
+    #                  'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
+    # bm_c.mobile_sync(current_time=None,events=[event])
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10))
     # c.find_detail(39355)
     # ma_c.mobile_find_all()

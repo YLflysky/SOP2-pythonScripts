@@ -254,7 +254,7 @@ if __name__ == '__main__':
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
     # flow.bm_flow_list(aid,vin)
-    flow.remain_flow(flow_type='media',vin='LFVTESTMOSC989216')
+    # flow.remain_flow(flow_type='media',vin='LFVTESTMOSC989216')
 
     # flow_order = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)
     # order_no = flow_order['data']['orderNo']
