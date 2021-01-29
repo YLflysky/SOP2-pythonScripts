@@ -174,7 +174,7 @@ class Payment(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
-    def free_pay(self,aid,order_no,code):
+    def free_pay(self,aid,order_no,code,score):
         '''
         免密支付接口
         :param aid:用户id
@@ -183,7 +183,7 @@ class Payment(Base):
         :return:
         '''
         url = self.url + '/contract/pay'
-        data = {'aid':aid,'orderNo':order_no,'contractCode':code}
+        data = {'aid':aid,'orderNo':order_no,'contractCode':code,'userScore':score}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
@@ -233,21 +233,22 @@ class Payment(Base):
 if __name__ == '__main__':
     import os
     from order.order_api import Order
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     pay = Payment()
     order = Order()
     aid = '9351524'
+    pay.free_pay(aid,order_no='ftb20210128154824964307200',code='12101',score=False)
     # pay.weixin_cdp_callback(out_trade_no='ftb20210115131542943598016',nonce=pay.f.md5())
     # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
     # pay.agreement_qr_code(aid,'ALI_PAY','FLOW','CMCC','SOP1')
     # pay.pay_channel(aid,order_no='ftb20201204113739602753664')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
-    no = order.generate_order_no()['data']
-    order.sync_order(aid=aid, orderNo=no, ex='ex%s'%no, origin='SOP1', category='110',
-                 serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
-                 goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
-    pay.get_qr_code(aid,order_no=no,channel='WECHAT_PAY')
+    # no = order.generate_order_no()['data']
+    # order.sync_order(aid=aid, orderNo=no, ex='ex%s'%no, origin='SOP1', category='110',
+    #              serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
+    #              goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
+    # pay.get_qr_code(aid,order_no=no,channel='WECHAT_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback('trade_success', app_id='2018091361389377', out_trade_no='ftb20210115131035193598016',

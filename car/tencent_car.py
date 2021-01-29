@@ -67,7 +67,16 @@ class TencentCar(Base):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
-
+    def send_poi_hu(self,vin):
+        '''
+        发送POI到车机
+        :param vin:
+        :return:
+        '''
+        url = self.url + '/api/v1/sendMapPoi'
+        data = {'poiId':2,'vin':vin,'deviceName':'ABCED','poiName':'bind','longitude':33.33,'latitude':33.33,'address':'Chengdu'}
+        c,b = self.do_post(url,data)
+        self.assert_ma_msg(c,b)
 
 if __name__ == '__main__':
 
@@ -75,7 +84,8 @@ if __name__ == '__main__':
     uid = '914'
     vin = 'TESTWECHAT6026067'
     # car.check_vin(vin)
-    car.get_QRcode(uid,vin)
+    # car.get_QRcode(uid,vin)
+    car.send_poi_hu(vin)
     # car.unbind(uid,vin=vin)
     # car.get_info(uid,vin)
     # car.bind_callback(aid='4614963',vin='TEZWVEVTVElDQVMzMDk3MzY=',wecar_id='TEZWVEVTVElDQVMzMDk3MzY',action='unbind')
