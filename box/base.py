@@ -133,7 +133,7 @@ class Base:
             params = {}
         resource_uri = self.get_resource_uri(url)
         # 生成时间戳和nonce
-        sign_timestamp = str(int(time.time() * 1000))
+        sign_timestamp = self.get_time_stamp(seconds=20)
         temp = str(uuid.uuid1())
         nonce = temp.replace("-", "")
 

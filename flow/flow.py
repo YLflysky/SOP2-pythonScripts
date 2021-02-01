@@ -230,6 +230,18 @@ class Flow(Base):
         self.assert_msg(c,b)
         return b
 
+    def release_sign(self,aid,sp,channel,reason):
+        '''
+        流量底层免密解约
+        :param aid:
+        :return:
+        '''
+        url = self.flow_url + '/signContract/terminateContract'
+        data = {'spId':sp,'aid':aid,'payChannel':channel,'reason':reason}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
+
+
 if __name__ == '__main__':
     import os
     import random
@@ -245,6 +257,7 @@ if __name__ == '__main__':
     goods_id = 253
     vin = 'LFVSOP2TEST000353'
     iccid = user_data['iccid']
+    # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
     flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',

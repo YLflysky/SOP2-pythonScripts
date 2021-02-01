@@ -88,7 +88,7 @@ if __name__ == '__main__':
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
     #                  'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
     # app.calendar_mobile_sync(current_time=None,events=[event],vin='LFVSOP2TESTLY0003')
-    # app.calendar_mobile_find_all('c')
-    app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0002',channel='WXPAY',order_no='20210129130704565245760')
+    # app.calendar_mobile_find_all('LFVSOP2TESTLY0003')
+    app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0003',channel='WXPAY',order_no='20210129130704565245760')
 
 
