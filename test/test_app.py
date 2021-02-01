@@ -8,7 +8,7 @@ name = '13353116624'
 password = '000000'
 aid = '9353497'
 
-app = App('BM',name,password,aid=aid,vin='LFVSOP2TESTLY0003')
+app = App(name,password,aid=aid)
 
 
 event_id = random.randint(10000, 100000)
