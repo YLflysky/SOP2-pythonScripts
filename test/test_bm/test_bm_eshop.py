@@ -40,6 +40,22 @@ def test_get_spare_list():
 
 @pytest.mark.eshop
 @allure.suite('spare shop')
+@allure.title('获取备件商城列表>>goodsUrl格式测试')
+def test_get_spare_list_url():
+    '''
+    测试获取备件列表
+    '''
+    res = spare.get_list(category='all',index=1,size=100)
+    if res['total'] != 0:
+        names = []
+        for good in res['data']:
+            goods_url = good['goodsUrl']
+            base_url = goods_url.split('=')
+            # assert base_url[0] == 'https://mall.faw-vw.com/shop-m/page/member/member-spike.html'
+            assert base_url[1] == good['goodsId']
+
+@pytest.mark.eshop
+@allure.suite('spare shop')
 @allure.title('获取备件商城列表')
 def test_get_spare_list_sort():
     '''
