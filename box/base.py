@@ -123,7 +123,7 @@ class Base:
             return s2[1:]
         return s2
 
-    def _calc_digital_sign(self, url, params,gateway='HU'):
+    def _calc_digital_sign(self, url, params,gateway):
         """计算签名
 
         - :param uri: 【必填】带计算前面的uri, 类型：string
@@ -161,8 +161,12 @@ class Base:
         secret_key_app = 'F5Pw4vnV7ISCZZhY8gEk7JIYPY4l9b1M'
         if gateway == 'HU':
             last_url_encode = resource_uri + "_" + catent + "_" + secret_key
-        else:
+        elif gateway== 'APP':
             last_url_encode = resource_uri + "_" + catent + "_" + secret_key_app
+        elif gateway.upper() == 'CDP':
+            return self._app_sign(url,params)
+        else:
+            return
 
         lk.prt("In calc digital sign, last_url is: {}".format(last_url_encode))
         # 计算MD5
@@ -255,14 +259,14 @@ class Base:
             lk.prt('post url is:{}'.format(url))
             lk.prt('post header is:{}'.format(headers))
             lk.prt('post data is :{}'.format(data))
-            params = self._calc_digital_sign(url, params=None)
+            params = self._calc_digital_sign(url, params=None,gateway=client)
             res = requests.post(url=url, data=data, params=params, headers=headers)
             code = res.status_code
             body = res.text
             body = json.loads(body)
             token_type = body['data']['token_type']
             access_token = body['data']['access_token']
-        elif client == 'APP':
+        elif client.upper() in ('APP','CDP'):
             headers = {
                 'Content-Type': 'application/json',
                 'x-namespace-code': 'cdp-uat',

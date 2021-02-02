@@ -182,8 +182,7 @@ def test_pay_result_callback_failed():
     :return:
     '''
     aid = 'qq995939534'
-    order_msg = flow.bm_create_flow_order(goods_id='253', aid=aid, vin='LFVSOP2TEST000353',
-                                          quantity=1)
+    order_msg = flow.bm_create_flow_order(goods_id='253', aid=aid, vin='LFVSOP2TEST000353',quantity=1)
     order_no = order_msg['data']['orderNo']
     # 根据流量订单支付
     res = pay.get_qr_code(aid, order_no, channel='ALI_PAY')

@@ -61,7 +61,7 @@ def test_app_calendar_find_all(vin):
 @allure.title('测试传入用户没有绑定的vin ,调用app接口失败')
 @pytest.mark.app
 def test_app_vin_wrong():
-    res = app.calendar_mobile_find_all(vin=app.random_vin())
+    res = app.calendar_mobile_find_all(vin='LFVSOP2TEST000331')
     assert res['errorCode'] == 'ACO0004'
 
 

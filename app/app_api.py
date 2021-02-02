@@ -19,7 +19,8 @@ class App(Base):
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
         self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
         lk.prt('开始获取token...')
-        token_url = self.read_conf('sop2_env.conf', self.env, 'app_token')
+        self.cdp_url = self.read_conf('sop2_env.conf', self.env, 'cdp_host')
+        token_url = self.cdp_url + '/user/public/v1/login'
         self.header['Authorization'] = self.get_token(token_url, self.name, self.password,vin=None,client='APP')
         self.header['Did'] = self.device_id
 
@@ -79,16 +80,17 @@ class App(Base):
         return body['data']
 
 
+
 if __name__ == '__main__':
 
     os.environ['ENV'] = 'SIT'
-    app = App(name='13353116624',password='000000',aid='9353497')
+    app = App(name='13353110034',password='000000',aid='9353866')
     # app.get_tenant_by_vin(vin='LFVSOP2TESTLY0002')
 
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
     #                  'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
     # app.calendar_mobile_sync(current_time=None,events=[event],vin='LFVSOP2TESTLY0003')
-    app.calendar_mobile_find_all('LFVSOP2TESTLY0002')
+    # app.calendar_mobile_find_all('LFVSOP2TESTLY0002')
     # app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0002',channel='WXPAY',order_no='20210201172351827405504')
 
 

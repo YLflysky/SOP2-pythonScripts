@@ -252,7 +252,7 @@ if __name__ == '__main__':
     flow = Flow()
     bm_pay = BMPayment()
     user_data = flow.read_yml('../conf','user.yml')
-    user_data = user_data['uat4']
+    user_data = user_data['uat_zqs']
     aid = '9353497'
     goods_id = 253
     vin = 'LFVSOP2TEST000102'
@@ -269,7 +269,7 @@ if __name__ == '__main__':
     # flow.bm_flow_list(aid,vin)
     # flow.remain_flow(flow_type='media',vin='LFVTESTMOSC989216')
 
-    flow_order = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)
+    # flow_order = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)
     # order_no = flow_order['data']['orderNo']
     # bm_pay.get_qr_code(vin,aid,order_no='ftb202102011647345801019904',pay_type='12103',category='112',score='N')
     # bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','11101')
@@ -280,8 +280,8 @@ if __name__ == '__main__':
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
     # flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=2,status=2)
     # flow.cp_common_notify(id='ftb20210119143548119192512', category=2, status='2000_00', origin_id=flow.f.md5(),channel='WECHAT_PAY')
-    # flow.cp_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.9,
-    #                  asset_type='iccid',asset_id=iccid,package_id='P1001149798')
+    flow.cp_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.9,
+                     asset_type='iccid',asset_id=iccid,package_id='P1001149798')
     # flow.cp_over_due_notify(asset_id=iccid,asset_type='iccid',package_code='P1001183210',
     #                         effective_time=flow.time_delta(formatted='%Y%m%d%H%M%S',days=-10),
     #                         expired_time=flow.time_delta(formatted='%Y%m%d%H%M%S',days=1))
