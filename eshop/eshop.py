@@ -27,7 +27,7 @@ class EShop(Base):
 
     def get_category_id(self):
         '''
-        获取备件商城一级分类id
+        获取商城一级分类id
         :return:
         '''
         url = self.url + '/goods/category'
@@ -59,6 +59,7 @@ class PointsShop(EShop):
             self.env = 'UAT'
             self.gate = True
             self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host')
+            print('开始获取token')
             self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
 
 
@@ -76,20 +77,22 @@ class SpareShop(EShop):
             self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host2')
             self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
 
-    def get_spare_detail(self,goods_id):
+    def get_detail(self,goods_id):
         raise NotImplementedError('备件商城无此接口')
+
 
     def get_category_id(self):
         '''
-        备件商城一级分类id
+        获取商城一级分类id
         :return:
         '''
         url = self.url + '/goods/category'
-        code, body = self.do_get(url, None)
-        self.assert_msg(code, body)
+        code,body = self.do_get(url,None)
+        self.assert_msg(code,body)
         id = body['data']
         id = random.choice(id)['categoryId']
         return id
+
 
 
 if __name__ == '__main__':
@@ -97,10 +100,10 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
     shop = PointsShop('MA')
-    # category = shop.get_category_id()
+    category = shop.get_category_id()
     # print(category)
     # shop.get_list('all',size=100)
     # goods_id = shop.get_spare_list(category='all')
     # goods_id = goods_id['data'][0]['goodsId']
-    shop.get_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')
+    # shop.get_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')
 
