@@ -83,7 +83,7 @@ class App(Base):
 
 if __name__ == '__main__':
 
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     app = App(name='13353110034',password='000000',aid='9353866')
     # app.get_tenant_by_vin(vin='LFVSOP2TESTLY0002')
 
