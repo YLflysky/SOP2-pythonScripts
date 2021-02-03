@@ -37,14 +37,15 @@ class EShop(Base):
         id = random.choice(id)['id']
         return id
 
-    def get_spare_detail(self,goods_id):
+    def get_detail(self,goods_id):
         '''
-        获取备件详情API
+        获取商品详情API
         '''
         url = self.url + '/goods/details'
         param = {'goodsId':goods_id}
         code,body = self.do_get(url,param)
         self.assert_msg(code,body)
+        return body
 
 class PointsShop(EShop):
     '''
@@ -95,11 +96,11 @@ if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
-    shop = PointsShop('BM')
+    shop = PointsShop('MA')
     # category = shop.get_category_id()
     # print(category)
-    shop.get_list('all',size=100)
+    # shop.get_list('all',size=100)
     # goods_id = shop.get_spare_list(category='all')
     # goods_id = goods_id['data'][0]['goodsId']
-    # shop.get_spare_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')
+    shop.get_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')
 

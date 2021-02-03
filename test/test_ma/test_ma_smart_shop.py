@@ -3,7 +3,6 @@ import allure
 import os
 import random
 from eshop.smart_shop import SmartEShop
-from eshop.eshop import PointsShop,SpareShop
 
 ma_shop = SmartEShop(tenant='MA')
 
