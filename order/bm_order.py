@@ -151,8 +151,8 @@ if __name__ == '__main__':
     # o.sync_bm_order(o.get_time_stamp(), data)
     # o.bm_cancel_order(aid='4614931',order_no='ftb20201203160039247753664')
     # o.order_count(vin='DEFAULT_VIN',uid='33')
-    o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
-                      businessState='success',businessStateDesc='已完成')
+    # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
+    #                   businessState='success',businessStateDesc='已完成')
     # o.reload_config()
-    # o.bm_order_detail(aid='1610403945536',order_no='ftb20210112062545591860160',vin=None)
+    o.bm_order_detail(aid='9353460',order_no='ftb202101271015401501019904',vin=None)
     # o.music_order_create(tenant_id='VW',aid=aid,vin=vin,goods='101',quantity=1)

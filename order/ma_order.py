@@ -201,9 +201,9 @@ if __name__ == '__main__':
     # ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
     # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
-    # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349824',service_id='03',sp_id='030003',
+    # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349640',service_id='03',sp_id='030003',
     #                     order_type='BUSINESS',ex_order=ma_order.f.md5(),category='09',title='加油订单',
-    #                     business_state='0',desc='待支付',
+    #                     business_state='0',desc='待支付',orderNO='20200826193643504544768',orderStatus='FINISHED',
     #                     amount=5.00,discount=0.25,pay_amount=4.75,timeout=1000,
     #                     business_info=info)
     # ma_order.sync_order_pay(aid='9349824',order_no='20210125150147517405504',pay_order_no='1234',channel='WECHAT_PAY',pay_type='QR_CODE',
@@ -213,7 +213,7 @@ if __name__ == '__main__':
     # order_no = ma_order.ma_create_order(aid='9349867',vin='LFVSOP2TEST000084',goods_id='1010500000113868',category='RADIO_VIP',quantity=1,point=False)
     # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1)['data']
     # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1)['data']
-    # ma_order.get_ma_qr_code(order_no['data'],pay_type='11103')
+    ma_order.get_ma_qr_code(order_no['data'],pay_type='11103')
 
     # p = Points()
     # p.get_user_points(aid)
