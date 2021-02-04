@@ -79,6 +79,65 @@ class App(Base):
         assert code == 200
         return body['data']
 
+    def contract_sign(self,vin,channel,cp_seller,display_account=None):
+        '''
+        APP免密
+        :param vin:
+        :param channel:WXPAY,ALPAY
+        :param cp_seller:JDO,CMCC,BM,CUCC
+        :return:
+        '''
+        url = self.mobile_url + '/oneapp/pay/v1/agreement/passfree/sign'
+        data = {'signPay':channel,'vin':vin,'cpSeller':cp_seller,'displayAccount':display_account}
+        c,b = self.do_post(url,data,gateway='APP')
+        self.assert_msg(c,b)
+
+    def get_sign_result(self,vin,channel,cp_seller):
+        '''
+        获取免密签约状态
+        :param vin:
+        :param channel: WXPAY,ALPAY
+        :param cp_seller:JDO,CMCC,BM,CUCC
+        :return:
+        '''
+
+        url = self.mobile_url + '/oneapp/pay/v1/agreement/passfree/query'
+        data = {'signPay': channel, 'vin': vin, 'cpSeller': cp_seller}
+        c, b = self.do_post(url, data,gateway='APP')
+        self.assert_msg(c, b)
+
+    def release_sign(self,vin,channel,cp_seller):
+        '''
+        获取免密签约状态
+        :param vin:
+        :param channel: WXPAY,ALPAY
+        :param cp_seller:JDO,CMCC,BM,CUCC
+        :return:
+        '''
+
+        url = self.mobile_url + '/oneapp/pay/v1/agreement/passfree/closeSign'
+        data = {'signPay': channel, 'vin': vin, 'cpSeller': cp_seller}
+        c, b = self.do_post(url, data,gateway='APP')
+        self.assert_msg(c, b)
+
+    def apply_invoice(self,order_no,i_channel,i_type,i_title,tax,email,**kwargs):
+        '''
+        APP申请开票接口
+        :param order_no:
+        :param i_channel:
+        :param i_type:
+        :param i_title:
+        :param tax:
+        :param email:
+        :param kwargs:
+        :return:
+        '''
+        url = self.mobile_url + '/oneapp/invoice/v1/apply'
+        data = {'orderNo':order_no,'invoiceChannel':i_channel,'invoiceType':i_type,'invoiceTitle':i_title,'taxNumber':tax
+                ,'email':email,**kwargs}
+
+        c,b = self.do_post(url,data,gateway='APP')
+        self.assert_msg(c,b)
 
 
 if __name__ == '__main__':
