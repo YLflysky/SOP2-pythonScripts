@@ -391,9 +391,9 @@ class Base:
             response_body = res.text
         return res.status_code, response_body
 
-    def do_delete(self, url, params):
+    def do_delete(self, url, params,gateway='HU'):
         if self.gate:
-            params = self._calc_digital_sign(url, params)
+            params = self._calc_digital_sign(url, params,gateway)
         lk.prt('final delete url is:{}'.format(url))
         try:
             res = requests.delete(url=url, params=params, headers=self.header, verify=False)
@@ -410,9 +410,9 @@ class Base:
                                user=config_dict['username'],
                                password=config_dict['password'], charset='utf8')
         cur = conn.cursor(pymysql.cursors.DictCursor)
+        lk.prt('执行的sql语句为:{}'.format(msg))
         cur.execute(msg)
         res = cur.fetchall()
-        lk.prt('执行sql语句成功:{}'.format(msg))
         for res1 in res:
             for key, val in res1.items():
                 if isinstance(val, datetime.datetime):
@@ -597,4 +597,5 @@ if __name__ == '__main__':
     # print(b.my_json_decoder(url))
     res = b.match_url(url)
     print(res)
+    print(help(tuple))
     # print(b.random_vin())

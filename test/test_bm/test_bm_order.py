@@ -68,42 +68,49 @@ def test_order_count_03():
 @allure.suite('order')
 @allure.title('BM车机端获取订单数量')
 @pytest.mark.order
-@pytest.mark.parametrize('status', ['1000', '1001', '1002', '1003', '1004', '1005'])
+def test_order_count_all_status():
+    '''
+    测试BM车机端获取订单数量，所有状态
+    '''
+    uid = '4614907'
+    vin = bm.random_vin()
+    res = bm.order_count(vin, uid, orderStatus='1000')
+    assert res['description'] == '成功'
+    count = res['data']
+    sql_res = bm.do_mysql_select(
+        'select count(1) as c from `order` where aid="{}" and del_flag=0'.format(uid),
+        'fawvw_order')
+    assert sql_res[0]['c'] == int(count)
+
+
+@allure.suite('order')
+@allure.title('BM车机端获取订单数量')
+@pytest.mark.order
+@pytest.mark.parametrize('status', [('1001',('WAITING_PAY',)),
+                                    ('1002',('PROCESSING','REFUND_FAILED','PAY_SUCCESS','PAY_FAILED','RESERVED')),
+                                    ('1003',('FINISH',)),
+                                    ('1004',('CANCEL','EXPIRE')),
+                                    ('1005',('REFUND_SUCCESS','REFUNDING'))])
 def test_order_count_04(status):
     '''
     输入订单状态
     '''
     uid = '221'
     vin = bm.f.pyint()
-    res = bm.order_count(vin, uid, orderStatus=status)
+    res = bm.order_count(vin, uid, orderStatus=status[0])
     assert res['description'] == '成功'
     count = res['data']
-    if status == '1001':
+    status_tuple = status[1]
+    print(status_tuple,len(status_tuple))
+    if len(status_tuple) >1:
         sql_res = bm.do_mysql_select(
-            'select count(1) as c from `order` where aid="221" and order_status in ("WAITING_PAY") and del_flag=0',
-            'fawvw_order')
-    elif status == '1002':
-        sql_res = bm.do_mysql_select(
-            'select count(1) as c from `order` where aid="221" and order_status in '
-            '("PROCESSING","REFUND_FAILED","PAY_SUCCESS","PAY_FAILED","RESERVED") and del_flag=0',
-            'fawvw_order')
-    elif status == '1003':
-        sql_res = bm.do_mysql_select(
-            'select count(1) as c from `order` where aid="221" and order_status in ("FINISH") and del_flag=0',
-            'fawvw_order')
-    elif status == '1004':
-        sql_res = bm.do_mysql_select(
-            'select count(1) as c from `order` where aid="221" and order_status in ("CANCEL","EXPIRE") and del_flag=0',
-            'fawvw_order')
-    elif status == '1005':
-        sql_res = bm.do_mysql_select(
-            'select count(1) as c from `order` where aid="221" and order_status in ("REFUND_SUCCESS","REFUNDING") and del_flag=0',
+            'select count(1) as c from `order` where aid="221" and order_status in {} and del_flag=0'.format(status_tuple),
             'fawvw_order')
     else:
+        status_tuple = status_tuple[0]
         sql_res = bm.do_mysql_select(
-            'select count(1) as c from `order` where aid="221" and order_status !="INIT" and del_flag=0 ',
-            'fawvw_order')
-
+            "select count(1) as c from `order` where aid='221' and order_status ='{}' and del_flag=0".format(
+                status_tuple),'fawvw_order')
     assert sql_res[0]['c'] == int(count)
 
 

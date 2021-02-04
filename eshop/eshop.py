@@ -98,11 +98,11 @@ class SpareShop(EShop):
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
-    shop = PointsShop('MA')
-    category = shop.get_category_id()
+    os.environ['ENV'] = 'SIT'
+    shop = PointsShop('BM')
+    # category = shop.get_category_id()
     # print(category)
-    # shop.get_list('all',size=100)
+    shop.get_list('all',index=1,size=10,sort='asc',sortName='score')
     # goods_id = shop.get_spare_list(category='all')
     # goods_id = goods_id['data'][0]['goodsId']
     # shop.get_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')
