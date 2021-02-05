@@ -1,9 +1,7 @@
 import pytest
-from calendar_file.canlendar import Calendar
+from .conftest import ma_calendar
 import allure
 import random
-
-ma_calendar = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
 
 
 @pytest.fixture()
