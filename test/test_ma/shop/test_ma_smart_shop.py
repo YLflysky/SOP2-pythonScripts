@@ -6,6 +6,7 @@ from eshop.smart_shop import SmartEShop
 
 ma_shop = SmartEShop(tenant='MA')
 
+
 @allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城底层获取一级类目')
 @pytest.mark.eshop

@@ -9,8 +9,8 @@ class Payment(Base):
     底层支付API
     '''
 
-    def __init__(self,tenant='BM'):
-        super().__init__(tenant)
+    def __init__(self):
+        super().__init__()
         self.url = self.read_conf('sop2_env.conf', self.env, 'payment_host')
         self.second_url = self.read_conf('sop2_env.conf', self.env, '2nd_host')
 

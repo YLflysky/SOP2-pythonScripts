@@ -1,4 +1,4 @@
-from order.ma_order import MAOrder
+from ma_api.ma_order import MAOrder
 import pytest
 import allure
 

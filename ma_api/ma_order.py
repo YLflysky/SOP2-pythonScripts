@@ -1,16 +1,24 @@
 from box.base import Base
+from box.lk_logger import lk
 
-class MAOrder(Base):
-    def __init__(self, aid, user, password, vin,tenant='MA',):
-        super().__init__(tenant)
-        self.env = 'UAT'
-        self.gate = True
+lk.prt('导入 MA API 基类>>>>')
+
+class MABase(Base):
+    def __init__(self,aid, user, password, vin):
+        super().__init__()
         self.vin = vin
         self.aid = aid
+        self.gate = True
+        self.env = 'UAT'
+        lk.prt('开始获取token')
+        self.add_header(self.read_conf('ma_env.conf', 'UAT', 'token_host'),user=user, password=password, vin=vin)
+
+class MAOrder(MABase):
+    def __init__(self, aid, user, password, vin):
+        super().__init__(aid,user,password,vin)
+
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
         self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
-        self.add_header(url=self.read_conf('ma_env.conf', self.env, 'token_host'),
-                        user=user, password=password, vin=vin)
 
     def assert_msg(self, code, body):
         print(body)
@@ -186,6 +194,14 @@ class MAOrder(Base):
         c, b = self.do_post(url, data)
         print(b)
         return b
+
+    def jdo_sign(self,channel):
+        pass
+
+    def get_jdo_sign_result(self):
+        pass
+    def jdo_release_sign(self):
+        pass
 
 
 

@@ -8,8 +8,7 @@ class Calendar(Base):
     日历API
     '''
     def __init__(self,tenant,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311',aid='9350195'):
-        super().__init__(tenant)
-
+        super().__init__()
         self.name = name
         self.password = password
         self.vin = vin
@@ -27,14 +26,11 @@ class Calendar(Base):
             self.header['Did'] = self.device_id
 
         else:
+            self.gate = 'True'
             self.env = 'UAT'
-            self.gate = True
             self.device_id = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
             self.url = self.read_conf('ma_env.conf',self.env,'calendar_host')
-
-            lk.prt('开始获取token...')
-            token_url = self.read_conf('ma_env.conf', self.env, 'token_host')
-            self.header['Authorization'] = self.get_token(token_url,self.name,self.password,self.vin)
+            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
             self.header['Did'] = self.device_id
 
     def find_all_event(self,update_time):

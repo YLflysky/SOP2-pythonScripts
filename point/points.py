@@ -4,8 +4,8 @@ import os
 
 
 class Points(Base):
-    def __init__(self,tenant='BM'):
-        super().__init__(tenant)
+    def __init__(self):
+        super().__init__()
 
         self.p_url = self.read_conf('sop2_env.conf',self.env,'integration_host')
         self.hu_url = self.read_conf('sop2_env.conf',self.env,'hu_host')

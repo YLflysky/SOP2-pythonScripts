@@ -1,14 +1,14 @@
-from box.base import Base
+from ..ma_order import MABase
 import os,sys
 
 
-class TencentCar(Base):
-    def __init__(self,tenant='MA'):
-        super().__init__(tenant)
+class TencentCar(MABase):
+    def __init__(self,user='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183'):
+        super().__init__(aid='',user=user,password=password,vin=vin)
         self.env = 'UAT'
         self.gate = True
         self.url = self.read_conf('ma_env.conf',self.env,'car_host')
-        self.add_header(url=self.read_conf('ma_env.conf',self.env,'token_host'))
+        self.add_header(url=self.read_conf('ma_env.conf',self.env,'token_host'),user=user,password=password,vin=vin)
 
     def assert_ma_msg(self,code,body):
         print(body)

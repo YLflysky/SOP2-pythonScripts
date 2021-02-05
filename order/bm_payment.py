@@ -5,8 +5,8 @@ class BMPayment(Base):
     '''
     BM适配层支付服务API
     '''
-    def __init__(self,tenant='BM'):
-        super().__init__(tenant)
+    def __init__(self):
+        super().__init__()
         self.hu_url = self.read_conf('sop2_env.conf',self.env,'hu_host')
         self.be_url = self.read_conf('sop2_env.conf',self.env,'be_host')
 
@@ -132,6 +132,6 @@ if __name__ == '__main__':
     #                    channel='WECHAT_PAY',status='TRADE_SUCCESS',pay_time=pay.time_delta(),pay_way='QR_PAY',service='GAS',sp='111')
     # pay.get_pay_result(vin='LFVTESTMOSC989216',order_no='ftb20210113104218446114688',aid='9351484',category='112',roll_number=1)
     # pay.get_pay_channel(vin,aid,order_no='ftb20201228100413387102400',category='111')
-    # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language=None,code='12101')
-    pay.get_qr_code(vin,aid,order_no='ftb2021012213364207290112',pay_type='12100',category='109')
+    pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language='en-US',code='11101')
+    # pay.get_qr_code(vin,aid,order_no='ftb2021012213364207290112',pay_type='12100',category='109')
     # pay.get_agreement_qr_code(aid,vin,channel=2,service_id='FLOW',sp_id='CMCC')

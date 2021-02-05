@@ -6,8 +6,8 @@ import json
 
 class Order(Base):
 
-    def __init__(self,tenant='BM'):
-        super().__init__(tenant)
+    def __init__(self):
+        super().__init__()
         if self.gate:
             self.add_header(url=self.read_conf('sop2_env.conf', self.env, 'token_host'))
 
@@ -294,4 +294,4 @@ if __name__ == '__main__':
     # print(res)
     # info = {'name': 'waka waka', 'age': 18}
     # o.sync_order_kafka(ep_order_id=9959,business_info=info,tenant='ASTERIX')
-    o.business_kafka(order_no=order_no,event_type='RIGHTS_OPEN',business_state='开通完成',business_state_desc='音乐服务开通完成')
+    # o.business_kafka(order_no=order_no,event_type='RIGHTS_OPEN',business_state='开通完成',business_state_desc='音乐服务开通完成')

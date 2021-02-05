@@ -1,7 +1,4 @@
-from box.base import Base
-from car.tencent_car import TencentCar
-from box.lk_logger import lk
-import os, sys
+from ma_api.car.tencent_car import TencentCar
 
 
 class Team(TencentCar):

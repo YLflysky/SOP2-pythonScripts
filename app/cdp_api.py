@@ -2,7 +2,7 @@ from box.base import Base
 
 class CDP(Base):
     def __init__(self, tenant='BM'):
-        super().__init__(tenant)
+        super().__init__()
         self.gate = True
         self.cdp_url = self.read_conf('sop2_env.conf', 'UAT', 'cdp_host')
         self.header['x-namespace-code'] = 'cdp-uat'

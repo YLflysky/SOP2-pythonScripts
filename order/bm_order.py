@@ -7,7 +7,7 @@ class BMOrder(Base):
     '''
 
     def __init__(self,tenant='BM'):
-        super().__init__(tenant)
+        super().__init__()
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
         self.be_url = self.read_conf('sop2_env.conf', self.env, 'be_host')
 
@@ -134,7 +134,7 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     aid = '9349485'
@@ -154,5 +154,5 @@ if __name__ == '__main__':
     # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
     #                   businessState='success',businessStateDesc='已完成')
     # o.reload_config()
-    # o.bm_order_detail(aid='9353460',order_no='ftb202101271015401501019904',vin=None)
-    o.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='253',quantity=1)
+    o.bm_order_detail(aid='9350963',order_no='ftb20210204143358325483328',vin=None)
+    # o.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='253',quantity=1)

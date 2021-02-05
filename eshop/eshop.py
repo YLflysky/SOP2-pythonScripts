@@ -1,13 +1,19 @@
 from box.base import Base
 import random
+from box.lk_logger import lk
 
 class EShop(Base):
     '''
     商城API
     '''
     def __init__(self,tenant):
-        super().__init__(tenant)
+        super().__init__()
         self.url = None
+        if tenant == 'MA':
+            self.gate = True
+            self.env = 'UAT'
+            lk.prt('开始获取token')
+            self.add_header(self.read_conf('ma_env.conf','UAT','token_host'))
 
     def assert_msg(self, code, body):
         print(body)
@@ -56,11 +62,7 @@ class PointsShop(EShop):
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'eshop_host')
         elif tenant == 'MA':
-            self.env = 'UAT'
-            self.gate = True
-            self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host')
-            print('开始获取token')
-            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
+            self.url = self.read_conf('ma_env.conf', 'UAT', 'eshop_host')
 
 
 class SpareShop(EShop):
@@ -72,10 +74,7 @@ class SpareShop(EShop):
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'eshop_host2')
         elif tenant == 'MA':
-            self.env = 'UAT'
-            self.gate = True
             self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host2')
-            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
 
     def get_detail(self,goods_id):
         raise NotImplementedError('备件商城无此接口')
@@ -99,10 +98,10 @@ if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'SIT'
-    shop = PointsShop('BM')
-    # category = shop.get_category_id()
+    shop = PointsShop('MA')
+    category = shop.get_category_id()
     # print(category)
-    shop.get_list('all',index=1,size=10,sort='asc',sortName='score')
+    # shop.get_list('all',index=1,size=10,sort='asc',sortName='score')
     # goods_id = shop.get_spare_list(category='all')
     # goods_id = goods_id['data'][0]['goodsId']
     # shop.get_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')

@@ -27,13 +27,11 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class Base:
 
-    def __init__(self,tenant):
-        self.tenant = tenant
+    def __init__(self):
         self.env = os.getenv('ENV')
         self.header = {}
         self.header['Content-type'] = 'application/json; charset=utf-8'
         self.f = Faker(locale='en-US')
-
         try:
             if os.getenv('GATE') == 'true':
                 self.gate = True

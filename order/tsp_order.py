@@ -2,8 +2,8 @@
 from box.base import Base
 
 class TSPOrder(Base):
-    def __init__(self, tenant='BM'):
-        super().__init__(tenant)
+    def __init__(self):
+        super().__init__()
 
         self.url = self.read_conf('sop2_env.conf',self.env,'tsp_host')
 

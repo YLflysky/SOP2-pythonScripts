@@ -1,18 +1,20 @@
 from box.base import Base
 import os,sys
+from box.lk_logger import lk
 
 
 class SmartEShop(Base):
 
     def __init__(self,tenant):
-        super().__init__(tenant)
+        super().__init__()
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'smart_eshop_host')
         elif tenant == 'MA':
-            self.env = 'UAT'
             self.gate = True
-            self.url = self.read_conf('ma_env.conf', self.env, 'smart_eshop_host')
-            self.add_header(self.read_conf('ma_env.conf',self.env,'token_host'))
+            self.env = 'UAT'
+            lk.prt('开始获取token')
+            self.add_header(self.read_conf('ma_env.conf', 'UAT', 'token_host'))
+            self.url = self.read_conf('ma_env.conf', 'UAT', 'smart_eshop_host')
         else:
             print('no such tenant...')
             sys.exit(-1)

@@ -1,16 +1,10 @@
-from box.base import Base
+from .ma_order import MABase
 
-class SOP1Order(Base):
+class SOP1Order(MABase):
     def __init__(self, aid, user, password, vin,tenant='SOP1',):
-        super().__init__(tenant)
-        self.env = 'UAT'
-        self.gate = True
-        self.vin = vin
-        self.aid = aid
+        super().__init__(aid, user, password, vin)
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
         self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
-        self.add_header(url=self.read_conf('ma_env.conf', self.env, 'token_host'),
-                        user=user, password=password, vin=vin)
 
     def sop1_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
         '''
