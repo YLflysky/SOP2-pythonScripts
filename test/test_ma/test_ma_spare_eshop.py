@@ -1,11 +1,7 @@
 import pytest
 import allure
-import os
-import random
-from eshop.eshop import SpareShop
+from .conftest import spare
 
-
-spare = SpareShop('MA')
 
 @pytest.mark.ma_eshop
 @allure.suite('ma spare shop')

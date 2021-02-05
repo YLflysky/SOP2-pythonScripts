@@ -7,10 +7,8 @@ class Calendar(Base):
     '''
     日历API
     '''
-    def __init__(self,tenant,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311',aid='9350195'):
+    def __init__(self,tenant,token,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311',aid='9350195'):
         super().__init__()
-        self.name = name
-        self.password = password
         self.vin = vin
         self.uid = aid
         self.header['aid'] = aid
@@ -22,7 +20,7 @@ class Calendar(Base):
             # lk.prt('开始获取token...')
             if self.gate:
                 token_url = self.read_conf('sop2_env.conf',self.env,'token_host')
-                self.header['Authorization']=self.get_token(token_url,self.name,self.password,self.vin)
+                self.header['Authorization']=self.get_token(token_url,name,password,self.vin)
             self.header['Did'] = self.device_id
 
         else:
@@ -30,6 +28,8 @@ class Calendar(Base):
             self.env = 'UAT'
             self.device_id = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
             self.url = self.read_conf('ma_env.conf',self.env,'calendar_host')
+        if token:
+            lk.prt('开始获取token...')
             self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
             self.header['Did'] = self.device_id
 
@@ -124,8 +124,8 @@ class Calendar(Base):
 if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'SIT'
-    b = Base(tenant='BM')
-    bm_c = Calendar(tenant='MA')
+    b = Base()
+    bm_c = Calendar(tenant='MA',token=True)
     print(bm_c.gate)
     bm_c.get_last_time()
     # ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')

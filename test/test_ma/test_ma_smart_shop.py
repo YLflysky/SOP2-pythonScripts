@@ -1,10 +1,7 @@
 import pytest
 import allure
-import os
 import random
-from eshop.smart_shop import SmartEShop
-
-ma_shop = SmartEShop(tenant='MA')
+from .conftest import ma_shop
 
 
 @allure.suite('test_ma-eshop')

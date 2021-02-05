@@ -1,10 +1,8 @@
 import pytest
 import allure
-import os
 import random
-from eshop.eshop import PointsShop
+from .conftest import bonus
 
-bonus = PointsShop(tenant='MA')
 
 
 @pytest.mark.ma_eshop
@@ -99,8 +97,6 @@ def test_bonus_detail(get_goods_id):
     res = bonus.get_detail(get_goods_id)
     assert res['data']['goodsName']
     assert res['data']['descriptionPhoto']
-    assert res['data']['score']
-    assert res['data']['goodsUrl']
 
 
 
