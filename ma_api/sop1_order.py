@@ -1,7 +1,7 @@
 from .ma_order import MABase
 
 class SOP1Order(MABase):
-    def __init__(self, aid, user, password, vin,tenant='SOP1',):
+    def __init__(self, aid, user, password, vin):
         super().__init__(aid, user, password, vin)
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
         self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')

@@ -203,6 +203,24 @@ class MAOrder(MABase):
     def jdo_release_sign(self):
         pass
 
+    def apply_invoice(self,order_no,i_channel,i_type,i_title,tax,email,**kwargs):
+        '''
+        mosc-order申请开票api
+        :param order_no: MS订单号
+        :param i_channel:
+        :param i_type:
+        :param i_title:
+        :param tax:
+        :param email:
+        :param kwargs:
+        :return:
+        '''
+        url = self.url + '/mosc-order/internal/invoice/v1/apply'
+        data = {'orderNo':order_no,'invoiceChannel':i_channel,'invoiceType':i_type,'invoiceTitle':i_title,'taxNumber':tax
+                ,'email':email,**kwargs}
+        c,b = self.do_post(url,data)
+        self.assert_bm_msg(c,b)
+
 
 
 if __name__ == '__main__':
@@ -213,6 +231,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     aid = '4614183'
     ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
+    ma_order.apply_invoice(order_no='ma20210207165456111143360',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
 
     # ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
@@ -227,9 +246,9 @@ if __name__ == '__main__':
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
     # order_no = ma_order.ma_create_order(aid='9353497',vin='LFVSOP2TEST000102',goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
-    order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1)['data']
+    # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1)['data']
     # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1)['data']
-    ma_order.get_ma_qr_code(order_no=order_no,pay_type='12100')
+    # ma_order.get_ma_qr_code(order_no=order_no,pay_type='12100')
 
     # p = Points()
     # p.get_user_points(aid)

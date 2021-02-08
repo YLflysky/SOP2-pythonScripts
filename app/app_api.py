@@ -90,7 +90,7 @@ class App(Base):
         url = self.mobile_url + '/oneapp/pay/v1/agreement/passfree/sign'
         data = {'signPay':channel,'vin':vin,'cpSeller':cp_seller,'displayAccount':display_account}
         c,b = self.do_post(url,data,gateway='APP')
-        self.assert_msg(c,b)
+        self.assert_bm_msg(c,b)
 
     def get_sign_result(self,vin,channel,cp_seller):
         '''
@@ -104,7 +104,8 @@ class App(Base):
         url = self.mobile_url + '/oneapp/pay/v1/agreement/passfree/query'
         data = {'signPay': channel, 'vin': vin, 'cpSeller': cp_seller}
         c, b = self.do_post(url, data,gateway='APP')
-        self.assert_msg(c, b)
+        self.assert_bm_msg(c, b)
+        return b
 
     def release_sign(self,vin,channel,cp_seller):
         '''
@@ -142,8 +143,11 @@ class App(Base):
 
 if __name__ == '__main__':
 
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     app = App(name='13353116624',password='000000',aid='9353497')
+    # app.contract_sign(vin='LFVSOP2TESTLY0002',channel='WXPAY',cp_seller='JDO')
+    app.apply_invoice(order_no='ma20210207165456111143360',i_type='1',i_channel='JDO',i_title='开票',tax='123456',email='995939534@qq.com')
+    # app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='WXPAY',cp_seller='JDO')
     # app.get_tenant_by_vin(vin='LFVSOP2TESTLY0002')
 
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',

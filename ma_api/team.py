@@ -1,4 +1,4 @@
-from ma_api.car.tencent_car import TencentCar
+from .tencent_car import TencentCar
 
 
 class Team(TencentCar):

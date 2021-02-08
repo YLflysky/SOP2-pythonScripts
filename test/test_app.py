@@ -65,5 +65,24 @@ def test_app_vin_wrong():
     assert res['errorCode'] == 'ACO0004'
 
 
+@allure.suite('app')
+@allure.title('测试查询CMCC未签约结果')
+@pytest.mark.app
+def test_app_cmcc_unsign():
+    res = app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='WXPAY',cp_seller='CMCC')
+    assert res['data']['signNo'] == '2'
+
+
+@allure.suite('app')
+@allure.title('测试查询CMCC已签约结果')
+@pytest.mark.app
+def test_app_cmcc_sign():
+    app_sign = App(name='13770614790',password='000000',aid='9350963')
+    res = app_sign.get_sign_result(vin='LFVSOP2TESTLY0002',channel='WXPAY',cp_seller='CMCC')
+    assert res['data']['signNo'] == '1'
+
+
+
+
 
 

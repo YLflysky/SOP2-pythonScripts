@@ -253,7 +253,7 @@ if __name__ == '__main__':
     bm_pay = BMPayment()
     user_data = flow.read_yml('../conf','user.yml')
     user_data = user_data['uat_zqs']
-    aid = '9353450'
+    aid = '9350963'
     goods_id = 255
     vin = 'LFVSOP2TEST000331'
     iccid = user_data['iccid']
@@ -271,7 +271,7 @@ if __name__ == '__main__':
 
     # flow_order = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)
     # order_no = flow_order['data']['orderNo']
-    # bm_pay.get_qr_code(vin,aid,order_no='ftb202102011647345801019904',pay_type='12103',category='112',score='N')
+    # bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='12103',category='112',score='N')
     # bm_pay.free_pay(aid,vin,order_no=order_no,channel='12101',useScore=False)
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid,channel=1,notify_type=1,status=1)
