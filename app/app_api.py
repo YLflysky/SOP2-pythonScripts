@@ -145,9 +145,10 @@ if __name__ == '__main__':
 
     os.environ['ENV'] = 'SIT'
     app = App(name='13353116624',password='000000',aid='9353497')
-    # app.contract_sign(vin='LFVSOP2TESTLY0002',channel='WXPAY',cp_seller='JDO')
-    app.apply_invoice(order_no='ma20210207165456111143360',i_type='1',i_channel='JDO',i_title='开票',tax='123456',email='995939534@qq.com')
-    # app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='WXPAY',cp_seller='JDO')
+    # app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
+    # app.apply_invoice(order_no='20210205062821259167936',i_type='1',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18888888888')
+    app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
+    app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
     # app.get_tenant_by_vin(vin='LFVSOP2TESTLY0002')
 
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',

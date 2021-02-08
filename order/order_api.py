@@ -272,7 +272,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = Order()
-    order_no = o.add_order()
+    # order_no = o.add_order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
     # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
     # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
@@ -282,8 +282,8 @@ if __name__ == '__main__':
     #              serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,
     #              goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # o.sync_refund('9642113','233564422',origin='EP',status='FAILED')
-    # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
-    #                 head='钛马信息技术有限公司', phone='18888888888')
+    o.apply_invoice(aid='4614907', order_no=['ftb20210205062821259167936'], duty_no='91310115560364240G',
+                    head='钛马信息技术有限公司', phone='18888888888')
 
     # serial = random.randint(1000000, 10000000)
     # o.sync_invoice(orderNo, serial)

@@ -17,7 +17,7 @@ class MAOrder(MABase):
     def __init__(self, aid, user, password, vin):
         super().__init__(aid,user,password,vin)
 
-        self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
+        self.payment_url = self.read_conf('ma_env.conf', self.env, 'pay_host')
         self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
 
     def assert_msg(self, code, body):
@@ -45,8 +45,7 @@ class MAOrder(MABase):
     def get_goods_list(self):
         pass
 
-
-    def create_order(self, goods_id, category, aid, quantity, point=False, **kwargs):
+    def create_order(self, goods_id, category, aid, quantity,vin, point=False, **kwargs):
         '''
         mosc-order底层创建商品订单接口
         :param goods_id:
@@ -58,7 +57,7 @@ class MAOrder(MABase):
         :return:
         '''
         url = self.url + '/mosc-order/internal/v2/goods/creatOrder'
-        data = {'aid': aid, 'goodsId': goods_id, 'vin': self.vin,
+        data = {'aid': aid, 'goodsId': goods_id, 'vin': vin,
                 'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
         c, b = self.do_post(url, data)
         print(b)
@@ -195,13 +194,47 @@ class MAOrder(MABase):
         print(b)
         return b
 
-    def jdo_sign(self,channel):
-        pass
+    def ma_contract_sign(self,channel,service,operator):
+        '''
+        MA免密签约api
+        :param channel:签约渠道WXPAY,ALPAY
+        :param service: 业务，目前支持GAS,03
+        :param operator: CP，目前支持JDO,030003
+        :return:
+        '''
+        url = self.payment_url + '/internal/v2/app/contract/sign'
+        data = {'aid':self.aid,'operatorId':operator,'payChannel':channel,'serviceId':service,'vin':self.vin}
+        c,b = self.do_post(url,data)
+        self.assert_bm_msg(c,b)
+        return b
 
-    def get_jdo_sign_result(self):
-        pass
-    def jdo_release_sign(self):
-        pass
+    def ma_get_sign_result(self,channel,service,operator):
+        '''
+        MA查询签约状态api
+        :param channel:签约渠道WXPAY,ALPAY
+        :param service: 业务，目前支持GAS,03
+        :param operator: CP，目前支持JDO,030003
+        :return:
+        '''
+        url = self.payment_url + '/internal/v2/app/contract/query'
+        data = {'aid': self.aid, 'operatorId': operator, 'payChannel': channel, 'serviceId': service, 'vin': self.vin}
+        c, b = self.do_post(url, data)
+        self.assert_bm_msg(c, b)
+        return b
+
+    def ma_release_sign(self,channel,service,operator):
+        '''
+        MA免密解约
+        :param channel:签约渠道WXPAY,ALPAY
+        :param service: 业务，目前支持GAS,03
+        :param operator: CP，目前支持JDO,030003
+        :return:
+        '''
+        url = self.payment_url + '/internal/v2/app/contract/unsign'
+        data = {'aid': self.aid, 'operatorId': operator, 'payChannel': channel, 'serviceId': service, 'vin': self.vin}
+        c, b = self.do_post(url, data)
+        self.assert_bm_msg(c, b)
+        return b
 
     def apply_invoice(self,order_no,i_channel,i_type,i_title,tax,email,**kwargs):
         '''
@@ -222,16 +255,13 @@ class MAOrder(MABase):
         self.assert_bm_msg(c,b)
 
 
-
 if __name__ == '__main__':
-    from point.points import Points
-    import os
-
-    os.environ['ENV'] = 'DEV'
-    os.environ['GATE'] = 'false'
     aid = '4614183'
     ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
-    ma_order.apply_invoice(order_no='ma20210207165456111143360',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
+    ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
+    # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
+    # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
+    # ma_order.apply_invoice(order_no='ma20210207165456111143360',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
 
     # ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
@@ -247,8 +277,6 @@ if __name__ == '__main__':
     # ma_order.alipay_callback()
     # order_no = ma_order.ma_create_order(aid='9353497',vin='LFVSOP2TEST000102',goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
     # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1)['data']
-    # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1)['data']
+    # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1,vin='LFVSOP2TEST000102')['data']
     # ma_order.get_ma_qr_code(order_no=order_no,pay_type='12100')
 
-    # p = Points()
-    # p.get_user_points(aid)
