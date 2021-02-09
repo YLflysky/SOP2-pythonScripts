@@ -134,14 +134,14 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     aid = '9350963'
     vin = 'LFVSOP2TEST000353'
-    # o.bm_update_pay(bm_order='1610505959000',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
-    #                 pay_time=o.time_delta(),order_amount=0.01,orderStatus='FINISH')
-    o.order_list(vin,aid,pageSize=30,pageIndex=1,orderStatus='1002',orderCategory='00')
+    o.bm_update_pay(bm_order='1610505959000',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
+                    pay_time=o.time_delta(),order_amount=0.01,orderStatus='FINISH')
+    # o.order_list(vin,aid,pageSize=30,pageIndex=1,orderStatus='1002',orderCategory='00')
     # o.order_count(vin=123,uid='469317')
     # data = {"brand": "VW", "businessExtInfo": {"message": "扩展字段测试"},
     #         "createdTime": "1601346979941", "discountAmount": "2000", "orderAmount": "20000", "orderCategory": "99",

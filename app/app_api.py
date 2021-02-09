@@ -14,7 +14,7 @@ class App(Base):
         self.name = name
         self.password = password
         self.uid = aid
-        self.header['aid'] = aid
+        # self.header['aid'] = aid
         self.mobile_url = self.read_conf('sop2_env.conf', self.env, 'one_app_host')
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
         self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
@@ -143,12 +143,12 @@ class App(Base):
 
 if __name__ == '__main__':
 
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     app = App(name='13353116624',password='000000',aid='9353497')
-    # app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
+    app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
     # app.apply_invoice(order_no='20210205062821259167936',i_type='1',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18888888888')
-    app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
-    app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
+    # app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
+    # app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
     # app.get_tenant_by_vin(vin='LFVSOP2TESTLY0002')
 
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',

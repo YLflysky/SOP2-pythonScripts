@@ -64,12 +64,7 @@ class Calendar(Base):
         url = self.url + '/api/v1/calendar/event/delete'
         data = {'id':event_id}
         code,body = self.do_delete(url,data)
-        if self.tenant == 'BM':
-            self.assert_msg(code,body)
-        else:
-            assert code == 200
-            assert body['code'] == '000000'
-            assert body['description'] == '成功'
+        self.assert_bm_msg(code,body)
 
     def update_event(self,event_id,s,e,**kwargs):
         url = self.url + '/api/v1/calendar/event/modify'
@@ -123,11 +118,11 @@ class Calendar(Base):
 
 if __name__ == '__main__':
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     b = Base()
-    bm_c = Calendar(tenant='MA',token=True)
-    print(bm_c.gate)
-    bm_c.get_last_time()
+    bm_c = Calendar(tenant='BM',token=True)
+    # print(bm_c.gate)
+    # bm_c.get_last_time()
     # ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
     # ma_c.get_tenant_by_vin()
     # c.find_all_event(update_time=None)
@@ -135,5 +130,5 @@ if __name__ == '__main__':
     #                  'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
     # bm_c.mobile_sync(current_time=None,events=[event])
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10))
-    # c.find_detail(39355)
+    bm_c.find_all_event(update_time=None,)
     # ma_c.mobile_find_all()
