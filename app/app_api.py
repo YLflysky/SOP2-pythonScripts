@@ -144,17 +144,17 @@ class App(Base):
 if __name__ == '__main__':
 
     os.environ['ENV'] = 'UAT'
-    app = App(name='13353116624',password='000000',aid='9353497')
-    app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
-    # app.apply_invoice(order_no='20210205062821259167936',i_type='1',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18888888888')
+    app = App(name='13353110049',password='000000',aid='9353883')
+    # app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
+    # app.apply_invoice(order_no='ma20210207170058485143360',i_type='1',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18888888888')
     # app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
     # app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
     # app.get_tenant_by_vin(vin='LFVSOP2TESTLY0002')
 
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
     #                  'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
-    # app.calendar_mobile_sync(current_time=None,events=[event],vin='LFVSOP2TESTLY0003')
-    # app.calendar_mobile_find_all('LFVSOP2TESTLY0002')
+    # app.calendar_mobile_sync(current_time=None,events=[event],vin='LFVSOP2TESTLY0049')
+    app.calendar_mobile_find_all('LFVSOP2TESTLY0049')
     # app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0002',channel='WXPAY',order_no='20210201172351827405504')
 
 

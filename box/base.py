@@ -262,6 +262,7 @@ class Base:
             code = res.status_code
             body = res.text
             body = json.loads(body)
+            # print(body)
             token_type = body['data']['token_type']
             access_token = body['data']['access_token']
         elif client.upper() in ('APP','CDP'):

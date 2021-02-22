@@ -248,7 +248,7 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     flow = Flow()
     bm_pay = BMPayment()
     user_data = flow.read_yml('../conf','user.yml')
@@ -258,14 +258,14 @@ if __name__ == '__main__':
     vin = 'LFVSOP2TEST000331'
     iccid = user_data['iccid']
     # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
-    flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
+    # flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
     # flow.flow_detail(263)
     # flow.goods_list(['MUSIC_VIP'])
     # flow.bm_get_goods_detail('100')
-    # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
+    flow.bm_goods_list(aid,categories=['RADIO_VIP'])
     # flow.bm_flow_list(aid,vin)
     # flow.remain_flow(flow_type='media',vin='LFVTESTMOSC989216')
 

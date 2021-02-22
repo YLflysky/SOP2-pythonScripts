@@ -11,27 +11,27 @@ class Calendar(Base):
         super().__init__()
         self.vin = vin
         self.uid = aid
-        self.header['aid'] = aid
+        # self.header['aid'] = aid
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
 
         if tenant == 'BM':
             self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
             self.url = self.read_conf('sop2_env.conf', self.env, 'calendar_host')
             # lk.prt('开始获取token...')
-            if self.gate:
+            if token:
                 token_url = self.read_conf('sop2_env.conf',self.env,'token_host')
                 self.header['Authorization']=self.get_token(token_url,name,password,self.vin)
-            self.header['Did'] = self.device_id
+                self.header['Did'] = self.device_id
 
         else:
             self.gate = 'True'
             self.env = 'UAT'
             self.device_id = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
             self.url = self.read_conf('ma_env.conf',self.env,'calendar_host')
-        if token:
-            lk.prt('开始获取token...')
-            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
-            self.header['Did'] = self.device_id
+            if token:
+                lk.prt('开始获取token...')
+                self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
+                self.header['Did'] = self.device_id
 
     def find_all_event(self,update_time):
         '''
@@ -93,13 +93,7 @@ class Calendar(Base):
         url = self.url + '/api/v1/calendar/event/getEventLastUpdatedTime'
 
         code,body = self.do_get(url,None)
-        if self.tenant == 'BM':
-            self.assert_msg(code,body)
-        else:
-            print(body)
-            assert code == 200
-            assert body['code'] == '000000'
-        return body
+        self.assert_bm_msg(code,body)
 
     def event_list_by_rule(self,api_type,st,et,uid,deviceId):
         '''
@@ -120,7 +114,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
     b = Base()
-    bm_c = Calendar(tenant='BM',token=True)
+    bm_c = Calendar(tenant='BM',token=True,name='13353110049',password='000000',vin='LFVSOP2TESTLY0049',aid='9353883')
     # print(bm_c.gate)
     # bm_c.get_last_time()
     # ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
@@ -130,5 +124,6 @@ if __name__ == '__main__':
     #                  'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
     # bm_c.mobile_sync(current_time=None,events=[event])
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10))
-    bm_c.find_all_event(update_time=None,)
-    # ma_c.mobile_find_all()
+    # bm_c.find_all_event(update_time=None,)
+    data = {'apiType': 'TYPE_ONE', 'startDate': '1612763053000', 'endDate': '1618535559000'}
+    bm_c.get_event_list(data)

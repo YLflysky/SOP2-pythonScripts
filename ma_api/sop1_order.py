@@ -1,10 +1,11 @@
-from .ma_order import MABase
+from ma_api.ma_order import MABase
 
 class SOP1Order(MABase):
     def __init__(self, aid, user, password, vin):
         super().__init__(aid, user, password, vin)
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
         self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
+        self.mobile_url = self.read_conf('ma_env.conf', self.env, 'one_app_host')
 
     def sop1_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
         '''
@@ -24,8 +25,18 @@ class SOP1Order(MABase):
         print(b)
         return b
 
+    def sop1_calendar_sync(self):
+        url = self.mobile_url + '/mos/calendar/public/event/sync'
+        event= [{'localEventId': self.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
+                     'eventStartTime': self.get_time_stamp(days=-1), 'eventEndTime': self.get_time_stamp(days=1)}]
+        data = {'currentTime': self.time_delta(), 'events': event}
+        c, b = self.do_post(url, data, gateway='APP')
+        self.assert_bm_msg(c,b)
+
+
 if __name__ == '__main__':
     aid = '9353497'
     vin = 'LFVSOP2TEST000353'
     sop1 = SOP1Order(aid,user='13353116624',password='000000',vin='LFVSOP2TEST000102')
-    sop1.sop1_create_order(aid=aid,vin=vin,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
+    sop1.sop1_calendar_sync()
+    # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
