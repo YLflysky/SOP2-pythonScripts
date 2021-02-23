@@ -11,7 +11,7 @@ token_url = b.read_conf('ma_env.conf','UAT','token_host')
 # conf_dir = b.get_pro_path() + '/conf'
 # user = b.read_yml(conf_dir,'user.yml')
 # user = user['user_ma']
-token = b.get_token(token_url,'4614183','000000','LFVTEST1231231231')
+token = b.get_token(token_url,'15330011918','000000','LFVTEST1231231231')
 
 
 bonus = PointsShop(tenant='MA',token=False)

@@ -256,12 +256,12 @@ class MAOrder(MABase):
 
 
 if __name__ == '__main__':
-    aid = '4614183'
-    ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
+    aid = '9349641'
+    ma_order = MAOrder(aid,user='13761048895',password='000000',vin='LMGLS1G53H1003120')
     # ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
-    ma_order.apply_invoice(order_no='ma2021022309421525657344',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
+    ma_order.apply_invoice(order_no='ma20210223100216483147456',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
 
     # ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
