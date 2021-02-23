@@ -248,7 +248,7 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     flow = Flow()
     bm_pay = BMPayment()
     user_data = flow.read_yml('../conf','user.yml')

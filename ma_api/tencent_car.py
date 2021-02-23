@@ -1,12 +1,11 @@
-from ma_api.ma_order import MABase
+from box.base import Base
 import os,sys
 
 
-class TencentCar(MABase):
+class TencentCar(Base):
     def __init__(self,user='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183'):
-        super().__init__(aid='',user=user,password=password,vin=vin)
-        self.env = 'UAT'
-        self.gate = True
+        super().__init__()
+        self.env = os.getenv('ENV')
         self.url = self.read_conf('ma_env.conf',self.env,'car_host')
         self.add_header(url=self.read_conf('ma_env.conf',self.env,'token_host'),user=user,password=password,vin=vin)
 
@@ -80,14 +79,16 @@ class TencentCar(MABase):
 
 if __name__ == '__main__':
 
+    import os
+    os.environ['ENV'] ='UAT'
     car = TencentCar()
-    uid = '4613993'
-    vin = 'LFV3A23C1K3161804'
+    uid = '4614963'
+    vin = 'LFVTESTMOSC000030'
     # car.check_vin(vin)
     # car.get_QRcode(uid,vin)
     # car.send_poi_hu(vin)
     # car.unbind(uid,vin=vin)
-    car.get_info(uid,vin)
-    # car.bind_callback(aid='4614963',vin='TEZWVEVTVElDQVMzMDk3MzY=',wecar_id='TEZWVEVTVElDQVMzMDk3MzY',action='unbind')
+    # car.get_info(uid,vin)
+    car.bind_callback(aid='4614963',vin='B0EEE94911E24DFA3D39B21BBFAE6506',wecar_id=None,action='abc')
 
 

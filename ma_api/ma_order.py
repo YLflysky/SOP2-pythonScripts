@@ -261,7 +261,7 @@ if __name__ == '__main__':
     # ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
-    # ma_order.apply_invoice(order_no='ma20210207170058485143360',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
+    ma_order.apply_invoice(order_no='ma2021022309421525657344',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
 
     # ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
@@ -271,9 +271,9 @@ if __name__ == '__main__':
     #                     business_state='0',desc='待支付',orderNO='20200826193643504544768',orderStatus='FINISHED',
     #                     amount=5.00,discount=0.25,pay_amount=4.75,timeout=1000,
     #                     business_info=info)
-    ma_order.sync_order_pay(aid='9349641',order_no='20210112104548022143360',pay_order_no='1234',channel='WECHAT_PAY',
-                            pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02,
-                            pay_type='QR_CODE')
+    # ma_order.sync_order_pay(aid='9349641',order_no='20210112104548022143360',pay_order_no='1234',channel='WECHAT_PAY',
+    #                         pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02,
+    #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
     # order_no = ma_order.ma_create_order(aid='9353497',vin='LFVSOP2TEST000102',goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
