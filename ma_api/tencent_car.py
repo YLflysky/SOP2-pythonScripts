@@ -68,7 +68,7 @@ class TencentCar(Base):
 
     def send_poi_hu(self,vin):
         '''
-        发送POI到车机
+        发送POI到MQTT_CENTER
         :param vin:
         :return:
         '''
@@ -80,15 +80,15 @@ class TencentCar(Base):
 if __name__ == '__main__':
 
     import os
-    os.environ['ENV'] ='UAT'
+    os.environ['ENV'] = 'CLOUD'
     car = TencentCar()
     uid = '4614963'
-    vin = 'LFVTESTMOSC000030'
+    vin = None
     # car.check_vin(vin)
     # car.get_QRcode(uid,vin)
-    # car.send_poi_hu(vin)
+    car.send_poi_hu(vin)
     # car.unbind(uid,vin=vin)
     # car.get_info(uid,vin)
-    car.bind_callback(aid='4614963',vin='B0EEE94911E24DFA3D39B21BBFAE6506',wecar_id=None,action='abc')
+    # car.bind_callback(aid='4614963',vin='B0EEE94911E24DFA3D39B21BBFAE6506',wecar_id=None,action='abc')
 
 

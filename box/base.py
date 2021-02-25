@@ -323,7 +323,7 @@ class Base:
             response_body = res.text
         return res.status_code, response_body
 
-    def do_post_file(self, url, params, data, file_path):
+    def do_post_file(self, url, params, data, file_path,gateway='HU'):
         '''
         上传文件接口测试
         :param url:
@@ -331,7 +331,7 @@ class Base:
         :return:
         '''
         if self.gate:
-            params = self._calc_digital_sign(url, params)
+            params = self._calc_digital_sign(url, params,gateway)
         lk.prt('final post url is:{}'.format(url))
         if isinstance(data, dict):
             data = json.dumps(data, ensure_ascii=False)
@@ -349,9 +349,9 @@ class Base:
         self.header['Content-type'] = 'application/json; charset=utf-8'
         return res.status_code, response_body
 
-    def do_put(self, url, data,params=None):
+    def do_put(self, url, data,params=None,gateway='HU'):
         if self.gate:
-            params = self._calc_digital_sign(url, params)
+            params = self._calc_digital_sign(url, params,gateway)
         lk.prt('final put url is:{}'.format(url))
         if isinstance(data, dict):
             data = json.dumps(data, ensure_ascii=False)
@@ -592,7 +592,7 @@ class Base:
 
 if __name__ == '__main__':
     url = 'https://otherbackend-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token'
-    b = Base(tenant='BM')
+    b = Base()
     # print(b.my_json_decoder(url))
     res = b.match_url(url)
     print(res)

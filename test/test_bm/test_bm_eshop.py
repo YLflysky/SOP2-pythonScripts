@@ -5,8 +5,8 @@ import random
 from eshop.eshop import SpareShop,PointsShop
 from eshop.smart_shop import SmartEShop
 
-spare = SpareShop(tenant='BM')
-bm_shop = SmartEShop(tenant='BM')
+spare = SpareShop(tenant='BM',token=False)
+bm_shop = SmartEShop(tenant='BM',token=False)
 
 
 @pytest.mark.eshop

@@ -138,22 +138,25 @@ class App(Base):
                 ,'email':email,**kwargs}
 
         c,b = self.do_post(url,data,gateway='APP')
-        self.assert_msg(c,b)
+        self.assert_bm_msg(c,b)
 
 
 if __name__ == '__main__':
-
+    import json
     os.environ['ENV'] = 'UAT'
     app = App(name='13761048895',password='000000',aid='9349641')
     # app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
-    app.apply_invoice(order_no='ma20210223100216483147456',i_type='1',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18888888888')
+    app.apply_invoice(order_no='ma20210225094735194245760',i_type='PERSONAL',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409')
     # app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
     # app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
     # app.get_tenant_by_vin(vin='LFVSOP2TESTLY0003')
 
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
     #                  'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
-    # app.calendar_mobile_sync(current_time=None,events=[event],vin='LFVSOP2TESTLY0049')
+    # with open('../conf/calendar_events.json', 'r', encoding='utf-8') as json_f:
+    #     events = json.load(json_f)
+    # print(events)
+    # app.calendar_mobile_sync(current_time=None,events=events,vin='LFVSOP2TESTLY0049')
     # app.calendar_mobile_find_all('LFVSOP2TESTLY0049')
     # app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0002',channel='WXPAY',order_no='20210201172351827405504')
 

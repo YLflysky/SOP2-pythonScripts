@@ -254,6 +254,16 @@ class MAOrder(MABase):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
+    def cancel_order(self,order_no):
+        '''
+        MA车机端取消订单接口
+        :param order_no:
+        :return:
+        '''
+        url = self.url + '/mosc-order-ma/order/api/v1/orders/{}/cancel'.format(order_no)
+        c,b = self.do_put(url,None)
+        self.assert_bm_msg(c,b)
+
 
 if __name__ == '__main__':
     aid = '9349641'
@@ -261,8 +271,8 @@ if __name__ == '__main__':
     # ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
-    ma_order.apply_invoice(order_no='ma20210223100216483147456',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
-
+    ma_order.apply_invoice(order_no='ma20210224155318454245760',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
+    # ma_order.cancel_order(order_no='202101141527422841024000')
     # ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
     # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
@@ -277,7 +287,7 @@ if __name__ == '__main__':
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
     # order_no = ma_order.ma_create_order(aid='9353497',vin='LFVSOP2TEST000102',goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
-    # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1)['data']
+    # order_no = ma_order.ma_create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=ma_order.vin)['data']
     # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1,vin='LFVSOP2TEST000102')['data']
     # ma_order.get_ma_qr_code(order_no=order_no,pay_type='12100')
 

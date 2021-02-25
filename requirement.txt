@@ -44,14 +44,12 @@ pyparsing==2.4.7
 Pypubsub==4.0.3
 pytest==6.0.2
 python-dateutil==2.8.1
-pywin32==300
 PyYAML==5.3.1
 redis==3.5.3
 requests==2.25.0
 robotframework==3.2.2
 robotframework-databaselibrary==1.2.4
 robotframework-excellib==2.0.1
-robotframework-excellibrary==0.0.2
 robotframework-faker==5.0.0
 robotframework-jsonlibrary==0.3.1
 robotframework-kafkalibrary==0.0.3
