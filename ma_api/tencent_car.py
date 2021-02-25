@@ -80,13 +80,13 @@ class TencentCar(Base):
 if __name__ == '__main__':
 
     import os
-    os.environ['ENV'] = 'CLOUD'
+    os.environ['ENV'] = 'UAT'
     car = TencentCar()
     uid = '4614963'
-    vin = None
+    vin = 'LFVTEST1231231231'
     # car.check_vin(vin)
-    # car.get_QRcode(uid,vin)
-    car.send_poi_hu(vin)
+    car.get_QRcode(uid,vin)
+    # car.send_poi_hu(vin)
     # car.unbind(uid,vin=vin)
     # car.get_info(uid,vin)
     # car.bind_callback(aid='4614963',vin='B0EEE94911E24DFA3D39B21BBFAE6506',wecar_id=None,action='abc')
