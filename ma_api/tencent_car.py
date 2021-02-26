@@ -80,7 +80,7 @@ class TencentCar(Base):
 if __name__ == '__main__':
 
     import os
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'CLOUD'
     car = TencentCar()
     uid = '4614963'
     vin = 'LFVTEST1231231231'

@@ -94,6 +94,7 @@ class Calendar(Base):
 
         code,body = self.do_get(url,None)
         self.assert_bm_msg(code,body)
+        return body
 
     def event_list_by_rule(self,api_type,st,et,uid,deviceId):
         '''

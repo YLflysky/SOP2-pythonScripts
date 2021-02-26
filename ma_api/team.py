@@ -78,12 +78,12 @@ if __name__ == '__main__':
     t = Team()
     uid='4614183'
     vin='LFVTEST1231231231'
-    # t.get_hash_vin(vin='LFVSOP2TESTLY0002')
+    t.get_hash_vin(vin='LFVSOP2TESTLY0002')
     # t.create_group(uid,vin)
     # open_id = t.get_info(uid,vin)['weChatOpenId']
     # print(open_id)
     # groupId = t.find_last_group(uid,vin)['groupId']
     # invite_pwd = t.find_last_group(uid,vin)['invitePassword']
     # t.join_team(accountId=uid,vin=vin,group_id='53011910083707',invite=invite_pwd)
-    t.join_last_group(account=uid,group='588079202560',longitude='116.388729',latitude='39.871198',vin=vin)
+    # t.join_last_group(account=uid,group='588079202560',longitude='116.388729',latitude='39.871198',vin=vin)
 

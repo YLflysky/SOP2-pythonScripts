@@ -157,8 +157,8 @@ def test_add_event_03():
     s = ma_calendar.get_time_stamp(days=2)
     e = ma_calendar.get_time_stamp(days=1)
     body = ma_calendar.add_event(s, e)
-
-    assert body['errorMessage'] == 'wrong date range'
+    assert body['statusCode'] == '5004'
+    assert body['statusMessage'] == 'wrong date range'
 
 
 @allure.suite('test_ma-calendar')
@@ -186,7 +186,7 @@ def test_add_event_05():
     s = ma_calendar.get_time_stamp(days=2)
     e = ma_calendar.get_time_stamp(days=3)
     body = ma_calendar.add_event(s, e, rrule='Only Once1')
-    assert body['errorMessage'] == 'rule resolve error'
+    assert body['statusMessage'] == 'rule resolve error'
 
 
 

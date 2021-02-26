@@ -1,3 +1,13 @@
+sergio:
+  aid:
+    9354046
+  user:
+    !!str 13353110073
+  password:
+    !!str 000000
+  vin:
+    LFVSOP2TESTLY0073
+
 user_ma:
   aid:
     4614183
