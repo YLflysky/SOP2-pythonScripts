@@ -140,10 +140,38 @@ class App(Base):
         c,b = self.do_post(url,data,gateway='APP')
         self.assert_bm_msg(c,b)
 
+    def get_pay_url(self,order_no,channel):
+        '''
+        APP获取支付url
+        :param order_no:
+        :param channel:QR_ALPAY,QR_WEIXIN
+        :return:
+        '''
+        url = self.mobile_url + '/oneapp/pay/v1/payInfo'
+        data = {'payChannel':channel,'orderNo':order_no}
+        c,b = self.do_post(url,data,gateway='APP')
+        self.assert_bm_msg(c,b)
+
+    def create_order(self, goods_id, category, vin, count, **kwargs):
+        '''
+        APP创建商品订单接口
+        :param goods_id:商品ID，orderCategory为PAID_CONTENT，priceType为2时，为专辑号，priceType为1时，为音频编号用“,”隔开其他均为商品ID
+        :param category:商品类型（MUSIC_VIP，RADIO_VIP，WIFI_FLOW，MEDIA_FLOW，PAID_CONTENT）
+        :param price_type:支付方式1音频,2整张专辑orderCategor为PAID_CONTENT，priceType必传
+        :param quantity:商品数量
+        :param point:是否使用积分抵扣
+        :param kwargs:
+        :return:
+        '''
+        url = self.mobile_url + '/oneapp/order/v1/create'
+        data = {'goodsId': goods_id, 'vin': vin, 'orderCategory': category, 'count': count,**kwargs}
+        c, b = self.do_post(url, data,gateway='APP')
+        self.assert_bm_msg(c, b)
+        return b
 
 if __name__ == '__main__':
     import json
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     app = App(name='15506052726',password='Qq111111',aid='9349641')
     # app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
     # app.apply_invoice(order_no='ma20210225094735194245760',i_type='PERSONAL',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409')
@@ -151,14 +179,15 @@ if __name__ == '__main__':
     # app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
     # app.get_tenant_by_vin(vin='LFVTESTMOSC052726')
 
-    event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
-                     'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
-    events = [event]
+    # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
+    #                  'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
+    # events = [event]
     # with open('../conf/calendar_events.json', 'r', encoding='utf-8') as json_f:
     #     events = json.load(json_f)
     # print(events)
-    app.calendar_mobile_sync(current_time=None,events=events,vin='LFVTESTMOSC052726')
+    # app.calendar_mobile_sync(current_time=None,events=events,vin='LFVTESTMOSC052726')
     # app.calendar_mobile_find_all('LFVSOP2TESTLY0049')
     # app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0002',channel='WXPAY',order_no='20210201172351827405504')
+    app.create_order(goods_id='273',category='MEDIA_FLOW',vin='LFVSOP2TEST000353',count=1)
 
 

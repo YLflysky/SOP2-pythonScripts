@@ -26,7 +26,7 @@ class Team(TencentCar):
         data = {'accountId':accountId,'vin':vin,'longitude':float(self.f.longitude()),'latitude':float(self.f.latitude()),
                 'invitePassword':invite,'groupId':group_id}
         code,body = self.do_post(url,data=data)
-        self.assert_msg(code,body)
+        self.assert_bm_msg(code,body)
 
     def join_last_group(self,account,vin,group,longitude,latitude):
         '''
@@ -76,14 +76,14 @@ if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
     t = Team()
-    uid='4614183'
-    vin='LFVTEST1231231231'
-    t.get_hash_vin(vin='LFVSOP2TESTLY0002')
+    uid='9349829'
+    vin='LFVSOP2TEST000048'
+    # t.get_hash_vin(vin='LFVSOP2TESTLY0002')
     # t.create_group(uid,vin)
     # open_id = t.get_info(uid,vin)['weChatOpenId']
     # print(open_id)
-    # groupId = t.find_last_group(uid,vin)['groupId']
-    # invite_pwd = t.find_last_group(uid,vin)['invitePassword']
-    # t.join_team(accountId=uid,vin=vin,group_id='53011910083707',invite=invite_pwd)
+    groupId = t.find_last_group(uid,vin)['groupId']
+    invite_pwd = t.find_last_group(uid,vin)['invitePassword']
+    t.join_team(accountId=uid,vin=vin,group_id=groupId,invite=invite_pwd)
     # t.join_last_group(account=uid,group='588079202560',longitude='116.388729',latitude='39.871198',vin=vin)
 

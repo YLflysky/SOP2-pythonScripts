@@ -191,7 +191,7 @@ class MAOrder(MABase):
         url = self.url + '/mosc-order-ma/order/mos/order/api/v1/create'
         data = {'userId':aid,'goodsId': goods_id, 'vin':vin,'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
         c, b = self.do_post(url, data)
-        print(b)
+        self.assert_bm_msg(c,b)
         return b
 
     def ma_contract_sign(self,channel,service,operator):
@@ -266,12 +266,12 @@ class MAOrder(MABase):
 
 
 if __name__ == '__main__':
-    aid = '9349641'
-    ma_order = MAOrder(aid,user='13761048895',password='000000',vin='LMGLS1G53H1003120')
+    ma_order = MAOrder('9349641',user='13761048895',password='000000',vin='LMGLS1G53H1003120')
+    music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
     # ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
-    ma_order.apply_invoice(order_no='ma20210224155318454245760',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
+    # ma_order.apply_invoice(order_no='ma20210224155318454245760',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
     # ma_order.cancel_order(order_no='202101141527422841024000')
     # ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
@@ -287,7 +287,7 @@ if __name__ == '__main__':
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
     # order_no = ma_order.ma_create_order(aid='9353497',vin='LFVSOP2TEST000102',goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
-    # order_no = ma_order.ma_create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=ma_order.vin)['data']
+    order_no = music_order.ma_create_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1,vin=music_order.vin)['data']
     # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1,vin='LFVSOP2TEST000102')['data']
     # ma_order.get_ma_qr_code(order_no=order_no,pay_type='12100')
 

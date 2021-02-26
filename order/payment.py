@@ -83,7 +83,7 @@ class Payment(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
-    def get_qr_code(self, aid, order_no, channel,score=False):
+    def get_qr_code(self, aid, order_no, channel,score=False,**kwargs):
         '''
         支付底层获取支付二维码API
         :param aid: 用户id
@@ -93,7 +93,7 @@ class Payment(Base):
         :return:
         '''
         url = self.url + '/pay/qrCode'
-        params = {'aid': aid, 'orderNo': order_no, 'payChannel': channel,'useScore':score}
+        params = {'aid': aid, 'orderNo': order_no, 'payChannel': channel,'useScore':score,**kwargs}
         code, body = self.do_get(url, params)
         self.assert_msg(code, body)
         return body
@@ -248,7 +248,7 @@ if __name__ == '__main__':
     # order.sync_order(aid=aid, orderNo=no, ex='ex%s'%no, origin='SOP1', category='110',
     #              serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
     #              goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
-    pay.get_qr_code(aid='23',order_no='ftb202102011550567971019904',channel='WECHAT_PAY')
+    pay.get_qr_code(aid='23',order_no='ftb202102011550567971019904',channel='WECHAT_PAY',payWay='APP')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback('trade_success', app_id='2018091361389377', out_trade_no='ftb20210115131035193598016',

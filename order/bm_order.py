@@ -10,6 +10,9 @@ class BMOrder(Base):
         super().__init__()
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
         self.be_url = self.read_conf('sop2_env.conf', self.env, 'be_host')
+        if self.gate:
+            token_url = self.read_conf('sop2_env.conf',self.env,'token_host')
+            self.add_header(token_url)
 
     def order_count(self, vin, uid, **kwargs):
         '''
@@ -91,6 +94,9 @@ class BMOrder(Base):
         '''
         url = self.hu_url + '/order/api/v1/orderCreate'
         self.header['tenantId'] = tenant_id
+        self.header['aid'] = aid
+        # 随意传入deviceId
+        self.header['deviceId'] = self.f.word()
         data = {'userId': aid, 'vin': vin, 'goodsId': goods, 'quantity': quantity}
         c, b = self.do_post(url, data)
         print(b)
@@ -134,11 +140,11 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
-    aid = '9350963'
-    vin = 'LFVSOP2TEST000353'
+    aid = '9353449'
+    vin = 'LFVTEST1231231231'
     # o.bm_update_pay(bm_order='20200921133430118139264',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
     #                 pay_time=o.time_delta(),order_amount=0.01,orderStatus='PAY_SUCCESS')
     # o.order_list(vin,aid,pageSize=30,pageIndex=1,orderStatus='1002',orderCategory='00')
@@ -154,5 +160,5 @@ if __name__ == '__main__':
     # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
     #                   businessState='success',businessStateDesc='已完成')
     # o.reload_config()
-    o.bm_order_detail(aid='20210225',order_no='ftb20210225091550201483328',vin=None)
-    # o.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='253',quantity=1)
+    # o.bm_order_detail(aid='20210225',order_no='ftb20210225091550201483328',vin=None)
+    o.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='234',quantity=1)

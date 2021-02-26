@@ -2,13 +2,8 @@ import pytest
 import allure
 import random
 from box.lk_logger import lk
+from .conftest import app,vins,aid,bm_order
 from app.app_api import App
-
-name = '13353116624'
-password = '000000'
-aid = '9353497'
-
-app = App(name,password,aid=aid)
 
 
 event_id = random.randint(10000, 100000)
@@ -26,11 +21,6 @@ def assert_results():
         assert len(sql_res) == 1
     finally:
         app.do_mysql_exec('delete from calendar_event where uid="{}" and local_event_id="{}"'.format(aid,event_id),'fawvw_calendar')
-
-vins = [('LFVSOP2TESTLY0003','SOP2BM'),
-        ('LFVSOP2TESTLY0002','SOP2MA'),
-        ('LFVSOP2TESTLY0010','37W'),
-        ('LFVSOP2TESTLY0011','SOP1')]
 
 
 @allure.suite('app')
@@ -80,6 +70,41 @@ def test_app_cmcc_sign():
     app_sign = App(name='13770614790',password='000000',aid='9350963')
     res = app_sign.get_sign_result(vin='LFVSOP2TESTLY0002',channel='WXPAY',cp_seller='CMCC')
     assert res['data']['signNo'] == '1'
+
+
+@allure.suite('app')
+@allure.title('测试APP获取流量订单支付URL')
+@pytest.mark.app
+@pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
+def test_app_pay_url_flow(channel):
+    vin = 'LFVSOP2TEST000353'
+    order_no = app.create_order(goods_id='253',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
+    res = app.get_pay_url(order_no,channel)
+    assert res['data']['payUrl']
+
+
+@allure.suite('app')
+@allure.title('测试APP获取音乐订单支付URL')
+@pytest.mark.app
+@pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
+def test_app_pay_url_music(channel):
+    vin = 'LFVSOP2TEST000353'
+    order_no = app.create_order(goods_id='253',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
+    res = app.get_pay_url(order_no,channel)
+    assert res['data']['payUrl']
+
+
+@allure.suite('app')
+@allure.title('测试APP获取电台订单支付URL')
+@pytest.mark.app
+@pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
+def test_app_pay_url_radio(channel):
+    aid = '4614931'
+    vin = 'LFVSOP2TEST000353'
+    order_no = bm_order.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='273',quantity=1)['data']['orderNo']
+    res = app.get_pay_url(order_no,channel)
+    assert res['data']['payUrl']
+
 
 
 
