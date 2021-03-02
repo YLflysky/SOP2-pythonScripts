@@ -123,7 +123,7 @@ class Base:
             return s2[1:]
         return s2
 
-    def _calc_digital_sign(self, url, params,gateway='HU'):
+    def _calc_digital_sign(self, url, params,gateway):
         """计算签名
 
         - :param uri: 【必填】带计算前面的uri, 类型：string
@@ -133,7 +133,7 @@ class Base:
             params = {}
         resource_uri = self.get_resource_uri(url)
         # 生成时间戳和nonce
-        sign_timestamp = str(int(time.time() * 1000))
+        sign_timestamp = self.get_time_stamp(seconds=20)
         temp = str(uuid.uuid1())
         nonce = temp.replace("-", "")
 
@@ -161,8 +161,12 @@ class Base:
         secret_key_app = 'F5Pw4vnV7ISCZZhY8gEk7JIYPY4l9b1M'
         if gateway == 'HU':
             last_url_encode = resource_uri + "_" + catent + "_" + secret_key
-        else:
+        elif gateway== 'APP':
             last_url_encode = resource_uri + "_" + catent + "_" + secret_key_app
+        elif gateway.upper() == 'CDP':
+            return self._app_sign(url,params)
+        else:
+            return
 
         lk.prt("In calc digital sign, last_url is: {}".format(last_url_encode))
         # 计算MD5
@@ -172,6 +176,54 @@ class Base:
         digital_sign = my_md5.hexdigest()
         lk.prt("In calc digital sign, digital_sign is: {}".format(digital_sign))
         url_query_dict["sign"] = digital_sign
+
+        return url_query_dict
+
+    def _app_sign(self, url, params):
+        """计算签名
+
+        - :param uri: 【必填】带计算前面的uri, 类型：string
+        - :return: 返回附加的url
+        """
+        if params is None:
+            params = {}
+        resource_uri = self.get_resource_uri(url)
+        # 生成时间戳和nonce
+        sign_timestamp = str(int(time.time() * 1000))
+        temp = str(uuid.uuid1())
+        nonce = temp.replace("-", "")
+
+        # 2.获取查询参数
+        url_query_dict = params
+        # 3.添加签名时间，排序
+        url_query_dict["appkey"] = "5214621308"
+        url_query_dict["signTimestamp"] = sign_timestamp
+        url_query_dict["nonce"] = nonce
+        # url_query_dict["userModel"] = "DEFAULT"
+        # url_query_dict["os"] = "android"
+        # 排序并生成字符串
+        key_sort = sorted(url_query_dict.keys())
+
+        # 4.拼接
+        parm_list = []
+        for key in key_sort:
+            temp = key + '=' + str(url_query_dict[key])
+            parm_list.append(temp)
+
+        catent = "_".join(parm_list)
+        lk.prt("In app sign, catent is: {}".format(catent))
+        # 5.添加应用资源和secret_key
+        secret_key = '9ff19739c5aceac61a52eefb3fe3c55e'
+        sign_url = resource_uri + "_" + catent + "_" + secret_key
+
+        lk.prt("In app sign, sign_url is: {}".format(sign_url))
+        # 计算MD5
+        last_url_encode = parse.quote(sign_url.encode(), safe='')
+        my_md5 = hashlib.md5()
+        my_md5.update(last_url_encode.encode())
+        digital_sign = my_md5.hexdigest()
+        lk.prt("In app sign, digital_sign is: {}".format(digital_sign))
+        url_query_dict["digitalSign"] = digital_sign
 
         return url_query_dict
 
@@ -203,7 +255,18 @@ class Base:
                 "login_type": "HU",
                 "vin": vin
             }
-        elif client == 'APP':
+            data = json.dumps(payload)
+            lk.prt('post url is:{}'.format(url))
+            lk.prt('post header is:{}'.format(headers))
+            lk.prt('post data is :{}'.format(data))
+            params = self._calc_digital_sign(url, params=None,gateway=client)
+            res = requests.post(url=url, data=data, params=params, headers=headers)
+            code = res.status_code
+            body = res.text
+            body = json.loads(body)
+            token_type = body['data']['token_type']
+            access_token = body['data']['access_token']
+        elif client.upper() in ('APP','CDP'):
             headers = {
                 'Content-Type': 'application/json',
                 'x-namespace-code': 'cdp-uat',
@@ -214,17 +277,22 @@ class Base:
                 "password": password,
                 "scope": "openid profile mbb",
             }
+            data = json.dumps(payload)
+            params = self._app_sign(url, params=None)
+            lk.prt('post url is:{}'.format(url))
+            lk.prt('post header is:{}'.format(headers))
+            lk.prt('post data is :{}'.format(data))
+            res = requests.post(url=url, data=data, params=params, headers=headers)
+            code = res.status_code
+            body = res.text
+            body = json.loads(body)
+            token_type = body['data']['tokenType']
+            access_token = body['data']['accessToken']
         else:
             return
-        data = json.dumps(payload)
-        lk.prt('post url is:{}'.format(url))
-        lk.prt('post header is:{}'.format(headers))
-        lk.prt('post data is :{}'.format(data))
-        code,body = self.do_post(url=url, data=data, headers=headers,gateway='APP')
+
         try:
             assert code == 200
-            token_type = body['data']['token_type']
-            access_token = body['data']['access_token']
             return token_type + " " + access_token
         except Exception as e:
             print(body)

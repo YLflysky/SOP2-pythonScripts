@@ -224,11 +224,23 @@ class Flow(Base):
         :param channel:
         :return:
         '''
-        url = 'https://other-be-uat.mosc.faw-vw.com/sop2bm/be/sm/flow/query/contract/info'
+        url = self.flow_url + '/query/contract/info'
         data = {'spId':sp_id,'aid':aid,'payChannel':channel}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
         return b
+
+    def release_sign(self,aid,sp,channel,reason):
+        '''
+        流量底层免密解约
+        :param aid:
+        :return:
+        '''
+        url = self.flow_url + '/signContract/terminateContract'
+        data = {'spId':sp,'aid':aid,'payChannel':channel,'reason':reason}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
+
 
 if __name__ == '__main__':
     import os
@@ -240,26 +252,27 @@ if __name__ == '__main__':
     flow = Flow()
     bm_pay = BMPayment()
     user_data = flow.read_yml('../conf','user.yml')
-    user_data = user_data['uat4']
-    aid = '9353263'
+    user_data = user_data['uat_zqs']
+    aid = '9350963'
     goods_id = 255
-    vin = 'LFVTESTMOSC989216'
+    vin = 'LFVSOP2TEST000331'
     iccid = user_data['iccid']
-    # flow.get_sign_result(aid,sp_id='CMCC',channel='ALI_PAY')
+    # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
+    # flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
     # flow.flow_detail(263)
-    # flow.goods_list(['WIFI_FLOW'])
+    # flow.goods_list(['MUSIC_VIP'])
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['MUSIC_VIP'])
-    flow.bm_flow_list(aid,vin)
+    # flow.bm_flow_list(aid,vin)
     # flow.remain_flow(flow_type='media',vin='LFVTESTMOSC989216')
 
     # flow_order = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)
     # order_no = flow_order['data']['orderNo']
-    # bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='11103',category='112',score='N')
-    # bm_pay.free_pay(aid,vin,'ftb20201216132439473942080','11101')
+    # bm_pay.get_qr_code(vin,aid,order_no='ftb202102011647345801019904',pay_type='12103',category='112',score='N')
+    bm_pay.free_pay(aid,vin,order_no='ftb202102031016362881019904',channel='12101')
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid,channel=1,notify_type=1,status=1)
 

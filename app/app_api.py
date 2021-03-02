@@ -7,8 +7,8 @@ class App(Base):
     '''
     ftb2.2提供给oneApp的接口
     '''
-    def __init__(self, tenant,name,password,aid,vin):
-        super().__init__(tenant)
+    def __init__(self,name,password,aid):
+        super().__init__(tenant='BM')
         # APP网关需要验签和token
         self.gate = True
         self.name = name
@@ -19,8 +19,9 @@ class App(Base):
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
         self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
         lk.prt('开始获取token...')
-        token_url = self.read_conf('sop2_env.conf', self.env, 'app_token')
-        self.header['Authorization'] = self.get_token(token_url, self.name, self.password,vin=vin,client='HU')
+        self.cdp_url = self.read_conf('sop2_env.conf', self.env, 'cdp_host')
+        token_url = self.cdp_url + '/user/public/v1/login'
+        self.header['Authorization'] = self.get_token(token_url, self.name, self.password,vin=None,client='APP')
         self.header['Did'] = self.device_id
 
     def calendar_mobile_sync(self,current_time,vin,events:list):
@@ -48,7 +49,7 @@ class App(Base):
         code,body = self.do_get(url,None,gateway='APP')
         print(body)
         assert code == 200
-        return body['data']
+        return body
 
     def get_tenant_by_vin(self,vin):
         '''
@@ -61,14 +62,35 @@ class App(Base):
         self.assert_bm_msg(c,b)
         return b['data']['tenantId']
 
+    def free_access_pay(self,aid,vin,channel,order_no):
+        '''
+        免密支付接口
+        :param vin:
+        :param channel:
+        :param order_no:
+        :return:
+        '''
+        self.header['vin'] = vin
+        self.header['aid'] = aid
+        url = self.mobile_url + '/oneapp/pay/v1/signPay'
+        data = {'payChannel':channel,'orderNo':order_no}
+        code,body = self.do_post(url,data,gateway='APP')
+        print(body)
+        assert code == 200
+        return body['data']
+
+
+
 if __name__ == '__main__':
 
-    os.environ['ENV'] = 'SIT'
-    app = App(tenant='BM',name='19900001111',password='111111',aid='9353497',vin='LFVSOP2TESTLY0003')
+    os.environ['ENV'] = 'UAT'
+    app = App(name='13353110034',password='000000',aid='9353866')
+    # app.get_tenant_by_vin(vin='LFVSOP2TESTLY0002')
 
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
     #                  'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
     # app.calendar_mobile_sync(current_time=None,events=[event],vin='LFVSOP2TESTLY0003')
-    app.calendar_mobile_find_all('LFVSOP2TESTLY0003')
+    # app.calendar_mobile_find_all('LFVSOP2TESTLY0002')
+    # app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0002',channel='WXPAY',order_no='20210201172351827405504')
 
 

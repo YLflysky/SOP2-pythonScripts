@@ -1,6 +1,6 @@
 from box.base import Base
 import hashlib
-# import xmltodict
+import xmltodict
 import json
 from box import xml_utils
 
@@ -174,7 +174,7 @@ class Payment(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
-    def free_pay(self,aid,order_no,code):
+    def free_pay(self,aid,order_no,code,score):
         '''
         免密支付接口
         :param aid:用户id
@@ -183,7 +183,7 @@ class Payment(Base):
         :return:
         '''
         url = self.url + '/contract/pay'
-        data = {'aid':aid,'orderNo':order_no,'contractCode':code}
+        data = {'aid':aid,'orderNo':order_no,'contractCode':code,'userScore':score}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
@@ -217,27 +217,28 @@ class Payment(Base):
         print("sign_MD5=", sign_MD5)
         return sign_MD5
 
-    # def xml_to_json(self,xml_str):
-    #     '''
-    #     xml字符串转为字典
-    #     :param xml_str:
-    #     :return:
-    #     '''
-    #
-    #     xml_parse = xmltodict.parse(xml_str)
-    #     json_str = json.dumps(xml_parse,indent=1)
-    #     print(json_str)
-    #     return json.loads(json_str)
+    def xml_to_json(self,xml_str):
+        '''
+        xml字符串转为字典
+        :param xml_str:
+        :return:
+        '''
+
+        xml_parse = xmltodict.parse(xml_str)
+        json_str = json.dumps(xml_parse,indent=1)
+        print(json_str)
+        return json.loads(json_str)
 
 
 if __name__ == '__main__':
     import os
     from order.order_api import Order
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     pay = Payment()
     order = Order()
-    aid = '123456'
+    aid = '9351524'
+    # pay.free_pay(aid,order_no='ftb20210128154824964307200',code='12101',score=False)
     # pay.weixin_cdp_callback(out_trade_no='ftb20210115131542943598016',nonce=pay.f.md5())
     # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
     # pay.agreement_qr_code(aid,'ALI_PAY','FLOW','CMCC','SOP1')
@@ -247,11 +248,12 @@ if __name__ == '__main__':
     # order.sync_order(aid=aid, orderNo=no, ex='ex%s'%no, origin='SOP1', category='110',
     #              serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
     #              goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
-    pay.get_qr_code(aid,order_no='20210128094430546245760',channel='WECHAT_PAY')
+    pay.get_qr_code(aid='23',order_no='ftb202102011550567971019904',channel='WECHAT_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
-    # pay.get_pay_agreement(uid='4614907',order_no='ftb2021012013055877590112',lang='zh-CN',code='11101')
-    # pay.ali_pay_callback('trade_success', app_id='2018091361389377', out_trade_no='ftb20210127101958186323584',
+    # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
+    # pay.ali_pay_callback('trade_success', app_id='2018091361389377', out_trade_no='ftb20210115131035193598016',
     #                      receipt_amount=0.01, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
+
     # pay.contract_sign_notify(aid='221',)
     # pay.sync_pay_result(pay_no='bc8e0c91e25d4f1796b6c4336ad3fbb0',ex_pay_no='yinli18623459409',pay_time=pay.time_delta(),
     #                     amount=999,way='QR_PAY',origin='BM',channel='ALI_PAY',status='SUCCESS')

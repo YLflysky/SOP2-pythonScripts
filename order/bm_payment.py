@@ -85,7 +85,7 @@ class BMPayment(Base):
         :param order_no:订单号
         :return:
         '''
-        url = self.hu_url + '/payment/order/api/v2/vins/{}/users/{}/orders/{}/payments/withholdPayment'.format(aid,vin,order_no)
+        url = self.hu_url + '/payment/order/api/v2/vins/{}/users/{}/orders/{}/payments/withholdPayment'.format(vin,aid,order_no)
         data = {'agreementProductCode':channel,'userScore':useScore}
         c,b = self.do_put(url,data)
         self.assert_bm_msg(c,b)

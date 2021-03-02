@@ -259,8 +259,8 @@ def test_cmcc_callback_wrong(wrong):
 @pytest.mark.payment
 @pytest.mark.parametrize('enum', [('ALI_PAY', 'PROCESSING', 'QR_PAY', 'BM'), ('WECHAT_PAY', 'SUCCESS', 'APP', 'MA'),
                                   ('WECHAT_PAY', 'FAILED', 'FREE_PASS_PAY', 'SOP1'),
-                                  ('UNKNOWN', 'FAILED', 'FREE_PASS_PAY', 'FTB')]
-    , ids=['支付宝-支付中-二维码-BM', '微信-支付成功-APP-MA', '微信-支付失败-免密-SOP1', '未知渠道-支付失败-免密-FTB'])
+                                  ('UNKNOWN', 'FAILED', 'FREE_PASS_PAY', 'SELF')]
+    , ids=['支付宝-支付中-二维码-BM', '微信-支付成功-APP-MA', '微信-支付失败-免密-SOP1', '未知渠道-支付失败-免密-SELF'])
 def test_sync_pay_stream(enum):
     '''
     测试同步支付记录，各个枚举值测试

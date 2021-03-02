@@ -79,9 +79,9 @@ class BMOrder(Base):
         self.assert_bm_msg(code, body)
         return body
 
-    def music_order_create(self, tenant_id, aid, vin, goods, quantity):
+    def goods_order_create(self, tenant_id, aid, vin, goods, quantity):
         '''
-        EP后台创建音乐订单接口
+        车机端创建商品订单
         :param tenant_id: FTB2.2
         :param aid: 大众用户id
         :param vin: 车辆vin吗
@@ -134,25 +134,25 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     aid = '9349485'
-    vin = 'BMTESTNC8UHS3GPH5'
+    vin = 'LFVSOP2TEST000353'
     # o.bm_update_pay(bm_order='1610505959000',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
     #                 pay_time=o.time_delta(),order_amount=0.01,orderStatus='FINISH')
     # o.order_list(vin,aid,pageSize=100)
     # o.order_count(vin=123,uid='469317')
-    data = {"brand": "VW", "businessExtInfo": {"message": "扩展字段测试"},
-            "createdTime": "1601346979941", "discountAmount": "2000", "orderAmount": "20000", "orderCategory": "99",
-            "serviceId": "serviceId002", "serviceOrderState": "serviceOrderState002",
-            "serviceOrderStateDesc": "serviceOrderStateDesc002", "spId": "spId002", "title": "title_test002",
-            "userId": aid, "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509",'orderStatus':None}
+    # data = {"brand": "VW", "businessExtInfo": {"message": "扩展字段测试"},
+    #         "createdTime": "1601346979941", "discountAmount": "2000", "orderAmount": "20000", "orderCategory": "99",
+    #         "serviceId": "serviceId002", "serviceOrderState": "serviceOrderState002",
+    #         "serviceOrderStateDesc": "serviceOrderStateDesc002", "spId": "spId002", "title": "title_test002",
+    #         "userId": aid, "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509",'orderStatus':None}
     # o.sync_bm_order(o.get_time_stamp(), data)
     # o.bm_cancel_order(aid='4614931',order_no='ftb20201203160039247753664')
     # o.order_count(vin='DEFAULT_VIN',uid='33')
     # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
     #                   businessState='success',businessStateDesc='已完成')
     # o.reload_config()
-    o.bm_order_detail(aid='9353460',order_no='ftb202101271015401501019904',vin=None)
-    # o.music_order_create(tenant_id='VW',aid=aid,vin=vin,goods='101',quantity=1)
+    # o.bm_order_detail(aid='9353460',order_no='ftb202101271015401501019904',vin=None)
+    o.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='253',quantity=1)
