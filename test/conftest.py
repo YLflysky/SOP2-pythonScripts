@@ -28,6 +28,8 @@ vins = [('LFVSOP2TESTLY0003','SOP2BM'),
 
 app = App(name,password,aid=aid)
 
+app_xmly = App(name='13353110073',password='000000',aid='9354046')
+
 
 
 

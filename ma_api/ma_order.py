@@ -1,5 +1,6 @@
 from box.base import Base
 from box.lk_logger import lk
+import os
 
 lk.prt('导入 MA API 基类>>>>')
 
@@ -9,7 +10,6 @@ class MABase(Base):
         self.vin = vin
         self.aid = aid
         self.gate = True
-        self.env = 'UAT'
         lk.prt('开始获取token')
         self.add_header(self.read_conf('ma_env.conf', 'UAT', 'token_host'),user=user, password=password, vin=vin)
 
@@ -25,6 +25,20 @@ class MAOrder(MABase):
         assert 200 == code
         assert body['status'] == 'SUCCEED'
 
+    def order_list(self,aid,status:list,category,begin,end):
+        '''
+        内部接口:获取订单列表
+        :param aid:
+        :param status:
+        :param category:
+        :param begin:
+        :param end:
+        :return:
+        '''
+        url = self.url + '/mosc-order-sop2/internal/v2/order/list'
+        data = {'aid':aid,'orderStatusList':status,'orderCategory':category,'beginTime':begin,'endTime':end}
+        c,b = self.do_post(url,data)
+        self.assert_bm_msg(c,b)
 
     def get_qr_code(self, order_no, channel):
         url = self.payment_url + '/api/v1/getQRCodeImage'
@@ -264,10 +278,27 @@ class MAOrder(MABase):
         c,b = self.do_put(url,None)
         self.assert_bm_msg(c,b)
 
+    def cancel(self,order_no,aid):
+        '''
+        内部取消订单接口
+        :param order_no:
+        :param aid:
+        :return:
+        '''
+        if self.env == 'UAT':
+            url = self.url + '/mosc-order/internal/v2/order/cancel'
+        else:
+            url = self.url + '/mosc-order-sop2/internal/v2/order/cancel'
+        data = {'orderNo':order_no,'aid':aid}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
 
 if __name__ == '__main__':
+    os.environ['ENV'] = 'UAT'
     ma_order = MAOrder('9349641',user='13761048895',password='000000',vin='LMGLS1G53H1003120')
-    music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
+    # music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
+    # music_order.cancel(order_no='20210301163610689462848',aid=music_order.aid)
+    # music_order.order_list(music_order.aid,status=['FINISHED'],category='01',begin=None,end=None)
     # ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
@@ -286,8 +317,8 @@ if __name__ == '__main__':
     #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
-    # order_no = ma_order.ma_create_order(aid='9353497',vin='LFVSOP2TEST000102',goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
-    order_no = music_order.ma_create_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1,vin=music_order.vin)['data']
-    # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1,vin='LFVSOP2TEST000102')['data']
+    order_no = ma_order.ma_create_order(aid=ma_order.aid,vin=ma_order.vin,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
+    # order_no = music_order.ma_create_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1,vin=music_order.vin)['data']
+    # order_no = ma_order.create_order(aid=ma_order.aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1,vin='LFVSOP2TEST000102')['data']
     # ma_order.get_ma_qr_code(order_no=order_no,pay_type='12100')
 

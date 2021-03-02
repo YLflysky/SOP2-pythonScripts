@@ -49,7 +49,7 @@ class Base:
         '''
         self.header['Did'] = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
         self.header['authorization'] = self.get_token(url,user,password,vin)
-        self.header['did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
+        self.header['did'] = 'VW_HU_CNS3_abaa-11111.11.11111112_v3.0.1_v0.0.1'
         self.header['Timestamp'] = self.get_time_stamp()
 
 
