@@ -1,16 +1,24 @@
 from box.base import Base
+from box.lk_logger import lk
 
-class MAOrder(Base):
-    def __init__(self, aid, user, password, vin,tenant='MA',):
-        super().__init__(tenant)
-        self.env = 'UAT'
-        self.gate = True
+lk.prt('导入 MA API 基类>>>>')
+
+class MABase(Base):
+    def __init__(self,aid, user, password, vin):
+        super().__init__()
         self.vin = vin
         self.aid = aid
-        self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
+        self.gate = True
+        self.env = 'UAT'
+        lk.prt('开始获取token')
+        self.add_header(self.read_conf('ma_env.conf', 'UAT', 'token_host'),user=user, password=password, vin=vin)
+
+class MAOrder(MABase):
+    def __init__(self, aid, user, password, vin):
+        super().__init__(aid,user,password,vin)
+
+        self.payment_url = self.read_conf('ma_env.conf', self.env, 'pay_host')
         self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
-        self.add_header(url=self.read_conf('ma_env.conf', self.env, 'token_host'),
-                        user=user, password=password, vin=vin)
 
     def assert_msg(self, code, body):
         print(body)
@@ -37,8 +45,7 @@ class MAOrder(Base):
     def get_goods_list(self):
         pass
 
-
-    def create_order(self, goods_id, category, aid, quantity, point=False, **kwargs):
+    def create_order(self, goods_id, category, aid, quantity,vin, point=False, **kwargs):
         '''
         mosc-order底层创建商品订单接口
         :param goods_id:
@@ -50,7 +57,7 @@ class MAOrder(Base):
         :return:
         '''
         url = self.url + '/mosc-order/internal/v2/goods/creatOrder'
-        data = {'aid': aid, 'goodsId': goods_id, 'vin': self.vin,
+        data = {'aid': aid, 'goodsId': goods_id, 'vin': vin,
                 'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
         c, b = self.do_post(url, data)
         print(b)
@@ -184,20 +191,88 @@ class MAOrder(Base):
         url = self.url + '/mosc-order-ma/order/mos/order/api/v1/create'
         data = {'userId':aid,'goodsId': goods_id, 'vin':vin,'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
         c, b = self.do_post(url, data)
-        print(b)
+        self.assert_bm_msg(c,b)
         return b
 
+    def ma_contract_sign(self,channel,service,operator):
+        '''
+        MA免密签约api
+        :param channel:签约渠道WXPAY,ALPAY
+        :param service: 业务，目前支持GAS,03
+        :param operator: CP，目前支持JDO,030003
+        :return:
+        '''
+        url = self.payment_url + '/internal/v2/app/contract/sign'
+        data = {'aid':self.aid,'operatorId':operator,'payChannel':channel,'serviceId':service,'vin':self.vin}
+        c,b = self.do_post(url,data)
+        self.assert_bm_msg(c,b)
+        return b
+
+    def ma_get_sign_result(self,channel,service,operator):
+        '''
+        MA查询签约状态api
+        :param channel:签约渠道WXPAY,ALPAY
+        :param service: 业务，目前支持GAS,03
+        :param operator: CP，目前支持JDO,030003
+        :return:
+        '''
+        url = self.payment_url + '/internal/v2/app/contract/query'
+        data = {'aid': self.aid, 'operatorId': operator, 'payChannel': channel, 'serviceId': service, 'vin': self.vin}
+        c, b = self.do_post(url, data)
+        self.assert_bm_msg(c, b)
+        return b
+
+    def ma_release_sign(self,channel,service,operator):
+        '''
+        MA免密解约
+        :param channel:签约渠道WXPAY,ALPAY
+        :param service: 业务，目前支持GAS,03
+        :param operator: CP，目前支持JDO,030003
+        :return:
+        '''
+        url = self.payment_url + '/internal/v2/app/contract/unsign'
+        data = {'aid': self.aid, 'operatorId': operator, 'payChannel': channel, 'serviceId': service, 'vin': self.vin}
+        c, b = self.do_post(url, data)
+        self.assert_bm_msg(c, b)
+        return b
+
+    def apply_invoice(self,order_no,i_channel,i_type,i_title,tax,email,**kwargs):
+        '''
+        mosc-order申请开票api
+        :param order_no: MS订单号
+        :param i_channel:
+        :param i_type:
+        :param i_title:
+        :param tax:
+        :param email:
+        :param kwargs:
+        :return:
+        '''
+        url = self.url + '/mosc-order/internal/invoice/v1/apply'
+        data = {'orderNo':order_no,'invoiceChannel':i_channel,'invoiceType':i_type,'invoiceTitle':i_title,'taxNumber':tax
+                ,'email':email,**kwargs}
+        c,b = self.do_post(url,data)
+        self.assert_bm_msg(c,b)
+
+    def cancel_order(self,order_no):
+        '''
+        MA车机端取消订单接口
+        :param order_no:
+        :return:
+        '''
+        url = self.url + '/mosc-order-ma/order/api/v1/orders/{}/cancel'.format(order_no)
+        c,b = self.do_put(url,None)
+        self.assert_bm_msg(c,b)
 
 
 if __name__ == '__main__':
-    from point.points import Points
-    import os
-
-    os.environ['ENV'] = 'DEV'
-    os.environ['GATE'] = 'false'
-    aid = '4614183'
-    ma_order = MAOrder(aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
-
+    ma_order = MAOrder('9349641',user='13761048895',password='000000',vin='LMGLS1G53H1003120')
+    music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
+    # ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
+    # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
+    # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
+    # ma_order.apply_invoice(order_no='ma20210224155318454245760',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
+    # ma_order.cancel_order(order_no='202101141527422841024000')
     # ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
     # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
@@ -206,14 +281,13 @@ if __name__ == '__main__':
     #                     business_state='0',desc='待支付',orderNO='20200826193643504544768',orderStatus='FINISHED',
     #                     amount=5.00,discount=0.25,pay_amount=4.75,timeout=1000,
     #                     business_info=info)
-    # ma_order.sync_order_pay(aid='9349824',order_no='20210125150147517405504',pay_order_no='1234',channel='WECHAT_PAY',pay_type='QR_CODE',
-    #                         pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02)
-    ma_order.get_qr_code('20210128095057761245760',channel='11101')
+    # ma_order.sync_order_pay(aid='9349641',order_no='20210112104548022143360',pay_order_no='1234',channel='WECHAT_PAY',
+    #                         pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02,
+    #                         pay_type='QR_CODE')
+    # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
     # ma_order.alipay_callback()
-    # order_no = ma_order.ma_create_order(aid='9349867',vin='LFVSOP2TEST000084',goods_id='1010500000113868',category='RADIO_VIP',quantity=1,point=False)
-    # order_no = ma_order.create_order(aid=aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1)['data']
-    # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1)['data']
-    ma_order.get_ma_qr_code(order_no['data'],pay_type='11103')
+    # order_no = ma_order.ma_create_order(aid='9353497',vin='LFVSOP2TEST000102',goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
+    order_no = music_order.ma_create_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1,vin=music_order.vin)['data']
+    # order_no = ma_order.create_order(aid=aid,goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1,vin='LFVSOP2TEST000102')['data']
+    # ma_order.get_ma_qr_code(order_no=order_no,pay_type='12100')
 
-    # p = Points()
-    # p.get_user_points(aid)

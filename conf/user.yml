@@ -1,12 +1,37 @@
-user_ma:
+sergio:
+  aid:
+    9354046
+  user:
+    !!str 13353110073
+  password:
+    !!str 000000
+  vin:
+    LFVSOP2TESTLY0073
+
+user_music:
   aid:
     4614183
   user:
-    15330011918
+    !!str 15330011918
   password:
-    000000
+    !!str 000000
   vin:
     LFVTEST1231231231
+
+user_radio:
+  user1:
+    aid:
+      9353449
+  user2:
+    aid:
+      4614931
+
+#  user:
+#    !!str 15330011918
+#  password:
+#    !!str 000000
+#  vin:
+#    LFVTEST1231231231
 
 user_bm:
   aid:

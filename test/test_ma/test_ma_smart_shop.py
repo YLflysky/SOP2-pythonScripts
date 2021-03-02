@@ -1,11 +1,8 @@
 import pytest
 import allure
-import os
 import random
-from eshop.smart_shop import SmartEShop
-from eshop.eshop import PointsShop,SpareShop
+from .conftest import ma_shop
 
-ma_shop = SmartEShop(tenant='MA')
 
 @allure.suite('test_ma-eshop')
 @allure.title('MA智能设备商城底层获取一级类目')

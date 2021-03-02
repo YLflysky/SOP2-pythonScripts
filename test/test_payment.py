@@ -1,15 +1,9 @@
 import pytest
-import os
-from order.payment import Payment
-from order.order_api import Order
-import random
-import time
-import json
+from .conftest import pay
+from .conftest import order,flow,bm_order
 import allure
-import sys
+from box.lk_logger import lk
 
-pay = Payment()
-o = Order()
 
 @allure.suite('payment')
 @allure.title('获取支付结果')
@@ -100,8 +94,8 @@ def test_ali_pay_cdp_callback_01():
     '''
     # 创建订单
     aid = '469317'
-    order_no = o.generate_order_no()['data']
-    o.sync_order(aid=aid, orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
+    order_no = order.generate_order_no()['data']
+    order.sync_order(aid=aid, orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
                  serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,
                  goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # 获取支付二维码，生成支付记录
@@ -142,8 +136,8 @@ def test_ali_pay_cdp_callback_02():
     '''
     # 创建订单
     aid = '469317'
-    order_no = o.generate_order_no()['data']
-    o.sync_order(aid=aid, orderNo=order_no, ex='ex%s' % order_no, origin='SOP1', category='110',
+    order_no = order.generate_order_no()['data']
+    order.sync_order(aid=aid, orderNo=order_no, ex='ex%s' % order_no, origin='SOP1', category='110',
                  serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
                  goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
 
@@ -261,7 +255,7 @@ def test_cmcc_callback_wrong(wrong):
                                   ('WECHAT_PAY', 'FAILED', 'FREE_PASS_PAY', 'SOP1'),
                                   ('UNKNOWN', 'FAILED', 'FREE_PASS_PAY', 'SELF')]
     , ids=['支付宝-支付中-二维码-BM', '微信-支付成功-APP-MA', '微信-支付失败-免密-SOP1', '未知渠道-支付失败-免密-SELF'])
-def test_sync_pay_stream(enum):
+def test_sync_pay_result(enum):
     '''
     测试同步支付记录，各个枚举值测试
     '''
@@ -445,3 +439,27 @@ def test_sync_pay_result():
     finally:
         pay.do_mysql_exec('delete from order_pay where order_no="orderNo0001"','fawvw_order')
         pay.do_mysql_exec('delete from pay_order where order_no="orderNo0001" and is_effective=1','fawvw_pay')
+
+@allure.suite('payment')
+@allure.title('测试获取流量订单支付url')
+@pytest.mark.payment
+@pytest.mark.parametrize('channel',['ALI_PAY','WECHAT_PAY'])
+def test_get_flow_pay_url(channel):
+    aid = '9354046'
+    vin = 'LFVSOP2TEST000353'
+    order_no = bm_order.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='253',quantity=1)['data']['orderNo']
+    res = pay.get_qr_code(aid,order_no,channel,payWay='APP')
+    assert res['data']['payUrl']
+
+
+@allure.suite('payment')
+@allure.title('测试获取电台订单支付url')
+@pytest.mark.payment
+@pytest.mark.parametrize('channel',['ALI_PAY','WECHAT_PAY'])
+def test_get_radio_pay_url(channel):
+    aid = '4614931'
+    vin = 'LFVSOP2TEST000353'
+    order_no = bm_order.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='273',quantity=1)['data']['orderNo']
+    res = pay.get_qr_code(aid,order_no,channel,payWay='APP')
+    assert res['data']['payUrl']
+

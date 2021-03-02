@@ -6,8 +6,8 @@ import json
 
 class Order(Base):
 
-    def __init__(self,tenant='BM'):
-        super().__init__(tenant)
+    def __init__(self):
+        super().__init__()
         if self.gate:
             self.add_header(url=self.read_conf('sop2_env.conf', self.env, 'token_host'))
 
@@ -272,7 +272,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = Order()
-    order_no = o.add_order()
+    # order_no = o.add_order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
     # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
     # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
@@ -282,8 +282,8 @@ if __name__ == '__main__':
     #              serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,
     #              goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # o.sync_refund('9642113','233564422',origin='EP',status='FAILED')
-    # o.apply_invoice(aid='4614907', order_no=['2020092409572288861440'], duty_no='91310115560364240G',
-    #                 head='钛马信息技术有限公司', phone='18888888888')
+    o.apply_invoice(aid='4614907', order_no=['ftb20210205062821259167936'], duty_no='91310115560364240G',
+                    head='钛马信息技术有限公司', phone='18888888888')
 
     # serial = random.randint(1000000, 10000000)
     # o.sync_invoice(orderNo, serial)
@@ -294,4 +294,4 @@ if __name__ == '__main__':
     # print(res)
     # info = {'name': 'waka waka', 'age': 18}
     # o.sync_order_kafka(ep_order_id=9959,business_info=info,tenant='ASTERIX')
-    o.business_kafka(order_no=order_no,event_type='RIGHTS_OPEN',business_state='开通完成',business_state_desc='音乐服务开通完成')
+    # o.business_kafka(order_no=order_no,event_type='RIGHTS_OPEN',business_state='开通完成',business_state_desc='音乐服务开通完成')

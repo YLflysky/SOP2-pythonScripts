@@ -1,12 +1,13 @@
 from box.base import Base
 import random
+from box.lk_logger import lk
 
 class EShop(Base):
     '''
     商城API
     '''
-    def __init__(self,tenant):
-        super().__init__(tenant)
+    def __init__(self):
+        super().__init__()
         self.url = None
 
     def assert_msg(self, code, body):
@@ -27,7 +28,7 @@ class EShop(Base):
 
     def get_category_id(self):
         '''
-        获取备件商城一级分类id
+        获取商城一级分类id
         :return:
         '''
         url = self.url + '/goods/category'
@@ -37,69 +38,78 @@ class EShop(Base):
         id = random.choice(id)['id']
         return id
 
-    def get_spare_detail(self,goods_id):
+    def get_detail(self,goods_id):
         '''
-        获取备件详情API
+        获取商品详情API
         '''
         url = self.url + '/goods/details'
         param = {'goodsId':goods_id}
         code,body = self.do_get(url,param)
         self.assert_msg(code,body)
+        return body
 
 class PointsShop(EShop):
     '''
     积分商城API
     '''
-    def __init__(self,tenant):
-        super().__init__(tenant)
+    def __init__(self,tenant,token):
+        super().__init__()
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'eshop_host')
         elif tenant == 'MA':
-            self.env = 'UAT'
             self.gate = True
-            self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host')
+            self.env = 'UAT'
+            self.url = self.read_conf('ma_env.conf', 'UAT', 'eshop_host')
+        if token:
+            lk.prt('开始获取token')
             self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
+
 
 
 class SpareShop(EShop):
     '''
     备件商城API
     '''
-    def __init__(self,tenant):
-        super().__init__(tenant)
+    def __init__(self,tenant,token):
+        super().__init__()
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'eshop_host2')
         elif tenant == 'MA':
-            self.env = 'UAT'
             self.gate = True
+            self.env = 'UAT'
             self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host2')
+        if token:
+            lk.prt('开始获取token')
             self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
 
-    def get_spare_detail(self,goods_id):
+
+    def get_detail(self,goods_id):
         raise NotImplementedError('备件商城无此接口')
+
 
     def get_category_id(self):
         '''
-        备件商城一级分类id
+        获取商城一级分类id
         :return:
         '''
         url = self.url + '/goods/category'
-        code, body = self.do_get(url, None)
-        self.assert_msg(code, body)
+        code,body = self.do_get(url,None)
+        self.assert_msg(code,body)
         id = body['data']
         id = random.choice(id)['categoryId']
         return id
 
 
+
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
-    shop = PointsShop('BM')
+    os.environ['ENV'] = 'SIT'
+    shop = PointsShop('MA',token=True)
     # category = shop.get_category_id()
     # print(category)
-    shop.get_list('all',size=100)
+    shop.get_list('all',index=1,size=10,sort='asc',sortName='score')
     # goods_id = shop.get_spare_list(category='all')
     # goods_id = goods_id['data'][0]['goodsId']
-    # shop.get_spare_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')
+    # shop.get_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')
 

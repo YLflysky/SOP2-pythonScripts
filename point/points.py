@@ -4,8 +4,8 @@ import os
 
 
 class Points(Base):
-    def __init__(self,tenant='BM'):
-        super().__init__(tenant)
+    def __init__(self):
+        super().__init__()
 
         self.p_url = self.read_conf('sop2_env.conf',self.env,'integration_host')
         self.hu_url = self.read_conf('sop2_env.conf',self.env,'hu_host')
@@ -98,6 +98,6 @@ if __name__ == '__main__':
     # p.get_user_level(aid='123',system_key='267C13173FE04A57AX',tenant='VW')
     # p.bm_get_user_level(aid='1234')
     # p.get_user_points(aid='9353750')
-    p.bm_get_user_points(aid='9353461')
+    p.bm_get_user_points(aid='8130975')
     # p.bm_get_points_stream(aid='123')
     # p.get_points_stream(index=1,size=10,aid='1234')

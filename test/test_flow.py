@@ -3,15 +3,10 @@ import allure
 import random
 import sys, os
 import json
-from flow.flow import Flow
-from order.payment import Payment
-from order.bm_payment import BMPayment
+
+from .conftest import pay,bm_pay,flow
 from box.lk_logger import lk
 import time
-
-pay = Payment()
-flow = Flow()
-bm_pay = BMPayment()
 
 
 @allure.suite('flow')

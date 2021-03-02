@@ -27,13 +27,11 @@ from box.my_encoder import MyEncoder
 
 class Base:
 
-    def __init__(self,tenant):
-        self.tenant = tenant
+    def __init__(self):
         self.env = os.getenv('ENV')
         self.header = {}
         self.header['Content-type'] = 'application/json; charset=utf-8'
         self.f = Faker(locale='en-US')
-
         try:
             if os.getenv('GATE') == 'true':
                 self.gate = True
@@ -264,6 +262,7 @@ class Base:
             code = res.status_code
             body = res.text
             body = json.loads(body)
+            # print(body)
             token_type = body['data']['token_type']
             access_token = body['data']['access_token']
         elif client.upper() in ('APP','CDP'):
@@ -324,7 +323,7 @@ class Base:
             response_body = res.text
         return res.status_code, response_body
 
-    def do_post_file(self, url, params, data, file_path):
+    def do_post_file(self, url, params, data, file_path,gateway='HU'):
         '''
         上传文件接口测试
         :param url:
@@ -332,7 +331,7 @@ class Base:
         :return:
         '''
         if self.gate:
-            params = self._calc_digital_sign(url, params)
+            params = self._calc_digital_sign(url, params,gateway)
         lk.prt('final post url is:{}'.format(url))
         if isinstance(data, dict):
             data = json.dumps(data, ensure_ascii=False)
@@ -350,9 +349,9 @@ class Base:
         self.header['Content-type'] = 'application/json; charset=utf-8'
         return res.status_code, response_body
 
-    def do_put(self, url, data,params=None):
+    def do_put(self, url, data,params=None,gateway='HU'):
         if self.gate:
-            params = self._calc_digital_sign(url, params)
+            params = self._calc_digital_sign(url, params,gateway)
         lk.prt('final put url is:{}'.format(url))
         if isinstance(data, dict):
             data = json.dumps(data, ensure_ascii=False)
@@ -391,9 +390,9 @@ class Base:
             response_body = res.text
         return res.status_code, response_body
 
-    def do_delete(self, url, params):
+    def do_delete(self, url, params,gateway='HU'):
         if self.gate:
-            params = self._calc_digital_sign(url, params)
+            params = self._calc_digital_sign(url, params,gateway)
         lk.prt('final delete url is:{}'.format(url))
         try:
             res = requests.delete(url=url, params=params, headers=self.header, verify=False)
@@ -410,9 +409,9 @@ class Base:
                                user=config_dict['username'],
                                password=config_dict['password'], charset='utf8')
         cur = conn.cursor(pymysql.cursors.DictCursor)
+        lk.prt('执行的sql语句为:{}'.format(msg))
         cur.execute(msg)
         res = cur.fetchall()
-        lk.prt('执行sql语句成功:{}'.format(msg))
         for res1 in res:
             for key, val in res1.items():
                 if isinstance(val, datetime.datetime):
@@ -593,8 +592,9 @@ class Base:
 
 if __name__ == '__main__':
     url = 'https://otherbackend-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token'
-    b = Base(tenant='BM')
+    b = Base()
     # print(b.my_json_decoder(url))
     res = b.match_url(url)
     print(res)
+    print(help(tuple))
     # print(b.random_vin())

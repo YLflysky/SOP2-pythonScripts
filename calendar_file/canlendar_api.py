@@ -7,35 +7,31 @@ class Calendar(Base):
     '''
     日历API
     '''
-    def __init__(self,tenant,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311',aid='9350195'):
-        super().__init__(tenant)
-
-        self.name = name
-        self.password = password
+    def __init__(self,tenant,token,name='18280024450',password='Qq111111',vin='LFVSOP2TEST000311',aid='9350195'):
+        super().__init__()
         self.vin = vin
         self.uid = aid
-        self.header['aid'] = aid
-        self.mobile_url = self.read_conf('sop2_env.conf', self.env, 'one_app_host')
+        # self.header['aid'] = aid
         self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
 
         if tenant == 'BM':
-            self.gate = True
             self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
             self.url = self.read_conf('sop2_env.conf', self.env, 'calendar_host')
             # lk.prt('开始获取token...')
-            self.header['Authorization']=self.get_token(self.read_conf('sop2_env.conf',self.env,'token_host'),self.name,self.password,self.vin)
-            self.header['Did'] = self.device_id
+            if token:
+                token_url = self.read_conf('sop2_env.conf',self.env,'token_host')
+                self.header['Authorization']=self.get_token(token_url,name,password,self.vin)
+                self.header['Did'] = self.device_id
 
         else:
+            self.gate = 'True'
             self.env = 'UAT'
-            self.gate = True
             self.device_id = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
             self.url = self.read_conf('ma_env.conf',self.env,'calendar_host')
-
-            lk.prt('开始获取token...')
-            self.header['Authorization'] = self.get_token(self.read_conf('ma_env.conf',self.env,'token_host')
-                ,self.name,self.password,self.vin)
-            self.header['Did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
+            if token:
+                lk.prt('开始获取token...')
+                self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
+                self.header['Did'] = self.device_id
 
     def find_all_event(self,update_time):
         '''
@@ -46,13 +42,7 @@ class Calendar(Base):
         code,body = self.do_get(url,data)
         print(body)
         return body
-    def create_app_order(self,vin,goodsID,orderCategory,userId):
-        url=  'http://49.233.242.137:18020/oneapp/order/v1/create'
-        data ={'vin':vin,'goodsID':goodsID,'orderCategory':orderCategory,"priceType":"1","usedPoint":'true',"userId":userId,"durationTimes":"11"}
-        # data = {"vin":"LFVSOP2TEST000353","goodsId":"1010500100000535429","orderCategory":"RADIO_VIP","priceType":"1","usedPoint":'true',"quantity":'1',"userId":"9350041","durationTimes":"11"}
-        code,body = self.do_post(url,data)
-        print(body)
-        return body
+
     def find_detail(self,id):
         """
         获取用户单个日历事件详情
@@ -74,12 +64,7 @@ class Calendar(Base):
         url = self.url + '/api/v1/calendar/event/delete'
         data = {'id':event_id}
         code,body = self.do_delete(url,data)
-        if self.tenant == 'BM':
-            self.assert_msg(code,body)
-        else:
-            assert code == 200
-            assert body['code'] == '000000'
-            assert body['description'] == '成功'
+        self.assert_bm_msg(code,body)
 
     def update_event(self,event_id,s,e,**kwargs):
         url = self.url + '/api/v1/calendar/event/modify'
@@ -108,12 +93,7 @@ class Calendar(Base):
         url = self.url + '/api/v1/calendar/event/getEventLastUpdatedTime'
 
         code,body = self.do_get(url,None)
-        if self.tenant == 'BM':
-            self.assert_msg(code,body)
-        else:
-            print(body)
-            assert code == 200
-            assert body['code'] == '000000'
+        self.assert_bm_msg(code,body)
         return body
 
     def event_list_by_rule(self,api_type,st,et,uid,deviceId):
@@ -128,62 +108,23 @@ class Calendar(Base):
         assert 200 == code
         return body
 
-    def mobile_sync(self,current_time,events:list):
-        '''
-        APP同步用户日历事件
-        :param current_time: long类型时间戳
-        :param events: 事件，列表类型
-        :return:
-        '''
-        self.header['vin'] = self.vin
-        url = self.mobile_url + '/oneapp/calendar/public/event/sync'
-        data = {'currentTime':current_time,'events':events}
-        c,b = self.do_post(url,data,gateway='APP')
-        print(b)
-        assert c == 200
-        return b
-
-    def mobile_find_all(self):
-        '''
-        app获取用户所有事件接口
-        :return:
-        '''
-        self.header['vin'] = self.vin
-        url = self.mobile_url + '/oneapp/calendar/public/event/findAll'
-        code,body = self.do_get(url,None,gateway='APP')
-        print(body)
-        assert code == 200
-        return body['data']
-
-    def get_tenant_by_vin(self):
-        '''
-        根据vin码获取到是哪个项目的车型
-        :return:
-        '''
-        url = self.hu_url + '/vs/ftb-vehicle/public/v1/tenant/get_by_vin'
-        data = {'vin':self.vin}
-        c,b = self.do_get(url,data)
-        self.assert_bm_msg(c,b)
-        return b['data']['tenantId']
-
 
 
 
 if __name__ == '__main__':
-    os.environ['GATE'] = 'true'
-    os.environ['ENV'] = 'SIT'
-    b = Base(tenant='BM')
-    bm_c = Calendar(tenant='BM',name='13353116624',password='000000',vin='LFVSOP2TESTLY0003',aid='9353497')
-    # bm_c.get_last_time(bm_c.uid,deviceId=None)
-    bm_c.get_tenant_by_vin()
+    os.environ['GATE'] = 'false'
+    os.environ['ENV'] = 'UAT'
+    b = Base()
+    bm_c = Calendar(tenant='BM',token=True,name='13353110049',password='000000',vin='LFVSOP2TESTLY0049',aid='9353883')
+    # print(bm_c.gate)
+    # bm_c.get_last_time()
     # ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
     # ma_c.get_tenant_by_vin()
-    bm_c.create_app_order(vin='LFVSOP2TEST000353',goodsID='1010500100000535429',orderCategory='RADIO_VIP',userId='9350041')
-
     # c.find_all_event(update_time=None)
     # event = {'localEventId': b.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
     #                  'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
     # bm_c.mobile_sync(current_time=None,events=[event])
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10))
-    # c.find_detail(39355)
-    # ma_c.mobile_find_all()
+    # bm_c.find_all_event(update_time=None,)
+    data = {'apiType': 'TYPE_ONE', 'startDate': '1612763053000', 'endDate': '1618535559000'}
+    bm_c.get_event_list(data)
