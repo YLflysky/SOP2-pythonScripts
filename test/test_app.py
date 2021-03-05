@@ -105,6 +105,17 @@ def test_app_pay_url_radio(channel):
     assert res['data']['payUrl']
 
 
+@allure.suite('app')
+@allure.title('测试APP获取sop2ma流量订单支付URL')
+@pytest.mark.app
+@pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
+def test_app_pay_url_sop2ma(channel):
+    vin = 'LFVSOP2TEST000353'
+    order_no = app.create_order(goods_id='273',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
+    res = app.get_pay_url(order_no,channel)
+    assert res['data']['payUrl']
+
+
 
 
 

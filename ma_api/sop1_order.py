@@ -3,7 +3,6 @@ from ma_api.ma_order import MABase
 class SOP1Order(MABase):
     def __init__(self, aid, user, password, vin):
         super().__init__(aid, user, password, vin)
-        self.env = 'UAT'
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
         self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
         self.mobile_url = self.read_conf('ma_env.conf', self.env, 'one_app_host')
@@ -36,8 +35,10 @@ class SOP1Order(MABase):
 
 
 if __name__ == '__main__':
-    aid = '9349641'
-    vin = 'LMGLS1G53H1003120'
-    sop1 = SOP1Order(aid,user='13761048895',password='000000',vin=vin)
+    import os
+    os.environ['ENV'] = 'CLOUD'
+    aid = '4614233'
+    vin = 'LFV2A2BUXL4651255'
+    sop1 = SOP1Order(aid,user='15144142651',password='Qq111111',vin=vin)
     # sop1.sop1_calendar_sync()
     sop1.sop1_create_order(aid=aid,vin=vin,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='MEDIA_FLOW',quantity=1,point=False)

@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
-    shop = SmartEShop(tenant='MA',token=True)
+    shop = SmartEShop(tenant='BM',token=False)
     # shop.refresh_category_and_goods_detail()
     # shop.category()
     # shop.category2()

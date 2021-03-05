@@ -3,12 +3,18 @@ from box.base import Base
 
 class Flow(Base):
 
-    def __init__(self):
+    def __init__(self,tenant='BM'):
         super().__init__()
-
-        self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
-        self.flow_url = self.read_conf('sop2_env.conf', self.env, 'flow_host')
+        self.tenant = tenant
         self.cp_url = self.read_conf('sop2_env.conf', self.env, 'cp_host')
+        if tenant == 'BM':
+            self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
+            self.flow_url = self.read_conf('sop2_env.conf', self.env, 'flow_host')
+        elif tenant == 'MA':
+            self.gate = True
+            token_url = self.read_conf('ma_env.conf', self.env, 'token_host')
+            self.add_header(token_url)
+            self.hu_url = self.read_conf('ma_env.conf', self.env, 'hu_host')
 
     def assert_msg(self, code, body):
         print(body)
@@ -205,8 +211,10 @@ class Flow(Base):
         :param vin: 车辆vin码
         :return:
         '''
-
-        url = self.hu_url + '/flow/api/v1/dataflow/vehicles/{}/types/{}/remain'.format(vin,flow_type)
+        if self.tenant == 'BM':
+            url = self.hu_url + '/flow/api/v1/dataflow/vehicles/{}/types/{}/remain'.format(vin,flow_type)
+        else:
+            url = self.hu_url + '/mos/mobiledata/api/v1/dataflow/vehicles/{}/types/{}/remain'.format(vin,flow_type)
         c,b = self.do_get(url,None)
         self.assert_msg(c,b)
 
@@ -249,11 +257,11 @@ if __name__ == '__main__':
 
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
-    flow = Flow()
+    flow = Flow('MA')
     bm_pay = BMPayment()
     # user_data = flow.read_yml('../conf','user.yml')
     # user_data = user_data['uat_zqs']
-    aid = '9349485'
+    aid = '9326335'
     goods_id = 255
     vin = 'LFVTESTMOSC989216'
     iccid = '18559372278'
@@ -267,9 +275,9 @@ if __name__ == '__main__':
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['RADIO_VIP'])
     # flow.bm_flow_list(aid,vin)
-    # flow.remain_flow(flow_type='media',vin='LFVTESTMOSC989216')
+    flow.remain_flow(flow_type='wifi',vin='LFVSOP2TEST000407')
 
-    order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
+    # order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
     # bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='12103',category='112',score='N')
     # bm_pay.free_pay(aid,vin,order_no=order_no,channel='12101',useScore=False)
     # flow.bm_goods_list('995939534','WIFI_FLOW')

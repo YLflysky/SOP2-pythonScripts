@@ -160,5 +160,5 @@ if __name__ == '__main__':
     # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
     #                   businessState='success',businessStateDesc='已完成')
     # o.reload_config()
-    o.bm_order_detail(aid='9350963',order_no='ftb20210226150714471483328',vin=None)
+    o.bm_order_detail(aid='9353464',order_no='ftb20210305114519985811008',vin=None)
     # o.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='234',quantity=1)
