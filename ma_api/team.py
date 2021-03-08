@@ -2,8 +2,8 @@ from ma_api.tencent_car import TencentCar
 
 
 class Team(TencentCar):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,aid,user,password,vin,token=True):
+        super().__init__(aid,user,password,vin,token)
         self.hu_url = self.read_conf('ma_env.conf', self.env, 'hu_host')
         self.url =self.hu_url + '/mosc-group-driving-sop2'
 
@@ -75,15 +75,15 @@ class Team(TencentCar):
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
-    t = Team()
-    uid='9349829'
-    vin='LFVSOP2TEST000048'
+    t = Team(user='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183',token=True)
+
     # t.get_hash_vin(vin='LFVSOP2TESTLY0002')
-    t.create_group(uid,vin)
+    # t.create_group('4614963','LFVTEST1231231231')
     # open_id = t.get_info(uid,vin)['weChatOpenId']
     # print(open_id)
-    # groupId = t.find_last_group(uid,vin)['groupId']
-    # invite_pwd = t.find_last_group(uid,vin)['invitePassword']
-    # t.join_team(accountId=uid,vin=vin,group_id=groupId,invite=invite_pwd)
+    # groupId = t.find_last_group(uid,vin1)['groupId']
+    # invite_pwd = t.find_last_group(uid,vin1)['invitePassword']
+    # t.join_team(accountId='4614963',vin='LFVSOP2TESTLY0073',group_id='5880469272221',invite='660537')
+    t.get_trip_info('4614963','LFVTEST1231231231')
     # t.join_last_group(account=uid,group='588079202560',longitude='116.388729',latitude='39.871198',vin=vin)
 

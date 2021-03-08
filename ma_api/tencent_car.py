@@ -1,13 +1,11 @@
-from box.base import Base
+from ma_api.ma_order import MABase
 import os,sys
 
 
-class TencentCar(Base):
-    def __init__(self,user='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183'):
-        super().__init__()
-        self.env = os.getenv('ENV')
+class TencentCar(MABase):
+    def __init__(self,aid,user,password,vin,token=True):
+        super().__init__(aid,user,password,vin,token)
         self.url = self.read_conf('ma_env.conf',self.env,'car_host')
-        self.add_header(url=self.read_conf('ma_env.conf',self.env,'token_host'),user=user,password=password,vin=vin)
 
     def assert_ma_msg(self,code,body):
         print(body)
@@ -81,14 +79,14 @@ if __name__ == '__main__':
 
     import os
     os.environ['ENV'] = 'CLOUD'
-    car = TencentCar()
+    car = TencentCar(user='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183',token=True)
     uid = '4614963'
-    vin = 'LFVTEST1231231231'
+    vin = 'LFVSOP2TESTLY0073'
     # car.check_vin(vin)
-    car.get_QRcode(uid,vin)
+    # car.get_QRcode(uid,vin)
     # car.send_poi_hu(vin)
     # car.unbind(uid,vin=vin)
-    # car.get_info(uid,vin)
+    car.get_info(uid,vin)
     # car.bind_callback(aid='4614963',vin='B0EEE94911E24DFA3D39B21BBFAE6506',wecar_id=None,action='abc')
 
 
