@@ -128,7 +128,7 @@ class MAOrder(MABase):
         data = {'aid': aid, 'goodsId': goods_id, 'vin': vin,
                 'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
         c, b = self.do_post(url, data)
-        self.assert_msg(c,b)
+        self.assert_bm_msg(c,b)
         return b
 
 
@@ -223,9 +223,9 @@ class MAOrder(MABase):
         self.assert_msg(c,b)
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'CLOUD'
+    os.environ['ENV'] = 'UAT'
     ma_order = MAOrder('9349641',user='13761048895',password='000000',vin='LMGLS1G53H1003120')
-    ma_order.create_order()
+    # ma_order.create_order()
     # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
     # music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
     # music_order.order_list(music_order.aid,status=['FINISHED'],category='01',begin=None,end=None)
@@ -236,18 +236,13 @@ if __name__ == '__main__':
     # ma_order.cancel_order(order_no='202101141527422841024000')
     # ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
-    # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
-    # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349640',service_id='03',sp_id='030003',
-    #                     order_type='BUSINESS',ex_order=ma_order.f.md5(),category='09',title='加油订单',
-    #                     business_state='0',desc='待支付',orderNO='20200826193643504544768',orderStatus='FINISHED',
-    #                     amount=5.00,discount=0.25,pay_amount=4.75,timeout=1000,
-    #                     business_info=info)
+
     # ma_order.sync_order_pay(aid='9349641',order_no='20210112104548022143360',pay_order_no='1234',channel='WECHAT_PAY',
     #                         pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02,
     #                         pay_type='QR_CODE')
-    # ma_order.get_qr_code('M202012161532571906927437',channel='11100')
+    # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
     # ma_order.alipay_callback()
     # order_no = music_order.create_goods_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=music_order.vin)['data']
-    # order_no = ma_order.create_goods_order(aid='9349641',goods_id='32c4785206714d4793d21046a379bd33',category='WIFI_FLOW',quantity=1,vin='LMGLS1G53H1003120')['data']
-    # ma_order.get_ma_qr_code(order_no=order_no,pay_type='12100')
+    # order_no = ma_order.create_goods_order(aid=ma_order.aid,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,vin=ma_order.vin)['data']
+    # ma_order.get_ma_qr_code(order_no='ma2021030911040663816384',pay_type='12100')
 

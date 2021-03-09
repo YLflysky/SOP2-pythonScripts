@@ -115,7 +115,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
     b = Base()
-    bm_c = Calendar(tenant='BM',token=True,name='13353110049',password='000000',vin='LFVSOP2TESTLY0049',aid='9353883')
+    bm_c = Calendar(tenant='MA',token=True,name='13353110049',password='000000',vin='LFVSOP2TESTLY0049',aid='9353883')
     # print(bm_c.gate)
     # bm_c.get_last_time()
     # ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
@@ -125,6 +125,6 @@ if __name__ == '__main__':
     #                  'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
     # bm_c.mobile_sync(current_time=None,events=[event])
     # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10))
-    # bm_c.find_all_event(update_time=None,)
-    data = {'apiType': 'TYPE_ONE', 'startDate': '1612763053000', 'endDate': '1618535559000'}
-    bm_c.get_event_list(data)
+    bm_c.find_all_event(update_time=None,)
+    # data = {'apiType': 'TYPE_ONE', 'startDate': '1612763053000', 'endDate': '1618535559000'}
+    # bm_c.get_event_list(data)

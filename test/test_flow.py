@@ -134,7 +134,7 @@ def test_sign_result_notify_wrong(d):
 
 
 @allure.suite('flow')
-@allure.title('免密支付结果回调--支付成功')
+@allure.title('支付结果回调--支付成功')
 @pytest.mark.flow
 @pytest.mark.parametrize('channel', ['ALI_PAY', 'WECHAT_PAY'], ids=['支付宝支付成功', '微信支付成功'])
 def test_pay_result_callback(channel):
@@ -142,7 +142,7 @@ def test_pay_result_callback(channel):
     测试支付成功回调
     :return:
     '''
-    aid = 'qq995939534'
+    aid = '9354046'
     order_msg = flow.bm_create_flow_order(goods_id='253', aid=aid, vin='LFVSOP2TEST000353',quantity=1)
 
     order_no = order_msg['data']['orderNo']
@@ -153,14 +153,14 @@ def test_pay_result_callback(channel):
     pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),
                                  'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
-    success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': channel,
+    success_attr = {'thirdPartyPaymentSerial': '995939534@qq.com', 'payChannel': channel,
                     'paidTime': flow.time_delta(formatted='%Y%m%d%H%M%S')}
     res = flow.common_callback(id=order_no, category=1, status='1000_00', origin_id=flow.f.md5(),
                                additional_attrs=success_attr)
     assert res['status'] == '000000'
     assert res['messages'][0] == '成功'
     sql = flow.do_mysql_select('select order_status from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
-    assert sql[0]['order_status'] == 'PAY_SUCCESS'
+    assert sql[0]['order_status'] == 'FINISH'
     sql = flow.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
     assert sql[0]['pay_status'] == 'SUCCESS'
     sql = flow.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no), 'fawvw_pay')
@@ -169,7 +169,7 @@ def test_pay_result_callback(channel):
 
 
 @allure.suite('flow')
-@allure.title('免密支付结果回调--支付失败')
+@allure.title('支付结果回调--支付失败')
 @pytest.mark.flow
 def test_pay_result_callback_failed():
     '''
