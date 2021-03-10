@@ -295,11 +295,12 @@ def test_cp_common_notify_sop1():
 @pytest.mark.parametrize('channel',[1,2],ids=['支付宝签约结果回调','微信签约结果回调'])
 def test_cp_sign_result_notify(channel):
     aid = flow.f.pyint()
-    res = flow.cp_sign_result_notify(aid, channel=1, notify_type=1, status=1)
+    res = flow.cp_sign_result_notify(aid, channel, notify_type=1, status=1)
     assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
-    sql = flow.do_mysql_select('select * from contract_sign where aid="{}"'.format(aid),'fawvw_pay')
-    assert sql[0]['sign_status'] == 'OPEN'
+    res = flow.get_sign_result(aid,sp_id='CMCC',channel=channel)
+    assert res['data']['payChannel'] == channel
+    assert res['data']['signStatus'] == 'OPEN'
 
 
 @pytest.mark.flow

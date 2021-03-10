@@ -173,7 +173,7 @@ if __name__ == '__main__':
     import json
     os.environ['ENV'] = 'SIT'
     app = App(name='15144142651',password='Qq111111',aid='4614233')
-    # app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
+    app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='BM')
     # app.apply_invoice(order_no='ma20210225094735194245760',i_type='PERSONAL',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409')
     # app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
     # app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
@@ -189,6 +189,6 @@ if __name__ == '__main__':
     # app.calendar_mobile_find_all('LFVSOP2TESTLY0049')
     # app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0002',channel='WXPAY',order_no='20210201172351827405504')
     # app.create_order(goods_id='273',category='MEDIA_FLOW',vin='LFVSOP2TEST000353',count=1)
-    app.get_pay_url(order_no='M202103041404367627961889',channel='QR_WEIXIN')
+    # app.get_pay_url(order_no='M202103041404367627961889',channel='QR_WEIXIN')
 
 
