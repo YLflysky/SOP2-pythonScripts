@@ -123,7 +123,6 @@ class Order(Base):
         assert 200 == code
         return body
 
-
     def sync_order_kafka(self, ep_order_id, business_info: dict, tenant,domain='GAS', cp='NX_ENGINE'):
         '''
         从EP通过callback同步订单

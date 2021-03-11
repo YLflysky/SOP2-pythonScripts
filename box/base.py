@@ -420,6 +420,7 @@ class Base:
 
         cur.close()
         conn.close()
+        lk.prt('sql查询结果:\t{}'.format(res))
         return res
 
     def do_mysql_exec(self, msg, db, host='SOP2'):

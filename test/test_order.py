@@ -4,9 +4,6 @@ import random
 import time
 import json
 import allure
-import sys
-
-
 
 
 @allure.suite('order')
@@ -15,7 +12,7 @@ import sys
 def test_generate_order_no():
     body = order.generate_order_no()
     assert 'SUCCEED' == body['returnStatus']
-    assert body['data'] is not None
+    assert 'ftb' in body['data']
 
 
 @allure.suite('order')
@@ -61,10 +58,10 @@ def test_callback_order():
         assert sql_res[0]['service_id'] == 'GAS'
         assert str(sql_res[0]['total_amount']) == '6.0'
         assert sql_res[0]['ex_order_no'] == ep_order
-        print('同步订单ex_order_no成功:{}'.format(ep_order))
-        info = json.dumps(info, sort_keys=True)
-        assert sql_res[0]['detail'] == info
-        print("同步business info成功：{}".format(info))
+        # print('测试detail字段')
+        # actual = json.loads(sql_res[0]['detail'])
+        # assert info['name'] == actual['name']
+        # assert info['age'] == actual['age']
     finally:
         order_no = sql_res[0]['order_no']
         order.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
@@ -130,16 +127,15 @@ def test_sync_order_03(origin):
 
 
 @allure.suite('order')
-@allure.title('同步订单信息>>同步待支付订单，超时后状态改为EXPIRE')
+@allure.title('同步订单信息>>同步待支付订单，同步订单业务字段')
 @pytest.mark.order
-@pytest.mark.skip(reason='订单超时自动化暂停')
-def test_sync_order_expire():
+def test_sync_order_detail():
     '''
     同步订单信息，输入所有参数
     :return:
     '''
     ex = order.f.md5()
-    aid = 'qq995939534'
+    aid = '9349824'
     category = '110'
     service = 'MUSIC'
     sp = 'KUWO'
@@ -156,14 +152,15 @@ def test_sync_order_expire():
     business_info = {'business':'music'}
     coupon_id = '123456'
     coupon_amount = 0.01
-    order.sync_order(ex,origin,aid,category,serviceId=service,spId=sp,businessState=business_state,businessStateDesc=business_state_desc,
+    res = order.sync_order(ex,origin,aid,category,serviceId=service,spId=sp,businessState=business_state,businessStateDesc=business_state_desc,
                  title=title,orderStatus=status,orderCategory=category,orderType='COMMODITY',amount=amount,discountAmount=discount_amount,
                  payAmount=actual_amount,vin=vin,vehModelCode='川A88888',info=info,businessInfo=business_info,couponId=coupon_id,
                  couponAmount=coupon_amount,timeout=1,goodsId='123456',)
-    sql = order.do_mysql_select('select * from `order` where ex_order_no="{}" and origin="{}"'.format(ex,origin),'fawvw_order')
+    order_no = res['data']
+    sql = order.do_mysql_select('select * from `order` where order_no="{}"'.format(order_no),'fawvw_order')
     assert len(sql) == 1
-    time.sleep(70)
-    assert sql[0]['order_status'] == 'EXPIRE'
+    sql = order.do_mysql_select('select detail from order_detail where order_no="{}"'.format(order_no),'fawvw_order')
+    assert len(sql) == 1
 
 @allure.suite('order')
 @allure.title('同步预约单')
