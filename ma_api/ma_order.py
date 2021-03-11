@@ -10,6 +10,8 @@ class MABase(Base):
         self.aid = aid
         self.vin = vin
         self.gate = True
+        if os.getenv('ENV') != 'CLOUD':
+            self.env = 'UAT'
         if token:
             lk.prt('开始获取token...')
             self.add_header(self.read_conf('ma_env.conf',self.env,'token_host'),user,password,vin)

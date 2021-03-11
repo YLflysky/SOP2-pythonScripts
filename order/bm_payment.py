@@ -133,5 +133,5 @@ if __name__ == '__main__':
     # pay.get_pay_result(vin='LFVTESTMOSC989216',order_no='ftb20210113104218446114688',aid='9351484',category='112',roll_number=1)
     pay.get_pay_channel(vin='LFVTEST1231231231',aid='4614183',order_no='ftb20210209105024795167936',category='111')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language='en-US',code='11101')
-    # pay.get_qr_code(vin,aid,order_no='ftb2021012213364207290112',pay_type='12100',category='109')
+    pay.get_qr_code(vin,aid,order_no='ftb2021012213364207290112',pay_type='12100',category='109')
     # pay.get_agreement_qr_code(aid,vin,channel=2,service_id='FLOW',sp_id='CMCC')

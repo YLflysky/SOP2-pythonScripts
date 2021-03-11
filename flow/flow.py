@@ -256,20 +256,20 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     flow = Flow('BM')
     bm_pay = BMPayment()
     # user_data = flow.read_yml('../conf','user.yml')
     # user_data = user_data['uat_zqs']
-    aid = '9326335'
-    goods_id = 255
-    vin = 'LFVTESTMOSC989216'
+    aid = '4614233'
+    goods_id = 233
+    vin = 'LFV2A2BUXL4651255'
     iccid = '18559372278'
     # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
     # flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
-    success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'WECHAT_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
-    flow.common_callback(id='ftb20210309142502218860160', category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
-                         additional_attrs=success_attr)
+    # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'WECHAT_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
+    # flow.common_callback(id='ftb20210309142502218860160', category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
+    #                      additional_attrs=success_attr)
     # flow.flow_detail(263)
     # flow.goods_list(['MUSIC_VIP'])
     # flow.bm_get_goods_detail('100')
@@ -277,8 +277,8 @@ if __name__ == '__main__':
     # flow.bm_flow_list(aid,vin)
     # flow.remain_flow(flow_type='wifi',vin='LFV2A2BU1L4445211')
 
-    # order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
-    # bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='12103',category='112',score='N')
+    order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
+    # bm_pay.get_qr_code(vin,aid,order_no='ftb20210310165155168876544',pay_type='12100',category='112',score='N')
     # bm_pay.free_pay(aid,vin,order_no=order_no,channel='12101',useScore=False)
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid,channel=1,notify_type=1,status=1)

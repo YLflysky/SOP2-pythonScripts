@@ -80,8 +80,8 @@ if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'CLOUD'
     car = TencentCar(user='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183',token=True)
-    uid = '4614963'
-    vin = 'LFVSOP2TESTLY0073'
+    uid = '0000001'
+    vin = 'LFVTESTMOSC000001'
     # car.check_vin(vin)
     # car.get_QRcode(uid,vin)
     # car.send_poi_hu(vin)
