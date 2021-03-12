@@ -188,7 +188,7 @@ if __name__ == '__main__':
     # app.calendar_mobile_sync(current_time=None,events=events,vin='LFVTESTMOSC052726')
     # app.calendar_mobile_find_all('LFVSOP2TESTLY0049')
     # app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0002',channel='WXPAY',order_no='20210201172351827405504')
-    app.create_order(goods_id='253',category='MEDIA_FLOW',vin='LFVSOP2TEST000353',count=1)
+    app.create_order(goods_id='17',category='MUSIC_VIP',vin='LFVTEST1231231231',count=1,priceType=4,userId='4614233')
     # app.get_pay_url(order_no='M202103041404367627961889',channel='QR_WEIXIN')
 
 

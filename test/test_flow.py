@@ -299,9 +299,7 @@ def test_cp_sign_result_notify(channel):
     res = flow.cp_sign_result_notify(aid, channel, notify_type=1, status=1)
     assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
-    res = flow.get_sign_result(aid,sp_id='CMCC',channel=channel)
-    assert res['data']['payChannel'] == channel
-    assert res['data']['signStatus'] == 'OPEN'
+
 
 
 @pytest.mark.flow
@@ -310,7 +308,7 @@ def test_cp_sign_result_notify(channel):
 def test_cp_sim_notify_ftb22():
     id = flow.f.pyint()
     date = flow.time_delta(formatted='%Y%m%d%H%M%S')
-    rule = flow.f.pyfloat(positive=True, min_value=0.0, max_value=1.0)
+    rule = 0.9
     asset_type = 'iccid'
     acc_id = '995939534cmcctest002x'
     package = 'P1001146835'
