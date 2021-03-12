@@ -68,7 +68,6 @@ def test_callback_order():
         order.do_mysql_exec('delete from order_detail where order_no="{}"'.format(order_no), 'fawvw_order')
 
 
-
 @allure.suite('order')
 @allure.title('同步订单信息')
 @pytest.mark.order
@@ -79,7 +78,7 @@ def test_sync_order_01(order_status):
     '''
     同步订单接口测试，订单状态枚举
     '''
-    ex = 'test001'
+    ex = order.f.md5()
     origin = 'EP'
     aid = '123456'
     category = '102'
@@ -98,7 +97,7 @@ def test_sync_order_02(order_type):
     '''
     同步订单接口测试，订单类型枚举
     '''
-    ex = 'test001'
+    ex = order.f.md5()
     origin = 'EP'
     aid = '123456'
     category = '102'
@@ -116,7 +115,7 @@ def test_sync_order_03(origin):
     '''
     同步订单接口测试，订单来源枚举
     '''
-    ex = 'test001'
+    ex = order.f.md5()
     aid = '123456'
     category = '102'
     res = order.sync_order(ex, origin, aid, category)
@@ -171,7 +170,7 @@ def test_sync_order_reservation():
     测试同步订单为预约单轮询检查订单状态功能
 
     '''
-    ex = order.f.pyint()
+    ex = order.f.md5()
     aid = '123456'
     category = '102'
     status = 'INIT'
@@ -200,7 +199,7 @@ def test_update_order():
     '''
     测试更新订单，更新订单状态,业务信息
     '''
-    ex = 'test001'
+    ex = order.f.md5()
     aid = '123456'
     category = '102'
     origin = 'EP'

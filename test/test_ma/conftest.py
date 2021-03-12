@@ -12,7 +12,7 @@ b = Base()
 
 
 token_url = b.read_conf('ma_env.conf','UAT','token_host')
-aid = ''
+aid = '4614183'
 user = '15330011918'
 password = '000000'
 vin = 'LFVTEST1231231231'

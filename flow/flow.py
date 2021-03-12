@@ -256,7 +256,7 @@ if __name__ == '__main__':
     from order.bm_payment import BMPayment
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     flow = Flow('BM')
     bm_pay = BMPayment()
     # user_data = flow.read_yml('../conf','user.yml')
@@ -272,12 +272,12 @@ if __name__ == '__main__':
     #                      additional_attrs=success_attr)
     # flow.flow_detail(263)
     # flow.goods_list(['MUSIC_VIP'])
-    # flow.bm_get_goods_detail('100')
+    flow.bm_get_goods_detail('267')
     # flow.bm_goods_list(aid,categories=['RADIO_VIP'])
     # flow.bm_flow_list(aid,vin)
     # flow.remain_flow(flow_type='wifi',vin='LFV2A2BU1L4445211')
 
-    order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
+    # order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
     # bm_pay.get_qr_code(vin,aid,order_no='ftb20210310165155168876544',pay_type='12100',category='112',score='N')
     # bm_pay.free_pay(aid,vin,order_no=order_no,channel='12101',useScore=False)
     # flow.bm_goods_list('995939534','WIFI_FLOW')

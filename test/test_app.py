@@ -88,8 +88,8 @@ def test_app_pay_url_flow(channel):
 @pytest.mark.app
 @pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
 def test_app_pay_url_music(channel):
-    vin = 'LFVSOP2TEST000353'
-    order_no = app.create_order(goods_id='253',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
+    vin = 'LFVTEST1231231231'
+    order_no = app.create_order(goods_id='226',category='MUSIC_VIP',vin=vin,count=1)['data']['orderNumber']
     res = app.get_pay_url(order_no,channel)
     assert res['data']['payUrl']
 
@@ -100,7 +100,7 @@ def test_app_pay_url_music(channel):
 @pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
 def test_app_pay_url_radio(channel):
     vin = 'LFVSOP2TEST000353'
-    order_no = app_xmly.create_order(goods_id='273',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
+    order_no = app_xmly.create_order(goods_id='273',category='RADIO_VIP',vin=vin,count=1)['data']['orderNumber']
     res = app.get_pay_url(order_no,channel)
     assert res['data']['payUrl']
 
@@ -111,7 +111,7 @@ def test_app_pay_url_radio(channel):
 @pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
 def test_app_pay_url_sop2ma(channel):
     vin = 'LFVSOP2TEST000353'
-    order_no = app.create_order(goods_id='273',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
+    order_no = app.create_order(goods_id='253',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
     res = app.get_pay_url(order_no,channel)
     assert res['data']['payUrl']
 

@@ -109,7 +109,7 @@ if __name__ == '__main__':
     # category = shop.get_category_id()
     # print(category)
     shop.get_list('all',index=1,size=10,sort='asc',sortName='score')
-    # goods_id = shop.get_spare_list(category='all')
+    goods_id = shop.get_list(category='all')
     # goods_id = goods_id['data'][0]['goodsId']
     # shop.get_detail('be50bc34-1926-4648-bbf8-5ff3a5d8266f')
 
