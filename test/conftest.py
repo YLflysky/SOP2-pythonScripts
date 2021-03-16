@@ -24,6 +24,7 @@ aid = '9353497'
 vins = [('LFVSOP2TESTLY0003','SOP2BM'),
         ('LFVSOP2TESTLY0002','SOP2MA'),
         ('LFVSOP2TESTLY0010','37W'),
+        ('LFVSOP2TESTLY0097','MEB'),
         ('LFVSOP2TESTLY0011','SOP1')]
 
 app = App(name,password,aid=aid)

@@ -23,6 +23,18 @@ def assert_results():
         app.do_mysql_exec('delete from calendar_event where uid="{}" and local_event_id="{}"'.format(aid,event_id),'fawvw_calendar')
 
 
+def assert_37w_results():
+    '''
+    查询数据库看是否同步成功
+    :return:
+    '''
+    sql_res = app.do_mysql_select('SELECT * from calendar_event where uid="{}" and local_event_id="{}"'.format(aid,event_id),'uat_mosc_37w_calendar',host='MA')
+    try:
+        assert len(sql_res) == 1
+    finally:
+        app.do_mysql_exec('delete from calendar_event where uid="{}" and local_event_id="{}"'.format(aid,event_id),'uat_mosc_37w_calendar',host='MA')
+
+
 @allure.suite('app')
 @allure.title('测试传入vin判断车型，然后通过APP同步日历事件')
 @pytest.mark.app
@@ -33,15 +45,17 @@ def test_app_sync_event(vin):
     tenant = vin[1]
     assert app.get_tenant_by_vin(vin_code) == tenant
     lk.prt('check {} tenant success'.format(tenant))
-    res = app.calendar_mobile_sync(current_time=None,events=[event],vin=vin_code)
+    app.calendar_mobile_sync(current_time=None,events=[event],vin=vin_code)
     if tenant in ('SOP2BM','SOP2MA'):
         assert_results()
+    elif tenant in ('37W','MEB'):
+        assert_37w_results()
 
 
 @allure.suite('app')
 @allure.title('测试传入vin判断车型，然后查询所有日历事件')
 @pytest.mark.app
-@pytest.mark.parametrize('vin',vins[:2])
+@pytest.mark.parametrize('vin',vins)
 def test_app_calendar_find_all(vin):
     res = app.calendar_mobile_find_all(vin=vin[0])
     assert res['data']
@@ -66,8 +80,9 @@ def test_app_cmcc_unsign():
 @allure.suite('app')
 @allure.title('测试查询CMCC已签约结果')
 @pytest.mark.app
+@pytest.mark.skip(reason='已经解约')
 def test_app_cmcc_sign():
-    app_sign = App(name='13770614790',password='000000',aid='9350963')
+    app_sign = App(name='13770614790',password='000000',aid='qq995939534')
     res = app_sign.get_sign_result(vin='LFVSOP2TESTLY0002',channel='WXPAY',cp_seller='CMCC')
     assert res['data']['signNo'] == '1'
 
@@ -91,7 +106,7 @@ def test_app_pay_url_music(channel):
     vin = 'LFVTEST1231231231'
     order_no = app.create_order(goods_id='226',category='MUSIC_VIP',vin=vin,count=1)['data']['orderNumber']
     res = app.get_pay_url(order_no,channel)
-    assert res['data']['payUrl']
+    assert res['data']['payInfo']
 
 
 @allure.suite('app')
@@ -102,7 +117,7 @@ def test_app_pay_url_radio(channel):
     vin = 'LFVSOP2TEST000353'
     order_no = app_xmly.create_order(goods_id='273',category='RADIO_VIP',vin=vin,count=1)['data']['orderNumber']
     res = app_xmly.get_pay_url(order_no,channel)
-    assert res['data']['payUrl']
+    assert res['data']['payInfo']
 
 
 @allure.suite('app')

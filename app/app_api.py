@@ -16,7 +16,7 @@ class App(Base):
         self.uid = aid
         # self.header['aid'] = aid
         self.mobile_url = self.read_conf('sop2_env.conf', self.env, 'one_app_host')
-        self.hu_url = self.read_conf('sop2_env.conf', self.env, 'hu_host')
+        self.vehicle_url = self.read_conf('sop2_env.conf', self.env, 'vehicle_host')
         self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
         lk.prt('开始获取token...')
         self.cdp_url = self.read_conf('sop2_env.conf', self.env, 'cdp_host')
@@ -56,7 +56,7 @@ class App(Base):
         根据vin码获取到是哪个项目的车型
         :return:
         '''
-        url = self.hu_url + '/vs/ftb-vehicle/public/v1/tenant/get_by_vin'
+        url = self.vehicle_url + '/vs/ftb-vehicle/public/v1/tenant/get_by_vin'
         data = {'vin':vin}
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
@@ -151,6 +151,7 @@ class App(Base):
         data = {'payChannel':channel,'orderNo':order_no}
         c,b = self.do_post(url,data,gateway='APP')
         self.assert_bm_msg(c,b)
+        return b
 
     def create_order(self, goods_id, category, vin, count, **kwargs):
         '''

@@ -36,7 +36,7 @@ class SOP1Order(MABase):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'CLOUD'
+    os.environ['ENV'] = 'UAT'
     aid = '4614233'
     vin = 'LFV2A2BUXL4651255'
     sop1 = SOP1Order(aid,user='15144142651',password='Qq111111',vin=vin)

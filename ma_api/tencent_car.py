@@ -78,10 +78,10 @@ class TencentCar(MABase):
 if __name__ == '__main__':
 
     import os
-    os.environ['ENV'] = 'CLOUD'
+    os.environ['ENV'] = 'UAT'
     car = TencentCar(user='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183',token=True)
-    uid = '0000001'
-    vin = 'LFVTESTMOSC000001'
+    uid = '4613020'
+    vin = 'LFVSOP2TEST000401'
     # car.check_vin(vin)
     # car.get_QRcode(uid,vin)
     # car.send_poi_hu(vin)

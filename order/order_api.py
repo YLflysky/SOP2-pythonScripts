@@ -84,18 +84,16 @@ class Order(Base):
         code, body = self.do_get(url, params={'aid': aid})
         self.assert_msg(code, body)
 
-    def sync_invoice(self, invoiceNo, status, party,ex_order:list,order:list):
+    def sync_invoice(self, invoiceNo, status, party,**kwargs):
         '''
         底层同步发票信息api
         '''
         url = self.url + '/sm/order/v1/invoice/notify/sync'
 
-        data = {'actionId': 'INVOICE_UPDATE', 'aid': '123456', 'domainId': 'COMMON', 'epInvoiceId': '1',
-                'exOrderNos': ex_order,'orderNos':order,
-                'cpId': 'XIAOMA', 'invoiceNo': invoiceNo, 'partyType': party,
+        data = {'epInvoiceId': '1','invoiceNo': invoiceNo, 'partyType': party,
                 'bankAccount': self.f.credit_card_number(), 'status': status,
                 'remark': self.f.sentence(), 'price': self.f.pyint(), 'createTime': self.time_delta(days=-1),
-                'transmissionTime': self.time_delta()}
+                'transmissionTime': self.time_delta(),**kwargs}
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
 
@@ -272,6 +270,7 @@ class Order(Base):
         c,b = self.do_post(url,kafka_data)
         self.assert_msg(c,b)
 
+
 if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
@@ -281,14 +280,15 @@ if __name__ == '__main__':
     # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
     # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
     # o.order_detail(aid='9351515',order_no='20201124142350661876544')
-    order_no = o.generate_order_no()['data']
-    o.sync_order(aid='9349640', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
-                 serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,orderStatus='FINISH',
-                 goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
+    # order_no = o.generate_order_no()['data']
+    # o.sync_order(aid='9349640', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
+    #              serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,orderStatus='FINISH',
+    #              goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # o.sync_refund('9642113','233564422',origin='EP',status='FAILED')
-    # o.apply_invoice(aid='4614907', order_no=['ftb20210205062821259167936'], duty_no='91310115560364240G',
+    # o.apply_invoice(aid='4614233', order_no=['ftb20210316100727897212992'], duty_no='91310115560364240G',
     #                 head='钛马信息技术有限公司', phone='18888888888')
-
+    o.sync_invoice(invoiceNo='6F1IQCDLN9RDXN8N0BU1615863389951',status='SUCCESS',party='PERSONAL',
+                   order=['ftb20210316100727897212992'],domainId='FLOW',cpId='CMCC')
     # sql = o.do_mysql_select('select * from order_invoice where serial="{}"'.format(serial),'fawvw_order')
     # o.invoice_detail(sql[0]['aid'],sql[0]['invoice_no'])
     # o.teardown_sync(orderNo, serial)

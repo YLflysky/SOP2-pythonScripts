@@ -135,17 +135,29 @@ class MAOrderAdapter(MABase):
         c,b = self.do_put(url,None)
         self.assert_bm_msg(c,b)
 
+    def user_token(self,aid,sp_id,service_id):
+        '''
+        通过用户id获取MS token
+        :param aid:
+        :param sp_id:
+        :param service_id:
+        :return:
+        '''
+        url = self.hu_url + '/mosc-user-sop2/external/v2/token'
+        data = {''}
+
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
-    ma_order = MAOrderAdapter('9349641',user='13761048895',password='000000',vin='LMGLS1G53H1003120')
-    # order_no = ma_order.ma_create_order(aid=ma_order.aid, vin=ma_order.vin, goods_id='8a248c5a231b4e2d99ec8183b578e339',
-    #                                     category='WIFI_FLOW', quantity=1, point=False)['data']['orderNo']
+    # ma_order = MAOrderAdapter('9349641',user='13761048895',password='000000',vin='LMGLS1G53H1003120')
+    music = MAOrderAdapter('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
+    order_no = music.ma_create_order(aid=music.aid, vin=music.vin, goods_id='17',durationTimes=1,
+                                        category='MUSIC_VIP', quantity=1, point=False,)['data']['orderNo']
     # ma_order.cancel_order(order_no='ma202103031234089871040384')
 
-    info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
-    ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349640',service_id='03',sp_id='030003',
-                        order_type='BUSINESS',ex_order=ma_order.f.md5(),category='09',title='加油订单',
-                        business_state='0',desc='待支付',orderStatus='FINISHED',
-                        amount=5.00,discount=0.25,pay_amount=4.75,timeout=1000,
-                        business_info=info)
+    # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
+    # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349640',service_id='03',sp_id='030003',
+    #                     order_type='BUSINESS',ex_order=ma_order.f.md5(),category='09',title='加油订单',
+    #                     business_state='0',desc='待支付',orderStatus='FINISHED',
+    #                     amount=5.00,discount=0.25,pay_amount=4.75,timeout=1000,
+    #                     business_info=info)
