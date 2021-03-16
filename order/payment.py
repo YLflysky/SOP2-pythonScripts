@@ -1,6 +1,6 @@
 from box.base import Base
 import hashlib
-import xmltodict
+# import xmltodict
 import json
 from box import xml_utils
 
@@ -252,17 +252,17 @@ class Payment(Base):
         print("sign_MD5=", sign_MD5)
         return sign_MD5
 
-    def xml_to_json(self,xml_str):
-        '''
-        xml字符串转为字典
-        :param xml_str:
-        :return:
-        '''
-
-        xml_parse = xmltodict.parse(xml_str)
-        json_str = json.dumps(xml_parse,indent=1)
-        print(json_str)
-        return json.loads(json_str)
+    # def xml_to_json(self,xml_str):
+    #     '''
+    #     xml字符串转为字典
+    #     :param xml_str:
+    #     :return:
+    #     '''
+    #
+    #     xml_parse = xmltodict.parse(xml_str)
+    #     json_str = json.dumps(xml_parse,indent=1)
+    #     print(json_str)
+    #     return json.loads(json_str)
 
 
 if __name__ == '__main__':
@@ -283,10 +283,10 @@ if __name__ == '__main__':
     # order.sync_order(aid=aid, orderNo=no, ex='ex%s'%no, origin='SOP1', category='110',
     #              serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
     #              goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
-    pay.get_qr_code(aid='23',order_no='ftb202102011550567971019904',channel='WECHAT_PAY',payWay='APP')
+    pay.get_qr_code(aid='9349485',order_no='ftb20210315163037464913408',channel='ALI_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
-    # pay.ali_pay_callback('trade_success', app_id='2018091361389377', out_trade_no='ftb20210115131035193598016',
+    # pay.ali_pay_callback('trade_success', app_id='2018091361389377', out_trade_no='ftb20210305132041384937984',
     #                      receipt_amount=0.01, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
 
     # pay.contract_sign_notify(aid='221',)
