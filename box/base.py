@@ -41,17 +41,16 @@ class Base:
             lk.prt('init error:{}'.format(e))
             return
 
+
     def add_header(self,url,user='18224077254',password='000000',vin='LFV3A23C1K3161804'):
 
         '''
         添加网关header验证
         :return:
         '''
-        self.header['Did'] = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
-        self.header['authorization'] = self.get_token(url,user,password,vin)
-        self.header['did'] = 'VW_HU_CNS3_X9G-11111.04.2099990054_v3.0.1_v0.0.1'
+        self.header['Did'] = 'VW_HU_CNS3_abaa-11111.11.11111112_v3.0.1_v0.0.1'
+        self.header['authorization'] = self.get_token(url, user, password, vin)
         self.header['Timestamp'] = self.get_time_stamp()
-
 
     def get_time_stamp(self,formartted='%Y-%m-%d %H:%M:%S', days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
         """获取毫秒级时间戳
@@ -421,6 +420,7 @@ class Base:
 
         cur.close()
         conn.close()
+        lk.prt('sql查询结果:\t{}'.format(res))
         return res
 
     def do_mysql_exec(self, msg, db, host='SOP2'):

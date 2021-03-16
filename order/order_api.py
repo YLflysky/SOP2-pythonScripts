@@ -84,14 +84,14 @@ class Order(Base):
         code, body = self.do_get(url, params={'aid': aid})
         self.assert_msg(code, body)
 
-    def sync_invoice(self, invoiceNo, status, party,orderNo:list):
+    def sync_invoice(self, invoiceNo, status, party,ex_order:list,order:list):
         '''
         底层同步发票信息api
         '''
-        url = self.url + '/sm/order/v1/invoice/notify/ep/sync'
+        url = self.url + '/sm/order/v1/invoice/notify/sync'
 
         data = {'actionId': 'INVOICE_UPDATE', 'aid': '123456', 'domainId': 'COMMON', 'epInvoiceId': '1',
-                'epOrderIds': orderNo,
+                'exOrderNos': ex_order,'orderNos':order,
                 'cpId': 'XIAOMA', 'invoiceNo': invoiceNo, 'partyType': party,
                 'bankAccount': self.f.credit_card_number(), 'status': status,
                 'remark': self.f.sentence(), 'price': self.f.pyint(), 'createTime': self.time_delta(days=-1),
@@ -112,8 +112,8 @@ class Order(Base):
         self.do_mysql_exec('delete from order_invoice where invoice_no="{}"'.format(invoice), 'fawvw_order')
         for order in orders:
             self.do_mysql_exec(
-                'delete from order_invoice_relation where order_id=(select id from `order` where ex_order_no="{}")'.format(
-                    order), 'fawvw_order')
+                'delete from order_invoice_relation where order_no="{}"'.format(order), 'fawvw_order')
+
         print('同步的发票删除成功')
 
     def generate_order_no(self):
@@ -122,7 +122,6 @@ class Order(Base):
         print(body)
         assert 200 == code
         return body
-
 
     def sync_order_kafka(self, ep_order_id, business_info: dict, tenant,domain='GAS', cp='NX_ENGINE'):
         '''
@@ -134,8 +133,8 @@ class Order(Base):
         :return:
         '''
         header = {'domainId': domain}
-        aid = self.f.pyint()
-        title = self.f.sentence()
+        aid = '9349824'
+        title = "callback同步订单测试用例"
         param = {'phone': self.f.phone_number(), 'invoiceStatus': 2, 'paymentMethod': 'wechat'}
         kafka_data = {'action': 'UPDATE', "vin": "DEFAULT_VIN", "cpId": cp, "aid": aid, 'param': json.dumps(param),
                       "orderType": "BUSINESS", "title": title, "desc": "zdh测试",
@@ -143,7 +142,7 @@ class Order(Base):
                       "createdTime": 1600312755440, "timeout": 10, "orderStatus": "WAITING_PAY",
                       "orderSubStatus": "DONE",
                       "delete": False, 'tenantId': tenant, 'epOrderId': ep_order_id, 'payStatus': 'SUCCESS_PAY',
-                      "info": business_info, "discountAmount": 0, 'epOrderCode': ep_order_id,
+                      "businessInfo": business_info, "discountAmount": 0, 'epOrderCode': ep_order_id,
                       "domainId": domain, 'orderCategory': '105'}
 
         kafka_data = {'key': self.my_json_decoder(kafka_data)}
@@ -178,7 +177,12 @@ class Order(Base):
         topic = 'order-finished-remind-topic'
         self.send_kafka_msg(topic, msg)
 
-    def invoice_info(self, aid):
+    def invoice_header(self, aid):
+        '''
+        order底层查询用户发票抬头api
+        :param aid:
+        :return:
+        '''
         url = self.url + '/sm/order/v1/invoice/header'
         data = {'aid': aid}
         code, body = self.do_get(url, data)
@@ -277,16 +281,14 @@ if __name__ == '__main__':
     # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
     # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
     # o.order_detail(aid='9351515',order_no='20201124142350661876544')
-    # order_no = o.generate_order_no()['data']
-    # o.sync_order(aid='9351524', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
-    #              serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,
-    #              goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
+    order_no = o.generate_order_no()['data']
+    o.sync_order(aid='9349640', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
+                 serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,orderStatus='FINISH',
+                 goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # o.sync_refund('9642113','233564422',origin='EP',status='FAILED')
-    o.apply_invoice(aid='9349485', order_no=['ftb20210315163037464913408'], duty_no='91310115560364240G',
-                    head='钛马信息技术有限公司', phone='18888888888')
+    # o.apply_invoice(aid='4614907', order_no=['ftb20210205062821259167936'], duty_no='91310115560364240G',
+    #                 head='钛马信息技术有限公司', phone='18888888888')
 
-    # serial = random.randint(1000000, 10000000)
-    # o.sync_invoice(orderNo, serial)
     # sql = o.do_mysql_select('select * from order_invoice where serial="{}"'.format(serial),'fawvw_order')
     # o.invoice_detail(sql[0]['aid'],sql[0]['invoice_no'])
     # o.teardown_sync(orderNo, serial)

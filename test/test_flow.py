@@ -12,7 +12,7 @@ import time
 @allure.suite('flow')
 @allure.title('BM车机端获取流量商品详情测试用例')
 @pytest.mark.flow
-@pytest.mark.parametrize('id', ['266', '103', '255', '85'])
+@pytest.mark.parametrize('id', ['266', '103', '255', '314'])
 def test_bm_flow_detail(id):
     res = flow.bm_get_goods_detail(id)
     assert res['code'] == 0
@@ -29,7 +29,7 @@ def test_bm_flow_detail(id):
 @allure.suite('flow')
 @allure.title('底层获取流量详情测试用例')
 @pytest.mark.flow
-@pytest.mark.parametrize('goods_id', ['100', '101', '102', '256', '257', '258']
+@pytest.mark.parametrize('goods_id', ['226', '227', '228', '256', '257', '258']
     , ids=['酷我1个月VIP', '酷我3个月VIP', '酷我6个月VIP', '在线媒体月包', '在线媒体季包', 'Wi-Fi半年包'])
 def test_flow_detail(goods_id):
     res = flow.flow_detail(goods_id)
@@ -58,7 +58,7 @@ def test_goods_list_detail(category):
 @allure.suite('flow')
 @allure.title('BM车机端获取商品详情')
 @pytest.mark.flow
-@pytest.mark.parametrize('goods', [None, flow.f.pyint(), '261', '246'],
+@pytest.mark.parametrize('goods', [None, flow.f.pyint(), '358', '246'],
                          ids=['不输入商品编号', '不存在的编号', '商品已下架', '商品未上架'])
 def test_bm_flow_detail_wrong(goods):
     '''
@@ -134,7 +134,7 @@ def test_sign_result_notify_wrong(d):
 
 
 @allure.suite('flow')
-@allure.title('免密支付结果回调--支付成功')
+@allure.title('支付结果回调--支付成功')
 @pytest.mark.flow
 @pytest.mark.parametrize('channel', ['ALI_PAY', 'WECHAT_PAY'], ids=['支付宝支付成功', '微信支付成功'])
 def test_pay_result_callback(channel):
@@ -142,7 +142,7 @@ def test_pay_result_callback(channel):
     测试支付成功回调
     :return:
     '''
-    aid = 'qq995939534'
+    aid = '9354046'
     order_msg = flow.bm_create_flow_order(goods_id='253', aid=aid, vin='LFVSOP2TEST000353',quantity=1)
 
     order_no = order_msg['data']['orderNo']
@@ -153,14 +153,15 @@ def test_pay_result_callback(channel):
     pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),
                                  'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
-    success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': channel,
+    success_attr = {'thirdPartyPaymentSerial': '995939534@qq.com', 'payChannel': channel,
                     'paidTime': flow.time_delta(formatted='%Y%m%d%H%M%S')}
     res = flow.common_callback(id=order_no, category=1, status='1000_00', origin_id=flow.f.md5(),
                                additional_attrs=success_attr)
     assert res['status'] == '000000'
     assert res['messages'][0] == '成功'
+    time.sleep(2.0)
     sql = flow.do_mysql_select('select order_status from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
-    assert sql[0]['order_status'] == 'PAY_SUCCESS'
+    assert sql[0]['order_status'] == 'FINISH'
     sql = flow.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
     assert sql[0]['pay_status'] == 'SUCCESS'
     sql = flow.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no), 'fawvw_pay')
@@ -169,7 +170,7 @@ def test_pay_result_callback(channel):
 
 
 @allure.suite('flow')
-@allure.title('免密支付结果回调--支付失败')
+@allure.title('支付结果回调--支付失败')
 @pytest.mark.flow
 def test_pay_result_callback_failed():
     '''
@@ -204,7 +205,7 @@ def test_pay_result_callback_failed():
 def test_sim_notify():
     id = flow.f.pyint()
     date = flow.time_delta(formatted='%Y%m%d%H%M%S')
-    rule = flow.f.pyfloat(positive=True, min_value=0.0, max_value=1.0)
+    rule = 0.9
     asset_type = 'iccid'
     asset_id = flow.f.md5()
     package = 'P1001146835'
@@ -295,11 +296,10 @@ def test_cp_common_notify_sop1():
 @pytest.mark.parametrize('channel',[1,2],ids=['支付宝签约结果回调','微信签约结果回调'])
 def test_cp_sign_result_notify(channel):
     aid = flow.f.pyint()
-    res = flow.cp_sign_result_notify(aid, channel=1, notify_type=1, status=1)
+    res = flow.cp_sign_result_notify(aid, channel, notify_type=1, status=1)
     assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
-    sql = flow.do_mysql_select('select * from contract_sign where aid="{}"'.format(aid),'fawvw_pay')
-    assert sql[0]['sign_status'] == 'OPEN'
+
 
 
 @pytest.mark.flow
@@ -308,7 +308,7 @@ def test_cp_sign_result_notify(channel):
 def test_cp_sim_notify_ftb22():
     id = flow.f.pyint()
     date = flow.time_delta(formatted='%Y%m%d%H%M%S')
-    rule = flow.f.pyfloat(positive=True, min_value=0.0, max_value=1.0)
+    rule = 0.9
     asset_type = 'iccid'
     acc_id = '995939534cmcctest002x'
     package = 'P1001146835'
@@ -338,7 +338,7 @@ def test_cp_sim_notify_wrong(param):
 def test_use_score():
     aid = '123'
     vin = 'LFVSOP2TEST000353'
-    order_no = flow.bm_create_flow_order(goods_id='254',aid=aid,vin=vin,quantity=1)['data']['orderNo']
+    order_no = flow.bm_create_flow_order(goods_id='253',aid=aid,vin=vin,quantity=1)['data']['orderNo']
     res = pay.get_qr_code(aid,order_no,'ALI_PAY',True)
     assert res['errorMessage'] == '订单不能使用积分'
     res = bm_pay.get_pay_channel(vin,aid,order_no,'111')
@@ -348,13 +348,13 @@ def test_use_score():
 @pytest.mark.flow
 @allure.suite('flow')
 @allure.title('用户免密签约成功后>>查询签约结果')
-@pytest.mark.parametrize('aid',['995939534','123'])
-def test_get_cp_sign_result_wx(aid):
+def test_get_cp_sign_result_wx():
     '''
     测试查询微信支付签约结果根据cp实时查询
     :return:
     '''
     # 查询签约成功的用户结果
+    aid = '995939534'
     res = flow.get_sign_result(aid=aid,sp_id='CMCC',channel='WECHAT_PAY')
     assert res['data']['payChannel'] == 'WECHAT_PAY'
     assert res['data']['signStatus'] == 'OPEN'

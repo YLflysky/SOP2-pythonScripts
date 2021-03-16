@@ -2,7 +2,7 @@ import pytest
 import allure
 import random
 from box.lk_logger import lk
-from .conftest import app,vins,aid,bm_order
+from .conftest import app,vins,aid,app_xmly
 from app.app_api import App
 
 
@@ -80,7 +80,7 @@ def test_app_pay_url_flow(channel):
     vin = 'LFVSOP2TEST000353'
     order_no = app.create_order(goods_id='253',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
     res = app.get_pay_url(order_no,channel)
-    assert res['data']['payUrl']
+    assert res['data']['payInfo']
 
 
 @allure.suite('app')
@@ -88,8 +88,8 @@ def test_app_pay_url_flow(channel):
 @pytest.mark.app
 @pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
 def test_app_pay_url_music(channel):
-    vin = 'LFVSOP2TEST000353'
-    order_no = app.create_order(goods_id='253',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
+    vin = 'LFVTEST1231231231'
+    order_no = app.create_order(goods_id='226',category='MUSIC_VIP',vin=vin,count=1)['data']['orderNumber']
     res = app.get_pay_url(order_no,channel)
     assert res['data']['payUrl']
 
@@ -99,11 +99,21 @@ def test_app_pay_url_music(channel):
 @pytest.mark.app
 @pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
 def test_app_pay_url_radio(channel):
-    aid = '4614931'
     vin = 'LFVSOP2TEST000353'
-    order_no = bm_order.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='273',quantity=1)['data']['orderNo']
-    res = app.get_pay_url(order_no,channel)
+    order_no = app_xmly.create_order(goods_id='273',category='RADIO_VIP',vin=vin,count=1)['data']['orderNumber']
+    res = app_xmly.get_pay_url(order_no,channel)
     assert res['data']['payUrl']
+
+
+@allure.suite('app')
+@allure.title('测试APP获取sop2ma流量订单支付URL')
+@pytest.mark.app
+@pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
+def test_app_pay_url_sop2ma(channel):
+    vin = 'LFVSOP2TEST000353'
+    order_no = app.create_order(goods_id='253',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
+    res = app.get_pay_url(order_no,channel)
+    assert res['data']['payInfo']
 
 
 

@@ -18,7 +18,7 @@ class SOP1Order(MABase):
         :param kwargs:
         :return:
         '''
-        url = self.payment_url + '/api/v1/createOrder'
+        url = self.payment_url + '/api/v1/orderCreate'
         data = {'userId':aid,'goodsId': goods_id, 'vin':vin,'orderCategory': category, 'count': quantity, 'usedPoint': point, **kwargs}
 
         c, b = self.do_post(url, data)
@@ -35,8 +35,10 @@ class SOP1Order(MABase):
 
 
 if __name__ == '__main__':
-    aid = '9353497'
-    vin = 'LFVSOP2TEST000353'
-    sop1 = SOP1Order(aid,user='13353116624',password='000000',vin='LFVSOP2TEST000102')
-    sop1.sop1_calendar_sync()
-    # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,point=False)
+    import os
+    os.environ['ENV'] = 'CLOUD'
+    aid = '4614233'
+    vin = 'LFV2A2BUXL4651255'
+    sop1 = SOP1Order(aid,user='15144142651',password='Qq111111',vin=vin)
+    # sop1.sop1_calendar_sync()
+    sop1.sop1_create_order(aid=aid,vin=vin,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='MEDIA_FLOW',quantity=1,point=False)

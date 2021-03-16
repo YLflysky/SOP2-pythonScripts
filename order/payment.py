@@ -187,7 +187,7 @@ class Payment(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
-    def agreement_qr_code(self,aid,channel,service,sp,origin):
+    def agreement_qr_code(self,aid,channel,origin,**kwargs):
         '''
         支付底层获取免密签约二维码接口
         :param aid:用户id
@@ -199,9 +199,44 @@ class Payment(Base):
         '''
 
         url = self.url + '/contract/sign'
-        data = {'aid':aid,'payChannel':channel,'serviceId':service,'spId':sp,'origin':origin}
+        data = {'aid':aid,'payChannel':channel,'origin':origin,**kwargs}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
+
+    def get_sign_result(self,aid,channel,**kwargs):
+        '''
+        支付底层查询免密签约状态接口
+        :param aid:用户id
+        :param channel:支付渠道枚举ALI_PAY,WECHAT_PAY
+        :param service:服务Id
+        :param sp:供应商id
+        :param origin:订单来源
+        :return:
+        '''
+
+        url = self.url + '/contract/signResult'
+        data = {'aid':aid,'payChannel':channel,**kwargs}
+        c,b = self.do_get(url,data)
+        self.assert_msg(c,b)
+        return b
+
+    def release_sign(self,aid,channel,**kwargs):
+        '''
+        支付底层免密解约接口
+        :param aid:用户id
+        :param channel:支付渠道枚举ALI_PAY,WECHAT_PAY
+        :param service:服务Id
+        :param sp:供应商id
+        :param origin:订单来源
+        :return:
+        '''
+
+        url = self.url + '/contract/unSign'
+        data = {'aid':aid,'payChannel':channel,**kwargs}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
+        return b
 
     def weixin_sign(self,sign_key,data_str:dict):
         keys_list = list(data_str.keys())

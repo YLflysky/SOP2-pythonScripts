@@ -209,7 +209,7 @@ def test_update_bm_order(d):
     '''
     测试BM适配层更新订单接口
     '''
-    order = bm.do_mysql_select(' SELECT * FROM `order` WHERE origin="BM" and vin is not null and del_flag=0',
+    order = bm.do_mysql_select(' SELECT * FROM `order` WHERE origin="BM" and vin is not null and del_flag=0 limit 10',
                                'fawvw_order')
     order = random.choice(order)
     order_no = order['order_no']
@@ -226,8 +226,7 @@ def test_update_bm_order(d):
     if d[0] is not None and d[1] is not None:
         assert sql_res[0]['business_status'] == businessState
         assert sql_res[0]['business_status_desc'] == businessStateDesc
-    order_id = sql_res[0]['id']
-    sql_res_detail = bm.do_mysql_select('select detail from order_detail where order_id={}'.format(order_id),
+    sql_res_detail = bm.do_mysql_select('select detail from order_detail where order_no={}'.format(order_no),
                                         'fawvw_order')
     assert len(sql_res_detail) == 1
 
