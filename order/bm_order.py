@@ -140,7 +140,7 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
 
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     aid = '9353449'
@@ -155,10 +155,10 @@ if __name__ == '__main__':
     #         "serviceOrderStateDesc": "serviceOrderStateDesc002", "spId": "spId002", "title": "title_test002",
     #         "userId": aid, "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509",'orderStatus':None}
     # o.sync_bm_order(o.get_time_stamp(), data)
-    # o.bm_cancel_order(aid='4614931',order_no='ftb20201203160039247753664')
+    # o.bm_cancel_order(aid='9353450',order_no='ftb20210308174717763798720')
     # o.order_count(vin='DEFAULT_VIN',uid='33')
     # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
     #                   businessState='success',businessStateDesc='已完成')
     # o.reload_config()
-    # o.bm_order_detail(aid='20210225',order_no='ftb20210225091550201483328',vin=None)
-    o.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='234',quantity=1)
+    # o.bm_order_detail(aid='9353450',order_no='ftb20210311183656432798720',vin=None)
+    # o.goods_order_create(tenant_id='VW',aid=aid,vin=vin,goods='226',quantity=1)

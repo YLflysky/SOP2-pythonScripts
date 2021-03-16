@@ -207,6 +207,7 @@ class Flow(Base):
         '''
 
         url = self.hu_url + '/flow/api/v1/dataflow/vehicles/{}/types/{}/remain'.format(vin,flow_type)
+        # url = ' https://hu-cs-uat.mosc.faw-vw.com/sop2bm/hu ' + '/flow/api/v1/dataflow/vehicles/{}/types/{}/remain'.format(vin,flow_type)
         c,b = self.do_get(url,None)
         self.assert_msg(c,b)
 
@@ -229,6 +230,17 @@ class Flow(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
         return b
+
+    def get_invoiceapply(self,orderNo,email,remark,phone,invoiceHead,orderPrice,spId,invoiceType,
+                         taxNumber,address,accountsBank,bankNumber):
+        url = self.flow_url + '/invoice/apply'
+        # url = '192.188.137:8800/sm/flow/invoice/apply'
+        data = {'orderNo':orderNo,'email':email,'remark':remark,'phone':phone,'invoiceHead':invoiceHead,'orderPrice':orderPrice,'spId':spId,
+                'invoiceType':invoiceType,'taxNumber':taxNumber,'address':address,'accountsBank':accountsBank,'bankNumber':bankNumber}
+        c, b = self.do_post(url, data)
+        self.assert_msg(c, b)
+
+
 
     def release_sign(self,aid,sp,channel,reason):
         '''
@@ -254,7 +266,7 @@ if __name__ == '__main__':
     # user_data = flow.read_yml('../conf','user.yml')
     # user_data = user_data['uat_zqs']
     aid = '9349485'
-    goods_id = 255
+    goods_id = '255'
     vin = 'LFVTESTMOSC989216'
     iccid = '18559372278'
     # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
@@ -262,7 +274,7 @@ if __name__ == '__main__':
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'ALI_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id=1, category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
-    # flow.flow_detail(263)
+    # flow.flow_detail(226)
     # flow.goods_list(['MUSIC_VIP'])
     # flow.bm_get_goods_detail('100')
     # flow.bm_goods_list(aid,categories=['RADIO_VIP'])
@@ -274,6 +286,8 @@ if __name__ == '__main__':
     # bm_pay.free_pay(aid,vin,order_no=order_no,channel='12101',useScore=False)
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid,channel=1,notify_type=1,status=1)
+    # flow.get_invoiceapply(orderNo=['ftb20210309151747458798720'],email='374648@qq.com',remark='3434',phone='18502872938',invoiceHead='432',orderPrice='0.01',spId='CMCC',invoiceType='PERSONAL',
+    #                      taxNumber='324',address='4324',accountsBank='432',bankNumber='432')
 
     # flow.flow_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
