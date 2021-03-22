@@ -135,16 +135,7 @@ class MAOrderAdapter(MABase):
         c,b = self.do_put(url,None)
         self.assert_bm_msg(c,b)
 
-    def user_token(self,aid,sp_id,service_id):
-        '''
-        通过用户id获取MS token
-        :param aid:
-        :param sp_id:
-        :param service_id:
-        :return:
-        '''
-        url = self.hu_url + '/mosc-user-sop2/external/v2/token'
-        data = {''}
+
 
 if __name__ == '__main__':
     import os
@@ -153,6 +144,8 @@ if __name__ == '__main__':
     music = MAOrderAdapter('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
     order_no = music.ma_create_order(aid=music.aid, vin=music.vin, goods_id='17',durationTimes=1,
                                         category='MUSIC_VIP', quantity=1, point=False,)['data']['orderNo']
+    # music.ma_create_order('9349641',goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',
+    #                          vin='LMGLS1G53H1003120',quantity=1)
     # ma_order.cancel_order(order_no='ma202103031234089871040384')
 
     # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}

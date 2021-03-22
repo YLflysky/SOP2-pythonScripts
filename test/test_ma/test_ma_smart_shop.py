@@ -1,7 +1,7 @@
 import pytest
 import allure
 import random
-from .conftest import ma_shop
+from ..conftest import ma_shop
 
 
 @allure.suite('test_ma-eshop')

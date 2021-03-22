@@ -1,7 +1,7 @@
 import pytest
 import allure
 import random
-from .conftest import bonus
+from ..conftest import bonus
 
 
 

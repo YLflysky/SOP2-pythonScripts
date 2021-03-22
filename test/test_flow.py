@@ -4,7 +4,7 @@ import random
 import sys, os
 import json
 
-from .conftest import pay,bm_pay,flow
+from .conftest import pay,bm_pay,flow,ma_order,ma_pay
 from box.lk_logger import lk
 import time
 
@@ -233,7 +233,7 @@ def test_cp_common_notify_ftb22(channel):
     :return:
     '''
     # 获取流量订单
-    aid = 'sergio123'
+    aid = '4614183'
     flow_order = flow.bm_create_flow_order('253', aid, 'LFVSOP2TEST000353', 1)
     no = flow_order['data']['orderNo']
     # 根据流量订单支付
@@ -245,10 +245,11 @@ def test_cp_common_notify_ftb22(channel):
     pay_no = pay_no[0]['pay_no']
     # CP回调支付结果，支付成功
     res = flow.cp_common_notify(id=no, category=1, status='1000_00', origin_id=flow.f.md5())
-    assert res['status'] == '000000'
+    assert res['status'] == '0000_0'
     assert res['messages'][0] == '成功'
     sql_res = flow.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no),'fawvw_pay')
     assert sql_res[0]['pay_status'] == 'SUCCESS'
+    assert sql_res[0]['pay_channel'] == 'ALI_PAY'
     assert sql_res[0]['ex_pay_no'] == 'qq995939534'
 
 
@@ -262,7 +263,7 @@ def test_cp_common_notify_2000(channel):
     :return:
     '''
     # 获取流量订单
-    aid = 'sergio123'
+    aid = '4614183'
     flow_order = flow.bm_create_flow_order('253', aid, 'LFVSOP2TEST000353', 1)
     no = flow_order['data']['orderNo']
     # 根据流量订单支付
@@ -289,6 +290,20 @@ def test_cp_common_notify_sop1():
     assert res['status'] == '0000_1'
     assert res['messages'][0] == '成功'
 
+
+@pytest.mark.flow
+@allure.suite('flow')
+@allure.title('cp-adapter支付结果回调到SOP2MA')
+def test_cp_common_notify_sop2ma():
+    # CP回调支付结果，支付成功
+    vin = 'LMGLS1G53H1003120'
+    order_no = ma_order.create_goods_order(aid='4614183',goods_id='ca85c936d2564debb89e52bf11692e2f',category='WIFI_FLOW',quantity=1,vin=vin)['data']
+    ma_pay.get_qr_code(aid='4614183',vin=vin,order_no=order_no,pay_type='11100',category='112')
+    res = flow.cp_common_notify(id=order_no, category=1, status='1000_00', origin_id=flow.f.md5())
+    assert res['status'] == '0000_0'
+    assert res['messages'][0] == '成功'
+    sql = flow.do_mysql_select('select * from ORDER_MASTER where orderNo="{}"'.format(order_no),'uat_mosc_order','MA')
+    assert sql[0]['orderStatus'] == 'FINISHED'
 
 @pytest.mark.flow
 @allure.suite('flow')

@@ -275,7 +275,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = Order()
-    # order_no = o.add_order()
+    order_no = o.add_order()
     # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
     # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
     # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
@@ -287,8 +287,8 @@ if __name__ == '__main__':
     # o.sync_refund('9642113','233564422',origin='EP',status='FAILED')
     # o.apply_invoice(aid='4614233', order_no=['ftb20210316100727897212992'], duty_no='91310115560364240G',
     #                 head='钛马信息技术有限公司', phone='18888888888')
-    o.sync_invoice(invoiceNo='6F1IQCDLN9RDXN8N0BU1615863389951',status='SUCCESS',party='PERSONAL',
-                   order=['ftb20210316100727897212992'],domainId='FLOW',cpId='CMCC')
+    # o.sync_invoice(invoiceNo='6F1IQCDLN9RDXN8N0BU1615863389951',status='SUCCESS',party='PERSONAL',
+    #                order=['ftb20210316100727897212992'],domainId='FLOW',cpId='CMCC')
     # sql = o.do_mysql_select('select * from order_invoice where serial="{}"'.format(serial),'fawvw_order')
     # o.invoice_detail(sql[0]['aid'],sql[0]['invoice_no'])
     # o.teardown_sync(orderNo, serial)

@@ -1,8 +1,8 @@
 from ma_api.ma_order import MABase
 
 class SOP1Order(MABase):
-    def __init__(self, aid, user, password, vin):
-        super().__init__(aid, user, password, vin)
+    def __init__(self, aid, user, password, vin,token=True):
+        super().__init__(aid, user, password, vin,token)
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
         self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
         self.mobile_url = self.read_conf('ma_env.conf', self.env, 'one_app_host')
@@ -18,7 +18,7 @@ class SOP1Order(MABase):
         :param kwargs:
         :return:
         '''
-        url = self.payment_url + '/api/v1/orderCreate'
+        url = self.payment_url + '/api/v1/createOrder'
         data = {'userId':aid,'goodsId': goods_id, 'vin':vin,'orderCategory': category, 'count': quantity, 'usedPoint': point, **kwargs}
 
         c, b = self.do_post(url, data)
@@ -33,12 +33,29 @@ class SOP1Order(MABase):
         c, b = self.do_post(url, data, gateway='APP')
         self.assert_bm_msg(c,b)
 
+    def get_qr_code(self,vin,order_no,pay_type,aid):
+        '''
+        获取支付二维码
+        :param vin:
+        :param order_no:
+        :param pay_type:
+        :param aid:
+        :return:
+        '''
+
+        url = self.payment_url + '/api/v1/getQRCodeImage'
+        data = {'vin':vin,'orderNo':order_no,'payType':pay_type,'aid':aid}
+        c,b = self.do_post(url,data)
+        self.assert_bm_msg(c,b)
+
 
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
-    aid = '4614233'
-    vin = 'LFV2A2BUXL4651255'
-    sop1 = SOP1Order(aid,user='15144142651',password='Qq111111',vin=vin)
+    aid = '4614183'
+    vin = 'LFVTEST1231231231'
+    sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin)
     # sop1.sop1_calendar_sync()
-    sop1.sop1_create_order(aid=aid,vin=vin,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='MEDIA_FLOW',quantity=1,point=False)
+    # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationDays=1,point=False)
+    # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='ca85c936d2564debb89e52bf11692e2f',category='WIFI_FLOW',quantity=1)
+    sop1.get_qr_code(vin,order_no='M202103221306516598046007',pay_type='11100',aid=aid)

@@ -1,6 +1,6 @@
 import pytest
 from .conftest import pay
-from .conftest import order, flow, bm_order
+from .conftest import order, flow, bm_order, ma_order, sop1_order
 import allure
 from box.lk_logger import lk
 
@@ -93,13 +93,12 @@ def test_ali_pay_cdp_callback_01():
     测试获取支付宝cdp回调结果，输入全部必填项
     '''
     # 创建订单
-    aid = '469317'
-    order_no = order.generate_order_no()['data']
-    order.sync_order(aid=aid, orderNo=order_no, ex='ex%s' % order_no, origin='SOP1', category='110',
-                     serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
-                     goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
+    xmly_aid = '9354046'
+    vin = 'LFVSOP2TESTLY0073'
+    order_no = bm_order.goods_order_create(tenant_id='VW', aid=xmly_aid, vin=vin, goods='234', quantity=1)['data'][
+        'orderNo']
     # 获取支付二维码，生成支付记录
-    pay_msg = pay.get_qr_code(aid, order_no, 'ALI_PAY')
+    pay_msg = pay.get_qr_code(xmly_aid, order_no, 'ALI_PAY')
     pay_no = pay.do_mysql_select(
         'select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),
         'fawvw_pay')
@@ -108,11 +107,11 @@ def test_ali_pay_cdp_callback_01():
     pay_time = pay.time_delta()
     trade_no = pay.f.md5()
     # 回调支付结果
-    res = pay.ali_pay_callback('trade_success', '2018091361389377', pay_no, amount, pay_time, trade_no)
+    res = pay.ali_pay_callback(pay_no, amount, pay_time, trade_no)
     try:
         assert res == 'success'
         # 检查支付结果同步到支付记录中
-        res = pay.get_pay_result(order_no, aid)
+        res = pay.get_pay_result(order_no, xmly_aid)
         assert res['data']['payResultStatus'] == '101'
         # 检查支付结果同步到订单中
         pay_res = pay.do_mysql_select('select * from order_pay where pay_no="{}"'.format(pay_no), 'fawvw_order')
@@ -134,17 +133,14 @@ def test_ali_pay_cdp_callback_02():
     '''
     测试获取支付宝cdp回调结果，回调参数加上选填项
     '''
-    # 创建订单
-    aid = '469317'
-    order_no = order.generate_order_no()['data']
-    order.sync_order(aid=aid, orderNo=order_no, ex='ex%s' % order_no, origin='SOP1', category='110',
-                     serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
-                     goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
+    # 创建喜马拉雅VIP订单
+    xmly_aid = '9354046'
+    vin = 'LFVSOP2TESTLY0073'
+    order_no = bm_order.goods_order_create(tenant_id='VW', aid=xmly_aid, vin=vin, goods='234', quantity=1)['data'][
+        'orderNo']
 
     # 获取支付二维码，生成支付记录
-    status = 'trade_success'
-    app_id = '2018091361389377'
-    pay_msg = pay.get_qr_code(aid, order_no, 'ALI_PAY')
+    pay_msg = pay.get_qr_code(xmly_aid, order_no, 'ALI_PAY')
     pay_no = pay.do_mysql_select('select pay_no from pay_order where order_no="{}" and is_effective=1'.format(order_no),
                                  'fawvw_pay')
     pay_no = pay_no[0]['pay_no']
@@ -156,7 +152,7 @@ def test_ali_pay_cdp_callback_02():
     seller_id = pay.f.pyint(10000, 10000000)
     buyer_id = pay.f.pyint(10000, 10000000)
     total = 100.00
-    res = pay.ali_pay_callback(status, app_id, pay_no, receipt_amount, gmt_payment, trade_no,
+    res = pay.ali_pay_callback(pay_no, receipt_amount, gmt_payment, trade_no,
                                buyer_logon_id=buyer_logon_id, total_amount=total, seller_id=seller_id,
                                seller_email=seller_email, buyer_id=buyer_id)
     try:
@@ -169,7 +165,7 @@ def test_ali_pay_cdp_callback_02():
         assert pay_res[0]['pay_amount'] == receipt_amount
         assert pay_res[0]['pay_time'] == gmt_payment
         # 校验支付结果同步到支付的支付记录中
-        res = pay.get_pay_result(order_no, aid)
+        res = pay.get_pay_result(order_no, xmly_aid)
         assert res['data']['buyerAccount'] == buyer_logon_id
         assert res['data']['payResultStatus'] == '101'
     finally:
@@ -179,39 +175,86 @@ def test_ali_pay_cdp_callback_02():
 
 
 @allure.suite('payment')
-@allure.title('支付宝cdp回调')
+@allure.title('支付宝cdp回调SOP1')
 @pytest.mark.payment
 def test_ali_pay_cdp_callback_sop1():
     '''
     输入的out_trade_no不在FTB2.2数据库中查询到，调用SOP1的service
     '''
-    status = 'trade_success'
-    app_id = '2018091361389377'
-    out_trade_no = pay.f.pyint(10000, 1000000)
+    aid = '4614183'
+    vin = 'LFVTEST1231231231'
+    order_no = sop1_order.sop1_create_order(aid=aid, goods_id='17', category='MUSIC_VIP', quantity=1, point=False,
+                                            durationDays=1, vin=vin)['data']['orderNumber']
+    sop1_order.get_qr_code(vin, order_no=order_no, pay_type='11100', aid=aid)
+    out_trade_no = ma_order.do_mysql_select(
+        'select tempOrderId from ORDER_ID_RELATION where orderId="{}"'.format(order_no), 'uat_mosc_payment', 'MA')
+    assert len(out_trade_no) == 1
+    out_trade_no = out_trade_no[0]['tempOrderId']
     receipt_amount = 99.99
     gmt_payment = pay.time_delta(days=-1)
     trade_no = '10000'
-    res = pay.ali_pay_callback(status, app_id, out_trade_no, receipt_amount, gmt_payment, trade_no, )
+    res = pay.ali_pay_callback(out_trade_no, receipt_amount, gmt_payment, trade_no, )
     assert res == 'success'
+    try:
+        pay_res = pay.do_mysql_select('select * from ORDER_ITEM where orderId="{}"'.format(order_no), 'uat_mosc_payment','MA')
+        assert pay_res[0]['orderStatus'] == 'FINISHED'
+        assert pay_res[0]['payTime'] == gmt_payment
+        # 校验支付结果同步到支付的支付记录中
+        res = ma_order.do_mysql_select('select * from PAY_ORDER where orderNo="{}"'.format(order_no),'uat_mosc_payment','MA')
+        assert res[0]['payState'] == 'ALREADY_PAID'
+        assert res[0]['payChannel'] == 'ALIPAY'
+    finally:
+        pass
 
 
-callback_data_fail = [('trade_fail', '2018091361389377', pay.time_delta()),
-                      ('trade_success', '20180913613893770', pay.time_delta()),
-                      ('trade_success', '2018091361389377', None)]
+@allure.suite('payment')
+@allure.title('支付宝cdp回调SOP2MA')
+@pytest.mark.payment
+def test_ali_pay_cdp_callback_sop2ma():
+    '''
+    输入的out_trade_no为sop2ma订单的
+    '''
+    order_no = ma_order.create_goods_order(aid='4614183', goods_id='17', category='MUSIC_VIP', quantity=1, point=False,
+                                           durationTimes=1, vin='LFVTEST1231231231')['data']
+    ma_order.get_ma_qr_code(order_no, pay_type='11100')
+    out_trade_no = ma_order.do_mysql_select(
+        'select tempOrderId from ORDER_ID_RELATION where orderId="{}"'.format(order_no), 'uat_mosc_payment', 'MA')
+    assert len(out_trade_no) == 1
+    out_trade_no = out_trade_no[0]['tempOrderId']
+    receipt_amount = 99.99
+    gmt_payment = pay.time_delta(days=-1)
+    trade_no = '10000'
+    res = pay.ali_pay_callback(out_trade_no, receipt_amount, gmt_payment, trade_no, )
+    assert res == 'success'
+    try:
+        pay_res = pay.do_mysql_select('select * from ORDER_MASTER where orderNo="{}"'.format(order_no), 'uat_mosc_order','MA')
+        assert pay_res[0]['orderStatus'] == 'FINISHED'
+        assert pay_res[0]['payTime'] == gmt_payment
+        assert pay_res[0]['payWay'] == 'QR_CODE'
+        assert pay_res[0]['actualPayAmount'] == receipt_amount
+        # 校验支付结果同步到支付的支付记录中
+        res = ma_order.do_mysql_select('select * from PAY_ORDER where orderNo="{}"'.format(order_no),'uat_mosc_pay','MA')
+        assert res[0]['payStatus'] == 'SUCCESS'
+        assert res[0]['payChannel'] == 'ALIPAY'
+    finally:
+        pass
+
+
+callback_data_fail = [(None, '1.00', pay.time_delta()),
+                      ('ftb123', None, pay.time_delta()),
+                      ('ftb123', '1.00', None)]
 
 
 @allure.suite('payment')
 @allure.title('支付宝cdp回调异常情况')
 @pytest.mark.payment
-@pytest.mark.parametrize('d', callback_data_fail, ids=['trade_status错误', 'app_id错误', '没传支付时间'])
+@pytest.mark.parametrize('d', callback_data_fail, ids=['没传out_trade_no', '没传回调金额', '没传支付时间'])
 def test_ali_pay_cdp_callback_wrong(d):
     '''
     测试获取支付宝cdp回调结果，异常情况测试
     '''
 
-    res = pay.ali_pay_callback(trade_status=d[0], app_id=d[1], out_trade_no='ftb123', receipt_amount='1.00',
-                               gmt_payment=d[2],
-                               trade_no='123')
+    res = pay.ali_pay_callback(out_trade_no=d[0], receipt_amount=d[1],gmt_payment=d[2],trade_no='123')
     assert res == 'failure'
 
 
@@ -223,9 +266,9 @@ def test_ali_pay_cdp_callback_wrong(d):
     , ids=['支付宝签约', '支付宝解约', '微信签约', '微信解约'])
 def test_flow_sign_notify(d):
     '''
-    测试回调免密支付结果接口--支付宝签约
+    测试回调免密支付结果接口--CMCC流量业务免密
     '''
-    aid = pay.f.pyint()
+    aid = '9354046'
     pay.contract_sign_notify(aid, service='FLOW', operator='270001', channel=d[0], sign_status=d[1], pause_status=d[2])
     try:
         sql = pay.do_mysql_select('select * from contract_sign where aid="{}" and pay_channel="{}"'.format(aid, d[0]),

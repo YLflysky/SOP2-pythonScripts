@@ -1,6 +1,6 @@
 import pytest
 import allure
-from .conftest import spare
+from ..conftest import spare
 
 
 @pytest.mark.ma_eshop

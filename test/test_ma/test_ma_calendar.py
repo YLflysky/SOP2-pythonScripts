@@ -1,5 +1,5 @@
 import pytest
-from .conftest import ma_calendar
+from ..conftest import ma_calendar
 import allure
 import random
 

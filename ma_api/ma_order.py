@@ -16,7 +16,10 @@ class MABase(Base):
             lk.prt('开始获取token...')
             self.add_header(self.read_conf('ma_env.conf',self.env,'token_host'),user,password,vin)
 
-
+    def assert_msg(self,code,body):
+        assert code == 200
+        print(body)
+        assert body['status'] == 'SUCCEED'
 
 class MAOrder(MABase):
     def __init__(self, aid,user,password,vin,token=True):
@@ -96,16 +99,6 @@ class MAOrder(MABase):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
-    def get_qr_code(self, order_no, channel):
-        url = self.payment_url + '/api/v1/getQRCodeImage'
-        data = {
-            "vin": "LFV2A11KXA3030241",
-            "orderNo": order_no,
-            "payType": channel
-        }
-        c, b = self.do_post(url, data)
-        self.assert_msg(c, b)
-
     def get_goods_detail(self, goods_code):
         url = self.payment_url + '/api/v2/shelvesProducts/{}/detail'.format(goods_code)
         c, b = self.do_get(url, None)
@@ -133,8 +126,6 @@ class MAOrder(MABase):
         self.assert_bm_msg(c,b)
         return b
 
-
-
     def get_ma_qr_code(self, order_no, pay_type):
         '''
         MA订单获取支付二维码
@@ -149,6 +140,8 @@ class MAOrder(MABase):
         c, b = self.do_get(url, data)
         print(b)
         assert c == 200
+
+
 
     def ma_contract_sign(self,channel,service,operator):
         '''
@@ -226,7 +219,9 @@ class MAOrder(MABase):
 
 if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
-    ma_order = MAOrder('9349641',user='13761048895',password='000000',vin='LMGLS1G53H1003120')
+    aid = '4614233'
+    vin = 'LFV2A2BUXL4651255'
+    ma_order = MAOrder(aid=aid,user='15144142651',password='Qq111111',vin=vin)
     # ma_order.create_order()
     # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
     # music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
@@ -245,6 +240,6 @@ if __name__ == '__main__':
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
     # ma_order.alipay_callback()
     # order_no = music_order.create_goods_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=music_order.vin)['data']
-    # order_no = ma_order.create_goods_order(aid=ma_order.aid,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='WIFI_FLOW',quantity=1,vin=ma_order.vin)['data']
-    # ma_order.get_ma_qr_code(order_no='ma2021030911040663816384',pay_type='12100')
+    order_no = ma_order.create_goods_order(aid=aid,goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin=vin)['data']
+    # ma_order.get_ma_qr_code(order_no=order_no,pay_type='11103')
 

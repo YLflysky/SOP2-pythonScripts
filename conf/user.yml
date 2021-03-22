@@ -8,6 +8,28 @@ sergio:
   vin:
     LFVSOP2TESTLY0073
 
+user_app:
+  aid:
+    9353497
+  user:
+    13353116624
+  password:
+    000000
+  vin1:
+    vin: LFVSOP2TESTLY0003
+    tenant: SOP2BM
+    iccid: 3487398593510
+  vin2:
+    vin: LFVSOP2TESTLY0002
+    tenant: SOP2MA
+    iccid: 3487398593507
+
+  vin3:
+    vin: LFVSOP2TESTLY0109
+    tenant: SOP1
+    iccid: 348739859351000109
+
+
 user_music:
   aid:
     4614183
@@ -17,6 +39,15 @@ user_music:
     !!str 000000
   vin:
     LFVTEST1231231231
+
+user_music_sit:
+  aid:
+    4614932
+  if_point:
+
+
+
+
 
 user_radio:
   user1:

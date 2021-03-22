@@ -20,10 +20,10 @@ import sys
 import re
 import random
 from box.my_encoder import MyEncoder
-# from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 # import yaml
 
-# requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class Base:
 
@@ -40,7 +40,6 @@ class Base:
         except Exception as e:
             lk.prt('init error:{}'.format(e))
             return
-
 
     def add_header(self,url,user='18224077254',password='000000',vin='LFV3A23C1K3161804'):
 

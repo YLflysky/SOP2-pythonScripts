@@ -1,6 +1,6 @@
 from box.base import Base
 import hashlib
-# import xmltodict
+import xmltodict
 import json
 from box import xml_utils
 
@@ -40,19 +40,19 @@ class Payment(Base):
         self.assert_msg(c, b)
         return b
 
-    def ali_pay_callback(self, trade_status, app_id, out_trade_no, receipt_amount, gmt_payment, trade_no, **kwargs):
+    def ali_pay_callback(self, out_trade_no, receipt_amount, gmt_payment, trade_no, **kwargs):
         '''
         支付宝支付结果回调，模仿CDP调用该接口
         '''
 
         url = self.second_url + '/pay/notify/v1/aliPayQrCallBack'
-        data = {'trade_status': trade_status, 'app_id': app_id, 'out_trade_no': out_trade_no,
+        data = {'trade_status': 'trade_success', 'app_id': '2018091361389377', 'out_trade_no': out_trade_no,
                 'receipt_amount': receipt_amount, 'gmt_payment': gmt_payment, 'trade_no': trade_no, **kwargs}
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
         return body
 
-    def weixin_cdp_callback(self,out_trade_no,nonce):
+    def weixin_cdp_callback(self,out_trade_no,nonce,pay_amount):
 
         url = self.second_url + '/pay/notify/v1/weixinQrCallBack'
         time_stmp = self.time_delta(formatted='%Y%m%d%H%M%S')
@@ -69,12 +69,12 @@ class Payment(Base):
             <result_code>SUCCESS</result_code>
             <return_code>SUCCESS</return_code>
             <time_end>{}</time_end>
-            <total_fee>1</total_fee>
+            <total_fee>{}</total_fee>
             <cash_fee>0</cash_fee>
             <trade_type>JSAPI</trade_type>
             <transaction_id>1004400740201409030005092168</transaction_id>
         </xml>
-        """.format(nonce,out_trade_no,time_stmp)
+        """.format(nonce,out_trade_no,time_stmp,pay_amount)
         self.header['Content-type'] = 'application/xml; charset=utf-8'
         data_sign = self.xml_to_json(data)['xml']
         sign = self.weixin_sign('abcd1234abcd1234abcd1234abcd1234',data_sign)
@@ -252,17 +252,17 @@ class Payment(Base):
         print("sign_MD5=", sign_MD5)
         return sign_MD5
 
-    # def xml_to_json(self,xml_str):
-    #     '''
-    #     xml字符串转为字典
-    #     :param xml_str:
-    #     :return:
-    #     '''
-    #
-    #     xml_parse = xmltodict.parse(xml_str)
-    #     json_str = json.dumps(xml_parse,indent=1)
-    #     print(json_str)
-    #     return json.loads(json_str)
+    def xml_to_json(self,xml_str):
+        '''
+        xml字符串转为字典
+        :param xml_str:
+        :return:
+        '''
+
+        xml_parse = xmltodict.parse(xml_str)
+        json_str = json.dumps(xml_parse,indent=1)
+        print(json_str)
+        return json.loads(json_str)
 
 
 if __name__ == '__main__':
@@ -274,7 +274,7 @@ if __name__ == '__main__':
     order = Order()
     aid = '9351524'
     # pay.free_pay(aid,order_no='ftb20210128154824964307200',code='12101',score=False)
-    # pay.weixin_cdp_callback(out_trade_no='ftb20210115131542943598016',nonce=pay.f.md5())
+    # pay.weixin_cdp_callback(out_trade_no='ftb20210319114333558978944',nonce=pay.f.md5(),pay_amount=16350)
     # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
     # pay.agreement_qr_code(aid,'ALI_PAY','FLOW','CMCC','SOP1')
     # pay.pay_channel(aid,order_no='ftb20201204113739602753664')
@@ -283,11 +283,11 @@ if __name__ == '__main__':
     # order.sync_order(aid=aid, orderNo=no, ex='ex%s'%no, origin='SOP1', category='110',
     #              serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
     #              goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
-    pay.get_qr_code(aid='9349485',order_no='ftb20210315163037464913408',channel='ALI_PAY')
+    # pay.get_qr_code(aid='9349485',order_no='ftb20210315163037464913408',channel='ALI_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
-    # pay.ali_pay_callback('trade_success', app_id='2018091361389377', out_trade_no='ftb20210305132041384937984',
-    #                      receipt_amount=0.01, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
+    pay.ali_pay_callback(out_trade_no='f46405a451d34463b05bcc2055827a4d',buyer_logon_id='995939534@qq.com',
+                         receipt_amount=0.01, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
 
     # pay.contract_sign_notify(aid='221',)
     # pay.sync_pay_result(pay_no='bc8e0c91e25d4f1796b6c4336ad3fbb0',ex_pay_no='yinli18623459409',pay_time=pay.time_delta(),

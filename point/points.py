@@ -92,12 +92,12 @@ class Points(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     os.environ['gate'] = 'false'
     p = Points()
     # p.get_user_level(aid='123',system_key='267C13173FE04A57AX',tenant='VW')
     # p.bm_get_user_level(aid='1234')
-    # p.get_user_points(aid='9353750')
-    p.bm_get_user_points(aid='8130975')
-    p.bm_get_points_stream(aid='123')
+    p.get_user_points(aid='4614183')
+    # p.bm_get_user_points(aid='9349832')
+    # p.bm_get_points_stream(aid='4614183')
     # p.get_points_stream(index=1,size=10,aid='1234')

@@ -261,24 +261,24 @@ if __name__ == '__main__':
     bm_pay = BMPayment()
     # user_data = flow.read_yml('../conf','user.yml')
     # user_data = user_data['uat_zqs']
-    aid = '4614233'
-    goods_id = 255
+    aid = '4607900'
+    goods_id = 253
     vin = 'LFV2A2BUXL4651255'
-    iccid = '18559372278'
+    iccid = '3487398593507'
     # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
-    # flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
+    # flow.get_sign_result(aid,sp_id='CMCC',channel='ALI_PAY')
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'WECHAT_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id='ftb20210309142502218860160', category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
     # flow.flow_detail(263)
-    flow.goods_list(['MUSIC_VIP'])
+    # flow.goods_list(['MUSIC_VIP'])
     # flow.bm_get_goods_detail('267')
     # flow.bm_goods_list(aid,categories=['RADIO_VIP'])
     # flow.bm_flow_list(aid,vin)
     # flow.remain_flow(flow_type='wifi',vin='LFV2A2BU1L4445211')
 
     # order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
-    # bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='12100',category='112',score='N')
+    # bm_pay.get_qr_code(vin,aid,order_no='ftb20210319112939686241664',pay_type='12100',category='112')
     # bm_pay.free_pay(aid,vin,order_no=order_no,channel='12101',useScore=False)
     # flow.bm_goods_list('995939534','WIFI_FLOW')
     # flow.sign_result_callback(aid,channel=1,notify_type=1,status=1)
@@ -289,6 +289,6 @@ if __name__ == '__main__':
     # flow.cp_common_notify(id='ftb20210119143548119192512', category=2, status='2000_00', origin_id=flow.f.md5(),channel='WECHAT_PAY')
     # flow.cp_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=1.0,
     #                  asset_type='iccid',asset_id=iccid,package_id='P1001149798')
-    # flow.cp_over_due_notify(asset_id=iccid,asset_type='iccid',package_code='P1001183210',
-    #                         effective_time=flow.time_delta(formatted='%Y%m%d%H%M%S',days=-10),
-    #                         expired_time=flow.time_delta(formatted='%Y%m%d%H%M%S',minutes=-5))
+    flow.cp_over_due_notify(asset_id=iccid,asset_type='iccid',package_code='P1001183210',
+                            effective_time=flow.time_delta(formatted='%Y%m%d%H%M%S',days=-10),
+                            expired_time=flow.time_delta(formatted='%Y%m%d%H%M%S',minutes=-5))

@@ -1,7 +1,7 @@
 from ma_api.ma_order import MAOrder
 import pytest
 import allure
-from .conftest import ma_order
+from ..conftest import ma_order
 
 
 @pytest.mark.ma_order
