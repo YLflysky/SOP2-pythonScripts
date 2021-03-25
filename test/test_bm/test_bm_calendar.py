@@ -1,5 +1,5 @@
 import pytest
-from calendar_file.canlendar import Calendar
+from calendar_file.canlendar_api import Calendar
 import allure
 import random
 

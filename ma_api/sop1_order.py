@@ -48,6 +48,23 @@ class SOP1Order(MABase):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
+    def ali_pay_callback(self,out_trade_no, receipt_amount, gmt_payment, trade_no, **kwargs):
+        '''
+
+        :param out_trade_no:
+        :param receipt_amount:
+        :param gmt_payment:
+        :param trade_no:
+        :param kwargs:
+        :return:
+        '''
+        url = self.payment_url + '/mos/internal/alipayQrCallBack'
+        data = {'trade_status': 'trade_success', 'app_id': '2018091361389377', 'out_trade_no': out_trade_no,
+                'receipt_amount': receipt_amount, 'gmt_payment': gmt_payment, 'trade_no': trade_no, **kwargs}
+        code, body = self.do_post(url, data)
+        self.assert_bm_msg(code, body)
+        return body
+
 
 if __name__ == '__main__':
     import os
@@ -56,6 +73,8 @@ if __name__ == '__main__':
     vin = 'LFVTEST1231231231'
     sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin)
     # sop1.sop1_calendar_sync()
-    # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationDays=1,point=False)
+    # no = sop1.sop1_create_order(aid=aid,vin=vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationDays=1,point=False)['data']['orderNumber']
     # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='ca85c936d2564debb89e52bf11692e2f',category='WIFI_FLOW',quantity=1)
-    sop1.get_qr_code(vin,order_no='M202103221306516598046007',pay_type='11100',aid=aid)
+    # sop1.get_qr_code(vin,order_no=no,pay_type='11100',aid=aid)
+    sop1.ali_pay_callback(out_trade_no='bf587364bb0740e3804f890da8f98033', buyer_logon_id='995939534@qq.com',
+                         receipt_amount=0.01, gmt_payment=sop1.time_delta(), trade_no=sop1.f.pyint())

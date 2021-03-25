@@ -1,7 +1,7 @@
 from ma_api.ma_order import MAOrder
 import pytest
 import allure
-from ..conftest import ma_order
+from ..conftest import ma_order,ma_order_adapter
 
 
 @pytest.mark.ma_order
@@ -27,12 +27,13 @@ def test_create_music_vip(data):
 # @pytest.mark.skip(reason='无法连接MA数据库')
 def test_update_status_finish():
     order_no = ma_order.create_goods_order(goods_id=17,category='MUSIC_VIP',aid=ma_order.aid,quantity=1,point=False,durationTimes=1,vin=ma_order.vin)['data']
-    ma_order.update_status_finish(order_no)
+    ma_order_adapter.update_status_finish(order_no)
     sql_res = ma_order.do_mysql_select('select * from ORDER_MASTER WHERE orderNo="{}"'.format(order_no),'uat_mosc_order','MA')
     try:
         assert sql_res[0]['orderStatus'] == 'FINISHED'
     finally:
         ma_order.do_mysql_exec('delete from ORDER_MASTER WHERE orderNo="{}"'.format(order_no),'uat_mosc_order','MA')
+        ma_order.do_mysql_exec('delete from ORDER_DETAIL WHERE orderNo="{}"'.format(order_no),'uat_mosc_order','MA')
 
 
 @pytest.mark.ma_order

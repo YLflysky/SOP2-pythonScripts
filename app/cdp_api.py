@@ -21,6 +21,9 @@ class CDP(Base):
         c,b = self.do_get(url,data,gateway='CDP')
         self.assert_bm_msg(c,b)
 
+    def ger_qr_code(self,goods_id,):
+        pass
+
 if __name__ == '__main__':
 
     cdp = CDP()

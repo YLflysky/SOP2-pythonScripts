@@ -114,6 +114,18 @@ class BMOrder(Base):
         c,b = self.do_put(url,None)
         self.assert_bm_msg(c,b)
 
+    def bm_delete_order(self,aid,order_no):
+        '''
+        BM车机端删除订单
+        :param aid: 大众用户Id
+        :param order_no:订单号
+        :return:
+        '''
+        url = self.hu_url + '/order/api/v1/orders/{}'.format(order_no)
+        self.header['aid'] = aid
+        c,b = self.do_delete(url,None)
+        self.assert_bm_msg(c,b)
+
     def bm_update_pay(self,bm_order,aid,pay_no,channel,pay_amount,state,pay_time,order_amount,**kwargs):
         '''
         bm后台更新订单支付结果
@@ -137,11 +149,13 @@ class BMOrder(Base):
 
 if __name__ == '__main__':
     import os
-
-    os.environ['ENV'] = 'SIT'
+    from order.bm_payment import BMPayment
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
+    pay = BMPayment()
     xmly_aid = '9354046'
+    kuwo_aid = '9353821'
     vin = 'LFVTEST1231231231'
     # o.bm_update_pay(bm_order='20200921133430118139264',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
     #                 pay_time=o.time_delta(),order_amount=0.01,orderStatus='PAY_SUCCESS')
@@ -158,5 +172,7 @@ if __name__ == '__main__':
     # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
     #                   businessState='success',businessStateDesc='已完成')
     # o.reload_config()
-    # o.bm_order_detail(aid='4614183',order_no='ftb20210319114100686622592',vin=None)
-    o.goods_order_create(tenant_id='VW',aid=xmly_aid,vin=vin,goods='234',quantity=1)
+    # o.bm_order_detail(aid='9353986',order_no='ftb20210318214631905237568',vin=None)
+    o.bm_delete_order(aid='9353986',order_no='ftb20210318214631905237568')
+    # order_no = o.goods_order_create(tenant_id='VW',aid=kuwo_aid,vin=vin,goods='226',quantity=1)['data']['orderNo']
+    # pay.get_qr_code(vin,aid=kuwo_aid,order_no='ftb2021032415361764461440',pay_type='11100',category='110')

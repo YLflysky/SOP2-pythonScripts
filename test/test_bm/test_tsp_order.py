@@ -108,7 +108,7 @@ def test_tsp_list_05(no):
     res = tsp.order_list(orderNo=no,size=10,no=1)
     data = random.choice(res['data'])
     assert data['orderCategory']
-    assert data['origin']
+    assert 'origin' in data.keys()
     assert 'title' in data.keys()
     assert no in data['orderNo']
     assert data['exOrderNo']

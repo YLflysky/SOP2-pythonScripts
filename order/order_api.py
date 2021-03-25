@@ -121,7 +121,7 @@ class Order(Base):
         assert 200 == code
         return body
 
-    def sync_order_kafka(self, ep_order_id, business_info: dict, tenant,domain='GAS', cp='NX_ENGINE'):
+    def sync_order_kafka(self, ep_order_id, business_info: dict,order_status, tenant,domain='GAS', cp='NX_ENGINE'):
         '''
         从EP通过callback同步订单
         :param ep_order_id: ep订单编号
@@ -137,7 +137,7 @@ class Order(Base):
         kafka_data = {'action': 'UPDATE', "vin": "DEFAULT_VIN", "cpId": cp, "aid": aid, 'param': json.dumps(param),
                       "orderType": "BUSINESS", "title": title, "desc": "zdh测试",
                       "businessState": "SUCCESS_PAY", "price": 6.0,
-                      "createdTime": 1600312755440, "timeout": 10, "orderStatus": "WAITING_PAY",
+                      "createdTime": 1600312755440, "timeout": 10, "orderStatus":order_status,
                       "orderSubStatus": "DONE",
                       "delete": False, 'tenantId': tenant, 'epOrderId': ep_order_id, 'payStatus': 'SUCCESS_PAY',
                       "businessInfo": business_info, "discountAmount": 0, 'epOrderCode': ep_order_id,

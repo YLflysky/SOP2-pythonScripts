@@ -40,13 +40,12 @@ def test_callback_order():
     ep_order = '123456789'
     info = {'name': 'waka waka', 'age': 18}
 
-    order.sync_order_kafka(ep_order, info, cp="NX_ENGINE",tenant='ASTERIX')
+    order.sync_order_kafka(ep_order, info,tenant='ASTERIX',order_status='FINISH')
     time.sleep(2.0)
     try:
         sql_res = order.do_mysql_select(
-            'select d.detail,o.* '
-            'from `order` o,order_detail d where o.order_no=d.order_no and o.ex_order_no="{}"'.format(
-                ep_order), 'fawvw_order')
+            'select * from `order`  where ex_order_no="{}" and origin="EP"'.format(ep_order),'fawvw_order')
+
         print('同步订单成功')
         assert len(sql_res) == 1
         assert sql_res[0]['order_status'] == 'WAITING_PAY'
@@ -58,12 +57,14 @@ def test_callback_order():
         assert sql_res[0]['service_id'] == 'GAS'
         assert str(sql_res[0]['total_amount']) == '6.0'
         assert sql_res[0]['ex_order_no'] == ep_order
-        # print('测试detail字段')
-        # actual = json.loads(sql_res[0]['detail'])
-        # assert info['name'] == actual['name']
-        # assert info['age'] == actual['age']
-    finally:
         order_no = sql_res[0]['order_no']
+        # print('测试detail字段')
+        detail = order.do_mysql_select('select detail from order_detail where order_no="{}"'.format(order_no),'fawvw_order')
+        actual = json.loads(detail[0]['detail'])
+        assert info['name'] == actual['name']
+        assert info['age'] == actual['age']
+    finally:
+
         order.do_mysql_exec('delete from `order` where order_no="{}"'.format(order_no), 'fawvw_order')
         order.do_mysql_exec('delete from order_detail where order_no="{}"'.format(order_no), 'fawvw_order')
 
