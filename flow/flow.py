@@ -263,7 +263,7 @@ if __name__ == '__main__':
     # user_data = user_data['uat_zqs']
     aid = '4607900'
     goods_id = 253
-    vin = 'LFV2A2BUXL4651255'
+    vin = 'LFV1B2C18L3710726'
     iccid = '3487398593507'
     # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
     # flow.get_sign_result(aid,sp_id='CMCC',channel='ALI_PAY')
@@ -275,9 +275,9 @@ if __name__ == '__main__':
     # flow.bm_get_goods_detail('267')
     # flow.bm_goods_list(aid,categories=['RADIO_VIP'])
     # flow.bm_flow_list(aid,vin)
-    flow.remain_flow(flow_type='media',vin='BMTESTYAYWS26GQ4T')
+    # flow.remain_flow(flow_type='media',vin='BMTESTYAYWS26GQ4T')
 
-    # order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
+    order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
     # bm_pay.get_qr_code(vin,aid,order_no='ftb20210319112939686241664',pay_type='12100',category='112')
     # bm_pay.free_pay(aid,vin,order_no=order_no,channel='12101',useScore=False)
     # flow.bm_goods_list('995939534','WIFI_FLOW')

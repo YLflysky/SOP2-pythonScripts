@@ -118,7 +118,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
     b = Base()
-    bm_c = Calendar(tenant='MA',token=True,name='13353110049',password='000000',vin='LFVSOP2TESTLY0049',aid='9353883')
+    bm_c = Calendar(tenant='BM',token=True,name='13353110049',password='000000',vin='LFVSOP2TESTLY0049',aid='9353883')
     # print(bm_c.gate)
     # bm_c.get_last_time()
     # ma_c = Calendar(tenant='MA',name='13353116624',password='000000',vin='LFVSOP2TESTLY0002',aid='9353497')
