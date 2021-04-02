@@ -172,7 +172,7 @@ class App(Base):
 
 if __name__ == '__main__':
     import json
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     app = App(name='15144142651',password='Qq111111',aid='4614233')
     # app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='BM')
     # app.apply_invoice(order_no='ma20210225094735194245760',i_type='PERSONAL',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409')

@@ -116,7 +116,7 @@ def test_sync_invoice_03():
     status='SUCCESS'
     party = random.choice(['PERSONAL','COMPANY'])
     order_no = ['ftb20210315140416705172032']
-    order.sync_invoice(invoice_no,status,party,order_no)
+    order.sync_invoice(invoice_no,status,party,orderNos=order_no)
     sql_res = order.do_mysql_select('select * from order_invoice where invoice_no={}'.format(invoice_no),'fawvw_order')
     assert sql_res[0]['status'] == status
     assert sql_res[0]['party_type'] == party

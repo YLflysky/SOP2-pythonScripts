@@ -1,5 +1,5 @@
 from box.base import Base
-import os
+import os,requests
 
 
 
@@ -90,14 +90,19 @@ class Points(Base):
         self.assert_bm_msg(c, b)
         return b
 
+    def mock(self):
+        url = 'http://192.168.133.150:31408/radio/collect'
+        res = requests.post(url,data=None)
+        print(res.headers)
 
 if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     os.environ['gate'] = 'false'
     p = Points()
+    p.mock()
     # p.get_user_level(aid='123',system_key='267C13173FE04A57AX',tenant='VW')
     # p.bm_get_user_level(aid='1234')
     # p.get_user_points(aid='4614183')
-    # p.bm_get_user_points(aid='9349832')
-    p.bm_get_points_stream(aid='9353450',index=1)
+    p.bm_get_user_points(aid='9351623')
+    # p.bm_get_points_stream(aid='9353450',index=1)
     # p.get_points_stream(index=1,size=10,aid='1234')

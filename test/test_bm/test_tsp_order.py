@@ -19,7 +19,6 @@ def test_tsp_list_01():
     assert res['totalCount'] == sql_res[0]['total']
     data = random.choice(res['data'])
     assert data['orderCategory']
-    assert data['origin'] == 'VW'
     assert data['title']
     assert data['orderNo']
     assert data['exOrderNo']
