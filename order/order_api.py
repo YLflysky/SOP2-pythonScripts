@@ -275,8 +275,9 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = Order()
-    order_no = o.add_order()
-    # o.update_order(order_no='20201020101920646233472',aid='1603160360456')
+    # order_no = o.add_order()
+
+    o.update_order(order_no='ftb2021032517101694298304',aid='9349643',businessInfo={"name": "sergio", "age": "27", "weight": "145", "height": "174"})
     # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
     # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
     # o.order_detail(aid='9351515',order_no='20201124142350661876544')

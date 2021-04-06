@@ -20,7 +20,7 @@ class MAPay(MABase):
         services = [{'serviceId':service,'operatorId':operator}]
         data = {'aid':aid,'services':services,'payChannel':channel}
         c,b = self.do_post(url,data)
-        self.assert_msg(c,b)
+        self.assert_bm_msg(c,b)
 
     def get_pay_result(self,order_no,vin,category):
         '''
@@ -78,6 +78,45 @@ class MAPay(MABase):
         c, b = self.do_get(url, data)
         self.assert_bm_msg(c, b)
 
+    def ma_contract_sign(self,channel,service,operator):
+        '''
+        MA免密签约api
+        :param channel:签约渠道WXPAY,ALPAY
+        :param service: 业务，目前支持GAS,03
+        :param operator: CP，目前支持JDO,030003
+        :return:
+        '''
+        url = self.payment_url + '/internal/v2/app/contract/sign'
+        data = {'aid':self.aid,'operatorId':operator,'payChannel':channel,'serviceId':service,'vin':self.vin}
+        c,b = self.do_post(url,data)
+        self.assert_bm_msg(c,b)
+        return b
+
+    def close_sign(self,aid,service,operator,channel,vin):
+        '''
+        关闭免密签约
+        :param aid:
+        :return:
+        '''
+        url = self.payment_url + '/internal/v2/contract/pause'
+        data = {'aid': aid, 'operatorId': operator, 'payChannel': channel, 'serviceId': service, 'vin': vin}
+        c, b = self.do_post(url, data)
+        self.assert_bm_msg(c, b)
+        return b
+
+    def open_sign(self,aid,service,operator,channel,vin):
+        '''
+        开启免密签约
+        :param aid:
+        :return:
+        '''
+        url = self.payment_url + '/internal/v2/contract/open'
+        data = {'aid': aid, 'operatorId': operator, 'payChannel': channel, 'serviceId': service, 'vin': vin}
+        c, b = self.do_post(url, data)
+        self.assert_bm_msg(c, b)
+        return b
+
+
 
 if __name__ == '__main__':
     import os
@@ -85,8 +124,9 @@ if __name__ == '__main__':
     aid = '4614183'
     vin = 'LMGLS1G53H1003120'
     pay = MAPay(aid=aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
-    pay.get_qr_code(aid='4614183',vin=pay.vin,order_no='ma202103191529243291040384',pay_type='11100',category='112')
+    # pay.get_qr_code(aid=aid,vin=pay.vin,order_no='ma20210401140010233925696',pay_type='12100',category='112')
     # pay.get_pay_channel(vin,aid,order_no='ma20210317111120478856064',category='04')
     # pay.free_pay(vin,order_no='ma20210317111120478856064',code='11101')
-    # pay.get_sign_result(aid='4607900',service=27,operator='270001',channel='ALIPAY')
+    # pay.close_sign(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY',vin='LFVSOP2TEST000407')
+    pay.get_sign_result(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY')
     # pay.get_pay_result(order_no='ma20210317111120478856064',vin=vin,category='04')

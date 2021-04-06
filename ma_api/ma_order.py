@@ -10,7 +10,7 @@ class MABase(Base):
         self.aid = aid
         self.vin = vin
         self.gate = True
-        if os.getenv('ENV') != 'CLOUD':
+        if os.getenv('ENV') not in ('CLOUD','PERF'):
             self.env = 'UAT'
         if token:
             lk.prt('开始获取token...')
@@ -105,6 +105,12 @@ class MAOrder(MABase):
         assert c == 200
         print(b)
 
+    def get_order_detail(self, aid,order_no):
+        url = self.order_url + '/internal/v2/order/detail'
+        data = {'aid':aid,'orderNo':order_no}
+        c, b = self.do_get(url, data)
+        self.assert_msg(c,b)
+
     def get_goods_list(self):
         pass
 
@@ -143,33 +149,9 @@ class MAOrder(MABase):
 
 
 
-    def ma_contract_sign(self,channel,service,operator):
-        '''
-        MA免密签约api
-        :param channel:签约渠道WXPAY,ALPAY
-        :param service: 业务，目前支持GAS,03
-        :param operator: CP，目前支持JDO,030003
-        :return:
-        '''
-        url = self.payment_url + '/internal/v2/app/contract/sign'
-        data = {'aid':self.aid,'operatorId':operator,'payChannel':channel,'serviceId':service,'vin':self.vin}
-        c,b = self.do_post(url,data)
-        self.assert_bm_msg(c,b)
-        return b
 
-    def ma_get_sign_result(self,channel,service,operator):
-        '''
-        MA查询签约状态api
-        :param channel:签约渠道WXPAY,ALPAY
-        :param service: 业务，目前支持GAS,03
-        :param operator: CP，目前支持JDO,030003
-        :return:
-        '''
-        url = self.payment_url + '/internal/v2/app/contract/query'
-        data = {'aid': self.aid, 'operatorId': operator, 'payChannel': channel, 'serviceId': service, 'vin': self.vin}
-        c, b = self.do_post(url, data)
-        self.assert_bm_msg(c, b)
-        return b
+
+
 
     def ma_release_sign(self,channel,service,operator):
         '''
@@ -221,7 +203,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     aid = '4614233'
     vin = 'LFV2A2BUXL4651255'
-    ma_order = MAOrder(aid=aid,user='15144142651',password='Qq111111',vin=vin)
+    ma_order = MAOrder(aid=aid,user='15144142651',password='Qq111111',vin=vin,token=True)
     # ma_order.create_order()
     # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
     # music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
@@ -231,7 +213,7 @@ if __name__ == '__main__':
     # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.apply_invoice(order_no='ma20210224155318454245760',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
     # ma_order.cancel_order(order_no='202101141527422841024000')
-    # ma_order.order_detail(aid,order_no='20210112063038959126976',vin=ma_order.vin)
+    # ma_order.get_order_detail(aid,order_no='20210112063038959126976')
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
 
     # ma_order.sync_order_pay(aid='9349641',order_no='20210112104548022143360',pay_order_no='1234',channel='WECHAT_PAY',
@@ -241,5 +223,5 @@ if __name__ == '__main__':
     # ma_order.alipay_callback()
     # order_no = music_order.create_goods_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=music_order.vin)['data']
     # order_no = ma_order.create_goods_order(aid=aid,goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin=vin)['data']
-    ma_order.get_ma_qr_code(order_no='ma2021033016330762828672',pay_type='12100')
+    # music_order.get_ma_qr_code(order_no='ma2021032610293180828672',pay_type='11100')
 

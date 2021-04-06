@@ -16,12 +16,10 @@ import time
 def test_bm_flow_detail(id):
     res = flow.bm_get_goods_detail(id)
     assert res['code'] == 0
-    sql = flow.do_mysql_select('SELECT g.*,f.description,c.goodsStatus from GOODS g,'
-                               'FLOW_ATTRIBUTE f,GOODS_CONTROL c where 1=1 and g.id = c.goodsId and '
-                               'g.goodsCodes=f.goodsCodes and c.goodsStatus="ALREADY_SHELVES" and g.id={}'.format(id),
+    sql = flow.do_mysql_select('SELECT GOODS.* from GOODS,GOODS_CONTROL '
+                               'where GOODS.id=GOODS_CONTROL.goodsId and GOODS_CONTROL.goodsStatus="ALREADY_SHELVES" and GOODS.id={}'.format(id),
                                'fawvw_flow')
     assert res['data']['goodsName'] == sql[0]['goodsName']
-    assert res['data']['descripiton'] == sql[0]['description']
     assert res['data']['termsOfserviceUrl'] == sql[0]['goodsUrl']
     assert res['data']['price'] == sql[0]['goodsPrice']
 
@@ -249,7 +247,7 @@ def test_cp_common_notify_ftb22(channel):
     assert res['messages'][0] == '成功'
     sql_res = flow.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no),'fawvw_pay')
     assert sql_res[0]['pay_status'] == 'SUCCESS'
-    assert sql_res[0]['pay_channel'] == 'ALI_PAY'
+    assert sql_res[0]['pay_channel'] == channel
     assert sql_res[0]['ex_pay_no'] == 'qq995939534'
 
 
@@ -275,7 +273,6 @@ def test_cp_common_notify_2000(channel):
     pay_no = pay_no[0]['pay_no']
     # 通用接口回调，套餐开通成功回调
     res = flow.cp_common_notify(id=no, category=2, status='2000_00', origin_id=flow.f.md5(),channel=channel)
-    assert res['status'] == '000000'
     assert res['messages'][0] == '成功'
     sql_res = flow.do_mysql_select('select * from pay_order where pay_no="{}"'.format(pay_no),'fawvw_pay')
     assert sql_res[0]['pay_status'] == 'SUCCESS'
@@ -287,7 +284,6 @@ def test_cp_common_notify_2000(channel):
 def test_cp_common_notify_sop1():
     # CP回调支付结果，支付成功
     res = flow.cp_common_notify(id=flow.f.pyint(), category=1, status='1000_00', origin_id=flow.f.md5())
-    assert res['status'] == '0000_1'
     assert res['messages'][0] == '成功'
 
 
