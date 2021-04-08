@@ -92,6 +92,23 @@ class MAOrderAdapter(MABase):
         c, b = self.do_post(url, data)
         self.assert_msg(c,b)
 
+    def order_list(self,vin,begin,end,order_status,category,index=1,size=10):
+        '''
+        车机端获取订单列表接口
+        :param aid:
+        :param vin:
+        :param begin:
+        :param end:
+        :param order_status:
+        :param category:
+        :param index:
+        :param size:
+        :return:
+        '''
+        url = self.hu_url + '/order/api/v2/vins/{}/orders/list'.format(vin)
+        data = {'beginTime':begin,'endTime':end,'orderStatus':order_status,'orderCategory':category,'pageIndex':index,'pageSize':size}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
 
     def order_detail(self,aid,order_no,vin):
         '''
@@ -142,11 +159,13 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     # ma_order = MAOrderAdapter('9349641',user='13761048895',password='000000',vin='LMGLS1G53H1003120')
     music = MAOrderAdapter('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
-    # order_no = music.ma_create_order(aid=music.aid, vin=music.vin, goods_id='17',durationTimes=1,
-    #                                     category='MUSIC_VIP', quantity=1, point=False,)['data']['orderNo']
-    music.ma_create_order('9349641',goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',
-                             vin='LMGLS1G53H1003120',quantity=1)
-    # ma_order.cancel_order(order_no='ma202103031234089871040384')
+    music.order_list(vin='LFVTEST1231231231',begin=music.time_delta(days=-1000),end=music.time_delta(),order_status='1001',category='01')
+    # order_no = music.ma_create_order(aid='9349832', vin='LFVSOP2TEST000082', goods_id='1010500100000535420',durationTimes=1,
+    #                                     category='RADIO_VIP', quantity=1, point=False,)['data']['orderNo']
+    # music.ma_create_order('9349824',goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',
+    #                          vin='LFV3A23C913046742',quantity=1)
+    # music.cancel_order(order_no='ma20210316152727617856064')
+    # music.order_detail(aid='9349832',order_no='ma20210331143609902925696',vin='LFVSOP2TEST000043')
 
     # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
     # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349640',service_id='03',sp_id='030003',

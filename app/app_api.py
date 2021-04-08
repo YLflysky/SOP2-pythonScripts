@@ -174,11 +174,11 @@ if __name__ == '__main__':
     import json
     os.environ['ENV'] = 'UAT'
     app = App(name='15144142651',password='Qq111111',aid='4614233')
-    # app.contract_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='BM')
+    # app.contract_sign(vin='LFVSOP2TESTLY0003',channel='ALPAY',cp_seller='BM')
     # app.apply_invoice(order_no='ma20210225094735194245760',i_type='PERSONAL',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409')
-    # app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
+    app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='BM')
     # app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
-    # app.get_tenant_by_vin(vin='LFVTESTMOSC052726')
+    # app.get_tenant_by_vin(vin='LFVSOP2TESTLY0002')
 
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
     #                  'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
@@ -189,7 +189,7 @@ if __name__ == '__main__':
     # app.calendar_mobile_sync(current_time=None,events=events,vin='LFVTESTMOSC052726')
     # app.calendar_mobile_find_all('LFVSOP2TESTLY0049')
     # app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0002',channel='WXPAY',order_no='20210201172351827405504')
-    app.create_order(goods_id='226',category='MUSIC_VIP',vin='LFVTEST1231231231',count=1,priceType=4,userId='4614233')
+    # app.create_order(goods_id='226',category='MUSIC_VIP',vin='LFVTEST1231231231',count=1,priceType=4,userId='4614233')
     # app.get_pay_url(order_no='M202103041404367627961889',channel='QR_WEIXIN')
 
 
