@@ -35,6 +35,19 @@ class MAPay(MABase):
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
 
+    def sign_and_pay_result(self,vin,order_no,roll_number):
+        '''
+        轮询接口，签约结果和
+        :param vin:
+        :param order_no:
+        :param roll_number:
+        :return:
+        '''
+        url = self.payment_url + '/api/v2/vins/{}/orders/{}/payments/signAndPayResult'.format(vin,order_no)
+        data = {'rollNumber':roll_number}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
+
     def free_pay(self,vin,order_no,code):
         '''
         车机端免密支付接口
@@ -116,17 +129,31 @@ class MAPay(MABase):
         self.assert_bm_msg(c, b)
         return b
 
+    def get_sign_qr_code(self,vin,aid,service,shop,sign_type,order_no):
+        '''
+        车机端获取免密签约二维码
+        :param vin:
+        :param aid:
+        :param service:
+        :param shop:
+        :param sign_type:
+        :param order_no:
+        :return:
+        '''
+        url = self.payment_url + ''
+        pass
 
 
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
-    aid = '4614183'
-    vin = 'LMGLS1G53H1003120'
-    pay = MAPay(aid=aid,user='15330011918',password='000000',vin='LFVTEST1231231231')
-    # pay.get_qr_code(aid=aid,vin=pay.vin,order_no='ma20210401140010233925696',pay_type='12100',category='112')
+    aid = '9349824'
+    vin = 'LFV3A23C913046742'
+    pay = MAPay(aid=aid,user='18217539032',password='Abc123456',vin=vin)
+    pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210407153959096925696',pay_type='12100',category='112')
     # pay.get_pay_channel(vin,aid,order_no='ma20210317111120478856064',category='04')
     # pay.free_pay(vin,order_no='ma20210317111120478856064',code='11101')
     # pay.close_sign(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY',vin='LFVSOP2TEST000407')
-    pay.get_sign_result(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY')
-    # pay.get_pay_result(order_no='ma20210317111120478856064',vin=vin,category='04')
+    # pay.get_sign_result(aid='9349636',service='03',operator='030003',channel='ALIPAY')
+    # pay.sign_and_pay_result(vin='LFVSOP2TEST000043',order_no='ma20210331144843543925696',roll_number=1)
+    # pay.get_pay_result(order_no='ma20210406181858226925696',vin=vin,category='04')

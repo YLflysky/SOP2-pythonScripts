@@ -108,8 +108,8 @@ if __name__ == '__main__':
     shop = PointsShop('MA',token=True)
     # category = shop.get_category_id()
     # print(category)
-    # shop.get_list('all',index=1,size=10,sort='asc',sortName='score')
+    shop.get_list('all',index=1,size=10,sort='asc',sortName='score')
     # goods_id = shop.get_list(category='all')
     # goods_id = goods_id['data'][0]['goodsId']
-    shop.get_detail('45813f7d-5985-4b37-9979-366d84fdaad8')
+    # shop.get_detail('45813f7d-5985-4b37-9979-366d84fdaad8')
 

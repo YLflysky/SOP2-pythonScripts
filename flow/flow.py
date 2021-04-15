@@ -263,10 +263,10 @@ if __name__ == '__main__':
     # user_data = user_data['uat_zqs']
     aid = '9349824'
     goods_id = 253
-    vin = 'BMTESTYAYWS26GQ4T'
+    vin = 'BMTESTU29XGMX76NT'
     iccid = '898608000918cmcc0122'
     # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
-    flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
+    # flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'WECHAT_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id='ftb20210309142502218860160', category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
@@ -277,7 +277,7 @@ if __name__ == '__main__':
     # flow.bm_flow_list(aid,vin)
     # flow.remain_flow(flow_type='wifi',vin='BMTESTYAYWS26GQ4T')
 
-    # order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
+    order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
     # bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='12100',category='112')
     # bm_pay.free_pay(aid,vin,order_no=order_no,channel='12101',useScore=False)
     # flow.bm_goods_list('995939534',['MUSIC_VIP'])

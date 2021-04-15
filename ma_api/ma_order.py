@@ -212,7 +212,6 @@ if __name__ == '__main__':
     # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.apply_invoice(order_no='ma20210224155318454245760',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
-    # ma_order.cancel_order(order_no='202101141527422841024000')
     # ma_order.get_order_detail(aid,order_no='20210112063038959126976')
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
 
