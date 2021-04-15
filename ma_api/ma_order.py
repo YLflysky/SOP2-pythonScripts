@@ -99,17 +99,24 @@ class MAOrder(MABase):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
-    def get_goods_detail(self, goods_code):
-        url = self.payment_url + '/api/v2/shelvesProducts/{}/detail'.format(goods_code)
-        c, b = self.do_get(url, None)
-        assert c == 200
-        print(b)
+
 
     def get_order_detail(self, aid,order_no):
         url = self.order_url + '/internal/v2/order/detail'
         data = {'aid':aid,'orderNo':order_no}
         c, b = self.do_get(url, data)
-        self.assert_msg(c,b)
+        self.assert_bm_msg(c,b)
+
+    def get_order_detail_by_ex(self, ex_order):
+        '''
+        根据外部订单号查询订单详情
+        :param ex_order:
+        :return:
+        '''
+        url = self.order_url + '/internal/v2/order/getDetailByExOrderNo'
+        data = {'exOrderNo':ex_order}
+        c, b = self.do_get(url, data)
+        self.assert_bm_msg(c,b)
 
     def get_goods_list(self):
         pass
@@ -202,8 +209,8 @@ class MAOrder(MABase):
 if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     aid = '4614233'
-    vin = 'LFV2A2BUXL4651255'
-    ma_order = MAOrder(aid=aid,user='15144142651',password='Qq111111',vin=vin,token=True)
+    vin = 'LFVTESTMOSC000129'
+    ma_order = MAOrder(aid=aid,user='15144142651',password='Qq111111',vin=vin,token=False)
     # ma_order.create_order()
     # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
     # music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
@@ -212,7 +219,8 @@ if __name__ == '__main__':
     # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.apply_invoice(order_no='ma20210224155318454245760',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
-    # ma_order.get_order_detail(aid,order_no='20210112063038959126976')
+    # ma_order.get_order_detail(aid='9349824',order_no='ma20210413154730087774144')
+    # ma_order.get_order_detail_by_ex(ex_order='1017383379447808')
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
 
     # ma_order.sync_order_pay(aid='9349641',order_no='20210112104548022143360',pay_order_no='1234',channel='WECHAT_PAY',
@@ -221,6 +229,6 @@ if __name__ == '__main__':
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
     # ma_order.alipay_callback()
     # order_no = music_order.create_goods_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=music_order.vin)['data']
-    # order_no = ma_order.create_goods_order(aid=aid,goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin=vin)['data']
+    order_no = ma_order.create_goods_order(aid='9349824',goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin='LFV3A23C913046742')['data']
     # music_order.get_ma_qr_code(order_no='ma2021032610293180828672',pay_type='11100')
 

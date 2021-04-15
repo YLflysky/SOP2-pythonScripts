@@ -65,13 +65,28 @@ class SOP1Order(MABase):
         self.assert_bm_msg(code, body)
         return body
 
+    def get_goods_list(self,aid,vin,code,brand,product_type):
+        '''
+        SOP2MA车机端获取商品列表
+        :param aid:
+        :param vin:
+        :param code:
+        :param brand:
+        :param product_type:
+        :return:
+        '''
+        url = self.payment_url + '/api/v2/users/{}/vins/{}/products/list'.format(aid,vin)
+        data = {'brand':brand,'productType':product_type,'shopCode':code}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
 
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
     aid = '4614183'
     vin = 'LFVTEST1231231231'
-    # sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin)
+    sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin)
+    sop1.get_goods_list(aid,vin,code='MA',brand='VW',product_type='radio_vip')
     # sop1.sop1_calendar_sync()
     # no = sop1.sop1_create_order(aid=aid,vin=vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationDays=1,point=False)['data']['orderNumber']
     # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='ca85c936d2564debb89e52bf11692e2f',category='WIFI_FLOW',quantity=1)

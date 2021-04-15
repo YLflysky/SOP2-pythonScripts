@@ -102,12 +102,12 @@ class SmartEShop(Base):
 if __name__ == '__main__':
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
-    shop = SmartEShop(tenant='MA',token=True)
+    os.environ['ENV'] = 'SIT'
+    shop = SmartEShop(tenant='BM',token=False)
     # shop.refresh_category_and_goods_detail()
     # shop.category()
     # shop.category2()
     # shop.category3(parentId=108000)
     # shop.goods_list(keywords='abcdiqdqw')
     # shop.goods_list(category2Id=102000)
-    shop.goods_detail(sku_id=230,cp_id='123')
+    shop.goods_detail(sku_id='123',cp_id='123')

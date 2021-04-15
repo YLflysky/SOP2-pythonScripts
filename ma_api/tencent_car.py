@@ -19,8 +19,8 @@ class TencentCar(MABase):
         code,body = self.do_post(url,data=data)
         self.assert_bm_msg(code,body)
 
-    def get_QRcode(self,uid,vin):
-        data = {'uid':uid,'vin':vin}
+    def get_QRcode(self,vin):
+        data = {'vin':vin}
         url = self.url + '/api/v1/getBindQRCodeImage'
         code,body = self.do_post(url,data)
         self.assert_bm_msg(code,body)
@@ -79,12 +79,12 @@ if __name__ == '__main__':
 
     import os
     os.environ['ENV'] = 'UAT'
-    car = TencentCar(user='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183',token=True)
-    uid = '9349856'
-    vin = 'LFVSOP2TEST000073'
+    aid = '4614183'
+    car = TencentCar(user='15330011918',password='000000',vin='LFVTEST1231231231',aid=aid,token=True)
+    vin = 'LFVSOP2TEST000071'
     hashVin = '90B3C60DFB4A4D9C6D88874B62249ACC'
     # car.check_vin(vin)
-    car.get_QRcode(uid,vin)
+    car.get_QRcode(vin)
     # car.send_poi_hu(hashVin)
     # car.unbind(uid,vin=vin)
     # car.get_info(uid,vin)

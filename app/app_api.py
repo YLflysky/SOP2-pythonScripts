@@ -16,7 +16,6 @@ class App(Base):
         self.uid = aid
         # self.header['aid'] = aid
         self.mobile_url = self.read_conf('sop2_env.conf', self.env, 'one_app_host')
-        self.vehicle_url = self.read_conf('sop2_env.conf', self.env, 'vehicle_host')
         self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
         lk.prt('开始获取token...')
         self.cdp_url = self.read_conf('sop2_env.conf', self.env, 'cdp_host')
@@ -51,18 +50,9 @@ class App(Base):
         assert code == 200
         return body
 
-    def get_tenant_by_vin(self,vin):
-        '''
-        根据vin码获取到是哪个项目的车型
-        :return:
-        '''
-        url = self.vehicle_url + '/vs/ftb-vehicle/public/v1/tenant/get_by_vin'
-        data = {'vin':vin}
-        c,b = self.do_get(url,data)
-        self.assert_bm_msg(c,b)
-        return b['data']['tenantId']
 
-    def free_access_pay(self,aid,vin,channel,order_no):
+
+    def free_access_pay(self,vin,channel,order_no):
         '''
         免密支付接口
         :param vin:
@@ -70,10 +60,10 @@ class App(Base):
         :param order_no:
         :return:
         '''
-        self.header['vin'] = vin
-        self.header['aid'] = aid
+        # self.header['vin'] = vin
+        # self.header['aid'] = aid
         url = self.mobile_url + '/oneapp/pay/v1/signPay'
-        data = {'payChannel':channel,'orderNo':order_no}
+        data = {'payChannel':channel,'orderNo':order_no,'vin':vin}
         code,body = self.do_post(url,data,gateway='APP')
         print(body)
         assert code == 200
@@ -174,11 +164,13 @@ if __name__ == '__main__':
     import json
     os.environ['ENV'] = 'UAT'
     app = App(name='15144142651',password='Qq111111',aid='4614233')
-    # app.contract_sign(vin='LFVSOP2TESTLY0003',channel='ALPAY',cp_seller='BM')
+    vim_bm = 'LFV2A2BUXL4651255'
+    vim_ma = 'LFVTESTMOSC000129'
+    vim_sop1 = 'LFVSOP2TESTLY0011'
+    # app.contract_sign(vin='LFVTESTMOSC000129',channel='ALPAY',cp_seller='CMCC',display_account=1)
     # app.apply_invoice(order_no='ma20210225094735194245760',i_type='PERSONAL',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409')
-    app.get_sign_result(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='BM')
+    # app.get_sign_result(vin='LFV2A2BUXL4651255',channel='ALPAY',cp_seller='CMCC')
     # app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
-    # app.get_tenant_by_vin(vin='LFVSOP2TESTLY0002')
 
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
     #                  'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
@@ -188,8 +180,9 @@ if __name__ == '__main__':
     # print(events)
     # app.calendar_mobile_sync(current_time=None,events=events,vin='LFVTESTMOSC052726')
     # app.calendar_mobile_find_all('LFVSOP2TESTLY0049')
-    # app.free_access_pay(aid='9353497',vin='LFVSOP2TESTLY0002',channel='WXPAY',order_no='20210201172351827405504')
-    # app.create_order(goods_id='226',category='MUSIC_VIP',vin='LFVTEST1231231231',count=1,priceType=4,userId='4614233')
-    # app.get_pay_url(order_no='M202103041404367627961889',channel='QR_WEIXIN')
+    # app.free_access_pay(vin='LFV2A2BUXL4651255',channel='ALPAY',order_no='ftb2021040911024205240960')
+    # app.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_ma,count=1,durationDays=1)
+    app.create_order(goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',vin=vim_bm,count=1)
+    # app.get_pay_url(order_no='ma20210414094251940778240',channel='QR_ALIPAY')
 
 

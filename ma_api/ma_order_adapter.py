@@ -39,7 +39,7 @@ class MAOrderAdapter(MABase):
                 'amount':amount,'payAmount':pay_amount,'discountAmount':discount,'businessInfo':business_info,**kwargs}
 
         c,b = self.do_post(url,data)
-        self.assert_msg(c,b)
+        self.assert_bm_msg(c,b)
 
     def sync_order_pay(self, aid, order_no, pay_order_no, channel, pay_type, pay_amount, pay_time, pay_status,
                        **kwargs):
@@ -157,19 +157,19 @@ class MAOrderAdapter(MABase):
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
-    # ma_order = MAOrderAdapter('9349641',user='13761048895',password='000000',vin='LMGLS1G53H1003120')
-    music = MAOrderAdapter('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
-    music.order_list(vin='LFVTEST1231231231',begin=music.time_delta(days=-1000),end=music.time_delta(),order_status='1001',category='01')
-    # order_no = music.ma_create_order(aid='9349832', vin='LFVSOP2TEST000082', goods_id='1010500100000535420',durationTimes=1,
-    #                                     category='RADIO_VIP', quantity=1, point=False,)['data']['orderNo']
-    # music.ma_create_order('9349824',goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',
-    #                          vin='LFV3A23C913046742',quantity=1)
+    ma_order = MAOrderAdapter('4614233',user='15144142651',password='Qq111111',vin='LFVTESTMOSC000129')
+    # music = MAOrderAdapter('9349824',user='18217539032',password='Abc123456',vin='LFV3A23C913046742')
+    # music.order_list(vin='LFVTEST1231231231',begin=music.time_delta(days=-1000),end=music.time_delta(),order_status='1001',category='01')
+    order_no = ma_order.ma_create_order(aid='4614233', vin='LFVTESTMOSC000129', goods_id='17',durationTimes=1,
+                                        category='MUSIC_VIP', quantity=1, point=False)['data']['orderNo']
+    # ma_order.ma_create_order('4614233',goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',
+    #                          vin='LFVTESTMOSC000129',quantity=1)
     # music.cancel_order(order_no='ma20210316152727617856064')
-    # music.order_detail(aid='9349832',order_no='ma20210331143609902925696',vin='LFVSOP2TEST000043')
+    # ma_order.order_detail(aid='9349824',order_no='ma20210413154730087774144',vin='LFVSOP2TEST000043')
 
     # info = {"poiId":"bd742a558ce01c47","washStoreName":"捌零靓车店"}
     # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349640',service_id='03',sp_id='030003',
-    #                     order_type='BUSINESS',ex_order=ma_order.f.md5(),category='09',title='加油订单',
-    #                     business_state='0',desc='待支付',orderStatus='FINISHED',
-    #                     amount=5.00,discount=0.25,pay_amount=4.75,timeout=1000,
+    #                     order_type='RESERVATION',ex_order=ma_order.f.md5(),category='09',title='加油订单',
+    #                     business_state='0',desc='待支付',orderStatus='PROCESSING',
+    #                     amount=5.00,discount=0.25,pay_amount=4.75,timeout=1,
     #                     business_info=info)
