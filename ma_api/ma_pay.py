@@ -166,7 +166,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     aid = '9349824'
     vin = 'LFV3A23C913046742'
-    pay = MAPay(aid=aid,user='18217539032',password='Abc123456',vin=vin,token=False)
+    pay = MAPay(aid=aid,user='18217539032',password='Abc123456',vin=vin,token=True)
     pay.sync_pay(aid='9349641',orderNo='ma20210413112322974778240',channel='WECHAT_PAY',discountAmount=2.00,
                  pay_type='QR_CODE',payAmount=1.00,payTime=pay.get_time_stamp(),pay_status='SUCCESS')
     # pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210413142713102774144',pay_type='11100',category='112')
