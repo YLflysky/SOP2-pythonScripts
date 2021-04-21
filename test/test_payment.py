@@ -88,6 +88,7 @@ def test_get_pay_agreement_wrong(d):
 @allure.suite('payment')
 @allure.title('支付宝cdp回调')
 @pytest.mark.payment
+@pytest.mark.skip()
 def test_ali_pay_cdp_callback_01():
     '''
     测试获取支付宝cdp回调结果，输入全部必填项
@@ -129,6 +130,7 @@ def test_ali_pay_cdp_callback_01():
 @allure.suite('payment')
 @allure.title('支付宝cdp回调')
 @pytest.mark.payment
+@pytest.mark.skip()
 def test_ali_pay_cdp_callback_02():
     '''
     测试获取支付宝cdp回调结果，回调参数加上选填项
