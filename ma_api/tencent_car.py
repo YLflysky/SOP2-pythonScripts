@@ -44,7 +44,7 @@ class TencentCar(MABase):
         :param vin: 车辆vin码
         :return:
         '''
-        data = {'vin': vin}
+        data = { 'vin': vin}
         url = self.url + '/api/v1/getBindInfo'
         code, body = self.do_post(url, data)
         self.assert_bm_msg(code, body)
@@ -84,10 +84,10 @@ if __name__ == '__main__':
     vin = 'LFVSOP2TEST000071'
     hashVin = '90B3C60DFB4A4D9C6D88874B62249ACC'
     # car.check_vin(vin)
-    car.get_QRcode(vin)
+    # car.get_QRcode(vin)
     # car.send_poi_hu(hashVin)
     # car.unbind(uid,vin=vin)
-    # car.get_info(vin)
+    car.get_info(vin)
     # car.bind_callback(aid='4614963',vin='B0EEE94911E24DFA3D39B21BBFAE6506',wecar_id=None,action='abc')
 
 

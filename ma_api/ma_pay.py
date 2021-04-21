@@ -167,11 +167,11 @@ if __name__ == '__main__':
     aid = '9349824'
     vin = 'LFV3A23C913046742'
     pay = MAPay(aid=aid,user='18217539032',password='Abc123456',vin=vin,token=True)
-    pay.sync_pay(aid='9349641',orderNo='ma20210413112322974778240',channel='WECHAT_PAY',discountAmount=2.00,
-                 pay_type='QR_CODE',payAmount=1.00,payTime=pay.get_time_stamp(),pay_status='SUCCESS')
-    # pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210413142713102774144',pay_type='11100',category='112')
+    # pay.sync_pay(aid='9349641',orderNo='ma20210413112322974778240',channel='WECHAT_PAY',discountAmount=2.00,
+    #              pay_type='QR_CODE',payAmount=1.00,payTime=pay.get_time_stamp(),pay_status='SUCCESS')
+    # pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210420104013633229376',pay_type='12100',category=None)
     # pay.get_pay_channel(vin='LFVSOP2TEST000050',aid='9349832',order_no='ma20210412145453968479232',category='04')
-    # pay.free_pay(vin,order_no='ma20210412145453968479232',code='11101')
+    # pay.free_pay(vin,order_no='ma20210419093418222774144',code='11101')
     # pay.close_sign(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY',vin='LFVSOP2TEST000407')
     # pay.get_sign_result(aid='9349832',service='27',operator='270001',channel='ALIPAY')
     # pay.sign_and_pay_result(vin='LFVSOP2TEST000043',order_no='ma20210413095545831774144',roll_number=1)

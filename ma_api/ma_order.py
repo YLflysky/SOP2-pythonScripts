@@ -192,6 +192,11 @@ class MAOrder(MABase):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
+    def get_VWlist(self,beginTime,endTime,orderStatus,pagelndex,pageSize,**kwargs):
+        url = 'http://192.168.133.156:30994/vwlink/hu/mobile/order/v1/orders/list'
+        data = {'beginTime': beginTime,'endTime':endTime,'orderStatus':orderStatus,'pagelndex':pagelndex,'pageSize': pageSize, **kwargs}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
 
 
     def cancel(self,order_no,aid):
@@ -213,7 +218,7 @@ if __name__ == '__main__':
     ma_order = MAOrder(aid=aid,user='15144142651',password='Qq111111',vin=vin,token=False)
     # ma_order.create_order()
     # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
-    # music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
+    music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
     # music_order.order_list(music_order.aid,status=['FINISHED'],category='01',begin=None,end=None)
     # ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
@@ -228,7 +233,8 @@ if __name__ == '__main__':
     #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
     # ma_order.alipay_callback()
-    # order_no = music_order.create_goods_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=music_order.vin)['data']
-    order_no = ma_order.create_goods_order(aid='9349824',goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin='LFV3A23C913046742')['data']
-    # music_order.get_ma_qr_code(order_no='ma2021032610293180828672',pay_type='11100')
+    order_no = music_order.create_goods_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=music_order.vin)['data']
+    # order_no = ma_order.create_goods_order(aid='9349824',goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin='LFV3A23C913046742')['data']
+    music_order.get_ma_qr_code(order_no=order_no,pay_type='12100')
+
 

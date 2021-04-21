@@ -280,14 +280,14 @@ if __name__ == '__main__':
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'WECHAT_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id='ftb20210309142502218860160', category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
-    flow.flow_detail_code(code='17',duration=8)
+    # flow.flow_detail_code(code='17',duration=8)
     # flow.goods_list(['MUSIC_VIP'])
     # flow.bm_get_goods_detail('267')
     # flow.bm_goods_list(aid,categories=['RADIO_VIP'])
     # flow.bm_flow_list(aid,vin)
     # flow.remain_flow(flow_type='wifi',vin='BMTESTYAYWS26GQ4T')
 
-    # order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
+    order_no = flow.bm_create_flow_order(goods_id, aid, vin='LFVSOP2TEST000353', quantity=1)['data']['orderNo']
     # bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='12100',category='112')
     # bm_pay.free_pay(aid='4614233',vin='LFV2A2BUXL4651255',order_no='ftb2021040910384334640960',channel='11101',useScore=False)
     # flow.bm_goods_list('995939534',['MUSIC_VIP'])

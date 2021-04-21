@@ -125,7 +125,7 @@ class MAOrderAdapter(MABase):
 
 
 
-    def ma_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
+    def ma_create_order(self, aid, goods_id, category, vin,quantity,point=False,**kwargs):
         '''
         SOP2MA车机端创建商品订单接口》》车机端接口
         :param goods_id:商品ID，orderCategory为PAID_CONTENT，priceType为2时，为专辑号，priceType为1时，为音频编号用“,”隔开其他均为商品ID
@@ -136,11 +136,14 @@ class MAOrderAdapter(MABase):
         :param kwargs:
         :return:
         '''
+        self.header['clientOsType'] = '2'
         url = self.hu_url + '/order/mos/order/api/v1/create'
         data = {'userId':aid,'goodsId': goods_id, 'vin':vin,'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
         c, b = self.do_post(url, data)
         self.assert_bm_msg(c,b)
         return b
+
+
 
     def cancel_order(self,order_no):
         '''
@@ -158,11 +161,13 @@ if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
     ma_order = MAOrderAdapter('4614233',user='15144142651',password='Qq111111',vin='LFVTESTMOSC000129')
+    music_order = MAOrderAdapter('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
+
     # music = MAOrderAdapter('9349824',user='18217539032',password='Abc123456',vin='LFV3A23C913046742')
     # music.order_list(vin='LFVTEST1231231231',begin=music.time_delta(days=-1000),end=music.time_delta(),order_status='1001',category='01')
-    order_no = ma_order.ma_create_order(aid='4614233', vin='LFVTESTMOSC000129', goods_id='17',durationTimes=1,
+    order_no = music_order.ma_create_order(aid='4614233', vin='LFVTESTMOSC000129', goods_id='17',durationTimes=1,
                                         category='MUSIC_VIP', quantity=1, point=False)['data']['orderNo']
-    # ma_order.ma_create_order('4614233',goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',
+    # ma_order.ma_create_order('9350041',goods_id='1010500000113868',category='RADIO_VIP',
     #                          vin='LFVTESTMOSC000129',quantity=1)
     # music.cancel_order(order_no='ma20210316152727617856064')
     # ma_order.order_detail(aid='9349824',order_no='ma20210413154730087774144',vin='LFVSOP2TEST000043')

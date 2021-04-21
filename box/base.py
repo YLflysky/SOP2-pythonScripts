@@ -30,6 +30,7 @@ class Base:
     def __init__(self):
         self.env = os.getenv('ENV')
         self.header = {}
+
         self.header['Content-type'] = 'application/json; charset=utf-8'
         self.f = Faker(locale='en-US')
         try:
