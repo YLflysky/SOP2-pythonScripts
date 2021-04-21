@@ -27,6 +27,8 @@ class MAOrder(MABase):
 
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'pay_host')
         self.order_url = self.read_conf('ma_env.conf', self.env, 'order_host')
+        self.header['Did'] = 'did'
+        self.header['deviceid'] = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
 
     def assert_msg(self, code, body):
         print(body)
@@ -49,12 +51,12 @@ class MAOrder(MABase):
         :return:
         '''
         info = self.f.pydict(value_types=str)
-        no = self.generate_order_no()
+        # no = self.generate_order_no()
         ex = self.f.md5()
         cp = self.f.phone_number()
         data = {'orderCategory':'03',
                 'spId':'180001',
-                'orderNo':no,
+                # 'orderNo':no,
                 'aid':self.aid,
                 'vin':self.vin,
                 'vehModelCode':'川A389NG',
@@ -66,6 +68,7 @@ class MAOrder(MABase):
                 'title':'测试用例',
                 'businessState':'业务状态',
                 'businessStateDesc':'业务状态描述',
+                'timeout':1,
                 'amount':1.00,
                 'payAmount':0.01,
                 'discountAmount':0.99}
@@ -154,12 +157,6 @@ class MAOrder(MABase):
         print(b)
         assert c == 200
 
-
-
-
-
-
-
     def ma_release_sign(self,channel,service,operator):
         '''
         MA免密解约
@@ -206,12 +203,13 @@ class MAOrder(MABase):
         c,b = self.do_get(url,data)
         self.assert_msg(c,b)
 
+
 if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     aid = '4614233'
     vin = 'LFVTESTMOSC000129'
     ma_order = MAOrder(aid=aid,user='15144142651',password='Qq111111',vin=vin,token=False)
-    # ma_order.create_order()
+    ma_order.create_order()
     # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
     # music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
     # music_order.order_list(music_order.aid,status=['FINISHED'],category='01',begin=None,end=None)
@@ -228,7 +226,8 @@ if __name__ == '__main__':
     #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
     # ma_order.alipay_callback()
-    # order_no = music_order.create_goods_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=music_order.vin)['data']
-    order_no = ma_order.create_goods_order(aid='9349824',goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin='LFV3A23C913046742')['data']
-    # music_order.get_ma_qr_code(order_no='ma2021032610293180828672',pay_type='11100')
+    # order_no = ma_order.create_goods_order(aid='9350041',goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=ma_order.vin)['data']
+    # order_no = ma_order.create_goods_order(aid='9349824',goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin='LFV3A23C913046742')['data']
+    # ma_order.create_goods_order(aid='9349863',goods_id='1010500100000535429',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000080')
+    # ma_order.get_ma_qr_code(order_no='ma20210419141205531225280',pay_type='11100')
 

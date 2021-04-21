@@ -80,16 +80,58 @@ class SOP1Order(MABase):
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
 
+    def local_order_create(self):
+        url = self.payment_url + '/internal/v1/order/localOrderCreate'
+        data = {"aid":"4614233",
+                "vin":"LFVTESTMOSC000129",
+                "outOrderId":"1726545da36544908054d21171c6be28",
+                "orderId":"sergio123",
+                "goodsId":"cc50badd5bd6418b9c431f87394640fe",
+                "goodsName":"Wi-Fi半年包",
+                "goodsSpec":"【Wi-Fi半年包】",
+                "goodsPrice":0.01,
+                "quantity":1,
+                "orderCategory":"WIFI_FLOW",
+                "enterpriseId":"2100010000",
+                "isUsedPoint":False,
+                "deductPointNumber":0,
+                "deductionAmount":0,
+                "orderTitle":"Wi-Fi半年包",
+                "orderDesc":"【Wi-Fi半年包】",
+                "orderSubStatus":1,
+                "orderStatus":"1001",
+                "usefulTime":1618895233688,
+                "orderPrice":0.01}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
+
+    def ci_common_notification(self,id, category, status, origin_id, additional_attrs, enterprise_id='2100010000'):
+        url = self.payment_url + '/mos/internal/CI_CommonNotification'
+        data = {'enterpriseId': enterprise_id,
+                'multiRecords': [{'id': id, 'idCategory': category, 'status': status, 'originalRequestId': origin_id,
+                                  'additionalAttrs': additional_attrs}]}
+
+        c, b = self.do_post(url, data)
+        self.assert_bm_msg(c,b)
+        return b
+
+
+
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
     aid = '4614183'
     vin = 'LFVTEST1231231231'
-    sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin)
-    sop1.get_goods_list(aid,vin,code='MA',brand='VW',product_type='radio_vip')
+    sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin,token=True)
+    # sop1.local_order_create()
+    # sop1.get_goods_list(aid,vin,code='MA',brand='VW',product_type='radio_vip')
     # sop1.sop1_calendar_sync()
-    # no = sop1.sop1_create_order(aid=aid,vin=vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationDays=1,point=False)['data']['orderNumber']
+    no = sop1.sop1_create_order(aid=aid,vin=vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationDays=1,point=False)['data']['orderNumber']
     # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='ca85c936d2564debb89e52bf11692e2f',category='WIFI_FLOW',quantity=1)
     # sop1.get_qr_code(vin,order_no='M202103261024526907932144',pay_type='12100',aid=aid)
     # sop1.ali_pay_callback(out_trade_no='b959af854c5c4a68a91de20ca7d5d3a8', buyer_logon_id='995939534@qq.com',
     #                      receipt_amount=0.01, gmt_payment=sop1.time_delta(), trade_no=sop1.f.pyint())
+    # success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': 'WECHAT_PAY',
+    #                 'paidTime': sop1.time_delta(formatted='%Y%m%d%H%M%S')}
+    # sop1.ci_common_notification(id='ma20210420150718586229376', category=1, status='1000_00', origin_id=sop1.f.md5(),additional_attrs=success_attr)
+

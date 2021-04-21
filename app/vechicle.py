@@ -21,4 +21,4 @@ if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
-    Vechicle().get_tenant_by_vin(vin='LFVSOP2TESTLY0011')
+    Vechicle().get_tenant_by_vin(vin='LFV1A23C6L3309793')
