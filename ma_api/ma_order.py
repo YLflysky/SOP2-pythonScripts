@@ -215,7 +215,7 @@ if __name__ == '__main__':
     os.environ['ENV'] = 'UAT'
     aid = '4614233'
     vin = 'LFVTESTMOSC000129'
-    ma_order = MAOrder(aid=aid,user='15144142651',password='Qq111111',vin=vin,token=False)
+    # ma_order = MAOrder(aid=aid,user='15144142651',password='Qq111111',vin=vin,token=False)
     # ma_order.create_order()
     # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
     music_order = MAOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
@@ -233,8 +233,8 @@ if __name__ == '__main__':
     #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
     # ma_order.alipay_callback()
-    order_no = music_order.create_goods_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=music_order.vin)['data']
+    # order_no = music_order.create_goods_order(aid=music_order.aid,goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin=music_order.vin)['data']
     # order_no = ma_order.create_goods_order(aid='9349824',goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin='LFV3A23C913046742')['data']
-    music_order.get_ma_qr_code(order_no=order_no,pay_type='12100')
+    music_order.get_ma_qr_code(order_no='ma20210422105847575774144',pay_type='12100')
 
 

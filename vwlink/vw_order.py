@@ -2,6 +2,8 @@ from box.base import Base
 from box.lk_logger import lk
 import os
 
+lk.prt('导入 MA API 基类>>>>')
+
 class VWBase(Base):
     def __init__(self,aid,user,password,vin,token=True):
         super().__init__()
@@ -12,7 +14,7 @@ class VWBase(Base):
             self.env = 'UAT'
         if token:
             lk.prt('开始获取token...')
-            self.add_header(self.read_conf('ma_env.conf',self.env,'token_host'),user,password,vin)
+            self.add_header(self.read_conf('vw_order.conf',self.env,'token_host'),user,password,vin)
 
     def assert_msg(self,code,body):
         assert code == 200
@@ -22,8 +24,7 @@ class VWBase(Base):
 class VWOrder(VWBase):
     def __init__(self, aid,user,password,vin,token=True):
         super().__init__(aid,user,password,vin,token)
-
-        self.payment_url = self.read_conf('ma_env.conf', self.env, 'pay_host')
+        self.vworder_url = self.read_conf('vw_order.conf', self.env, 'vwlink_host')
         self.order_url = self.read_conf('ma_env.conf', self.env, 'order_host')
 
     def assert_msg(self, code, body):
@@ -32,19 +33,23 @@ class VWOrder(VWBase):
         assert body['status'] == 'SUCCEED'
 
     def get_VWlist(self,beginTime,endTime,orderStatus,pagelndex,pageSize,**kwargs):
-        url = 'http://192.168.133.156:30994/vwlink/hu/mobile/order/v1/orders/list'
+        self.header['aid'] = '1234'
+        url = self.order_url+'/vwlink/hu/mobile/order/v1/orders/list'
         data = {'beginTime': beginTime,'endTime':endTime,'orderStatus':orderStatus,'pagelndex':pagelndex,'pageSize': pageSize, **kwargs}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
+
+    def get_VWdetail(self,orderNo,**kwargs):
+        self.header['aid'] = '1234'
+        url = 'http://192.168.133.156:30994/vwlink/hu/mobile/order/v1/orders/detail'
+        data = {'orderNo': orderNo, **kwargs}
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
 
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     VW_order = VWOrder(aid='4614233',user='15144142651',password='Qq111111',vin='LFVTESTMOSC000129',token=False)
-    # VWOrder.getvw_list(beginTime='2021-01-10 06:06:43',endTime='2021-05-10 06:06:43',orderStatus='',pagelndex='1',pageSize='10')
-    VWOrder.get_VWlist(beginTime='2021-01-10 06:06:43',endTime='2021-05-10 06:06:43',orderStatus=None, pagelndex='1',pageSize='10')
-    # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
-    # music_order = VWOrder('4614183',user='15330011918',password='000000',vin='LFVTEST1231231231')
-    # music_order.order_list(music_order.aid,status=['FINISHED'],category='01',begin=None,end=None)
-    # ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
+    # VW_order.get_VWlist(beginTime='2021-01-10 06:06:43',endTime='2021-05-10 06:06:43',orderStatus=None, pagelndex='1',pageSize='10')
+    # VW_order.get_VWdetail(orderNo='ftb20210420092635290348160')
