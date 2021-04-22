@@ -44,7 +44,7 @@ class TencentCar(MABase):
         :param vin: 车辆vin码
         :return:
         '''
-        data = {'vin': vin}
+        data = { 'vin': vin}
         url = self.url + '/api/v1/getBindInfo'
         code, body = self.do_post(url, data)
         self.assert_bm_msg(code, body)

@@ -125,7 +125,7 @@ class MAOrderAdapter(MABase):
 
 
 
-    def ma_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
+    def ma_create_order(self, aid, goods_id, category, vin,quantity,point=False,**kwargs):
         '''
         SOP2MA车机端创建商品订单接口》》车机端接口
         :param goods_id:商品ID，orderCategory为PAID_CONTENT，priceType为2时，为专辑号，priceType为1时，为音频编号用“,”隔开其他均为商品ID
@@ -136,11 +136,14 @@ class MAOrderAdapter(MABase):
         :param kwargs:
         :return:
         '''
+        self.header['clientOsType'] = '2'
         url = self.hu_url + '/order/mos/order/api/v1/create'
         data = {'userId':aid,'goodsId': goods_id, 'vin':vin,'orderCategory': category, 'quantity': quantity, 'usedPoint': point, **kwargs}
         c, b = self.do_post(url, data)
         self.assert_bm_msg(c,b)
         return b
+
+
 
     def cancel_order(self,order_no):
         '''

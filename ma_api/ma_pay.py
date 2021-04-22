@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
     pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210421130620000126976',pay_type='12100',category='112')
     # pay.get_pay_channel(vin='LFVSOP2TEST000050',aid='9349832',order_no='ma20210412145453968479232',category='04')
-    # pay.free_pay(vin,order_no='ma20210412145453968479232',code='11101')
+    # pay.free_pay(vin,order_no='ma20210419093418222774144',code='11101')
     # pay.close_sign(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY',vin='LFVSOP2TEST000407')
     # pay.get_sign_result(aid='10086',service='03',operator='030003',channel='ALIPAY')
     # pay.sign_and_pay_result(vin='LFVSOP2TEST000043',order_no='ma20210413095545831774144',roll_number=1)
