@@ -94,12 +94,12 @@ if __name__ == '__main__':
 
     # t.get_hash_vin(vin='LFVSOP2TESTLY0002')
     # t.create_group('4613020','LFVSOP2TEST000401')
-    t.leave_group(aid='4613020',vin='LFVSOP2TEST000401',group='1503674656412',open_id='1101503',wecar_id=1)
+    # t.leave_group(aid='4613020',vin='LFVSOP2TEST000401',group='1503674656412',open_id='1101503',wecar_id=1)
     # open_id = t.get_info(uid,vin)['weChatOpenId']
     # print(open_id)
-    # groupId = t.find_last_group(uid,vin1)['groupId']
+    # groupId = t.find_last_group(uid='4613020',vin='LFVSOP2TEST000401')['groupId']
     # invite_pwd = t.find_last_group(uid,vin1)['invitePassword']
-    # t.join_team(accountId='4614963',vin='LFVSOP2TESTLY0073',group_id='5880469272221',invite='660537')
+    # t.join_team(accountId='9349628',vin='LFVSOP2TEST000007',group_id=None,invite='947408')
     # t.get_trip_info('4613020','LFVSOP2TEST000401')
-    # t.join_last_group(account=uid,group='588079202560',longitude='116.388729',latitude='39.871198',vin=vin)
+    t.join_last_group(account='9349628',group='12345',longitude='116.388729',latitude='39.871198',vin='LFVSOP2TEST000007')
 

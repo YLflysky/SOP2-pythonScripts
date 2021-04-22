@@ -6,6 +6,7 @@ class MAPay(MABase):
         super().__init__(aid, user, password, vin, token)
 
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'pay_host')
+        self.be_url = self.read_conf('ma_env.conf', self.env, 'pay_be_host')
 
     def get_sign_result(self,aid,service,operator,channel):
         '''
@@ -91,69 +92,6 @@ class MAPay(MABase):
         c, b = self.do_get(url, data)
         self.assert_bm_msg(c, b)
 
-    def ma_contract_sign(self,channel,service,operator):
-        '''
-        MA免密签约api
-        :param channel:签约渠道WXPAY,ALPAY
-        :param service: 业务，目前支持GAS,03
-        :param operator: CP，目前支持JDO,030003
-        :return:
-        '''
-        url = self.payment_url + '/internal/v2/app/contract/sign'
-        data = {'aid':self.aid,'operatorId':operator,'payChannel':channel,'serviceId':service,'vin':self.vin}
-        c,b = self.do_post(url,data)
-        self.assert_bm_msg(c,b)
-        return b
-
-    def close_sign(self,aid,service,operator,channel,vin):
-        '''
-        关闭免密签约
-        :param aid:
-        :return:
-        '''
-        url = self.payment_url + '/internal/v2/contract/pause'
-        data = {'aid': aid, 'operatorId': operator, 'payChannel': channel, 'serviceId': service, 'vin': vin}
-        c, b = self.do_post(url, data)
-        self.assert_bm_msg(c, b)
-        return b
-
-    def open_sign(self,aid,service,operator,channel,vin):
-        '''
-        开启免密签约
-        :param aid:
-        :return:
-        '''
-        url = self.payment_url + '/internal/v2/contract/open'
-        data = {'aid': aid, 'operatorId': operator, 'payChannel': channel, 'serviceId': service, 'vin': vin}
-        c, b = self.do_post(url, data)
-        self.assert_bm_msg(c, b)
-        return b
-
-    def get_sign_qr_code(self,vin,aid,service,shop,sign_type,order_no):
-        '''
-        车机端获取免密签约二维码
-        :param vin:
-        :param aid:
-        :param service:
-        :param shop:
-        :param sign_type:
-        :param order_no:
-        :return:
-        '''
-        url = self.payment_url + '/internal/v2/sync/pay'
-        pass
-
-    def sync_pay(self,aid,orderNo,channel,pay_type,payAmount,payTime,pay_status,**kwargs):
-        '''
-
-        :return:
-        '''
-        url = self.payment_url + '/external/v2/sync/pay'
-        data = {'aid':aid,'orderNo':orderNo,'payChannel':channel,'payType':pay_type,'payAmount':payAmount,
-                'payTime':payTime,'payStatus':pay_status,**kwargs
-                }
-        c,b = self.do_post(url,data)
-        self.assert_bm_msg(c,b)
 
     def get_goods_detail(self, goods_code):
         url = self.payment_url + '/api/v2/shelvesProducts/{}/detail'.format(goods_code)
@@ -161,18 +99,24 @@ class MAPay(MABase):
         assert c == 200
         print(b)
 
+
+
+
+
+
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
     aid = '9349824'
     vin = 'LFV3A23C913046742'
-    pay = MAPay(aid=aid,user='18217539032',password='Abc123456',vin=vin,token=True)
-    # pay.sync_pay(aid='9349641',orderNo='ma20210413112322974778240',channel='WECHAT_PAY',discountAmount=2.00,
-    #              pay_type='QR_CODE',payAmount=1.00,payTime=pay.get_time_stamp(),pay_status='SUCCESS')
-    # pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210420104013633229376',pay_type='12100',category=None)
+    pay = MAPay(aid=aid,user='18217539032',password='Abc123456',vin=vin)
+
+    # pay.jdo_sign_sync(ali=1,wechat=0,user='10086')
+
+    pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210421130620000126976',pay_type='12100',category='112')
     # pay.get_pay_channel(vin='LFVSOP2TEST000050',aid='9349832',order_no='ma20210412145453968479232',category='04')
     # pay.free_pay(vin,order_no='ma20210419093418222774144',code='11101')
     # pay.close_sign(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY',vin='LFVSOP2TEST000407')
-    # pay.get_sign_result(aid='9349832',service='27',operator='270001',channel='ALIPAY')
+    # pay.get_sign_result(aid='10086',service='03',operator='030003',channel='ALIPAY')
     # pay.sign_and_pay_result(vin='LFVSOP2TEST000043',order_no='ma20210413095545831774144',roll_number=1)
     # pay.get_pay_result(order_no='ma20210413095545831774144',vin=vin,category='04')

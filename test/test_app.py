@@ -104,7 +104,7 @@ def test_app_pay_url_flow(channel):
 @pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
 def test_app_pay_url_music(channel):
     vin = 'LFVTEST1231231231'
-    order_no = app.create_order(goods_id='226',category='MUSIC_VIP',vin=vin,count=1)['data']['orderNumber']
+    order_no = app.create_order(goods_id='17',category='MUSIC_VIP',vin=vin,count=1)['data']['orderNumber']
     res = app.get_pay_url(order_no,channel)
     assert res['data']['payInfo']
 

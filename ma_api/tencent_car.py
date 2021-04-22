@@ -25,14 +25,14 @@ class TencentCar(MABase):
         code,body = self.do_post(url,data)
         self.assert_bm_msg(code,body)
 
-    def unbind(self,aid,vin):
+    def unbind(self,vin):
         '''
         解绑车辆
         :param aid:用户id
         :param vin: 车辆vin码
         :return:
         '''
-        data = {'uid': aid, 'vin': vin}
+        data = {'vin': vin}
         url = self.url + '/api/v1/unBindAccount'
         code, body = self.do_post(url, data)
         self.assert_bm_msg(code, body)
@@ -86,8 +86,8 @@ if __name__ == '__main__':
     # car.check_vin(vin)
     # car.get_QRcode(vin)
     # car.send_poi_hu(hashVin)
-    # car.unbind(uid,vin=vin)
-    car.get_info(vin)
+    # car.unbind(vin=vin)
+    car.get_info('LFVSOP2TEST000030')
     # car.bind_callback(aid='4614963',vin='B0EEE94911E24DFA3D39B21BBFAE6506',wecar_id=None,action='abc')
 
 

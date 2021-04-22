@@ -99,5 +99,5 @@ if __name__ == '__main__':
     # p.bm_get_user_level(aid='1234')
     # p.get_user_points(aid='4614183')
     # p.bm_get_user_points(aid='9353750')
-    p.bm_get_points_stream(aid='9353750',index=1)
+    p.bm_get_points_stream(aid='9353750',index=2,size=100)
     # p.get_points_stream(index=1,size=10,aid='1234')
