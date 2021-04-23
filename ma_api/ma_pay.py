@@ -99,7 +99,11 @@ class MAPay(MABase):
         assert c == 200
         print(b)
 
-
+    def app_pay_info(self,aid,order_no,pay_type):
+        url = self.be_url + '/internal/v2/app/vins/vin/users/{}/orders/{}/payments/qrCode'.format(aid,order_no)
+        data = {'payType':pay_type}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
 
 
 
@@ -110,10 +114,9 @@ if __name__ == '__main__':
     aid = '9349824'
     vin = 'LFV3A23C913046742'
     pay = MAPay(aid=aid,user='18217539032',password='Abc123456',vin=vin)
+    pay.app_pay_info(aid='4614233',order_no='ma20210422180915944778240',pay_type='12100')
 
-    # pay.jdo_sign_sync(ali=1,wechat=0,user='10086')
-
-    pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210421130620000126976',pay_type='12100',category='112')
+    # pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210421130620000126976',pay_type='12100',category='112')
     # pay.get_pay_channel(vin='LFVSOP2TEST000050',aid='9349832',order_no='ma20210412145453968479232',category='04')
     # pay.free_pay(vin,order_no='ma20210419093418222774144',code='11101')
     # pay.close_sign(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY',vin='LFVSOP2TEST000407')

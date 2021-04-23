@@ -131,7 +131,7 @@ if __name__ == '__main__':
     order_no='ftb2021040111015387640960'
     # pay.be_sync_result(vin='5E5F5EDBD91F4BF8462AE2DE2E89B509',aid='9349485',bm_order_no='bm001',bm_pay_no='bm_pay_001',order_no='ftb20210115135413613139264',pay_amount=1,order_amount=100,discountAmount=99,
     #                    channel='WECHAT_PAY',status='TRADE_SUCCESS',pay_time=pay.time_delta(),pay_way='QR_PAY',service='GAS',sp='111')
-    # pay.get_pay_result(vin='LFVTESTMOSC989216',order_no='ftb20210113104218446114688',aid='9351484',category='112',roll_number=1)
+    pay.get_pay_result(vin='LFVSOP2TESTLY0019',order_no='ftb20210421113350494380928',aid='9353821',category='112',roll_number=1)
     # pay.get_pay_channel(vin=vin,aid=aid,order_no=order_no,category='111')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language='en-US',code='11101')
     # pay.get_qr_code(vin,aid=aid,order_no=order_no,pay_type='12100',category='109',score='N')

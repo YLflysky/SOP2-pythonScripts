@@ -7,9 +7,9 @@ class Team(TencentCar):
         self.hu_url = self.read_conf('ma_env.conf', self.env, 'hu_host')
         self.url =self.hu_url + '/mosc-group-driving-sop2'
 
-    def create_group(self,uid,vin):
+    def create_group(self,vin):
         url = self.url + '/api/v1/createGroup'
-        data = {'accountId':uid,'vin':vin,'longitude':float(self.f.longitude()),'latitude':float(self.f.latitude()),}
+        data = {'vin':vin,'longitude':float(self.f.longitude()),'latitude':float(self.f.latitude())}
         code,body = self.do_post(url,data)
         self.assert_ma_msg(code,body)
         return body['data']
@@ -21,9 +21,9 @@ class Team(TencentCar):
         self.assert_bm_msg(code,body)
         return body['data']
 
-    def join_team(self,accountId,vin,group_id,invite):
+    def join_team(self,vin,group_id,invite):
         url = self.url + '/api/v1/joinGroup'
-        data = {'accountId':accountId,'vin':vin,'longitude':float(self.f.longitude()),'latitude':float(self.f.latitude()),
+        data = {'vin':vin,'longitude':float(self.f.longitude()),'latitude':float(self.f.latitude()),
                 'invitePassword':invite,'groupId':group_id}
         code,body = self.do_post(url,data=data)
         self.assert_bm_msg(code,body)
@@ -69,7 +69,7 @@ class Team(TencentCar):
         c,b = self.do_get(url,data)
         self.assert_ma_msg(c,b)
 
-    def leave_group(self,aid,vin,group,open_id,wecar_id):
+    def leave_group(self,vin,group,open_id,wecar_id):
         '''
         离开组队
         :param aid:
@@ -80,7 +80,7 @@ class Team(TencentCar):
         :return:
         '''
         url = self.url + '/api/v1/leaveGroup'
-        data = {'vin':vin,'accountId':aid,'groupId':group,'wechatOpenId':open_id,'weCarId':wecar_id}
+        data = {'vin':vin,'groupId':group,'wechatOpenId':open_id,'weCarId':wecar_id}
         c,b = self.do_post(url,data)
         self.assert_ma_msg(c,b)
 
@@ -90,16 +90,16 @@ class Team(TencentCar):
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
-    t = Team(user='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183',token=True)
-
+    vin = 'LFVTEST1231231231'
+    t = Team(user='15330011918',password='000000',vin=vin,aid='4614183',token=True)
     # t.get_hash_vin(vin='LFVSOP2TESTLY0002')
-    # t.create_group('4613020','LFVSOP2TEST000401')
-    # t.leave_group(aid='4613020',vin='LFVSOP2TEST000401',group='1503674656412',open_id='1101503',wecar_id=1)
+    # t.create_group(vin)
+    # t.leave_group(vin=vin,group='588068249732',open_id='1101503',wecar_id=1)
     # open_id = t.get_info(uid,vin)['weChatOpenId']
     # print(open_id)
     # groupId = t.find_last_group(uid='4613020',vin='LFVSOP2TEST000401')['groupId']
     # invite_pwd = t.find_last_group(uid,vin1)['invitePassword']
-    # t.join_team(accountId='9349628',vin='LFVSOP2TEST000007',group_id=None,invite='947408')
+    t.join_team(vin=vin,group_id='588068249732',invite='292801')
     # t.get_trip_info('4613020','LFVSOP2TEST000401')
-    t.join_last_group(account='9349628',group='12345',longitude='116.388729',latitude='39.871198',vin='LFVSOP2TEST000007')
+    # t.join_last_group(account='9349628',group='12345',longitude='116.388729',latitude='39.871198',vin='LFVSOP2TEST000007')
 

@@ -1,6 +1,18 @@
-from ma_api.ma_order import MABase
+from box.base import Base
+from box.lk_logger import lk
 
-class SOP1Order(MABase):
+class SOP1Base(Base):
+    def __init__(self,aid,user,password,vin,token=True):
+        super().__init__()
+        self.aid = aid
+        self.vin = vin
+        self.gate = True
+        self.env = 'UAT'
+        if token:
+            lk.prt('开始获取token...')
+            self.add_header(self.read_conf('sop1_env.conf',self.env,'token_host'),user,password,vin)
+
+class SOP1Order(SOP1Base):
     def __init__(self, aid, user, password, vin,token=True):
         super().__init__(aid, user, password, vin,token)
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')

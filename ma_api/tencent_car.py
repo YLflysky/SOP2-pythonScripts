@@ -80,14 +80,14 @@ if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
     aid = '4614183'
-    car = TencentCar(user='15330011918',password='000000',vin='LFVTEST1231231231',aid=aid,token=True)
-    vin = 'LFVSOP2TEST000071'
+    vin = 'LFVTEST1231231231'
+    car = TencentCar(user='15330011918',password='000000',vin=vin,aid=aid,token=True)
     hashVin = '90B3C60DFB4A4D9C6D88874B62249ACC'
     # car.check_vin(vin)
-    # car.get_QRcode(vin)
+    car.get_QRcode(vin)
     # car.send_poi_hu(hashVin)
     # car.unbind(vin=vin)
-    car.get_info('LFVSOP2TEST000030')
+    # car.get_info('LFVSOP2TEST000030')
     # car.bind_callback(aid='4614963',vin='B0EEE94911E24DFA3D39B21BBFAE6506',wecar_id=None,action='abc')
 
 
