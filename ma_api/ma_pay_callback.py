@@ -64,8 +64,6 @@ class MAPayCallback(Base):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
-
-
     def jdo_sign_sync(self,ali,wechat,user):
         '''
         JDO免密签约回调
@@ -154,9 +152,24 @@ class MAPayCallback(Base):
         return json.loads(json_str)
 
     def app_pay_info(self,aid,order_no,pay_type):
-        url = self.be_url + '/internal/v2/app/vins/vin/users/{}/orders/{}/payments/qrCode'.format(aid,order_no)
-        data = {'payType':pay_type}
+        url = self.be_url + '/internal/v2/app/payments/payInfo'
+        data = {'userId':aid,"orderNo":order_no,'payType':pay_type}
         c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
+
+    def get_sign_result(self,aid,service,operator,channel):
+        '''
+        外部接口获取免密签约状态
+        :param aid:
+        :param services:
+        :param channel:
+        :return:
+        '''
+
+        url = self.be_url + '/external/v2/contract/query'
+        services = [{'serviceId':service,'operatorId':operator}]
+        data = {'aid':aid,'services':services,'payChannel':channel}
+        c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
 
@@ -174,6 +187,6 @@ if __name__ == '__main__':
     # pay.sync_pay(aid='9349641',orderNo='ma20210413112322974778240',channel='WECHAT_PAY',discountAmount=2.00,
     #              pay_type='QR_CODE',payAmount=1.00,payTime=pay.get_time_stamp(),pay_status='SUCCESS')
     # pay.close_sign(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY',vin='LFVSOP2TEST000407')
-    # pay.get_sign_result(aid='10086',service='03',operator='030003',channel='ALIPAY')
+    # pay.get_sign_result(aid='9349825',service='03',operator='030003',channel='ALIPAY')
     # pay.sign_and_pay_result(vin='LFVSOP2TEST000043',order_no='ma20210413095545831774144',roll_number=1)
     # pay.get_pay_result(order_no='ma20210413095545831774144',vin=vin,category='04')

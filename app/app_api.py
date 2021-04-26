@@ -210,14 +210,15 @@ class App(Base):
 if __name__ == '__main__':
     import json
     os.environ['ENV'] = 'UAT'
-    app = App(name='15144142651',password='Qq111111',aid='4614233')
-    # app=App(name='15330011918',password='000000',aid='4614183')
+    # app = App(name='15144142651',password='Qq111111',aid='4614233')
+    app = App(name='19900001122',password='111111',aid='4614910')
+    # app = App(name='15330011918',password='000000',aid='4614183')
     vim_bm = 'LFV2A2BUXL4651255'
     vim_ma = 'LFVTESTMOSC000129'
     vim_sop1 = 'LFV1A23C6L3309793'
-    # app.order_detail(order_no='ma20210422165849190774144')
+    # app.order_detail(order_no='ftb20210425165455826274432')
     # app.contract_sign(vin=vim_bm,channel='WXPAY',cp_seller='CMCC',display_account=1)
-    # app.apply_invoice(order_no='ma20210225094735194245760',i_type='PERSONAL',i_channel='JDO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409')
+    # app.apply_invoice(order_no='ftb20210421143152768380928',i_type=1,i_channel='CMCC',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409')
     # app.get_sign_result(vin='LFV2A2BUXL4651255',channel='WXPAY',cp_seller='CMCC')
     # app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
 
@@ -230,11 +231,11 @@ if __name__ == '__main__':
     # app.calendar_mobile_sync(current_time=None,events=events,vin='LFVTESTMOSC052726')
     # app.calendar_mobile_find_all('LFVSOP2TESTLY0049')
     # app.free_access_pay(vin='LFV2A2BUXL4651255',channel='ALPAY',order_no='ftb2021040911024205240960')
-    # appmusic.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_sop1,count=1,durationDays=1)
-    # wifi_order=app.create_order(goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',vin=vim_bm,count=1)['data']['orderNumber']
-    app.get_pay_url(order_no='ftb20210422185133092274432',channel='QR_WEIXIN')
+    # app.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_bm,count=1,durationDays=3)
+    # wifi_order=app.create_order(goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',vin=vim_ma,count=1)['data']['orderNumber']
+    app.get_pay_url(order_no='ma20210425143828894774144',channel='QR_WEIXIN')
     # app.get_order_list(orderStatus=None,orderCategoryList=[''],tenantIdList=['SOP2BM'])
-    # app.get_order_detail(orderNo=wifi_order)
+    # app.get_order_detail(orderNo='M202104250924208716062687')
     # appmusic.do_order_delete(orderNo='M202104221759422505394367')
     # app.do_order_cancel(orderNo=wifi_order)
 

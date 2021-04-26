@@ -272,7 +272,7 @@ class Order(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = Order()
     # order_no = o.add_order()
@@ -281,12 +281,12 @@ if __name__ == '__main__':
     # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
     # o.order_detail(aid='9353550',order_no='ftb2021032613421076198304')
     # order_no = o.generate_order_no()['data']
-    # o.sync_order(aid='9349640', orderNo=order_no, ex='ex%s'%order_no, origin='SOP1',category='110',
-    #              serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,orderStatus='FINISH',
-    #              goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
+    o.sync_order(aid='9349640', ex=o.f.md5(), origin='SOP1',category='110',couponId='JD473129355019685888',
+                 serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,orderStatus='WAITING_PAY',
+                 goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # o.sync_refund('9642113','233564422',origin='EP',status='FAILED')
-    o.apply_invoice(aid='9353192', order_no=['ftb20210414145302982208896'], duty_no='91310115560364240G',
-                    head='钛马信息技术有限公司', phone='18888888888')
+    # o.apply_invoice(aid='9353192', order_no=['ftb20210414145302982208896'], duty_no='91310115560364240G',
+    #                 head='钛马信息技术有限公司', phone='18888888888')
     # o.sync_invoice(invoiceNo='6F1IQCDLN9RDXN8N0BU1615863389951',status='SUCCESS',party='PERSONAL',
     #                order=['ftb20210316100727897212992'],domainId='FLOW',cpId='CMCC')
     # sql = o.do_mysql_select('select * from order_invoice where serial="{}"'.format(serial),'fawvw_order')

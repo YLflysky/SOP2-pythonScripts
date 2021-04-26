@@ -8,21 +8,6 @@ class MAPay(MABase):
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'pay_host')
         self.be_url = self.read_conf('ma_env.conf', self.env, 'pay_be_host')
 
-    def get_sign_result(self,aid,service,operator,channel):
-        '''
-        外部接口获取免密签约状态
-        :param aid:
-        :param services:
-        :param channel:
-        :return:
-        '''
-
-        url = self.payment_url + '/external/v2/contract/query'
-        services = [{'serviceId':service,'operatorId':operator}]
-        data = {'aid':aid,'services':services,'payChannel':channel}
-        c,b = self.do_post(url,data)
-        self.assert_bm_msg(c,b)
-
     def get_pay_result(self,order_no,vin,category):
         '''
         车机端支付结果查询
@@ -100,23 +85,22 @@ class MAPay(MABase):
         print(b)
 
     def app_pay_info(self,aid,order_no,pay_type):
-        url = self.be_url + '/internal/v2/app/vins/vin/users/{}/orders/{}/payments/qrCode'.format(aid,order_no)
-        data = {'payType':pay_type}
+        url = self.payment_url + '/internal/v2/payments/payInfo'
+        data = {'userId':aid,"orderNo":order_no,'payType':pay_type}
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
-
 
 
 
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
-    aid = '9349824'
-    vin = 'LFV3A23C913046742'
-    pay = MAPay(aid=aid,user='18217539032',password='Abc123456',vin=vin)
-    pay.app_pay_info(aid='4614233',order_no='ma20210422180915944778240',pay_type='12100')
+    aid = '4614233'
+    vin = 'LFVTESTMOSC000129'
+    pay = MAPay(aid=aid,user='15144142651',password='Qq111111',vin=vin)
+    pay.app_pay_info(aid='4614233',order_no='ma20210425133535414774144',pay_type='11100')
 
-    # pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210421130620000126976',pay_type='12100',category='112')
+    # pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210425110748313241664',pay_type='12100',category='112')
     # pay.get_pay_channel(vin='LFVSOP2TEST000050',aid='9349832',order_no='ma20210412145453968479232',category='04')
     # pay.free_pay(vin,order_no='ma20210419093418222774144',code='11101')
     # pay.close_sign(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY',vin='LFVSOP2TEST000407')

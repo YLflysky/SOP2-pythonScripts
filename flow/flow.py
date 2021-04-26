@@ -290,11 +290,11 @@ if __name__ == '__main__':
     # flow.goods_list(['MUSIC_VIP'])
     # flow.bm_get_goods_detail('267')
     # flow.bm_goods_list(aid,categories=['RADIO_VIP'])
-    # flow.bm_flow_list(aid,vin)
+    flow.bm_flow_list(aid='9350963',vin='LFVSOP2TESTLY0043')
     # flow.flow_list(vin,sp='CMCC')
-    # flow.remain_flow(flow_type='wifi',vin='BMTESTYAYWS26GQ4T')
+    flow.remain_flow(flow_type='wifi',vin='LFVSOP2TESTLY0043')
 
-    order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
+    # order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
     # bm_pay.get_qr_code(vin,aid,order_no='ftb20210421143152768380928',pay_type='12103',category='112')
     # bm_pay.free_pay(aid='4614233',vin='LFV2A2BUXL4651255',order_no='ftb2021040910384334640960',channel='11101',useScore=False)
     # flow.bm_goods_list('995939534',['MUSIC_VIP'])

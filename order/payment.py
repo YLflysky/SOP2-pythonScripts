@@ -46,7 +46,7 @@ class Payment(Base):
         '''
 
         url = self.second_url + '/pay/notify/v1/aliPayQrCallBack'
-        data = {'trade_status': 'trade_success', 'app_id': '2018091361389377', 'out_trade_no': out_trade_no,
+        data = {'trade_status': 'trade_success', 'app_id': '2021001142642764', 'out_trade_no': out_trade_no,
                 'receipt_amount': receipt_amount, 'gmt_payment': gmt_payment, 'trade_no': trade_no, **kwargs}
         code, body = self.do_post(url, data)
         self.assert_msg(code, body)
@@ -274,7 +274,7 @@ if __name__ == '__main__':
     order = Order()
     aid = '9351524'
     # pay.free_pay(aid,order_no='ftb20210128154824964307200',code='12101',score=False)
-    # pay.weixin_cdp_callback(out_trade_no='f86d8c224e2447589882d75977867222',nonce=pay.f.md5(),pay_amount=16350)
+    # pay.weixin_cdp_callback(out_trade_no='ftb20210426131351247520192',nonce=pay.f.md5(),pay_amount=1)
     # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
     # pay.agreement_qr_code(aid,'ALI_PAY','FLOW','CMCC','SOP1')
     # pay.pay_channel(aid, order_no='ftb20210118174802710622592') #find VPA order
@@ -284,11 +284,11 @@ if __name__ == '__main__':
     # order.sync_order(aid=aid, orderNo=no, ex='ex%s'%no, origin='SOP1', category='110',
     #              serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
     #              goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
-    pay.get_qr_code(aid='4614233',order_no='ma20210421100043244126976',channel='ALI_PAY')
+    # pay.get_qr_code(aid='9353750',order_no='ftb20210426094422397274432',channel='ALI_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
-    # pay.ali_pay_callback(out_trade_no='f86d8c224e2447589882d75977867222',buyer_logon_id='995939534@qq.com',
-    #                      receipt_amount=0.01, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
+    pay.ali_pay_callback(out_trade_no='ftb20210426131351247520192',buyer_logon_id='995939534@qq.com',
+                         receipt_amount=218.00, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
 
     # pay.contract_sign_notify(aid='221',)
     # pay.sync_pay_result(pay_no='ftb20210331163501667811008',ex_pay_no='yinli18623459409',pay_time=pay.time_delta(),
