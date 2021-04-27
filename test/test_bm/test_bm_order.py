@@ -16,19 +16,18 @@ def setup_module():
 @pytest.mark.order
 @allure.suite('order')
 @allure.title('BM车机端获取订单数量')
-@pytest.mark.parametrize('uid', ('4614907', '1600841231973', '221', '11223344', '4614931')
-    , ids=['用户id=4614907', '用户id=1600841231973', '用户id=221', '用户id=11223344', '用户id=4614931'])
-def test_order_count(uid):
+def test_order_count():
     '''
     测试车机端根据vin和uid获取订单数量
     '''
-    vin = bm.random_vin()
-    count = bm.order_count(vin, uid)['data']
-    sql_res = bm.do_mysql_select('select count(1) as c from `order` where aid="{}" and del_flag=0'.format(uid),
+    aid = '4614931'
+    vin = 'LFVSOP2TEST000353'
+    count = bm.order_count(vin, aid)['data']
+    sql_res = bm.do_mysql_select('select count(1) as c from `order` where aid="{}" and tenant_id="SOP2BM" AND del_flag=0'.format(aid),
                                  'fawvw_order')
     assert sql_res[0]['c'] == int(count)
     with allure.step('测试结果'):
-        allure.attach('uid为{}的订单数量获取成功：{}'.format(uid, count), '测试结果')
+        allure.attach('uid为{}的订单数量获取成功：{}'.format(aid, count), '测试结果')
 
 
 @allure.suite('order')
@@ -38,7 +37,7 @@ def test_order_count_fail():
     '''
     不输入uid
     '''
-    vin = bm.f.pyint()
+    vin = 'LFVSOP2TEST000353'
     uid = None
     res = bm.order_count(vin, uid)
     assert res['status'] == '400'
@@ -52,15 +51,14 @@ def test_order_count_03():
     输入开始和结束时间
     '''
     uid = '4614907'
-    vin = bm.f.pyint()
+    vin = 'LFVSOP2TEST000353'
     begin = '2020-10-01 00:00:00'
     end = bm.time_delta()
     res = bm.order_count(vin, uid, beginTime=begin, endTime=end)
     assert res['description'] == '成功'
     count = res['data']
     sql_res = bm.do_mysql_select(
-        'select count(1) as c from `order` where aid="{}" and create_date between "{}" and "{}"'.format(uid, begin,
-                                                                                                        end),
+        'select count(1) as c from `order` where aid="{}" and tenant_id="SOP2BM" and create_date between "{}" and "{}"'.format(uid, begin,end),
         'fawvw_order')
     assert sql_res[0]['c'] == int(count)
 
@@ -73,12 +71,12 @@ def test_order_count_all_status():
     测试BM车机端获取订单数量，所有状态
     '''
     uid = '4614907'
-    vin = bm.random_vin()
+    vin = 'LFVSOP2TEST000353'
     res = bm.order_count(vin, uid, orderStatus='1000')
     assert res['description'] == '成功'
     count = res['data']
     sql_res = bm.do_mysql_select(
-        'select count(1) as c from `order` where aid="{}" and del_flag=0'.format(uid),
+        'select count(1) as c from `order` where aid="{}" and del_flag=0 and tenant_id="SOP2BM"'.format(uid),
         'fawvw_order')
     assert sql_res[0]['c'] == int(count)
 
@@ -96,7 +94,7 @@ def test_order_count_04(status):
     输入订单状态
     '''
     uid = '221'
-    vin = bm.f.pyint()
+    vin = 'LFVSOP2TEST000353'
     res = bm.order_count(vin, uid, orderStatus=status[0])
     assert res['description'] == '成功'
     count = res['data']
@@ -104,12 +102,12 @@ def test_order_count_04(status):
     print(status_tuple,len(status_tuple))
     if len(status_tuple) >1:
         sql_res = bm.do_mysql_select(
-            'select count(1) as c from `order` where aid="221" and order_status in {} and del_flag=0'.format(status_tuple),
+            'select count(1) as c from `order` where aid="221" and order_status in {} and del_flag=0 and tenant_id="SOP2BM"'.format(status_tuple),
             'fawvw_order')
     else:
         status_tuple = status_tuple[0]
         sql_res = bm.do_mysql_select(
-            "select count(1) as c from `order` where aid='221' and order_status ='{}' and del_flag=0".format(
+            'select count(1) as c from `order` where aid=221 and order_status ="{}" and del_flag=0 and tenant_id="SOP2BM"'.format(
                 status_tuple),'fawvw_order')
     assert sql_res[0]['c'] == int(count)
 
@@ -123,8 +121,7 @@ def test_order_count_05(category):
     根据category查询订单数量
     '''
     uid = '4614907'
-    vin = bm.f.pyint()
-    bm.reload_config()
+    vin = 'LFVSOP2TEST000353'
     res = bm.order_count(vin, uid, orderCategory=category)
     assert res['description'] == '成功'
     count = res['data']
@@ -133,7 +130,7 @@ def test_order_count_05(category):
     categories = []
     for c in order_category:
         categories.append(c['category'])
-    sql = 'select count(1) as c from `order` where aid="4614907" and category in ("{}")'.format('","'.join(categories))
+    sql = 'select count(1) as c from `order` where aid="4614907" and category in ("{}") and tenant_id="SOP2BM"'.format('","'.join(categories))
     sql_res = bm.do_mysql_select(sql, 'fawvw_order')
 
     assert sql_res[0]['c'] == int(count)
@@ -147,8 +144,8 @@ def test_order_count_06():
     输入BM订单中不存在的status，报错
     '''
     uid = '4614907'
-    vin = bm.f.pyint()
-    status = bm.f.word()
+    vin = 'LFVSOP2TEST000353'
+    status = 'SERGIO'
     res = bm.order_count(vin, uid, orderStatus=status)
     assert res['description'] == 'AOD0103:ORDER_STATUS_INVALID'
 

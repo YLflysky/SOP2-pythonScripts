@@ -12,7 +12,7 @@ import time
 @allure.suite('flow')
 @allure.title('BM车机端获取流量商品详情测试用例')
 @pytest.mark.flow
-@pytest.mark.parametrize('id', ['266', '103', '255', '314'])
+@pytest.mark.parametrize('id', ['266', '226', '255', '314'])
 def test_bm_flow_detail(id):
     res = flow.bm_get_goods_detail(id)
     assert res['code'] == 0
@@ -101,6 +101,8 @@ def test_sign_result_notify(param):
 def test_sign_result_notify_success():
     aid = '122'
     vin = 'LFVSOP2TEST000353'
+
+    flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
     lk.prt('aid="122" 已经微信签约，支付宝不能签约')
     order_no = flow.bm_create_flow_order(goods_id='253', aid=aid, vin=vin,quantity=1)['data']['orderNo']
     pay_channel = bm_pay.get_pay_channel(vin,aid,order_no,category='111')
@@ -305,6 +307,7 @@ def test_cp_common_notify_sop2ma():
 @allure.suite('flow')
 @allure.title('cp-adapter签约结果回调')
 @pytest.mark.parametrize('channel',[1,2],ids=['支付宝签约结果回调','微信签约结果回调'])
+@pytest.mark.skip("MA和SOP1签约结果会入库，暂停自动化")
 def test_cp_sign_result_notify(channel):
     aid = flow.f.pyint()
     res = flow.cp_sign_result_notify(aid, channel, notify_type=1, status=1)

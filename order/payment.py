@@ -287,7 +287,7 @@ if __name__ == '__main__':
     # pay.get_qr_code(aid='9353750',order_no='ftb20210426094422397274432',channel='ALI_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
-    pay.ali_pay_callback(out_trade_no='ftb20210426131351247520192',buyer_logon_id='995939534@qq.com',
+    pay.ali_pay_callback(out_trade_no='ftb20210426170440459520192',buyer_logon_id='995939534@qq.com',
                          receipt_amount=218.00, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
 
     # pay.contract_sign_notify(aid='221',)

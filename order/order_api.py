@@ -1,5 +1,4 @@
 from box.base import Base
-import random
 import os
 import json
 
@@ -83,6 +82,12 @@ class Order(Base):
         url = self.url + '/sm/order/v1/order/orderNo/{}'.format(order_no)
         code, body = self.do_get(url, params={'aid': aid})
         self.assert_msg(code, body)
+
+    def order_list(self,aid,**kwargs):
+        url = self.url + '/sm/order/v1/order/page'
+        data = {'aid':aid,**kwargs}
+        c,b = self.do_get(url,data)
+        self.assert_msg(c,b)
 
     def sync_invoice(self, invoiceNo, status, party,**kwargs):
         '''
@@ -272,18 +277,19 @@ class Order(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = Order()
+    o.order_list(aid='4614233')
     # order_no = o.add_order()
     # o.update_order(order_no='ftb2021032517101694298304',aid='9349643',businessInfo={"name": "sergio", "age": "27", "weight": "145", "height": "174"})
     # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
     # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
     # o.order_detail(aid='9353550',order_no='ftb2021032613421076198304')
     # order_no = o.generate_order_no()['data']
-    o.sync_order(aid='9349640', ex=o.f.md5(), origin='SOP1',category='110',couponId='JD473129355019685888',
-                 serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,orderStatus='WAITING_PAY',
-                 goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
+    # o.sync_order(aid='9349640', ex=o.f.md5(), origin='SOP1',category='110',couponId='JD473129355019685888',
+    #              serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,orderStatus='WAITING_PAY',
+    #              goodsId='123456',brand='VW',businessState='waitingPay',businessStateDesc='be happy')
     # o.sync_refund('9642113','233564422',origin='EP',status='FAILED')
     # o.apply_invoice(aid='9353192', order_no=['ftb20210414145302982208896'], duty_no='91310115560364240G',
     #                 head='钛马信息技术有限公司', phone='18888888888')

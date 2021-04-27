@@ -31,7 +31,7 @@ password = '000000'
 vin = 'LFVTEST1231231231'
 token = b.get_token(token_url,user,password,vin)
 
-ma_order = MAOrder(aid,user,password,vin,token=False)
+ma_order = MAOrder()
 ma_order_adapter = MAOrderAdapter(aid,user,password,vin,token=False)
 bonus = PointsShop(tenant='MA',token=False)
 spare = SpareShop('MA',token=False)

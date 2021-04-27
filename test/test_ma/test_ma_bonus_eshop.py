@@ -74,15 +74,15 @@ def test_get_bonus_list_reverse():
     '''
     测试获取积分列表，测试倒序排序
     '''
-    res = bonus.get_list(category='all',index=1,size=100,sort='desc',sortName='score')
+    res = bonus.get_list(category='all',index=1,size=10,sort='desc',sortName='score')
     if res['total'] != 0:
-        names = []
+        scores = []
         for good in res['data']:
             assert 'score' in good.keys()
-            names.append(good['score'])
-        assert names[0] >= names[-1]
+            scores.append(good['score'])
+        assert int(scores[0]) >= int(scores[-1])
         with allure.step('goods'):
-            allure.attach(str(names),'score')
+            allure.attach(str(scores),'score')
 
 @pytest.fixture()
 def get_goods_id():

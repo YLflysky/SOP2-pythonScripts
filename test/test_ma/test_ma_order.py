@@ -10,23 +10,20 @@ from ..conftest import ma_order,ma_order_adapter
 @pytest.mark.parametrize('data',[(1,19.9,'酷我VIP-1个月'),(3,57,'酷我VIP-3个月'),
                                  (6,108,'酷我VIP-6个月'),(12,204,'酷我VIP-12个月')],
                          ids=['1个月vip','三个月vip','六个月vip','12个月vip'])
-# @pytest.mark.skip(reason='无法连接MA数据库')
+@pytest.mark.skip(reason='无法连接MA数据库')
 def test_create_music_vip(data):
-    aid = ma_order.aid
-    order_no = ma_order.create_goods_order(goods_id=17,category='MUSIC_VIP',aid=aid,quantity=1,point=False,durationTimes=data[0],vin=ma_order.vin)['data']
-    sql_res_payment = ma_order.do_mysql_select('select * from ORDER_ITEM where orderId="{}"'.format(order_no),'uat_mosc_payment','MA')
+    order_no = ma_order.create_goods_order(goods_id=17,category='MUSIC_VIP',aid='4614183',quantity=1,point=False,durationTimes=data[0],vin='LFVTEST1231231231')['data']
     sql_res_order = ma_order.do_mysql_select('SELECT * FROM ORDER_MASTER WHERE orderNo="{}"'.format(order_no),'uat_mosc_order','MA')
-    assert len(sql_res_order) == len(sql_res_payment) == 1
-    assert sql_res_payment[0]['goodsName'] == sql_res_order[0]['orderTitle'] == data[-1]
-    assert sql_res_payment[0]['orderPrice'] == sql_res_order[0]['actualPayAmount'] == data[1]
-    ma_order.get_ma_qr_code(order_no,'11100')
+    assert len(sql_res_order) == 1
+    assert sql_res_order[0]['orderTitle'] == data[-1]
+    assert sql_res_order[0]['actualPayAmount'] == data[1]
 
 @pytest.mark.ma_order
 @allure.suite('ma_order')
 @allure.title('权益开通后,更改订单状态为FINISHED')
-# @pytest.mark.skip(reason='无法连接MA数据库')
+@pytest.mark.skip(reason='无法连接MA数据库')
 def test_update_status_finish():
-    order_no = ma_order.create_goods_order(goods_id=17,category='MUSIC_VIP',aid=ma_order.aid,quantity=1,point=False,durationTimes=1,vin=ma_order.vin)['data']
+    order_no = ma_order.create_goods_order(goods_id=17,category='MUSIC_VIP',aid='4614183',quantity=1,point=False,durationTimes=1,vin='LFVTEST1231231231')['data']
     ma_order_adapter.update_status_finish(order_no)
     sql_res = ma_order.do_mysql_select('select * from ORDER_MASTER WHERE orderNo="{}"'.format(order_no),'uat_mosc_order','MA')
     try:
@@ -39,9 +36,9 @@ def test_update_status_finish():
 @pytest.mark.ma_order
 @allure.suite('ma_order')
 @allure.title('更改订单业务状态')
-# @pytest.mark.skip(reason='无法连接MA数据库')
+@pytest.mark.skip(reason='无法连接MA数据库')
 def test_update_status_finish():
-    order_no = ma_order.create_goods_order(goods_id=17,category='MUSIC_VIP',aid=ma_order.aid,quantity=1,point=False,durationTimes=1,vin=ma_order.vin)['data']
+    order_no = ma_order.create_goods_order(goods_id=17,category='MUSIC_VIP',aid='4614183',quantity=1,point=False,durationTimes=1,vin='LFVTEST1231231231')['data']
     ma_order.update_business(order_no,status='JOJO',desc='NOTHING_TO_WORRY_ABOUT')
     sql_res = ma_order.do_mysql_select('select * from ORDER_MASTER WHERE orderNo="{}"'.format(order_no),'uat_mosc_order','MA')
     try:

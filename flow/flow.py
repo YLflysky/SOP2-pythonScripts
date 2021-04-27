@@ -277,12 +277,12 @@ if __name__ == '__main__':
     bm_pay = BMPayment()
     # user_data = flow.read_yml('../conf','user.yml')
     # user_data = user_data['uat_zqs']
-    aid = '4614233'
+    aid = '122'
     goods_id = 253
     vin = 'LFV2A2BUXL4651255'
     iccid = '89860000000000009028'
     # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
-    # flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
+    flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
     # success_attr={'thirdPartyPaymentSerial':'qq995939534','payChannel':'WECHAT_PAY','paidTime':flow.time_delta(formatted='%Y%m%d%H%M%S')}
     # flow.common_callback(id='ftb20210309142502218860160', category=1, status='1000_00', origin_id='8ba0df0bf47f4c9fa258ea63decb3c7a',
     #                      additional_attrs=success_attr)
@@ -290,9 +290,9 @@ if __name__ == '__main__':
     # flow.goods_list(['MUSIC_VIP'])
     # flow.bm_get_goods_detail('267')
     # flow.bm_goods_list(aid,categories=['RADIO_VIP'])
-    flow.bm_flow_list(aid='9350963',vin='LFVSOP2TESTLY0043')
+    # flow.bm_flow_list(aid='9350963',vin='LFVSOP2TESTLY0043')
     # flow.flow_list(vin,sp='CMCC')
-    flow.remain_flow(flow_type='wifi',vin='LFVSOP2TESTLY0043')
+    # flow.remain_flow(flow_type='wifi',vin='LFVSOP2TESTLY0043')
 
     # order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
     # bm_pay.get_qr_code(vin,aid,order_no='ftb20210421143152768380928',pay_type='12103',category='112')

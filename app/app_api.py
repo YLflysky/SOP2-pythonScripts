@@ -207,12 +207,18 @@ class App(Base):
         c,b = self.do_get(url,data,gateway='APP')
         self.assert_bm_msg(c,b)
 
+    def get_invoice_info(self,order_no):
+        url = self.mobile_url + '/oneapp/invoice/v1/info'
+        data = {'orderNo':order_no}
+        c,b = self.do_post(url,None,data,gateway='APP')
+        self.assert_bm_msg(c,b)
+
 if __name__ == '__main__':
     import json
     os.environ['ENV'] = 'UAT'
     # app = App(name='15144142651',password='Qq111111',aid='4614233')
-    app = App(name='19900001122',password='111111',aid='4614910')
-    # app = App(name='15330011918',password='000000',aid='4614183')
+    # app = App(name='19900001122',password='111111',aid='4614910')
+    app = App(name='15330011918',password='000000',aid='4614183')
     vim_bm = 'LFV2A2BUXL4651255'
     vim_ma = 'LFVTESTMOSC000129'
     vim_sop1 = 'LFV1A23C6L3309793'
@@ -233,10 +239,9 @@ if __name__ == '__main__':
     # app.free_access_pay(vin='LFV2A2BUXL4651255',channel='ALPAY',order_no='ftb2021040911024205240960')
     # app.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_bm,count=1,durationDays=3)
     # wifi_order=app.create_order(goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',vin=vim_ma,count=1)['data']['orderNumber']
-    app.get_pay_url(order_no='ma20210425143828894774144',channel='QR_WEIXIN')
-    # app.get_order_list(orderStatus=None,orderCategoryList=[''],tenantIdList=['SOP2BM'])
+    # app.get_pay_url(order_no='ma20210426171931090774144',channel='QR_ALIPAY')
+    app.get_order_list(orderStatus=None,orderCategoryList=None,tenantIdList=['SOP2MA'])
     # app.get_order_detail(orderNo='M202104250924208716062687')
-    # appmusic.do_order_delete(orderNo='M202104221759422505394367')
     # app.do_order_cancel(orderNo=wifi_order)
 
 

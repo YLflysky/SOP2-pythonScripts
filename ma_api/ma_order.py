@@ -26,6 +26,8 @@ class MAOrder(Base):
     def __init__(self):
         super().__init__()
         self.gate = True
+        if os.getenv('ENV') not in ('CLOUD','PERF'):
+            self.env = 'UAT'
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'pay_host')
         self.order_url = self.read_conf('ma_env.conf', self.env, 'order_host')
 

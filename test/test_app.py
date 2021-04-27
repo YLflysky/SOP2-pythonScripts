@@ -2,7 +2,7 @@ import pytest
 import allure
 import random
 from box.lk_logger import lk
-from .conftest import app,vins,aid,app_xmly,ma_order
+from .conftest import app,vins,aid,app_xmly
 from app.app_api import App
 
 
@@ -93,7 +93,7 @@ def test_app_cmcc_sign():
 @pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
 def test_app_pay_url_flow(channel):
     vin = 'LFVSOP2TEST000353'
-    order_no = app.create_order(goods_id='253',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
+    order_no = app.create_order(goods_id='5b7cf4f565914cab86cf71ef9ca34e99',category='MEDIA_FLOW',vin=vin,count=1)['data']['orderNumber']
     res = app.get_pay_url(order_no,channel)
     assert res['data']['payInfo']
 
@@ -126,7 +126,7 @@ def test_app_pay_url_radio(channel):
 @pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
 def test_app_pay_url_sop2ma(channel):
     vin = 'LMGLS1G53H1003120'
-    order_no = ma_order.create_goods_order(goods_id='ca85c936d2564debb89e52bf11692e2f',category='MEDIA_FLOW',aid='4614932',vin=vin,quantity=1)['data']
+    order_no = app.create_order(goods_id='ca85c936d2564debb89e52bf11692e2f',category='MEDIA_FLOW',vin=vin,quantity=1)['data']
     res = app.get_pay_url(order_no,channel)
     assert res['data']['payInfo']
 
