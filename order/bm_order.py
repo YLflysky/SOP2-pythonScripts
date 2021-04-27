@@ -150,11 +150,11 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
     from order.bm_payment import BMPayment
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     pay = BMPayment()
-    xmly_aid = '9353750'
+    xmly_aid = '4614183'
     kuwo_aid = '4614910'
     vin = 'LFVTEST1231231231'
     # o.bm_update_pay(bm_order='20200921133430118139264',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
@@ -173,6 +173,6 @@ if __name__ == '__main__':
     # o.reload_config()
     # o.bm_order_detail(aid='9353750',order_no='ftb202101251612557401019904',vin=None)
     # o.bm_delete_order(aid='9349485',order_no='ftb20210315155832237913408')
-    # order_no = o.goods_order_create(tenant_id='VW',aid=xmly_aid,vin=vin,goods='236',quantity=1)['data']['orderNo']
+    order_no = o.goods_order_create(tenant_id='VW',aid=xmly_aid,vin=vin,goods='236',quantity=1)['data']['orderNo']
     # order_no = o.goods_order_create(tenant_id='VW',aid=kuwo_aid,vin=vin,goods='226',quantity=1)['data']['orderNo']
     # pay.get_qr_code(vin,aid=kuwo_aid,order_no=order_no,pay_type='11100',category='110')

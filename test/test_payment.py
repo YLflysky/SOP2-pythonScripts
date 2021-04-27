@@ -1,6 +1,6 @@
 import pytest
 from .conftest import pay
-from .conftest import order, flow, bm_order, ma_order, sop1_order
+from .conftest import bm_order, ma_order, sop1_order,ma_pay
 import allure
 from box.lk_logger import lk
 
@@ -179,6 +179,7 @@ def test_ali_pay_cdp_callback_02():
 @allure.suite('payment')
 @allure.title('支付宝cdp回调SOP1')
 @pytest.mark.payment
+@pytest.mark.skip("不能连接数据库")
 def test_ali_pay_cdp_callback_sop1():
     '''
     输入的out_trade_no不在FTB2.2数据库中查询到，调用SOP1的service
@@ -212,13 +213,14 @@ def test_ali_pay_cdp_callback_sop1():
 @allure.suite('payment')
 @allure.title('支付宝cdp回调SOP2MA')
 @pytest.mark.payment
+@pytest.mark.skip("不能连接数据库")
 def test_ali_pay_cdp_callback_sop2ma():
     '''
     输入的out_trade_no为sop2ma订单的
     '''
     order_no = ma_order.create_goods_order(aid='4614183', goods_id='17', category='MUSIC_VIP', quantity=1, point=False,
                                            durationTimes=1, vin='LFVTEST1231231231')['data']
-    ma_order.get_ma_qr_code(order_no, pay_type='11100')
+    ma_pay.get_qr_code(aid='4614183',vin='LFVTEST1231231231',order_no=order_no, pay_type='11100',category='01')
     out_trade_no = ma_order.do_mysql_select(
         'select tempOrderId from ORDER_ID_RELATION where orderId="{}"'.format(order_no), 'uat_mosc_payment', 'MA')
     assert len(out_trade_no) == 1

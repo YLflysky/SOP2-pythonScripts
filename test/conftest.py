@@ -31,7 +31,7 @@ password = '000000'
 vin = 'LFVTEST1231231231'
 token = b.get_token(token_url,user,password,vin)
 
-ma_order = MAOrder()
+
 ma_order_adapter = MAOrderAdapter(aid,user,password,vin,token=False)
 bonus = PointsShop(tenant='MA',token=False)
 spare = SpareShop('MA',token=False)
@@ -46,24 +46,18 @@ bonus.header['authorization'] = token
 spare.header['authorization'] = token
 ma_shop.header['authorization'] = token
 ma_calendar.header['authorization'] = token
-# ma_order.header['authorization'] = token
 ma_pay.header['authorization'] = token
 ma_order_adapter.header['authorization'] = token
 ma_group_driving.header['authorization'] = token
 ma_car.header['authorization'] = token
 sop1_order.header['authorization'] = token
 
-
-
+ma_order = MAOrder()
 pay = Payment()
 order = Order()
 bm_pay = BMPayment()
 bm_order = BMOrder()
 flow = Flow()
-
-name = '13353116624'
-password = '000000'
-aid = '9353497'
 
 vins = [('LFVSOP2TESTLY0003','SOP2BM'),
         ('LFVSOP2TESTLY0002','SOP2MA'),
@@ -71,9 +65,8 @@ vins = [('LFVSOP2TESTLY0003','SOP2BM'),
         ('LFVSOP2TESTLY0097','MEB'),
         ('LFVSOP2TESTLY0011','SOP1')]
 
-app = App(name,password,aid=aid)
+app = App(user,password,aid=aid)
 
-app_xmly = App(name='13353110073',password='000000',aid='9354046')
 
 
 

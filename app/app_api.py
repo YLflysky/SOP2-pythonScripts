@@ -206,6 +206,7 @@ class App(Base):
         data = {'orderNo':order_no}
         c,b = self.do_get(url,data,gateway='APP')
         self.assert_bm_msg(c,b)
+        return b
 
     def get_invoice_info(self,order_no):
         url = self.mobile_url + '/oneapp/invoice/v1/info'
@@ -238,9 +239,9 @@ if __name__ == '__main__':
     # app.calendar_mobile_find_all('LFVSOP2TESTLY0049')
     # app.free_access_pay(vin='LFV2A2BUXL4651255',channel='ALPAY',order_no='ftb2021040911024205240960')
     # app.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_bm,count=1,durationDays=3)
-    # wifi_order=app.create_order(goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',vin=vim_ma,count=1)['data']['orderNumber']
+    wifi_order=app.create_order(goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',vin=vim_sop1,count=1)['data']['orderNumber']
     # app.get_pay_url(order_no='ma20210426171931090774144',channel='QR_ALIPAY')
-    app.get_order_list(orderStatus=None,orderCategoryList=None,tenantIdList=['SOP2MA'])
+    # app.get_order_list(orderStatus=None,orderCategoryList=None,tenantIdList=['SOP2MA'])
     # app.get_order_detail(orderNo='M202104250924208716062687')
     # app.do_order_cancel(orderNo=wifi_order)
 

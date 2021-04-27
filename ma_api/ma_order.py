@@ -143,34 +143,7 @@ class MAOrder(Base):
         self.assert_bm_msg(c,b)
         return b
 
-    def get_ma_qr_code(self, order_no, pay_type):
-        '''
-        MA订单获取支付二维码
-        :param aid: 用户id
-        :param order_no: 订单号
-        :param pay_type: 支付类型11100支付宝普通支付11103支付宝支付并签约12100,12103
-        :return:
-        '''
-        url = self.payment_url + '/api/v2/vins/{}/users/{}/orders/{}/payments/qrCode'.format(self.vin, self.aid,
-                                                                                                  order_no)
-        data = {'payType': pay_type}
-        c, b = self.do_get(url, data)
-        print(b)
-        assert c == 200
 
-    def ma_release_sign(self,aid,vin,channel,service,operator):
-        '''
-        MA免密解约
-        :param channel:签约渠道WXPAY,ALPAY
-        :param service: 业务，目前支持GAS,03
-        :param operator: CP，目前支持JDO,030003
-        :return:
-        '''
-        url = self.payment_url + '/internal/v2/app/contract/unsign'
-        data = {'operatorId': operator, 'payChannel': channel, 'serviceId': service}
-        c, b = self.do_post(url, data)
-        self.assert_bm_msg(c, b)
-        return b
 
     def apply_invoice(self,order_no,i_channel,i_type,i_title,tax,email,**kwargs):
         '''
@@ -232,7 +205,7 @@ if __name__ == '__main__':
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
     # ma_order.alipay_callback()
     # order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin='LFVTESTMOSC000129')['data']
-    order_no = ma_order.create_goods_order(aid=aid,goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin=vin)['data']
-    # ma_order.create_goods_order(aid='9349863',goods_id='1010500100000535429',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000080')
+    # order_no = ma_order.create_goods_order(aid=aid,goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin=vin)['data']
+    ma_order.create_goods_order(aid='4614183',goods_id='1010500100000535429',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000080')
     # ma_order.get_ma_qr_code(order_no='ma20210419141205531225280',pay_type='11100')
 

@@ -17,8 +17,19 @@ class Vechicle(Base):
         self.assert_bm_msg(c,b)
         return b['data']['tenantId']
 
+    def get_hashVin_by_vin(self,vin):
+        '''
+        根据vin码获取加密之后的hashVin
+        :return:
+        '''
+        url = self.vehicle_url + '/vs/ftb-vehicle/public/v1/tenant/get_by_vin'
+        data = {'vin':vin}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
+        return b['data']['tenantId']
+
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
-    Vechicle().get_tenant_by_vin(vin='LFVSOP2TESTLY0002')
+    os.environ['ENV'] = 'SIT'
+    Vechicle().get_tenant_by_vin(vin='LFVSOP2TEST000353')

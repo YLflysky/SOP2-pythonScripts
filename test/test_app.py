@@ -2,7 +2,7 @@ import pytest
 import allure
 import random
 from box.lk_logger import lk
-from .conftest import app,vins,aid,app_xmly
+from .conftest import app,vins,aid
 from app.app_api import App
 
 
@@ -114,21 +114,40 @@ def test_app_pay_url_music(channel):
 @pytest.mark.app
 @pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
 def test_app_pay_url_radio(channel):
-    vin = 'LFVSOP2TESTLY0073'
-    order_no = app_xmly.create_order(goods_id='236',category='RADIO_VIP',vin=vin,count=1)['data']['orderNumber']
-    res = app_xmly.get_pay_url(order_no,channel)
+    vin = 'LFVSOP2TEST000353'
+    order_no = app.create_order(goods_id='1010500100000535429',category='RADIO_VIP',vin=vin,count=1)['data']['orderNumber']
+    res = app.get_pay_url(order_no,channel)
     assert res['data']['payInfo']
 
 
 @allure.suite('app')
-@allure.title('测试APP获取sop2ma流量订单支付URL')
+@allure.title('测试APP获取sop1音乐订单支付URL')
+@pytest.mark.app
+@pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
+def test_app_pay_url_sop1(channel):
+    vin = 'LMGLS1G53H1003120'
+    order_no = app.create_order(goods_id='17',category='MUSIC_VIP',vin=vin,count=1,durationDays=1)['data']['orderNumber']
+    res = app.get_pay_url(order_no,channel)
+    assert res['data']['payInfo']
+
+
+@allure.suite('app')
+@allure.title('测试APP获取SOP2MA流量订单支付URL')
 @pytest.mark.app
 @pytest.mark.parametrize('channel',['QR_ALIPAY','QR_WEIXIN'])
 def test_app_pay_url_sop2ma(channel):
-    vin = 'LMGLS1G53H1003120'
-    order_no = app.create_order(goods_id='ca85c936d2564debb89e52bf11692e2f',category='MEDIA_FLOW',vin=vin,quantity=1)['data']
+    vin = 'LFVTESTMOSC000129'
+    order_no = app.create_order(goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',vin=vin,count=1)['data']['orderNumber']
     res = app.get_pay_url(order_no,channel)
     assert res['data']['payInfo']
+
+
+@allure.suite('app')
+@allure.title('测试APP获取订单详情')
+@pytest.mark.app
+def test_app_order_detail():
+    res = app.order_detail(order_no='ftb202103260628276751024000')
+    assert res['data']['goodsType'] == 'WIFI_FLOW'
 
 
 
