@@ -7,7 +7,7 @@ class MAOrderAdapter(MABase):
         super().__init__(aid, user, password, vin,token)
         self.hu_url = self.read_conf('ma_env.conf', self.env, 'order_adapter_host')
 
-    def assert_bm_msg(self,code,body):
+    def assert_ma_msg(self,code,body):
         print(body)
         assert 200 == code
         assert body['code'] == '000000'
@@ -159,7 +159,7 @@ class MAOrderAdapter(MABase):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     os.environ['GATE'] = 'false'
     aid = '4614233'
     vin = 'LFVTESTMOSC000129'
@@ -168,13 +168,13 @@ if __name__ == '__main__':
     # music.order_list(vin='LFVTEST1231231231',begin=music.time_delta(days=-1000),end=music.time_delta(),order_status='1001',category='01')
     # order_no = ma_order.ma_create_order(aid='9350041', vin='LFVTESTMOSC000129', goods_id='17',durationTimes=1,
     #                                     category='MUSIC_VIP', quantity=1, point=False)['data']['orderNo']
-    ma_order.ma_create_order(aid,goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',
-                             vin=vin,quantity=1)
+    # ma_order.ma_create_order(aid,goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',
+    #                          vin=vin,quantity=1)
     # ma_order.cancel_order(order_no='ma20210316141348247856064')
-    # ma_order.order_detail(aid=aid,order_no='ma20210421111745485126976',vin=vin)
-
+    ma_order.order_detail(aid=aid,order_no='ma20210507130652165344064',vin=vin)
+    #
     # info = {"couponId":"JD159436926191126401","washStoreName":"捌零靓车店"}
-    # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid='9349640',service_id='03',sp_id='030003',
+    # ma_order.sync_order(vin='B6B3118B019AA7AB0D8BA29E753EDAE1',aid=aid,service_id='03',sp_id='030003',
     #                     order_type='RESERVATION',ex_order=ma_order.f.md5(),category='09',title='加油订单',
     #                     business_state='0',desc='待支付',orderStatus='PROCESSING',
     #                     amount=5.00,discount=0.25,pay_amount=4.75,timeout=1,

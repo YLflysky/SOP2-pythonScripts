@@ -11,7 +11,7 @@ class MysqlConfig(Enum):
     # EP_UAT = {'host':'10.20.14.8','port':3306,'username':'faw_ep_uat_rd_r','password':'EZHNoaUYBgPvTXnxiy5S'}
     EP_DEV = {'host':'10.20.14.4','port':3306,'username':'faw_sop2_dev','password':'GURVzuQcTIJ5Z8DL#2dl'}
     EP_LOCAL = EP_DEV
-    SOP2_MA=EP_DEV
+    SOP2_MA = EP_DEV
     EP_UAT = EP_DEV
     SOP2_DEV = {'host':'192.168.133.191','port':3306,'username':'faw_sop2_dev','password':'oJNqwQsUa239GbdYz7Tp'}
     SOP2_SIT = {'host':'192.168.133.178','port':3306,'username':'faw_sop2_sit','password':'d5Au97KWFXH@MGQk3fcU'}
@@ -30,3 +30,6 @@ class KafkaConfig(Enum):
     SOP2_SIT = '192.168.133.176:9092'
     SOP2_UAT = '192.168.133.173:9092'
     MA_UAT = '10.224.32.50:9092'
+
+class RedisConfig(Enum):
+    SOP2_DEV = {'host':'192.168.133.154','port':'6379','password':'Redis@R123'}

@@ -150,11 +150,11 @@ class BMOrder(Base):
 if __name__ == '__main__':
     import os
     from order.bm_payment import BMPayment
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     o = BMOrder()
     pay = BMPayment()
-    xmly_aid = '4614183'
+    xmly_aid = '9353750'
     kuwo_aid = '4614910'
     vin = 'LFVTEST1231231231'
     # o.bm_update_pay(bm_order='20200921133430118139264',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,

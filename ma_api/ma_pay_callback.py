@@ -152,7 +152,7 @@ class MAPayCallback(Base):
         return json.loads(json_str)
 
     def app_pay_info(self,aid,order_no,pay_type):
-        url = self.be_url + '/internal/v2/app/payments/payInfo'
+        url = self.be_url + '/internal/v2/payments/payInfo'
         data = {'userId':aid,"orderNo":order_no,'payType':pay_type}
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
@@ -175,7 +175,7 @@ class MAPayCallback(Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     aid = '9349824'
     vin = 'LFV3A23C913046742'
     pay = MAPayCallback()

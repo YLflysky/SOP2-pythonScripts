@@ -10,7 +10,7 @@ class MABase(Base):
         self.aid = aid
         self.vin = vin
         self.gate = True
-        if os.getenv('ENV') not in ('CLOUD','PERF'):
+        if os.getenv('ENV') not in ('CLOUD','PERF','PROD'):
             self.env = 'UAT'
         if token:
             lk.prt('开始获取token...')
@@ -26,7 +26,7 @@ class MAOrder(Base):
     def __init__(self):
         super().__init__()
         self.gate = True
-        if os.getenv('ENV') not in ('CLOUD','PERF'):
+        if os.getenv('ENV') not in ('PROD','PERF'):
             self.env = 'UAT'
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'pay_host')
         self.order_url = self.read_conf('ma_env.conf', self.env, 'order_host')
@@ -184,13 +184,13 @@ class MAOrder(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     aid = '4614233'
     vin = 'LFVTESTMOSC000129'
     ma_order = MAOrder()
     # ma_order.create_order(aid,vin)
     # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
-    # music_order.order_list(music_order.aid,status=['FINISHED'],category='01',begin=None,end=None)
+    # ma_order.order_list(aid,status=['WAITING_PAY'],category=None,begin=None,end=None)
     # ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
@@ -206,6 +206,6 @@ if __name__ == '__main__':
     # ma_order.alipay_callback()
     # order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin='LFVTESTMOSC000129')['data']
     # order_no = ma_order.create_goods_order(aid=aid,goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin=vin)['data']
-    ma_order.create_goods_order(aid='4614183',goods_id='1010500100000535429',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000080')
+    # ma_order.create_goods_order(aid='4614183',goods_id='1010500100000535429',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000080')
     # ma_order.get_ma_qr_code(order_no='ma20210419141205531225280',pay_type='11100')
 

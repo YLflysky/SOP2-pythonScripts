@@ -11,15 +11,15 @@ class SmartEShop(Base):
             self.url = self.read_conf('sop2_env.conf',self.env,'smart_eshop_host')
         elif tenant == 'MA':
             self.gate = True
-            self.env = 'UAT'
-
-            self.url = self.read_conf('ma_env.conf', 'UAT', 'smart_eshop_host')
+            if os.getenv('ENV') not in ('PROD', 'PERF'):
+                self.env = 'UAT'
+            self.url = self.read_conf('ma_env.conf', self.env, 'smart_eshop_host')
         else:
             print('no such tenant...')
             sys.exit(-1)
         if token:
             lk.prt('开始获取token')
-            self.add_header(self.read_conf('ma_env.conf', 'UAT', 'token_host'))
+            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
 
     def assert_msg(self, code, body):
         print(body)
@@ -102,12 +102,12 @@ class SmartEShop(Base):
 if __name__ == '__main__':
 
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
-    shop = SmartEShop(tenant='BM',token=False)
+    os.environ['ENV'] = 'PROD'
+    shop = SmartEShop(tenant='MA',token=True)
     # shop.refresh_category_and_goods_detail()
     # shop.category()
     # shop.category2()
     # shop.category3(parentId=108000)
     # shop.goods_list(keywords='abcdiqdqw')
-    # shop.goods_list(category2Id=102000)
-    shop.goods_detail(sku_id='123',cp_id='123')
+    shop.goods_list(category2Id=102000)
+    # shop.goods_detail(sku_id='123',cp_id='123')

@@ -1,4 +1,4 @@
-from order.tsp_order import TSPOrder
+from tsp.tsp_order import TSPOrder
 import pytest
 import allure
 import random

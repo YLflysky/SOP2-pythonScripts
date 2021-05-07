@@ -13,6 +13,7 @@ import datetime
 from decimal import *
 from box.db import MysqlConfig
 from box.db import KafkaConfig
+from box.db import RedisConfig
 from faker import Faker
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
@@ -21,7 +22,7 @@ import re
 import random
 from box.my_encoder import MyEncoder
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-# import yaml
+import redis
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -543,6 +544,19 @@ class Base:
             print('send message succeed.')
         except KafkaError as e:
             print('send message failed. [e] ={}'.format(e))
+
+    def write_key_redis(self,key,value,host='SOP2'):
+        '''
+        往redis中写入键值对
+        '''
+        host_map = eval('RedisConfig.{}_{}.value'.format(host,self.env))
+        ip = host_map['host']
+        port = host_map['port']
+        password = host_map['password']
+        pool = redis.ConnectionPool(host=ip,port=port,password=password)
+        conn = redis.Redis(connection_pool=pool)
+        conn.set(key,value)
+        print('写入键值对成功:{}->{}'.format(key,value))
 
     def random_vin(self):
         '''

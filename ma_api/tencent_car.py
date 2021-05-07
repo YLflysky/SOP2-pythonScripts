@@ -11,7 +11,6 @@ class TencentCar(MABase):
         print(body)
         assert code == 200
 
-
     def check_vin(self,vin=None):
 
         url = self.url + '/api/v1/checkVin'
@@ -78,7 +77,7 @@ class TencentCar(MABase):
 if __name__ == '__main__':
 
     import os
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     aid = '4614183'
     vin = 'LFVTEST1231231231'
     car = TencentCar(user='15330011918',password='000000',vin=vin,aid=aid,token=True)
@@ -87,7 +86,7 @@ if __name__ == '__main__':
     car.get_QRcode(vin)
     # car.send_poi_hu(hashVin)
     # car.unbind(vin=vin)
-    # car.get_info('LFVSOP2TEST000030')
+    # car.get_info(vin)
     # car.bind_callback(aid='4614963',vin='B0EEE94911E24DFA3D39B21BBFAE6506',wecar_id=None,action='abc')
 
 

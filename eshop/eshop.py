@@ -58,8 +58,9 @@ class PointsShop(EShop):
             self.url = self.read_conf('sop2_env.conf',self.env,'eshop_host')
         elif tenant == 'MA':
             self.gate = True
-            self.env = 'UAT'
-            self.url = self.read_conf('ma_env.conf', 'UAT', 'eshop_host')
+            if os.getenv('ENV') not in ('PROD', 'PERF'):
+                self.env = 'UAT'
+            self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host')
         if token:
             lk.prt('开始获取token')
             self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
@@ -76,7 +77,8 @@ class SpareShop(EShop):
             self.url = self.read_conf('sop2_env.conf',self.env,'eshop_host2')
         elif tenant == 'MA':
             self.gate = True
-            self.env = 'UAT'
+            if os.getenv('ENV') not in ('PROD', 'PERF'):
+                self.env = 'UAT'
             self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host2')
         if token:
             lk.prt('开始获取token')
@@ -104,7 +106,7 @@ class SpareShop(EShop):
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     shop = SpareShop('MA',token=True)
     # category = shop.get_category_id()
     # print(category)
