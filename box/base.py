@@ -22,6 +22,7 @@ import re
 import random
 from box.my_encoder import MyEncoder
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 import redis
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -350,6 +351,23 @@ class Base:
         self.header['Content-type'] = 'application/json; charset=utf-8'
         return res.status_code, response_body
 
+    def do_post_multipart(self, url, data,params=None,gateway='HU',**kwargs):
+        '''
+        上传multipartFile文件接口测试
+        :param url:
+        :param file_path:
+        :return:
+        '''
+        if self.gate:
+            params = self._calc_digital_sign(url, params,gateway)
+        lk.prt('final post url is:{}'.format(url))
+        self.header['Content-type'] = 'multipart/form-data'
+        lk.prt('final post header is:{}'.format(self.header))
+        res = requests.post(url=url, params=params, data=data, headers=self.header, verify=False,**kwargs)
+        response_body = json.loads(res.text)
+        self.header['Content-type'] = 'application/json; charset=utf-8'
+        return res.status_code, response_body
+
     def do_put(self, url, data,params=None,gateway='HU'):
         if self.gate:
             params = self._calc_digital_sign(url, params,gateway)
@@ -509,12 +527,12 @@ class Base:
         return formatted_time
 
     def assert_msg(self, code, body):
-        print(body)
+        print(json.dumps(body,ensure_ascii=False,indent=4))
         assert 200 == code
         assert 'SUCCEED' == body['returnStatus']
 
     def assert_bm_msg(self,code,body):
-        print(body)
+        print(json.dumps(body,ensure_ascii=False,indent=4))
         assert 200 == code
 
     def str_time(self, data_time: datetime.datetime):
@@ -545,18 +563,7 @@ class Base:
         except KafkaError as e:
             print('send message failed. [e] ={}'.format(e))
 
-    def write_key_redis(self,key,value,host='SOP2'):
-        '''
-        往redis中写入键值对
-        '''
-        host_map = eval('RedisConfig.{}_{}.value'.format(host,self.env))
-        ip = host_map['host']
-        port = host_map['port']
-        password = host_map['password']
-        pool = redis.ConnectionPool(host=ip,port=port,password=password)
-        conn = redis.Redis(connection_pool=pool)
-        conn.set(key,value)
-        print('写入键值对成功:{}->{}'.format(key,value))
+
 
     def random_vin(self):
         '''

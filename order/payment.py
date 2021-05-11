@@ -284,7 +284,7 @@ if __name__ == '__main__':
     # order.sync_order(aid=aid, orderNo=no, ex='ex%s'%no, origin='SOP1', category='110',
     #              serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
     #              goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
-    pay.get_qr_code(aid='4614183',order_no='ftb20210506134738181512000',channel='ALI_PAY')
+    pay.get_qr_code(aid='4614183',order_no='ftb20210507170117882512000',channel='WECHAT_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback(out_trade_no='ftb20210426170440459520192',buyer_logon_id='995939534@qq.com',

@@ -1,6 +1,7 @@
 from box.base import Base
 import random
 from box.lk_logger import lk
+import os
 
 class EShop(Base):
     '''

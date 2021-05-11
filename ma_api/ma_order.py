@@ -1,3 +1,5 @@
+import json
+
 from box.base import Base
 from box.lk_logger import lk
 import os
@@ -32,7 +34,7 @@ class MAOrder(Base):
         self.order_url = self.read_conf('ma_env.conf', self.env, 'order_host')
 
     def assert_msg(self, code, body):
-        print(body)
+        print(json.dumps(body,ensure_ascii=False,indent=4))
         assert 200 == code
         assert body['status'] == 'SUCCEED'
 
@@ -184,7 +186,7 @@ class MAOrder(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'PROD'
+    os.environ['ENV'] = 'UAT'
     aid = '4614233'
     vin = 'LFVTESTMOSC000129'
     ma_order = MAOrder()
@@ -204,7 +206,7 @@ if __name__ == '__main__':
     #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
     # ma_order.alipay_callback()
-    # order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin='LFVTESTMOSC000129')['data']
+    order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin='LFVTESTMOSC000129')['data']
     # order_no = ma_order.create_goods_order(aid=aid,goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin=vin)['data']
     # ma_order.create_goods_order(aid='4614183',goods_id='1010500100000535429',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000080')
     # ma_order.get_ma_qr_code(order_no='ma20210419141205531225280',pay_type='11100')

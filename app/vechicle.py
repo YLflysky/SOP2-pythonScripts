@@ -31,5 +31,5 @@ class Vechicle(Base):
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'SIT'
-    Vechicle().get_tenant_by_vin(vin='LFVSOP2TEST000353')
+    os.environ['ENV'] = 'UAT'
+    Vechicle().get_tenant_by_vin(vin='LFVTESTMOSC000129')
