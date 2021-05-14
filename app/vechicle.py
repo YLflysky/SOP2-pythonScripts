@@ -28,8 +28,9 @@ class Vechicle(Base):
         self.assert_bm_msg(c,b)
         return b['data']['tenantId']
 
+
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
-    Vechicle().get_tenant_by_vin(vin='LFVTESTMOSC000129')
+    os.environ['ENV'] = 'SIT'
+    Vechicle().get_tenant_by_vin(vin='LFVSOP2TESTLY0002')

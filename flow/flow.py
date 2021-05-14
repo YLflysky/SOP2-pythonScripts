@@ -290,7 +290,7 @@ if __name__ == '__main__':
     # flow.goods_list(['MUSIC_VIP'])
     # flow.bm_get_goods_detail('267')
     # flow.bm_goods_list(aid,categories=['RADIO_VIP'])
-    # flow.bm_flow_list(aid='9350963',vin='LFVSOP2TESTLY0043')
+    flow.bm_flow_list(aid='9350963',vin='LFVSOP2TESTLY0043')
     # flow.flow_list(vin,sp='CMCC')
     # flow.remain_flow(flow_type='wifi',vin='LFVSOP2TESTLY0043')
 
@@ -304,8 +304,8 @@ if __name__ == '__main__':
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
     # flow.cp_sign_result_notify(user_id=flow.f.pyint(),channel=1,notify_type=2,status=2)
     # flow.cp_common_notify(id='ftb20210119143548119192512', category=2, status='2000_00', origin_id=flow.f.md5(),channel='WECHAT_PAY')
-    flow.cp_sim_notify(id=flow.f.md5(),date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.9,
-                       asset_type='iccid',asset_id=iccid,package_id='P1001114671')
+    # flow.cp_sim_notify(id=flow.f.md5(),date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.9,
+    #                    asset_type='iccid',asset_id=iccid,package_id='P1001114671')
     # flow.cp_over_due_notify(asset_id=iccid,asset_type='iccid',package_code='P1001183210',
     #                         effective_time=flow.time_delta(formatted='%Y%m%d%H%M%S',days=-10),
     #                         expired_time=flow.time_delta(formatted='%Y%m%d%H%M%S',minutes=-5))

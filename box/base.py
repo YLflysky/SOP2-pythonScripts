@@ -286,6 +286,7 @@ class Base:
             res = requests.post(url=url, data=data, params=params, headers=headers)
             code = res.status_code
             body = res.text
+            lk.prt('登录接口返回-->{}'.format(body))
             body = json.loads(body)
             token_type = body['data']['tokenType']
             access_token = body['data']['accessToken']
@@ -387,7 +388,7 @@ class Base:
             response_body = res.text
         return res.status_code, response_body
 
-    def do_get(self, url, params,gateway='HU'):
+    def do_get(self, url, params,gateway='HU',**kwargs):
         '''
         执行requests.get请求
         :param url: 请求地址
@@ -400,7 +401,7 @@ class Base:
         lk.prt('final get url is:{}'.format(final_url if self.gate else url))
         lk.prt('final get header is:{}'.format(self.header))
         lk.prt('final get param is:{}'.format(params))
-        res = requests.get(url=url, params=params, headers=self.header, verify=False)
+        res = requests.get(url=url, params=params, headers=self.header, verify=False,**kwargs)
 
         try:
             response_body = json.loads(res.text)

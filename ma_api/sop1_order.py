@@ -7,7 +7,8 @@ class SOP1Base(Base):
         self.aid = aid
         self.vin = vin
         self.gate = True
-        self.env = 'UAT'
+        if os.getenv('ENV') not in ('CLOUD', 'PERF', 'PROD'):
+            self.env = 'UAT'
         if token:
             lk.prt('开始获取token...')
             self.add_header(self.read_conf('sop1_env.conf',self.env,'token_host'),user,password,vin)
@@ -15,8 +16,8 @@ class SOP1Base(Base):
 class SOP1Order(SOP1Base):
     def __init__(self, aid, user, password, vin,token=True):
         super().__init__(aid, user, password, vin,token)
-        self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
-        self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
+        self.payment_url = self.read_conf('sop1_env.conf', self.env, 'payment_h5_host')
+        self.url = self.read_conf('sop1_env.conf', self.env, 'hu_host')
         self.mobile_url = self.read_conf('sop1_env.conf', self.env, 'one_app_host')
 
     def sop1_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
@@ -136,6 +137,20 @@ class SOP1Order(SOP1Base):
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
 
+    def app_invoice_info(self,order_no):
+        '''
+        APP端获取发票信息
+        '''
+        url = self.mobile_url + '/mos/payment/public/findOrderDetial'
+        data = {'orderId':order_no}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
+
+    def find_order_by_order_id(self,order_id):
+        url = self.payment_url + '/mos/internal/findOrderItemById'
+        data = {'orderId':order_id}
+        c,b = self.do_get(url,data)
+        self.assert_msg(c,b)
 
 
 if __name__ == '__main__':
@@ -146,11 +161,12 @@ if __name__ == '__main__':
     sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin,token=True)
     # sop1.app_order_detail('M202105110940497928365814')
     # sop1.local_order_create()
+    sop1.find_order_by_order_id('M202105110940497928365814')
     # sop1.get_goods_list(aid,vin,code='MA',brand='VW',product_type='radio_vip')
     # sop1.sop1_calendar_sync()
     # no = sop1.sop1_create_order(aid=aid,vin=vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationDays=1,point=False)['data']['orderNumber']
     # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='ca85c936d2564debb89e52bf11692e2f',category='WIFI_FLOW',quantity=1)
-    sop1.get_qr_code(vin,order_no='M202105110940497928365814',pay_type='12100',aid=aid)
+    # sop1.get_qr_code(vin,order_no='M202105110940497928365814',pay_type='12100',aid=aid)
     # sop1.ali_pay_callback(out_trade_no='b959af854c5c4a68a91de20ca7d5d3a8', buyer_logon_id='995939534@qq.com',
     #                      receipt_amount=0.01, gmt_payment=sop1.time_delta(), trade_no=sop1.f.pyint())
     # success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': 'WECHAT_PAY',

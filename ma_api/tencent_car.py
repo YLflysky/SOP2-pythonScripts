@@ -1,3 +1,5 @@
+import json
+
 from ma_api.ma_order import MABase
 import os,sys
 
@@ -8,7 +10,7 @@ class TencentCar(MABase):
         self.url = self.read_conf('ma_env.conf',self.env,'car_host')
 
     def assert_ma_msg(self,code,body):
-        print(body)
+        print(json.dumps(body,ensure_ascii=False,indent=4))
         assert code == 200
 
     def check_vin(self,vin=None):
@@ -77,10 +79,10 @@ class TencentCar(MABase):
 if __name__ == '__main__':
 
     import os
-    os.environ['ENV'] = 'UAT'
-    aid = '4614183'
-    vin = 'LFVSOP2TEST000071'
-    car = TencentCar(user='15330011918',password='000000',vin=vin,aid=aid,token=True)
+    os.environ['ENV'] = 'PROD'
+    aid = '6837382'
+    vin = 'LFV1A23C6L3309793'
+    car = TencentCar(user='18646085616',password='Qq111111',vin=vin,aid=aid,token=True)
     hashVin = '90B3C60DFB4A4D9C6D88874B62249ACC'
     # car.check_vin(vin)
     # car.get_QRcode(vin)

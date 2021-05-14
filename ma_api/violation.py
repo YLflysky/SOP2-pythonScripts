@@ -15,8 +15,18 @@ class Violation(Base):
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
 
+    def create_violation_order(self):
+        pass
+
+    def get_violation_detail(self,serial_no,):
+        url = self.url + '/mosc-violation/violation-records/{}'.format(serial_no)
+        c,b = self.do_get(url,None)
+        self.assert_bm_msg(c,b)
+
+
 
 if __name__ == '__main__':
     os.environ['ENV'] = 'PROD'
     vio = Violation()
-    vio.get_vin_by_hash_vin(hash_vin='B6B3118B019AA7AB0D8BA29E753EDAE1')
+    # vio.get_vin_by_hash_vin(hash_vin='B6B3118B019AA7AB0D8BA29E753EDAE1')
+    vio.get_violation_detail(serial_no='1902c408427ee0daa7b78555adb5bacc')

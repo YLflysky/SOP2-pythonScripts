@@ -98,9 +98,9 @@ if __name__ == '__main__':
     aid = '4614233'
     vin = 'LFVTESTMOSC000129'
     pay = MAPay(aid=aid,user='15144142651',password='Qq111111',vin=vin)
-    pay.app_pay_info(aid='4614233',order_no='ma20210425133535414774144',pay_type='11100')
+    # pay.app_pay_info(aid='4614233',order_no='ma20210425133535414774144',pay_type='11100')
 
-    # pay.get_qr_code(aid=aid,vin=vin,order_no='ma20210425110748313241664',pay_type='12100',category='112')
+    pay.get_qr_code(aid=aid,vin=vin,order_no='ma2021051411082720261440',pay_type='11100',category='112')
     # pay.get_pay_channel(vin='LFVSOP2TEST000050',aid='9349832',order_no='ma20210412145453968479232',category='04')
     # pay.free_pay(vin,order_no='ma20210419093418222774144',code='11101')
     # pay.close_sign(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY',vin='LFVSOP2TEST000407')

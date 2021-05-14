@@ -13,6 +13,7 @@ class MAPayCallback(Base):
         super().__init__()
         self.gate = True
         self.be_url = self.read_conf('ma_env.conf', self.env, 'pay_be_host')
+        self.h5_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
 
     def ma_contract_sign(self,channel,service,operator,aid,vin):
         '''
@@ -172,14 +173,21 @@ class MAPayCallback(Base):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
+    def h5_find_order_by_temp(self,temp_id):
+        url = self.h5_url + '/mos/internal/findOrderNoByOrderTempNo'
+        data = {'tempOrderId':temp_id}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
+
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'PROD'
+    os.environ['ENV'] = 'UAT'
     aid = '9349824'
     vin = 'LFV3A23C913046742'
     pay = MAPayCallback()
-    pay.app_pay_info(aid='4614233',order_no='ma20210422180915944778240',pay_type='12100')
+    pay.h5_find_order_by_temp(temp_id='32c300611dc44d05a78a2c4f1f1a39d2')
+    # pay.app_pay_info(aid='4614233',order_no='ma20210422180915944778240',pay_type='12100')
     # pay.ali_pay_callback(out_trade_no='68202ee127154b01919f8cca44f877af', buyer_logon_id='995939534@qq.com',
     #                      receipt_amount=0.01, gmt_payment=pay.time_delta(), trade_no=pay.f.pyint())
     # pay.wechat_callback(out_trade_no='fc2c47a42ca849fe98ba133185d71c6c', nonce=pay.f.md5(), pay_amount=16350)

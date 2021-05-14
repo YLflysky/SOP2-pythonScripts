@@ -85,21 +85,20 @@ class Team(TencentCar):
         self.assert_ma_msg(c,b)
 
 
-
-
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'UAT'
-    vin = 'LFVTEST1231231231'
-    t = Team(user='15330011918',password='000000',vin=vin,aid='4614183',token=True)
+    os.environ['ENV'] = 'PROD'
+    vin = 'LFV1A23C6L3309793'
+    aid = '4608272'
+    t = Team(user='18646085616',password='Qq111111',vin=vin,aid='4608272',token=True)
     # t.get_hash_vin(vin='LFVSOP2TESTLY0002')
     t.create_group(vin)
-    # t.leave_group(vin=vin,group='588068249732',open_id='1101503',wecar_id=1)
+    # t.leave_group(vin=vin,group='151861669744099',open_id='1101503',wecar_id=1)
     # open_id = t.get_info(uid,vin)['weChatOpenId']
     # print(open_id)
-    # groupId = t.find_last_group(uid='4613020',vin='LFVSOP2TEST000401')['groupId']
+    # groupId = t.find_last_group(uid=aid,vin=vin)['groupId']
     # invite_pwd = t.find_last_group(uid,vin1)['invitePassword']
-    # t.join_team(vin=vin,group_id='588068249732',invite='292801')
-    # t.get_trip_info('4613020','LFVSOP2TEST000401')
+    # t.join_team(vin=vin,group_id='151861669744099',invite='303630')
+    # t.get_trip_info(aid,vin)
     # t.join_last_group(account='9349628',group='12345',longitude='116.388729',latitude='39.871198',vin='LFVSOP2TEST000007')
 

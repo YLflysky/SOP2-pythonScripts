@@ -86,6 +86,16 @@ class Statement(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
+    def fail_cp_upload(self,sp,s_time,s_type,s_p_type='MONTH'):
+        '''
+        导入失败文件导出
+        '''
+
+        url = self.url + '/statement/uploadFailFile/download'
+        data = {'thirdName':sp,'statementTime':s_time,'statementType':s_type,'statementPeriodType':s_p_type}
+        c,b = self.do_get(url,data,stream=True)
+        # self.assert_msg(c,b)
+
 
 if __name__ == '__main__':
 
@@ -93,11 +103,26 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     s = Statement()
     redis_util = RedisUtils()
-    s.query_base_info(key='spName')
-    # s.cp_file(file_path='../data/JD_OPEN导入账单.xlsx', file_name='sergio', sp='JD_OPEN', s_time='2020-05-01 00:00:00', s_type='ORDER_STATEMENT', s_p_type='MONTH')
-    # redis_util.get_hash_value(key='bill:check_record_map:third:JD_OPEN:ORDER_STATEMENT:20200501000000:false')
-    # s.generate_statement(cp='JD_OPEN',s_time='2021-05-05 00:00:00',percent_platform=10,s_p_type='MONTH',s_type='PAY_STATEMENT')
-    # s.statement_list(third_name='JD_OPEN',beginTime=s.time_delta(days=-15),statementStatus=None)
+    # s.query_base_info(key='statementStatus')
+    # s.cp_file(file_path='../data/JD_OPEN导入账单.xlsx', file_name='JD_OPEN导入账单.xlsx', sp='XIMALAYA', s_time='2020-05-01 00:00:00', s_type='ORDER_STATEMENT', s_p_type='MONTH')
+    s.fail_cp_upload(sp='XIMALAYA',s_time='2020-05-01 00:00:00',s_type='PAY_STATEMENT')
+    # redis_util.get_list_value("bill:upload_fail:XIMALAYA:20200501000000:ORDER_STATEMENT")
+    # maps = ['check_record_map','compare_check_map']
+    # sets = ['check_set','compare_set']
+    # for i in maps:
+    #     third_dict = redis_util.get_hash_value(key='bill:{}:third:XIMALAYA:PAY_STATEMENT:20200501000000:false'.format(i))
+    #     big = 'bill:{}:platform:XIMALAYA:PAY_STATEMENT:20200501000000:false'.format(i)
+    #     for k,v in third_dict.items():
+    #         redis_util.set_hash_value(big_key=big,small_key=k,value=v)
+
+    # for i in sets:
+    #     third_sets = redis_util.get_set_value(key='bill:{}:third:XIMALAYA:PAY_STATEMENT:20200501000000:false'.format(i))
+    #     key = 'bill:{}:platform:XIMALAYA:PAY_STATEMENT:20200501000000:false'.format(i)
+    #     for i in third_sets:
+    #         redis_util.write_set_value(key,i)
+
+    # s.generate_statement(cp='XIMALAYA',s_time='2020-05-05 00:00:00',percent_platform=10,s_p_type='MONTH',s_type='PAY_STATEMENT')
+    # s.statement_list(third_name='XIMALAYA',beginTime=None,statementStatus=None)
     # s.item_list(s_no='DZD20210510102459819393216',status='UNCHECK')
     # s.item_check(s_no='DZD20210510102459819393216',s_c_no='2',s_m_amount=99.00,s_r_no=1,remarks='jojo')
     # print(redis_util.conn.mget('bill:check_set:platform:KUWO:PAY_STATEMENT:20210501000000:false'))
