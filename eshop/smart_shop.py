@@ -5,7 +5,7 @@ from box.lk_logger import lk
 
 class SmartEShop(Base):
 
-    def __init__(self,tenant,token):
+    def __init__(self,tenant,token,name='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183'):
         super().__init__()
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'smart_eshop_host')
@@ -19,11 +19,10 @@ class SmartEShop(Base):
             sys.exit(-1)
         if token:
             lk.prt('开始获取token')
-            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
+            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'),name,password,vin)
 
     def assert_msg(self, code, body):
-        print(body)
-        assert 200 == code
+        self.assert_bm_msg(code,body)
 
 
     def category(self):
@@ -103,11 +102,11 @@ if __name__ == '__main__':
 
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'PROD'
-    shop = SmartEShop(tenant='MA',token=True)
+    shop = SmartEShop(tenant='MA',token=True,name='13618079403',password='xyz2020',vin='LFVSOP2TESTLY0040')
     # shop.refresh_category_and_goods_detail()
     # shop.category()
     # shop.category2()
     # shop.category3(parentId=108000)
     # shop.goods_list(keywords='abcdiqdqw')
-    shop.goods_list(category2Id=102000)
+    shop.goods_list(categoryId=652,size=20)
     # shop.goods_detail(sku_id='123',cp_id='123')

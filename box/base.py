@@ -22,8 +22,6 @@ import re
 import random
 from box.my_encoder import MyEncoder
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from requests_toolbelt.multipart.encoder import MultipartEncoder
-import redis
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -53,6 +51,15 @@ class Base:
         self.header['Did'] = 'VW_HU_CNS3_abaa-11111.11.11111112_v3.0.1_v0.0.1'
         self.header['authorization'] = self.get_token(url, user, password, vin)
         self.header['Timestamp'] = self.get_time_stamp()
+
+    def cert(self):
+        '''
+        双向认证
+        '''
+
+        client_path = os.path.join(self.get_pro_path(), 'cert/cs-client.crt')
+        key_path = os.path.join(self.get_pro_path(), 'cert/cs-pk.key')
+        return (client_path,key_path)
 
     def get_time_stamp(self,formartted='%Y-%m-%d %H:%M:%S', days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
         """获取毫秒级时间戳
@@ -318,7 +325,7 @@ class Base:
             data = data.encode('utf-8')
         headers = headers if headers else self.header
         lk.prt('final post header is:{}'.format(headers))
-        res = requests.post(url=url, data=data, params=params, headers=headers, verify=True, **kwargs)
+        res = requests.post(url=url, data=data, params=params, headers=headers, verify=True,cert=self.cert(), **kwargs)
         try:
             response_body = json.loads(res.text)
         except Exception as e:
@@ -346,7 +353,7 @@ class Base:
         lk.prt('final post header is:{}'.format(self.header))
         f = open(file_path, 'rb')
         files = {'file': f}
-        res = requests.post(url=url, params=params, data=data, headers=self.header, files=files, verify=False)
+        res = requests.post(url=url, params=params, data=data, headers=self.header, files=files,cert=self.cert(), verify=False)
         f.close()
         response_body = json.loads(res.text)
         self.header['Content-type'] = 'application/json; charset=utf-8'
@@ -364,7 +371,7 @@ class Base:
         lk.prt('final post url is:{}'.format(url))
         self.header['Content-type'] = 'multipart/form-data'
         lk.prt('final post header is:{}'.format(self.header))
-        res = requests.post(url=url, params=params, data=data, headers=self.header, verify=False,**kwargs)
+        res = requests.post(url=url, params=params, data=data, headers=self.header,cert=self.cert(), verify=False,**kwargs)
         response_body = json.loads(res.text)
         self.header['Content-type'] = 'application/json; charset=utf-8'
         return res.status_code, response_body
@@ -380,7 +387,7 @@ class Base:
         lk.prt('final put header is:{}'.format(self.header))
         if data is not None:
             data = data.encode('utf-8')
-        res = requests.put(url=url, params=params, data=data, headers=self.header, verify=False)
+        res = requests.put(url=url, params=params, data=data, headers=self.header,cert=self.cert(), verify=False)
         try:
             response_body = json.loads(res.text)
         except Exception as e:
@@ -401,21 +408,37 @@ class Base:
         lk.prt('final get url is:{}'.format(final_url if self.gate else url))
         lk.prt('final get header is:{}'.format(self.header))
         lk.prt('final get param is:{}'.format(params))
-        res = requests.get(url=url, params=params, headers=self.header, verify=False,**kwargs)
+        res = requests.get(url=url, params=params, headers=self.header, verify=False,cert=self.cert(),**kwargs)
 
         try:
             response_body = json.loads(res.text)
         except Exception as e:
             lk.prt('解析json字符串出错:\n{}'.format(res.text))
-            response_body = res.text
+            response_body = res.content
         return res.status_code, response_body
+
+    def do_get_stream(self, url, params,gateway='HU',**kwargs):
+        '''
+        执行requests.get请求，返回content
+        :param url: 请求地址
+        :param params: 请求参数
+        :return: 请求结果
+        '''
+        if self.gate:
+            params = self._calc_digital_sign(url,params,gateway)
+            final_url = url + '?'+parse.urlencode(params)
+        lk.prt('final get url is:{}'.format(final_url if self.gate else url))
+        lk.prt('final get header is:{}'.format(self.header))
+        lk.prt('final get param is:{}'.format(params))
+        res = requests.get(url=url, params=params, headers=self.header,cert=self.cert(), verify=False,**kwargs)
+        return res.status_code, res.content
 
     def do_delete(self, url, params,gateway='HU'):
         if self.gate:
             params = self._calc_digital_sign(url, params,gateway)
         lk.prt('final delete url is:{}'.format(url))
         try:
-            res = requests.delete(url=url, params=params, headers=self.header, verify=False)
+            res = requests.delete(url=url, params=params, headers=self.header,cert=self.cert(), verify=False)
             response_body = json.loads(res.text)
             return res.status_code, response_body
         except Exception as e:

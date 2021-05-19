@@ -19,6 +19,6 @@ class Integral(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'PROD'
+    os.environ['ENV'] = 'UAT'
     i = Integral()
     i.intergral_query(aid='8130975',b_id=1,b_type_id=1,s_type_id=2)

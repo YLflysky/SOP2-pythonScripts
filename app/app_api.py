@@ -7,21 +7,20 @@ class App(Base):
     '''
     ftb2.2提供给oneApp的接口
     '''
-    def __init__(self,name,password,aid):
+    def __init__(self,name,password,aid,token=True):
         super().__init__()
         # APP网关需要验签和token
         self.gate = True
         self.name = name
         self.password = password
         self.uid = aid
-        # self.header['aid'] = aid
         self.mobile_url = self.read_conf('sop2_env.conf', self.env, 'one_app_host')
-        self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
-        lk.prt('开始获取token...')
-        self.cdp_url = self.read_conf('sop2_env.conf', self.env, 'cdp_host')
-        token_url = self.cdp_url + '/user/public/v1/login'
-        self.header['Authorization'] = self.get_token(token_url, self.name, self.password,vin=None,client='APP')
-        self.header['deviceId'] = self.device_id
+        # self.device_id = 'VW_HU_CNS3_GRO-63301.10.23242312_v1.0.1_v0.0.1'
+        if token:
+            lk.prt('开始获取token...')
+            self.cdp_url = self.read_conf('sop2_env.conf', self.env, 'cdp_host')
+            token_url = self.cdp_url + '/user/public/v1/login'
+            self.header['Authorization'] = self.get_token(token_url, self.name, self.password,vin=None,client='APP')
 
     def calendar_mobile_sync(self,current_time,vin,events:list):
         '''
@@ -218,10 +217,10 @@ if __name__ == '__main__':
     import json
     os.environ['ENV'] = 'UAT'
     # app = App(name='15144142651',password='Qq111111',aid='4614233')
-    app = App(name='19900001122',password='111111',aid='4614910')
-    # app = App(name='15330011918',password='000000',aid='4614183')
+    # app = App(name='19900001122',password='111111',aid='4614910')
+    app = App(name='15330011918',password='000000',aid='4614183',token=True)
     vim_bm = 'LFV2A2BUXL4651255'
-    vim_ma = 'LFVSOP2TESTLY0002'
+    vim_ma = 'LFVSOP2TESTLY0005'
     vim_sop1 = 'LFVUB9E75L5368051'
     # app.order_detail(order_no='ma20210514094945242778240')
     # app.contract_sign(vin=vim_bm,channel='WXPAY',cp_seller='CMCC',display_account=1)
@@ -238,8 +237,8 @@ if __name__ == '__main__':
     # app.calendar_mobile_sync(current_time=None,events=events,vin='LFVTESTMOSC052726')
     # app.calendar_mobile_find_all('LFVSOP2TESTLY0049')
     # app.free_access_pay(vin='LFV2A2BUXL4651255',channel='ALPAY',order_no='ftb2021040911024205240960')
-    # app.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_bm,count=1,durationDays=3)
-    app.create_order(goods_id='1010500100000535429',category='RADIO_VIP',vin=vim_ma,count=1)
+    app.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_ma,count=1,durationDays=3)
+    # app.create_order(goods_id='1010500100000535429',category='RADIO_VIP',vin=vim_ma,count=1)
     # wifi_order=app.create_order(goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',vin=vim_ma,count=1)['data']['orderNumber']
     # app.get_pay_url(order_no='ma20210514094945242778240',channel='QR_ALIPAY')
     # app.get_order_list(orderStatus=None,orderCategoryList=None,tenantIdList=None)

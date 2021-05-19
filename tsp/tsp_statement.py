@@ -96,33 +96,72 @@ class Statement(Base):
         c,b = self.do_get(url,data,stream=True)
         # self.assert_msg(c,b)
 
+    def confirm_statement(self,s_no):
+        '''
+        确认账单
+        '''
+        url = self.url + '/statement/confirm'
+        data = {'statementNo':s_no}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
+
+    def abandon_statement(self,s_no,reason):
+        '''
+        废弃账单
+        '''
+        url = self.url + '/statement/cancel'
+        data = {'statementNo':s_no,'cancelReason':reason}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
+
+    def upload_statement_diff(self,s_no):
+        '''
+        导出对账单差异明细
+        '''
+        url = self.url + '/statement/diff/download'
+        data = {'statementNo':s_no}
+        c,b = self.do_get_stream(url,data)
+        assert c == 200
+        with open('../data/{}.xlsx'.format(self.get_time_stamp()),'wb') as obj:
+            obj.write(b)
+
 
 if __name__ == '__main__':
 
     os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
+    cp = 'JD_OPEN'
     s = Statement()
     redis_util = RedisUtils()
+    # redis_util.get_set_value(key='bill:compare_set:third:JD_OPEN:ORDER_STATEMENT:20200501000000:false')
+    # s.confirm_statement(s_no='DZD20210517133549762286720')
+    s.upload_statement_diff(s_no='DZD20210519133028632368640')
+    # s.abandon_statement(s_no='DZD20210510090226206368640',reason='nothing')
     # s.query_base_info(key='statementStatus')
-    # s.cp_file(file_path='../data/JD_OPEN导入账单.xlsx', file_name='JD_OPEN导入账单.xlsx', sp='XIMALAYA', s_time='2020-05-01 00:00:00', s_type='ORDER_STATEMENT', s_p_type='MONTH')
-    s.fail_cp_upload(sp='XIMALAYA',s_time='2020-05-01 00:00:00',s_type='PAY_STATEMENT')
-    # redis_util.get_list_value("bill:upload_fail:XIMALAYA:20200501000000:ORDER_STATEMENT")
+    # s.cp_file(file_path='../data/JD_OPEN PAY账单.xlsx', file_name='JD_OPEN导入账单.xlsx', sp='JD_OPEN', s_time='2020-11-01 00:00:00', s_type='PAY_STATEMENT', s_p_type='MONTH')
+    # s.cp_file(file_path='../data/JD_OPEN_ORDER账单.xlsx', file_name='JD_OPEN导入账单.xlsx', sp='JD_OPEN', s_time='2020-10-01 00:00:00', s_type='ORDER_STATEMENT', s_p_type='MONTH')
+    # s.fail_cp_upload(sp='XIMALAYA',s_time='2020-05-01 00:00:00',s_type='PAY_STATEMENT')
+    # redis_util.get_list_value("bill:upload_fail:{}:20200501000000:ORDER_STATEMENT".format(cp))
+    # redis_util.get_hash_value("bill:check_record_map:platform:JD_OPEN:ORDER_STATEMENT:20201001000000:true")
+    # redis_util.get_set_value("bill:compare_set:platform:JD_OPEN:ORDER_STATEMENT:20201001000000:true")
     # maps = ['check_record_map','compare_check_map']
     # sets = ['check_set','compare_set']
     # for i in maps:
-    #     third_dict = redis_util.get_hash_value(key='bill:{}:third:XIMALAYA:PAY_STATEMENT:20200501000000:false'.format(i))
-    #     big = 'bill:{}:platform:XIMALAYA:PAY_STATEMENT:20200501000000:false'.format(i)
+    #     third_dict = redis_util.get_hash_value(key='bill:{}:third:JD_OPEN:ORDER_STATEMENT:20201001000000:false'.format(i))
+    #     big = 'bill:{}:platform:JD_OPEN:ORDER_STATEMENT:20201001000000:false'.format(i)
+    #     redis_util.del_key(big)
     #     for k,v in third_dict.items():
     #         redis_util.set_hash_value(big_key=big,small_key=k,value=v)
-
+    #
     # for i in sets:
-    #     third_sets = redis_util.get_set_value(key='bill:{}:third:XIMALAYA:PAY_STATEMENT:20200501000000:false'.format(i))
-    #     key = 'bill:{}:platform:XIMALAYA:PAY_STATEMENT:20200501000000:false'.format(i)
+    #     third_sets = redis_util.get_set_value(key='bill:{}:third:JD_OPEN:ORDER_STATEMENT:20201001000000:false'.format(i))
+    #     key = 'bill:{}:platform:JD_OPEN:ORDER_STATEMENT:20201001000000:false'.format(i)
+    #     redis_util.del_key(key)
     #     for i in third_sets:
     #         redis_util.write_set_value(key,i)
 
-    # s.generate_statement(cp='XIMALAYA',s_time='2020-05-05 00:00:00',percent_platform=10,s_p_type='MONTH',s_type='PAY_STATEMENT')
+    # s.generate_statement(cp='JD_OPEN',s_time='2020-10-24 14:00:00',percent_platform=10,s_p_type='MONTH',s_type='ORDER_STATEMENT')
     # s.statement_list(third_name='XIMALAYA',beginTime=None,statementStatus=None)
-    # s.item_list(s_no='DZD20210510102459819393216',status='UNCHECK')
-    # s.item_check(s_no='DZD20210510102459819393216',s_c_no='2',s_m_amount=99.00,s_r_no=1,remarks='jojo')
+    # s.item_list(s_no='DZD20210510090226206368640')
+    # s.item_check(s_no='DZD20210510090226206368640',s_c_no='2',s_m_amount=6.00,s_r_no=1,remarks='jojo')
     # print(redis_util.conn.mget('bill:check_set:platform:KUWO:PAY_STATEMENT:20210501000000:false'))

@@ -159,17 +159,17 @@ class MAOrderAdapter(MABase):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'PROD'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
-    aid = '15867227'
-    vin = 'LFVSOP2TESTLY0040'
-    ma_order = MAOrderAdapter(aid,user='13618079403',password='xyz2020',vin=vin)
+    aid = '4614183'
+    vin = 'LFVTEST1231231231'
+    ma_order = MAOrderAdapter(aid,user='15330011918',password='000000',vin=vin)
     # music = MAOrderAdapter('9349824',user='18217539032',password='Abc123456',vin='LFV3A23C913046742')
-    # music.order_list(vin='LFVTEST1231231231',begin=music.time_delta(days=-1000),end=music.time_delta(),order_status='1001',category='01')
+    ma_order.order_list(vin='LFVTEST1231231231',begin=ma_order.time_delta(days=-1000),end=ma_order.time_delta(),order_status='1003',category='00')
     # order_no = ma_order.ma_create_order(aid='9350041', vin='LFVTESTMOSC000129', goods_id='17',durationTimes=1,
     #                                     category='MUSIC_VIP', quantity=1, point=False)['data']['orderNo']
-    ma_order.ma_create_order(aid,goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',
-                             vin=vin,quantity=1)
+    # ma_order.ma_create_order(aid,goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',
+    #                          vin=vin,quantity=1)
     # ma_order.cancel_order(order_no='ma20210316141348247856064')
     # ma_order.order_detail(aid=aid,order_no='ma20210507130652165344064',vin=vin)
     #

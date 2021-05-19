@@ -12,9 +12,7 @@ class EShop(Base):
         self.url = None
 
     def assert_msg(self, code, body):
-        print(body)
-        assert 200 == code
-        assert body['status'] == 'SUCCEED'
+        self.assert_bm_msg(code,body)
 
     def get_list(self,category,index=1,size=10,**kwargs):
         '''
@@ -53,7 +51,7 @@ class PointsShop(EShop):
     '''
     积分商城API
     '''
-    def __init__(self,tenant,token):
+    def __init__(self,tenant,token,name='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183'):
         super().__init__()
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'eshop_host')
@@ -64,7 +62,7 @@ class PointsShop(EShop):
             self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host')
         if token:
             lk.prt('开始获取token')
-            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
+            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'),name,password,vin)
 
 
 
@@ -72,7 +70,7 @@ class SpareShop(EShop):
     '''
     备件商城API
     '''
-    def __init__(self,tenant,token):
+    def __init__(self,tenant,token,name='15330011918',password='000000',vin='LFVTEST1231231231',aid='4614183'):
         super().__init__()
         if tenant == 'BM':
             self.url = self.read_conf('sop2_env.conf',self.env,'eshop_host2')
@@ -83,7 +81,7 @@ class SpareShop(EShop):
             self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host2')
         if token:
             lk.prt('开始获取token')
-            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'))
+            self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'),name,password,vin)
 
 
     def get_detail(self,goods_id):
@@ -107,11 +105,12 @@ class SpareShop(EShop):
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'PROD'
-    shop = SpareShop('MA',token=True)
-    # category = shop.get_category_id()
+    os.environ['ENV'] = 'UAT'
+    # shop = PointsShop('MA',token=True,name='13618079403',password='xyz2020',vin='LFVSOP2TESTLY0040')
+    shop = PointsShop('MA',token=True)
+    category = shop.get_category_id()
     # print(category)
-    shop.get_list('all',index=1,size=10,sort='asc',sortName='price')
+    # shop.get_list('all',index=1,size=10,sort='asc',sortName='score')
     # goods_id = shop.get_list(category='all')
     # goods_id = goods_id['data'][0]['goodsId']
     # shop.get_detail('45813f7d-5985-4b37-9979-366d84fdaad8')

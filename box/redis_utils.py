@@ -84,3 +84,7 @@ class RedisUtils():
         value = self.conn.hset(big_key,small_key,value)
         print('写入{}键值对成功:{}-->{}'.format(big_key,small_key,value))
 
+    def del_key(self,*key):
+        self.conn.delete(*key)
+        print("删除数据成功:{}".format(key))
+

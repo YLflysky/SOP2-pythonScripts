@@ -99,7 +99,7 @@ class BMOrder(Base):
         self.header['deviceId'] = self.f.word()
         data = {'userId': aid, 'vin': vin, 'goodsId': goods, 'quantity': quantity}
         c, b = self.do_post(url, data)
-        print(b)
+        self.assert_bm_msg(c,b)
         return b
 
     def bm_cancel_order(self,aid,order_no):
@@ -160,19 +160,19 @@ if __name__ == '__main__':
     # o.bm_update_pay(bm_order='20200921133430118139264',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
     #                 pay_time=o.time_delta(),order_amount=0.01,orderStatus='PAY_SUCCESS')
     # o.order_list(vin='LFVSOP2TESTLY0018',aid='9353813',pageSize=300,pageIndex=1,orderStatus='1000',orderCategory='00')
-    o.order_count(vin='LFVSOP2TESTLY0018',uid='9353813',orderStatus='1000',orderCategory='00')
+    # o.order_count(vin='LFVSOP2TESTLY0018',uid='9353813',orderStatus='1000',orderCategory='00')
     # data = {"brand": "VW", "businessExtInfo": {"message": "扩展字段测试"}, "discountAmount": "2000", "orderAmount": "20000",
     #         "orderCategory": "112",
     #         "serviceId": "serviceId002", "serviceOrderState": "serviceOrderState002",
     #         "serviceOrderStateDesc": "serviceOrderStateDesc002", "spId": "spId002", "title": "title_test002",
     #         "userId": xmly_aid, "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509",'orderStatus':'REFUND_SUCCESS'}
     # o.sync_bm_order(o.get_time_stamp(), data)
-    # o.bm_cancel_order(aid='4614928',order_no='20201105140819379385024')
+    # o.bm_cancel_order(aid='9353750',order_no='ftb20210513100114879540672')
     # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
     #                   businessState='success',businessStateDesc='已完成')
     # o.reload_config()
-    # o.bm_order_detail(aid='9353750',order_no='ftb202101251612557401019904',vin=None)
+    # o.bm_order_detail(aid='4614910',order_no='ftb202105181353475581036288',vin=None)
     # o.bm_delete_order(aid='9349485',order_no='ftb20210315155832237913408')
     # order_no = o.goods_order_create(tenant_id='VW',aid=xmly_aid,vin=vin,goods='236',quantity=1)['data']['orderNo']
     # order_no = o.goods_order_create(tenant_id='VW',aid=kuwo_aid,vin=vin,goods='226',quantity=1)['data']['orderNo']
-    # pay.get_qr_code(vin,aid=kuwo_aid,order_no=order_no,pay_type='11100',category='110')
+    pay.get_qr_code(vin,aid=kuwo_aid,order_no='ftb202105191408243561036288',pay_type='11100',category='110')
