@@ -186,15 +186,15 @@ if __name__ == '__main__':
     aid = '9349824'
     vin = 'LFV3A23C913046742'
     pay = MAPayCallback()
-    pay.h5_find_order_by_temp(temp_id='32c300611dc44d05a78a2c4f1f1a39d2')
+    # pay.h5_find_order_by_temp(temp_id='32c300611dc44d05a78a2c4f1f1a39d2')
     # pay.app_pay_info(aid='4614233',order_no='ma20210422180915944778240',pay_type='12100')
     # pay.ali_pay_callback(out_trade_no='68202ee127154b01919f8cca44f877af', buyer_logon_id='995939534@qq.com',
     #                      receipt_amount=0.01, gmt_payment=pay.time_delta(), trade_no=pay.f.pyint())
     # pay.wechat_callback(out_trade_no='fc2c47a42ca849fe98ba133185d71c6c', nonce=pay.f.md5(), pay_amount=16350)
-    # pay.jdo_sign_sync(ali=1,wechat=0,user='10086')
+    # pay.jdo_sign_sync(ali=0,wechat=0,user='10086')
     # pay.sync_pay(aid='9349641',orderNo='ma20210413112322974778240',channel='WECHAT_PAY',discountAmount=2.00,
     #              pay_type='QR_CODE',payAmount=1.00,payTime=pay.get_time_stamp(),pay_status='SUCCESS')
-    # pay.close_sign(aid='9349485',service='27',operator='270001',channel='WECHAT_PAY',vin='LFVSOP2TEST000407')
-    # pay.get_sign_result(aid='9349825',service='03',operator='030003',channel='ALIPAY')
+    # pay.close_sign(aid='4607236',service='03',operator='030001',channel='ALIPAY',vin='LFVSOP2TEST000407')
+    pay.get_sign_result(aid='4607236',service='03',operator='030003',channel='ALIPAY')
     # pay.sign_and_pay_result(vin='LFVSOP2TEST000043',order_no='ma20210413095545831774144',roll_number=1)
     # pay.get_pay_result(order_no='ma20210413095545831774144',vin=vin,category='04')

@@ -21,7 +21,7 @@ class TSPOrder(Base):
 
     def order_export(self,aid,name,brand,**kwargs):
         '''
-        tsp根据条件获取订单列表
+        tsp导出订单
         :param kwargs:
         :return:
         '''
@@ -34,13 +34,23 @@ class TSPOrder(Base):
         assert c == 200
         return b
 
+    def order_detail(self,aid,order_no):
+        '''
+        tsp查询订单详情接口
+        '''
+        url = self.url + '/tsp/order/detail'
+        data = {'aid':aid,'orderNo':order_no}
+        c,b = self.do_get(url,data)
+        self.assert_msg(c,b)
+
 
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'UAT'
     tsp = TSPOrder()
-    tsp.order_list(size=10000)
-    # tsp.order_export(aid='111',name='111',brand='VW',orderNo='ftb20201229')
+    tsp.order_list(size=100,orderCategoryList=['116'])
+    # tsp.order_detail(aid='4606649',order_no='M201903051419301674344526')
+    # tsp.order_export(aid='111',name='111',brand='VW',orderCategoryList=['114'],orderNo='ftb20210506')
 
 

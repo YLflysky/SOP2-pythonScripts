@@ -286,7 +286,7 @@ if __name__ == '__main__':
     # o.update_order(order_no='ftb2021032517101694298304',aid='9349643',businessInfo={"name": "sergio", "age": "27", "weight": "145", "height": "174"})
     # o.del_order(order_no='ftb20210107100255872782336',aid='1609984975665')
     # o.sync_order_pay(pay_no='ftb20210112154054172663552',aid='221',order_no='52038411810511035927',pay_status='FAILED')
-    o.order_detail(aid='9353550',order_no='ftb2021032613421076198304')
+    # o.order_detail(aid='4608442',order_no='ftb20210524114634465151552')
     # order_no = o.generate_order_no()['data']
     # o.sync_order(aid='9349640', ex=o.f.md5(), origin='SOP1',category='110',couponId='JD473129355019685888',
     #              serviceId='MUSIC',spId='KUWO',title='测试支付订单',payAmount=0.01,amount=0.01,orderStatus='WAITING_PAY',

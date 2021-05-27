@@ -165,11 +165,6 @@ class MAOrder(Base):
         c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
-    def get_VWlist(self,beginTime,endTime,orderStatus,pagelndex,pageSize,**kwargs):
-        url = 'http://192.168.133.156:30994/vwlink/hu/mobile/order/v1/orders/list'
-        data = {'beginTime': beginTime,'endTime':endTime,'orderStatus':orderStatus,'pagelndex':pagelndex,'pageSize': pageSize, **kwargs}
-        c,b = self.do_get(url,data)
-        self.assert_bm_msg(c,b)
 
 
     def cancel(self,order_no,aid):
@@ -186,7 +181,7 @@ class MAOrder(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'PROD'
+    os.environ['ENV'] = 'UAT'
     aid = '4614233'
     vin = 'LFVTESTMOSC000129'
     ma_order = MAOrder()
@@ -205,9 +200,7 @@ if __name__ == '__main__':
     #                         pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02,
     #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
-    # ma_order.alipay_callback()
-    order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin='LFVTESTMOSC000129')['data']
-    # order_no = ma_order.create_goods_order(aid=aid,goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',quantity=1,vin=vin)['data']
-    # ma_order.create_goods_order(aid='4614183',goods_id='1010500100000535429',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000080')
-    # ma_order.get_ma_qr_code(order_no='ma20210419141205531225280',pay_type='11100')
+    # order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin='LFVTESTMOSC000129')['data']
+    order_no = ma_order.create_goods_order(aid=aid,goods_id='2335b92573ba4737a86418083eb9744c',category='MEDIA_FLOW',quantity=1,vin=vin)['data']
+    # ma_order.create_goods_order(aid='4608442',goods_id='1010500100000535420',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000075')
 

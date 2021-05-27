@@ -26,7 +26,7 @@ class Violation(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'PROD'
+    os.environ['ENV'] = 'UAT'
     vio = Violation()
-    # vio.get_vin_by_hash_vin(hash_vin='B6B3118B019AA7AB0D8BA29E753EDAE1')
-    vio.get_violation_detail(serial_no='1902c408427ee0daa7b78555adb5bacc')
+    vio.get_vin_by_hash_vin(hash_vin='751C021535B7C3C3E5017ED12AECBDE1')
+    # vio.get_violation_detail(serial_no='1902c408427ee0daa7b78555adb5bacc')

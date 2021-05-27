@@ -1,4 +1,5 @@
 from tsp.tsp_statement import Statement
+from box.lk_logger import lk
 import os
 
 if not os.getenv('ENV'):

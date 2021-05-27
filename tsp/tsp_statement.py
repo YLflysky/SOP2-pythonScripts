@@ -1,4 +1,5 @@
 from box.base import Base
+from box.lk_logger import lk
 from box.redis_utils import RedisUtils
 import os,json
 from requests_toolbelt.multipart.encoder import MultipartEncoder
@@ -18,13 +19,14 @@ class Statement(Base):
         self.assert_msg(c,b)
         return b
 
-    def item_list(self,s_no,**kwargs):
+    def item_list(self,s_no,page_no=1,page_size=20,**kwargs):
         '''
         对账单明细列表
         '''
         url = self.url + '/statement/items'
+        param = {'pageNo':page_no,'pageSize':page_size}
         data = {'statementNo':s_no,**kwargs}
-        c,b = self.do_post(url,data)
+        c,b = self.do_post(url,data,params=param)
         self.assert_msg(c,b)
         return b
 
@@ -45,14 +47,12 @@ class Statement(Base):
         '''
         生成对账单
         '''
-        # self.header['username'] = 'sergio'
-        # self.header['userId'] = '4614183'
-        # self.header['brand'] = 'VW'
         url = self.url + '/statement/generate'
         data = {'thirdName':cp,'statementTime':s_time,'platformProportion':percent_platform,
                 'statementPeriodType':s_p_type,'statementType':s_type,'needThirdStatement':if_cp}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
+        return b
 
     def cp_file(self,file_path,file_name,sp,s_time,s_type,s_p_type,**kwargs):
         '''
@@ -125,17 +125,32 @@ class Statement(Base):
         with open('../data/{}.xlsx'.format(self.get_time_stamp()),'wb') as obj:
             obj.write(b)
 
+    def upload_statement(self,s_no):
+        '''
+        导出对账单
+        '''
+        url = self.url + '/statement/download'
+        data = {'statementNo': s_no}
+        c,b = self.do_get_stream(url,data)
+        assert c == 200
+        with open('../data/对账单.pdf'.format(self.get_time_stamp()), 'wb') as obj:
+            obj.write(b)
+
 
 if __name__ == '__main__':
 
     os.environ['ENV'] = 'DEV'
     os.environ['GATE'] = 'false'
-    cp = 'JD_OPEN'
+
     s = Statement()
     redis_util = RedisUtils()
-    # redis_util.get_set_value(key='bill:compare_set:third:JD_OPEN:ORDER_STATEMENT:20200501000000:false')
-    # s.confirm_statement(s_no='DZD20210517133549762286720')
-    s.upload_statement_diff(s_no='DZD20210519133028632368640')
+    cp = 'CMCC'
+    s_type = 'ORDER_STATEMENT'
+    s_time = '20200401000000'
+    # redis_util.get_set_value(key='bill:compare_set:third:CMCC:ORDER_STATEMENT:20200401000000:false')
+
+    # s.upload_statement_diff(s_no='DZD20210519133028632368640')
+    # s.upload_statement(s_no='DZD20210519133028632368640')
     # s.abandon_statement(s_no='DZD20210510090226206368640',reason='nothing')
     # s.query_base_info(key='statementStatus')
     # s.cp_file(file_path='../data/JD_OPEN PAY账单.xlsx', file_name='JD_OPEN导入账单.xlsx', sp='JD_OPEN', s_time='2020-11-01 00:00:00', s_type='PAY_STATEMENT', s_p_type='MONTH')
@@ -147,21 +162,28 @@ if __name__ == '__main__':
     # maps = ['check_record_map','compare_check_map']
     # sets = ['check_set','compare_set']
     # for i in maps:
-    #     third_dict = redis_util.get_hash_value(key='bill:{}:third:JD_OPEN:ORDER_STATEMENT:20201001000000:false'.format(i))
-    #     big = 'bill:{}:platform:JD_OPEN:ORDER_STATEMENT:20201001000000:false'.format(i)
+    #     third_dict = redis_util.get_hash_value(key='bill:{}:third:{}:{}:{}:false'.format(i,cp,s_type,s_time))
+    #     big = 'bill:{}:platform:{}:{}:{}:false'.format(i,cp,s_type,s_time)
     #     redis_util.del_key(big)
     #     for k,v in third_dict.items():
     #         redis_util.set_hash_value(big_key=big,small_key=k,value=v)
     #
     # for i in sets:
-    #     third_sets = redis_util.get_set_value(key='bill:{}:third:JD_OPEN:ORDER_STATEMENT:20201001000000:false'.format(i))
-    #     key = 'bill:{}:platform:JD_OPEN:ORDER_STATEMENT:20201001000000:false'.format(i)
+    #     third_sets = redis_util.get_set_value(key='bill:{}:third:{}:{}:{}:false'.format(i,cp,s_type,s_time))
+    #     key = 'bill:{}:platform:{}:{}:{}:false'.format(i,cp,s_type,s_time)
     #     redis_util.del_key(key)
     #     for i in third_sets:
     #         redis_util.write_set_value(key,i)
 
-    # s.generate_statement(cp='JD_OPEN',s_time='2020-10-24 14:00:00',percent_platform=10,s_p_type='MONTH',s_type='ORDER_STATEMENT')
+    # res = s.generate_statement(cp=cp,s_time='2020-04-24 14:00:00',percent_platform=25.5,s_p_type='MONTH',s_type=s_type)
     # s.statement_list(third_name='XIMALAYA',beginTime=None,statementStatus=None)
-    # s.item_list(s_no='DZD20210510090226206368640')
-    # s.item_check(s_no='DZD20210510090226206368640',s_c_no='2',s_m_amount=6.00,s_r_no=1,remarks='jojo')
+    s_no = 'DZD20210521163546464675840'
+    for index in range(1,32):
+        items = s.item_list(s_no,page_no=index,page_size=50)
+        for i in items['data']:
+            if not i['checkPersonId']:
+                s.item_check(s_no,s_c_no=i['statementCheckNo'],s_m_amount=i['platformRecordMoney'],s_r_no=1,remarks=s.f.word())
+                lk.prt('{}明细确认成功！'.format(i['statementCheckNo']))
+    # s.confirm_statement(s_no)
+
     # print(redis_util.conn.mget('bill:check_set:platform:KUWO:PAY_STATEMENT:20210501000000:false'))

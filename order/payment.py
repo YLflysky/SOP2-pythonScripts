@@ -77,7 +77,7 @@ class Payment(Base):
         """.format(nonce,out_trade_no,time_stmp,pay_amount)
         self.header['Content-type'] = 'application/xml; charset=utf-8'
         data_sign = self.xml_to_json(data)['xml']
-        sign = self.weixin_sign('abcd1234abcd1234abcd1234abcd1234',data_sign)
+        sign = self.weixin_sign('mosimosimosimosi888888886666AAAA',data_sign)
         data = xml_utils.add_note(data,'sign',sign)
 
         c,b = self.do_post(url,data)
@@ -274,7 +274,7 @@ if __name__ == '__main__':
     order = Order()
     aid = '9351524'
     # pay.free_pay(aid,order_no='ftb20210128154824964307200',code='12101',score=False)
-    # pay.weixin_cdp_callback(out_trade_no='ftb20210426131351247520192',nonce=pay.f.md5(),pay_amount=1)
+    # pay.weixin_cdp_callback(out_trade_no='ftb2021051916082372869632',nonce=pay.f.md5(),pay_amount=1)
     # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
     # pay.agreement_qr_code(aid,'ALI_PAY','FLOW','CMCC','SOP1')
     # pay.pay_channel(aid, order_no='ftb20210118174802710622592') #find VPA order
@@ -284,10 +284,10 @@ if __name__ == '__main__':
     # order.sync_order(aid=aid, orderNo=no, ex='ex%s'%no, origin='SOP1', category='110',
     #              serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
     #              goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
-    # pay.get_qr_code(aid='4614183',order_no='ftb20210507170117882512000',channel='WECHAT_PAY')
+    # pay.get_qr_code(aid='4614233',order_no='ftb202105201347167431036288',channel='WECHAT_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
-    pay.ali_pay_callback(out_trade_no='32c300611dc44d05a78a2c4f1f1a39d2',buyer_logon_id='995939534@qq.com',
+    pay.ali_pay_callback(out_trade_no='ftb2021052014220476069632',buyer_logon_id='995939534@qq.com',
                          receipt_amount=218.00, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
 
     # pay.contract_sign_notify(aid='221',)

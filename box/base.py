@@ -146,7 +146,7 @@ class Base:
         # 2.获取查询参数
         url_query_dict = params
         # 3.添加签名时间，排序
-        url_query_dict["appkey"] = "3717440806"
+        url_query_dict["appkey"] = self.read_conf('sign_appkey.conf',self.env,'hu_ak')
         url_query_dict["signt"] = sign_timestamp
         url_query_dict["nonce"] = nonce
         # url_query_dict["userModel"] = "DEFAULT"
@@ -163,11 +163,11 @@ class Base:
         catent = "_".join(parm_list)
         lk.prt("In calc digital sign, catent is: {}".format(catent))
         # 5.添加应用资源和secret_key
-        secret_key = 'b9784ddc19aa9ec47d2dfa1dfbca7934'
-        secret_key_app = 'F5Pw4vnV7ISCZZhY8gEk7JIYPY4l9b1M'
+        secret_key = self.read_conf('sign_appkey.conf',self.env,'hu_sk_hu')
+        secret_key_app = self.read_conf('sign_appkey.conf',self.env,'hu_sk_app')
         if gateway == 'HU':
             last_url_encode = resource_uri + "_" + catent + "_" + secret_key
-        elif gateway== 'APP':
+        elif gateway == 'APP':
             last_url_encode = resource_uri + "_" + catent + "_" + secret_key_app
         elif gateway.upper() == 'CDP':
             return self._app_sign(url,params)
@@ -202,11 +202,9 @@ class Base:
         # 2.获取查询参数
         url_query_dict = params
         # 3.添加签名时间，排序
-        url_query_dict["appkey"] = "5214621308"
+        url_query_dict["appkey"] = self.read_conf('sign_appkey.conf',self.env,'app_ak')
         url_query_dict["signTimestamp"] = sign_timestamp
         url_query_dict["nonce"] = nonce
-        # url_query_dict["userModel"] = "DEFAULT"
-        # url_query_dict["os"] = "android"
         # 排序并生成字符串
         key_sort = sorted(url_query_dict.keys())
 
@@ -219,7 +217,7 @@ class Base:
         catent = "_".join(parm_list)
         lk.prt("In app sign, catent is: {}".format(catent))
         # 5.添加应用资源和secret_key
-        secret_key = '9ff19739c5aceac61a52eefb3fe3c55e'
+        secret_key = self.read_conf('sign_appkey.conf',self.env,'app_sk')
         sign_url = resource_uri + "_" + catent + "_" + secret_key
 
         lk.prt("In app sign, sign_url is: {}".format(sign_url))
@@ -277,7 +275,7 @@ class Base:
         elif client.upper() in ('APP','CDP'):
             headers = {
                 'Content-Type': 'application/json',
-                'x-namespace-code': 'cdp-uat',
+                'x-namespace-code': 'cdp-{}'.format(self.env.lower()),
                 'x-microservice-name': 'api-gateway',
                 'Did': 'VW_APP_iPhone_2f6394adc4a50a1317bb39579899fdde2b708f95eec31621230c24acc120f078_12.4.1_3.0.7.t2.2'}
             payload = {
@@ -633,14 +631,3 @@ class Base:
     #         data = obj.read()
     #         return yaml.load(data,Loader=yaml.FullLoader)
 
-
-
-
-if __name__ == '__main__':
-    url = 'https://otherbackend-yun-uat-sop2.mosc.faw-vw.com/test-access/tm/user/api/v1/token'
-    b = Base()
-    # print(b.my_json_decoder(url))
-    res = b.match_url(url)
-    print(res)
-    print(help(tuple))
-    # print(b.random_vin())

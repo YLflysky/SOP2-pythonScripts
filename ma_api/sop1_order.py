@@ -16,9 +16,9 @@ class SOP1Base(Base):
 class SOP1Order(SOP1Base):
     def __init__(self, aid, user, password, vin,token=True):
         super().__init__(aid, user, password, vin,token)
-        self.payment_url = self.read_conf('sop1_env.conf', self.env, 'payment_h5_host')
-        self.url = self.read_conf('sop1_env.conf', self.env, 'hu_host')
-        self.mobile_url = self.read_conf('sop1_env.conf', self.env, 'one_app_host')
+        self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
+        self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
+        self.mobile_url = self.read_conf('ma_env.conf', self.env, 'one_app_host')
 
     def sop1_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
         '''
@@ -72,7 +72,7 @@ class SOP1Order(SOP1Base):
         :return:
         '''
         url = self.payment_url + '/mos/internal/alipayQrCallBack'
-        data = {'trade_status': 'trade_success', 'app_id': '2018091361389377', 'out_trade_no': out_trade_no,
+        data = {'trade_status': 'TRADE_SUCCESS', 'app_id': '2021001142642764', 'out_trade_no': out_trade_no,
                 'receipt_amount': receipt_amount, 'gmt_payment': gmt_payment, 'trade_no': trade_no, **kwargs}
         code, body = self.do_post(url, data)
         self.assert_bm_msg(code, body)
@@ -137,13 +137,14 @@ class SOP1Order(SOP1Base):
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)
 
-    def app_invoice_info(self,order_no):
+    def app_invoice(self,order_no,channel):
         '''
-        APP端获取发票信息
+        APP端申请开票
         '''
-        url = self.mobile_url + '/mos/payment/public/findOrderDetial'
-        data = {'orderId':order_no}
-        c,b = self.do_get(url,data)
+        url = self.payment_url + '/public/invoice'
+        data = {"orderId": order_no, "invoiceChannel": channel, "invoiceType": 1, "invoiceTitle": "开票", "taxNumber": "445678909876543",
+                "email": "995939534@qq.com", "mobile": "18623459409", "mailingAddress": "new"}
+        c,b = self.do_post(url,data)
         self.assert_bm_msg(c,b)
 
     def find_order_by_order_id(self,order_id):
@@ -159,15 +160,16 @@ if __name__ == '__main__':
     aid = '4614183'
     vin = 'LFVTEST1231231231'
     sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin,token=True)
+    sop1.app_invoice('M202105131330162678519543','CP')
     # sop1.app_order_detail('M202105110940497928365814')
     # sop1.local_order_create()
-    sop1.find_order_by_order_id('M202105110940497928365814')
+    # sop1.find_order_by_order_id('M202105110940497928365814')
     # sop1.get_goods_list(aid,vin,code='MA',brand='VW',product_type='radio_vip')
     # sop1.sop1_calendar_sync()
     # no = sop1.sop1_create_order(aid=aid,vin=vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationDays=1,point=False)['data']['orderNumber']
     # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='ca85c936d2564debb89e52bf11692e2f',category='WIFI_FLOW',quantity=1)
     # sop1.get_qr_code(vin,order_no='M202105110940497928365814',pay_type='12100',aid=aid)
-    # sop1.ali_pay_callback(out_trade_no='b959af854c5c4a68a91de20ca7d5d3a8', buyer_logon_id='995939534@qq.com',
+    # sop1.ali_pay_callback(out_trade_no='9c1eb9f8a8f6475895465b4f13d9abba', buyer_logon_id='995939534@qq.com',
     #                      receipt_amount=0.01, gmt_payment=sop1.time_delta(), trade_no=sop1.f.pyint())
     # success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': 'WECHAT_PAY',
     #                 'paidTime': sop1.time_delta(formatted='%Y%m%d%H%M%S')}

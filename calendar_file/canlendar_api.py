@@ -39,7 +39,7 @@ class Calendar(Base):
         '''
         获取用户全部日历事件
         '''
-        url = self.url + '/api/v1/calendar/event/findAll'
+        url = 'https://mobile.mosc.faw-vw.com/prod/tm/mos/37w-calendar/public/calendar/event/findAll'
         if update_time:
             data = {'updateTime':update_time}
         else:
@@ -59,7 +59,7 @@ class Calendar(Base):
         return body
 
     def add_event(self,start_time,end_time,**kwargs):
-        url = self.url + '/api/v1/calendar/event/add'
+        url = 'https://mobile.mosc.faw-vw.com/prod/tm/mos/37w-calendar/public/calendar/event/sync'
         data = {'eventStartTime':start_time,'eventEndTime':end_time,**kwargs}
         code,body = self.do_post(url,data)
         print(body)
@@ -121,13 +121,12 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     os.environ['ENV'] = 'PROD'
     c = Calendar(tenant='MA',token=True,name='13618079403',password='xyz2020',vin='LFVSOP2TESTLY0040',aid='15867227')
-    c.find_detail(id='1')
+    # c.find_detail(id='1')
     # c.get_last_time()
-    # event = {'localEventId': b.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
-    #                  'eventStartTime': b.get_time_stamp(days=-1), 'eventEndTime': b.get_time_stamp(days=1)}
-    # bm_c.mobile_sync(current_time=None,events=[event])
-    # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10))
-    # c.find_all_event(update_time=None)
+    # event = {'localEventId': c.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
+    #                  'eventStartTime': c.get_time_stamp(days=-1), 'eventEndTime': c.get_time_stamp(days=1)}
+    # c.add_event(start_time=c.get_time_stamp(days=-1),end_time=c.get_time_stamp(days=10),events=[event])
+    c.find_all_event(update_time=None)
     # data = {'apiType': 'TYPE_ONE', 'startDate': '1612763053000', 'endDate': '1618535559000'}
     # bm_c.get_event_list(data)
     # bm_c.del_event(event_id=1)

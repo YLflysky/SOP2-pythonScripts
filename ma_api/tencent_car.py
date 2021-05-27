@@ -79,16 +79,16 @@ class TencentCar(MABase):
 if __name__ == '__main__':
 
     import os
-    os.environ['ENV'] = 'PROD'
+    os.environ['ENV'] = 'UAT'
     aid = '6837382'
     vin = 'LFV1A23C6L3309793'
     car = TencentCar(user='18646085616',password='Qq111111',vin=vin,aid=aid,token=True)
     hashVin = '90B3C60DFB4A4D9C6D88874B62249ACC'
     # car.check_vin(vin)
-    # car.get_QRcode(vin)
+    car.get_QRcode(vin)
     # car.send_poi_hu(hashVin)
     # car.unbind(vin=vin)
-    car.get_info(vin)
+    # car.get_info(vin)
     # car.bind_callback(aid='4614963',vin='B0EEE94911E24DFA3D39B21BBFAE6506',wecar_id=None,action='abc')
 
 
