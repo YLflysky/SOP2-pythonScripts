@@ -1,6 +1,6 @@
 from box.base import Base
 import xmltodict
-from box import xml_utils
+from box import utils
 import json
 import hashlib
 
@@ -120,7 +120,7 @@ class MAPayCallback(Base):
         self.header['Content-type'] = 'application/xml; charset=utf-8'
         data_sign = self.xml_to_json(data)['xml']
         sign = self.weixin_sign('abcd1234abcd1234abcd1234abcd1234',data_sign)
-        data = xml_utils.add_note(data,'sign',sign)
+        data = utils.add_note(data, 'sign', sign)
 
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)

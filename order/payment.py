@@ -2,7 +2,7 @@ from box.base import Base
 import hashlib
 import xmltodict
 import json
-from box import xml_utils
+from box import utils
 
 class Payment(Base):
     '''
@@ -78,7 +78,7 @@ class Payment(Base):
         self.header['Content-type'] = 'application/xml; charset=utf-8'
         data_sign = self.xml_to_json(data)['xml']
         sign = self.weixin_sign('mosimosimosimosi888888886666AAAA',data_sign)
-        data = xml_utils.add_note(data,'sign',sign)
+        data = utils.add_note(data, 'sign', sign)
 
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)

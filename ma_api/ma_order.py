@@ -181,7 +181,7 @@ class MAOrder(Base):
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     aid = '4614233'
     vin = 'LFVTESTMOSC000129'
     ma_order = MAOrder()
@@ -201,6 +201,6 @@ if __name__ == '__main__':
     #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
     # order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin='LFVTESTMOSC000129')['data']
-    order_no = ma_order.create_goods_order(aid=aid,goods_id='2335b92573ba4737a86418083eb9744c',category='MEDIA_FLOW',quantity=1,vin=vin)['data']
+    order_no = ma_order.create_goods_order(aid='15867227',goods_id='5d9821d6a1b24ecfa829ec3963fc20c0',category='MEDIA_FLOW',quantity=1,vin='LFV3A23C2L3121054')['data']
     # ma_order.create_goods_order(aid='4608442',goods_id='1010500100000535420',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000075')
 

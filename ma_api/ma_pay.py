@@ -94,14 +94,15 @@ class MAPay(MABase):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     aid = '4614183'
     vin = 'LFVTEST1231231231'
-    pay = MAPay(aid=aid,user='15330011918',password='000000',vin=vin)
+    # pay = MAPay(aid=aid,user='15330011918',password='000000',vin=vin)
+    pay = MAPay(aid='15867227',user='13618079403',password='xyz2020',vin='LFVSOP2TESTLY0040')
     # pay.app_pay_info(aid='4614233',order_no='ma20210425133535414774144',pay_type='11100')
 
-    # pay.get_qr_code(aid=aid,vin=vin,order_no='ma2021052110531766561440',pay_type='11100',category='112')
+    pay.get_qr_code(aid='15867227',vin='LFVSOP2TESTLY0040',order_no='ma20210603160336695794624',pay_type='11100',category='112')
     # pay.get_pay_channel(vin='LFVSOP2TEST000050',aid='9349832',order_no='ma20210412145453968479232',category='04')
     # pay.free_pay(vin,order_no='ma20210419093418222774144',code='11101')
-    pay.sign_and_pay_result(vin='LFVSOP2TEST000043',order_no='ma20210413095545831774144',roll_number=1)
+    # pay.sign_and_pay_result(vin='LFVSOP2TEST000043',order_no='ma20210413095545831774144',roll_number=1)
     # pay.get_pay_result(order_no='ma20210413095545831774144',vin=vin,category='04')

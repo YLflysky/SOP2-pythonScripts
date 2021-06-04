@@ -279,7 +279,7 @@ if __name__ == '__main__':
     # user_data = user_data['uat_zqs']
     aid = '122'
     goods_id = 253
-    vin = 'LFV2A2BUXL4485299'
+    vin = 'LFVSOP2TESTLY0064'
     iccid = '89860802091930027461'
     # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
     # flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
@@ -303,7 +303,7 @@ if __name__ == '__main__':
     # flow.flow_sim_notify(id='1',date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.5,
     #                  asset_type='iccid',asset_id='995939534',package_id='P1001123577',vin='LFV2A11KXA3030241')
     # flow.cp_sign_result_notify(user_id='qq995939534',channel=1,notify_type=2,status=2)
-    # flow.cp_common_notify(id='ftb20210119143548119192512', category=2, status='2000_00', origin_id=flow.f.md5(),channel='WECHAT_PAY')
+    flow.cp_common_notify(id='M202106041317598799846220', category=2, status='2000_00', origin_id=flow.f.md5(),channel='WECHAT_PAY')
     # flow.cp_sim_notify(id=flow.f.md5(),date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.9,
     #                    asset_type='iccid',asset_id=iccid,package_id='P1001114671')
     # flow.cp_over_due_notify(asset_id=iccid,asset_type='iccid',package_code='P1001183210',

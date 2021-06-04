@@ -168,11 +168,11 @@ if __name__ == '__main__':
     #         "userId": xmly_aid, "vin": "5E5F5EDBD91F4BF8462AE2DE2E89B509",'orderStatus':'REFUND_SUCCESS'}
     # o.sync_bm_order(o.get_time_stamp(), data)
     # o.bm_cancel_order(aid='9353750',order_no='ftb20210513100114879540672')
-    # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId=aid,updateType='1',
+    # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId='123',updateType='1',
     #                   businessState='success',businessStateDesc='已完成')
     # o.reload_config()
-    o.bm_order_detail(aid='9353460',order_no='ftb20210525165709983151552',vin=None)
+    # o.bm_order_detail(aid='122',order_no='ftb20210602100240367151552',vin=None)
     # o.bm_delete_order(aid='9349485',order_no='ftb20210315155832237913408')
-    # order_no = o.goods_order_create(tenant_id='VW',aid=xmly_aid,vin=vin,goods='236',quantity=1)['data']['orderNo']
+    order_no = o.goods_order_create(tenant_id='VW',aid=xmly_aid,vin=vin,goods='236',quantity=1)['data']['orderNo']
     # order_no = o.goods_order_create(tenant_id='VW',aid=kuwo_aid,vin=vin,goods='226',quantity=1)['data']['orderNo']
     # pay.get_qr_code(vin,aid=kuwo_aid,order_no=order_no,pay_type='12100',category='110')

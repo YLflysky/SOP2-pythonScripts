@@ -2,6 +2,7 @@ import json
 
 from ma_api.ma_order import MABase
 import os,sys
+from box.utils import read_yml
 
 
 class TencentCar(MABase):
@@ -80,10 +81,12 @@ if __name__ == '__main__':
 
     import os
     os.environ['ENV'] = 'UAT'
-    aid = '6837382'
-    vin = 'LFV1A23C6L3309793'
-    car = TencentCar(user='18646085616',password='Qq111111',vin=vin,aid=aid,token=True)
-    hashVin = '90B3C60DFB4A4D9C6D88874B62249ACC'
+    user_info = read_yml("../conf/user.yml")
+    user_info = user_info['sergio']
+    vin = user_info['vin']
+    aid = user_info['aid']
+    car = TencentCar(user=user_info['user'], password=user_info['password'], vin=vin, aid=aid, token=True)
+    hashVin = '5812E6EFA924DFEBD501D561DD011F66'
     # car.check_vin(vin)
     car.get_QRcode(vin)
     # car.send_poi_hu(hashVin)

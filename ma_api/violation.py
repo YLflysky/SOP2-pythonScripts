@@ -23,10 +23,16 @@ class Violation(Base):
         c,b = self.do_get(url,None)
         self.assert_bm_msg(c,b)
 
+    def get_violation_list(self):
+        '''
+        获取违章列表
+        '''
+        pass
+
 
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     vio = Violation()
     vio.get_vin_by_hash_vin(hash_vin='751C021535B7C3C3E5017ED12AECBDE1')
     # vio.get_violation_detail(serial_no='1902c408427ee0daa7b78555adb5bacc')

@@ -1,5 +1,5 @@
 from ma_api.tencent_car import TencentCar
-
+from box.utils import read_yml
 
 class Team(TencentCar):
     def __init__(self,aid,user,password,vin,token=True):
@@ -88,9 +88,11 @@ class Team(TencentCar):
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
-    vin = 'LFV1A23C6L3309793'
-    aid = '4608272'
-    t = Team(user='18646085616',password='Qq111111',vin=vin,aid='4608272',token=True)
+    user_info =read_yml("../conf/user.yml")
+    user_info = user_info['sergio']
+    vin = user_info['vin']
+    aid = user_info['aid']
+    t = Team(user=user_info['user'],password=user_info['password'],vin=vin,aid=aid,token=True)
     # t.get_hash_vin(vin='LFVSOP2TESTLY0002')
     t.create_group(vin)
     # t.leave_group(vin=vin,group='151861669744099',open_id='1101503',wecar_id=1)
@@ -98,7 +100,7 @@ if __name__ == '__main__':
     # print(open_id)
     # groupId = t.find_last_group(uid=aid,vin=vin)['groupId']
     # invite_pwd = t.find_last_group(uid,vin1)['invitePassword']
-    # t.join_team(vin=vin,group_id='151861669744099',invite='303630')
+    t.join_team(vin=vin,group_id='58801695237333',invite='235289')
     # t.get_trip_info(aid='9350160',vin='LFV3A23C4L3137420')
     # t.join_last_group(account='9349628',group='12345',longitude='116.388729',latitude='39.871198',vin='LFVSOP2TEST000007')
 

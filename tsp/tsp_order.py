@@ -47,10 +47,11 @@ class TSPOrder(Base):
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     tsp = TSPOrder()
-    tsp.order_list(size=100,orderCategoryList=['116'])
-    # tsp.order_detail(aid='4606649',order_no='M201903051419301674344526')
-    # tsp.order_export(aid='111',name='111',brand='VW',orderCategoryList=['114'],orderNo='ftb20210506')
+    # res = tsp.order_list(size=100,orderCategoryList=['106'])
+    # print(len(res['data']))
+    # tsp.order_detail(aid='4614931',order_no='ftb2021051806441044777824')
+    tsp.order_export(aid='111',name='111',brand='VW',orderCategoryList=['114'],orderNo='ftb20210506')
 
 

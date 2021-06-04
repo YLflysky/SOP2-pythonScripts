@@ -215,7 +215,7 @@ class App(Base):
 
 if __name__ == '__main__':
     import json
-    os.environ['ENV'] = 'PROD'
+    os.environ['ENV'] = 'UAT'
     app = App(name='15144142651',password='Qq111111',aid='4614233')
     # app = App(name='19900001122',password='111111',aid='4614910')
     # app = App(name='15330011918',password='000000',aid='4614183',token=True)
@@ -236,7 +236,7 @@ if __name__ == '__main__':
     #     events = json.load(json_f)
     # print(events)
     app.calendar_mobile_sync(current_time=None,events=events,vin='LFVTB9E67L5200138')
-    app.calendar_mobile_find_all('LFVTB9E67L5200138')
+    # app.calendar_mobile_find_all('LFVTB9E67L5200138')
     # app.free_access_pay(vin='LFV2A2BUXL4651255',channel='ALPAY',order_no='ftb2021040911024205240960')
     # app.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_sop1,count=1,durationDays=3)
     # app.create_order(goods_id='1010500100000535429',category='RADIO_VIP',vin=vim_ma,count=1)

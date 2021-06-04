@@ -133,7 +133,7 @@ class Statement(Base):
         data = {'statementNo': s_no}
         c,b = self.do_get_stream(url,data)
         assert c == 200
-        with open('../data/对账单.pdf'.format(self.get_time_stamp()), 'wb') as obj:
+        with open('../data/对账单_{}.pdf'.format(s_no),'wb') as obj:
             obj.write(b)
 
 
@@ -177,13 +177,23 @@ if __name__ == '__main__':
 
     # res = s.generate_statement(cp=cp,s_time='2020-04-24 14:00:00',percent_platform=25.5,s_p_type='MONTH',s_type=s_type)
     # s.statement_list(third_name='XIMALAYA',beginTime=None,statementStatus=None)
-    s_no = 'DZD20210521163546464675840'
-    for index in range(1,32):
-        items = s.item_list(s_no,page_no=index,page_size=50)
-        for i in items['data']:
-            if not i['checkPersonId']:
-                s.item_check(s_no,s_c_no=i['statementCheckNo'],s_m_amount=i['platformRecordMoney'],s_r_no=1,remarks=s.f.word())
-                lk.prt('{}明细确认成功！'.format(i['statementCheckNo']))
+    s_no = 'DZD20210514131001355385024'
+    index = 1
+    size = 50
+    # items = s.item_list(s_no,page_no=index,page_size=size)
+    # data = []
+    # page = int(items['totalCount'] /size)
+    # if page < 2:
+    #     data=items['data']
+    # else:
+    #     for i in range(1,page+1):
+    #         items = s.item_list(s_no,i,size)
+    #         data.extend(items['data'])
+    # print(data)
+    # for i in data:
+    #     if not i['checkPersonId']:
+    #         s.item_check(s_no,s_c_no=i['statementCheckNo'],s_m_amount=s.f.pyint(),s_r_no=1,remarks=s.f.word())
+    #         lk.prt('{}明细确认成功！'.format(i['statementCheckNo']))
     # s.confirm_statement(s_no)
 
-    # print(redis_util.conn.mget('bill:check_set:platform:KUWO:PAY_STATEMENT:20210501000000:false'))
+    s.upload_statement(s_no)

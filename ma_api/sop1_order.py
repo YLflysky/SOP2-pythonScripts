@@ -6,7 +6,7 @@ class SOP1Base(Base):
         super().__init__()
         self.aid = aid
         self.vin = vin
-        self.gate = True
+        self.gate = False
         if os.getenv('ENV') not in ('CLOUD', 'PERF', 'PROD'):
             self.env = 'UAT'
         if token:
@@ -16,9 +16,9 @@ class SOP1Base(Base):
 class SOP1Order(SOP1Base):
     def __init__(self, aid, user, password, vin,token=True):
         super().__init__(aid, user, password, vin,token)
-        self.payment_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
+        self.payment_url = self.read_conf('sop1_env.conf', self.env, 'payment_h5_host')
         self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
-        self.mobile_url = self.read_conf('ma_env.conf', self.env, 'one_app_host')
+        self.mobile_url = self.read_conf('sop1_env.conf', self.env, 'one_app_host')
 
     def sop1_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
         '''
@@ -39,11 +39,17 @@ class SOP1Order(SOP1Base):
         return b
 
     def sop1_calendar_sync(self):
-        url = self.mobile_url + '/mos/calendar/public/event/sync'
+        url = self.mobile_url + '/mos/37w-calendar/public/calendar/event/sync'
         event= [{'localEventId': self.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
                      'eventStartTime': self.get_time_stamp(days=-1), 'eventEndTime': self.get_time_stamp(days=1)}]
         data = {'currentTime': self.time_delta(), 'events': event}
         c, b = self.do_post(url, data, gateway='APP')
+        self.assert_bm_msg(c,b)
+
+    def sop1_calendar_find_all(self):
+        url = self.mobile_url + '/mos/37w-calendar/public/calendar/event/findAll'
+
+        c, b = self.do_get(url,None, gateway='APP')
         self.assert_bm_msg(c,b)
 
     def get_qr_code(self,vin,order_no,pay_type,aid):
@@ -156,19 +162,20 @@ class SOP1Order(SOP1Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     aid = '4614183'
     vin = 'LFVTEST1231231231'
-    sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin,token=True)
-    sop1.app_invoice('M202105131330162678519543','CP')
+    # sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin,token=True)
+    sop1 = SOP1Order(aid='2016917',user='18602893309',password='225577',vin='LFVSOP2TESTLY0039',token=True)
+    # sop1.app_invoice('M202105131330162678519543','CP')
     # sop1.app_order_detail('M202105110940497928365814')
     # sop1.local_order_create()
     # sop1.find_order_by_order_id('M202105110940497928365814')
     # sop1.get_goods_list(aid,vin,code='MA',brand='VW',product_type='radio_vip')
-    # sop1.sop1_calendar_sync()
+    # sop1.sop1_calendar_find_all()
     # no = sop1.sop1_create_order(aid=aid,vin=vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationDays=1,point=False)['data']['orderNumber']
-    # sop1.sop1_create_order(aid=aid,vin=vin,goods_id='ca85c936d2564debb89e52bf11692e2f',category='WIFI_FLOW',quantity=1)
-    # sop1.get_qr_code(vin,order_no='M202105110940497928365814',pay_type='12100',aid=aid)
+    # sop1.sop1_create_order(aid=aid,vin='LFV3A23C2L3121054',goods_id='5d9821d6a1b24ecfa829ec3963fc20c0',category='WIFI_FLOW',quantity=1)
+    sop1.get_qr_code(vin,order_no='M202106041317598799846220',pay_type='12100',aid=aid)
     # sop1.ali_pay_callback(out_trade_no='9c1eb9f8a8f6475895465b4f13d9abba', buyer_logon_id='995939534@qq.com',
     #                      receipt_amount=0.01, gmt_payment=sop1.time_delta(), trade_no=sop1.f.pyint())
     # success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': 'WECHAT_PAY',

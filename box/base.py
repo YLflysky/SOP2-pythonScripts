@@ -273,9 +273,14 @@ class Base:
             token_type = body['data']['token_type']
             access_token = body['data']['access_token']
         elif client.upper() in ('APP','CDP'):
+            namespace = None
+            if self.env in ['UAT','SIT','DEV']:
+                namespace = 'cdp-uat'
+            elif self.env == 'PROD':
+                namespace = 'production'
             headers = {
                 'Content-Type': 'application/json',
-                'x-namespace-code': 'cdp-{}'.format(self.env.lower()),
+                'x-namespace-code': namespace,
                 'x-microservice-name': 'api-gateway',
                 'Did': 'VW_APP_iPhone_2f6394adc4a50a1317bb39579899fdde2b708f95eec31621230c24acc120f078_12.4.1_3.0.7.t2.2'}
             payload = {
@@ -620,14 +625,5 @@ class Base:
         '''
         return json.dumps(data,cls=MyEncoder,indent=4)
 
-    # def read_yml(self,file_dir,file_name):
-    #     '''
-    #
-    #     :param path:
-    #     :return:
-    #     '''
-    #     abs_path = os.path.join(file_dir,file_name)
-    #     with open(abs_path,'r',encoding='utf-8') as obj:
-    #         data = obj.read()
-    #         return yaml.load(data,Loader=yaml.FullLoader)
+
 
