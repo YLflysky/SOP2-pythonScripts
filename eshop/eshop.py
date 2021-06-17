@@ -59,7 +59,7 @@ class PointsShop(EShop):
             self.gate = True
             if os.getenv('ENV') not in ('PROD', 'PERF'):
                 self.env = 'UAT'
-            self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host')
+            self.url = self.read_conf('ma_env.conf', self.env, 'base_url_back') + '/mosc-sop2-eshop/mos/eshop_bonus/api/v1'
         if token:
             lk.prt('开始获取token')
             self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'),name,password,vin)
@@ -78,7 +78,7 @@ class SpareShop(EShop):
             self.gate = True
             if os.getenv('ENV') not in ('PROD', 'PERF'):
                 self.env = 'UAT'
-            self.url = self.read_conf('ma_env.conf', self.env, 'eshop_host2')
+            self.url = self.read_conf('ma_env.conf', self.env, 'base_url_back') + '/mosc-sop2-eshop/mos/eshop_spare/api/v1'
         if token:
             lk.prt('开始获取token')
             self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'),name,password,vin)

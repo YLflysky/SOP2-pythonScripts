@@ -39,6 +39,7 @@ user_music:
     !!str 000000
   vin:
     LFVTEST1231231231
+  hashVin: B084575F672B4448D5152424DEAA9D54
 
 user_music_sit:
   aid:
@@ -120,7 +121,7 @@ uat_zqs:
 uat_te1:
   name: 王月
   aid: !!str 4614233
-  phone: 15144142651
+  user: 15144142651
   password: Qq111111
   vin: LFV2A2BUXL4651255
   iccid: 89860802092031013415
@@ -128,10 +129,11 @@ uat_te1:
 uat_te2:
   name: D.K
   aid: !!str 4608272
-  phone: 18646085616
+  user: 18646085616
   password: Qq111111
   vin: LFV1A23C6L3309793
   iccid: 89860802092030564991
+  hashVin: 5812E6EFA924DFEBD501D561DD011F66
 
 JDO开票:
   vin: LMGLS1G53H1003120

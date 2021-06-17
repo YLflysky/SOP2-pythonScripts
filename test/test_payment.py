@@ -527,7 +527,7 @@ def test_get_radio_pay_url(channel):
 def test_get_sign_url():
     aid = '9351304'
     vin = 'LFVSOP2TESTLY0073'
-    res = pay.agreement_qr_code(aid, channel='ALI_PAY', origin='BM', vin=vin, payWay='APP')
+    res = pay.agreement_qr_code(aid, channel='ALI_PAY', origin='BM', vin=vin, payWay='APP',service='GAS',sp='JDO')
     assert res['data']['appSignUrl']
 
 
@@ -537,7 +537,7 @@ def test_get_sign_url():
 def test_get_sign_status():
     aid = '9351304'
     vin = 'LFVSOP2TESTLY0073'
-    res = pay.get_sign_result(aid, channel='ALI_PAY', origin='BM', vin=vin)
+    res = pay.get_sign_result(aid, channel='ALI_PAY', origin='BM', vin=vin,payWay='APP',service='GAS',sp='JDO')
     assert res['data'] == False
 
 

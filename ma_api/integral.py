@@ -7,10 +7,10 @@ class Integral(Base):
         self.gate = True
         if os.getenv('ENV') not in ('PROD', 'PERF'):
             self.env = 'UAT'
-        self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
+        self.url = self.read_conf('ma_env.conf', self.env, 'base_url_hu') + '/mosc-integral'
 
     def intergral_query(self,aid,b_id,b_type_id,s_type_id,p_index=1,p_size=10):
-        url = self.url + '/mosc-integral/internal/integral/query'
+        url = self.url + '/internal/integral/query'
         data = {'aid':aid,'businessId':b_id,'businessTypeId':b_type_id,'scoreTypeId':s_type_id,
                 'pageIndex':p_index,'pageSize':p_size}
         param = {'aid':aid}
@@ -21,4 +21,4 @@ class Integral(Base):
 if __name__ == '__main__':
     os.environ['ENV'] = 'PROD'
     i = Integral()
-    i.intergral_query(aid='2016917',b_id=1,b_type_id=1,s_type_id=2)
+    i.intergral_query(aid='4614183',b_id=1,b_type_id=1,s_type_id=2)

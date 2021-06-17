@@ -187,7 +187,7 @@ class Payment(Base):
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
 
-    def agreement_qr_code(self,aid,channel,origin,**kwargs):
+    def agreement_qr_code(self,aid,channel,origin,service,sp,vin,way):
         '''
         支付底层获取免密签约二维码接口
         :param aid:用户id
@@ -199,7 +199,7 @@ class Payment(Base):
         '''
 
         url = self.url + '/contract/sign'
-        data = {'aid':aid,'payChannel':channel,'origin':origin,**kwargs}
+        data = {'aid':aid,'payChannel':channel,'origin':origin,'serviceId':service,'spId':sp,'vin':vin,'payWay':way}
         c,b = self.do_post(url,data)
         self.assert_msg(c,b)
         return b
@@ -268,27 +268,24 @@ class Payment(Base):
 if __name__ == '__main__':
     import os
     from order.order_api import Order
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'SIT'
     os.environ['GATE'] = 'false'
     pay = Payment()
     order = Order()
     aid = '9351524'
+    pay.get_sign_result(aid='4608048',channel='ALI_PAY',serviceId='FLOW',operatorId='CMCC')
     # pay.free_pay(aid,order_no='ftb20210128154824964307200',code='12101',score=False)
     # pay.weixin_cdp_callback(out_trade_no='ftb2021051916082372869632',nonce=pay.f.md5(),pay_amount=1)
     # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
-    # pay.agreement_qr_code(aid,'ALI_PAY','FLOW','CMCC','SOP1')
-    # pay.pay_channel(aid, order_no='ftb20210118174802710622592') #find VPA order
-    # pay.pay_channel(aid,order_no='ftb20201204113739602753664')
+    # pay.agreement_qr_code(aid=aid,channel='ALI_PAY',service='FLOW',sp='CMCC',origin='SELF',way='QR_PAY',vin='LFVSOP2TESTLY0073')
+    pay.pay_channel(aid,order_no='ftb20201204113739602753664')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
     # no = order.generate_order_no()['data']
-    # order.sync_order(aid=aid, orderNo=no, ex='ex%s'%no, origin='SOP1', category='110',
-    #              serviceId='MUSIC', spId='KUWO', title='测试支付订单', payAmount=0.01, amount=0.01,
-    #              goodsId='123456', brand='VW', businessState='waitingPay', businessStateDesc='be happy')
     # pay.get_qr_code(aid='4614233',order_no='ftb202105201347167431036288',channel='WECHAT_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
-    pay.ali_pay_callback(out_trade_no='ftb2021052014220476069632',buyer_logon_id='995939534@qq.com',
-                         receipt_amount=218.00, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
+    # pay.ali_pay_callback(out_trade_no='9229a55c770b47e09fb9681aaf8cde09',buyer_logon_id='995939534@qq.com',
+    #                      receipt_amount=218.00, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
 
     # pay.contract_sign_notify(aid='221',)
     # pay.sync_pay_result(pay_no='ftb20210331163501667811008',ex_pay_no='yinli18623459409',pay_time=pay.time_delta(),

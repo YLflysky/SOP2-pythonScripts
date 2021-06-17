@@ -8,13 +8,13 @@ class MNOService(Base):
         self.gate = True
         if os.getenv('ENV') not in ('PROD', 'PERF'):
             self.env = 'UAT'
-        self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
+        self.url = self.read_conf('ma_env.conf', self.env, 'base_url_hu') + '/mos/mosc-mno-service'
 
     def get_commodity_list(self,brand,**kwargs):
         '''
         商品列表接口
         '''
-        url = self.url + '/mos/mosc-mno-service/internal/commodity/list'
+        url = self.url + '/internal/commodity/list'
         data = {'brandCode':brand,**kwargs}
         c,b = self.do_get(url,None,data=json.dumps(data))
         self.assert_bm_msg(c,b)
@@ -23,7 +23,7 @@ class MNOService(Base):
         '''
         根据iccid查询套餐
         '''
-        url = self.url + '/mos/mosc-mno-service/internal/flow/package/query'
+        url = self.url + '/internal/flow/package/query'
         data = {'iccid':iccid}
         c,b = self.do_get(url,data)
         self.assert_bm_msg(c,b)

@@ -1,14 +1,14 @@
-from ma_api.ma_order import MABase
-from box.lk_logger import lk
+from ma_api import MABase
+import json
 
 
 class MAOrderAdapter(MABase):
     def __init__(self,aid, user, password, vin,token=True):
         super().__init__(aid, user, password, vin,token)
-        self.hu_url = self.read_conf('ma_env.conf', self.env, 'order_adapter_host')
+        self.hu_url = self.hu_url + '/mosc-order-ma'
 
     def assert_ma_msg(self,code,body):
-        print(body)
+        print(json.dumps(body,indent=4))
         assert 200 == code
         assert body['code'] == '000000'
         assert body['description'] == '成功'
@@ -160,28 +160,37 @@ class MAOrderAdapter(MABase):
         c,b = self.do_get(url,{'vin':vin})
         self.assert_bm_msg(c,b)
 
+    def order_count(self,aid,vin,category,status,begin_time,end_time):
+        '''
+        MA车机端查询订单数量
+        '''
+        url = self.hu_url + '/order/api/v2/vins/{}/orders/count'.format(vin)
+        data = {'userId':aid,'orderCategory':category,'orderStatus':status,'beginTime':begin_time,'endTime':end_time}
+        c,b = self.do_get(url,data)
+        self.assert_bm_msg(c,b)
 
 if __name__ == '__main__':
     import os
     os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
-    aid = '9354046'
-    vin = 'LFVSOP2TESTLY0073'
-    ma_order = MAOrderAdapter(aid,user='13353110073',password='000000',vin=vin)
+    aid = '9353263'
+    vin = 'LFVTESTMOSC989216'
+    ma_order = MAOrderAdapter(aid,user='13482172676',password='000000',vin=vin)
     # ma_order = MAOrderAdapter(aid='2016917',user='18602893309',password='225577',vin='LFVSOP2TESTLY0039')
     # music = MAOrderAdapter('9349824',user='18217539032',password='Abc123456',vin='LFV3A23C913046742')
-    # ma_order.order_list(vin='LFVTEST1231231231',begin=ma_order.time_delta(days=-1000),end=ma_order.time_delta(),order_status='1003',category='00')
-    # order_no = ma_order.ma_create_order(aid=aid, vin=vin, goods_id='17',durationTimes=1,
+    ma_order.order_count(aid,vin,category='00',status='1002',begin_time=ma_order.time_delta(days=-100),end_time=ma_order.time_delta())
+    # ma_order.order_list(vin=vin,begin=ma_order.time_delta(days=-10),end=ma_order.time_delta(),order_status='1002',category='00')
+    # order_no = ma_order.ma_create_order(aid='4614183', vin=vin, goods_id='17',durationTimes=3,
     #                                     category='MUSIC_VIP', quantity=1, point=False)['data']['orderNo']
     # ma_order.data_flow(aid,vin)
-    # ma_order.ma_create_order(aid,goods_id='1b943b0e420848be8641708f7414a92a',category='WIFI_FLOW',
+    # ma_order.ma_create_order(aid,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='MEDIA_FLOW',
     #                          vin=vin,quantity=1)
     # ma_order.cancel_order(order_no='ma20210316141348247856064')
-    # ma_order.order_detail(aid=aid,order_no='ma20210528153948060704512',vin=vin)
+    # ma_order.order_detail(aid=aid,order_no='ma20210604155523540704512',vin=vin)
     #
-    info = {"couponId":"JD159436926191126401","washStoreName":"捌零靓车店"}
-    ma_order.sync_order(vin='5812E6EFA924DFEBD501D561DD011F66',aid=aid,service_id='03',sp_id='030003',
-                        order_type='RESERVATION',ex_order=ma_order.f.md5(),category='09',title='加油订单',
-                        business_state='0',desc='待支付',orderStatus='PROCESSING',
-                        amount=5.00,discount=0.25,pay_amount=4.75,timeout=1,
-                        business_info=info)
+    # info = {"couponId":"JD159436926191126401","washStoreName":"捌零靓车店"}
+    # ma_order.sync_order(vin='5812E6EFA924DFEBD501D561DD011F66',aid=aid,service_id='03',sp_id='030003',
+    #                     order_type='RESERVATION',ex_order=ma_order.f.md5(),category='09',title='加油订单',
+    #                     business_state='0',desc='待支付',orderStatus='PROCESSING',
+    #                     amount=5.00,discount=0.25,pay_amount=4.75,timeout=1,
+    #                     business_info=info)

@@ -1,27 +1,7 @@
 import json
 
 from box.base import Base
-from box.lk_logger import lk
 import os
-
-lk.prt('导入 MA API 基类>>>>')
-
-class MABase(Base):
-    def __init__(self,aid,user,password,vin,token=True):
-        super().__init__()
-        self.aid = aid
-        self.vin = vin
-        self.gate = True
-        if os.getenv('ENV') not in ('CLOUD','PERF','PROD'):
-            self.env = 'UAT'
-        if token:
-            lk.prt('开始获取token...')
-            self.add_header(self.read_conf('ma_env.conf',self.env,'token_host'),user,password,vin)
-
-    def assert_msg(self,code,body):
-        assert code == 200
-        print(body)
-        assert body['status'] == 'SUCCEED'
 
 
 class MAOrder(Base):
@@ -30,7 +10,7 @@ class MAOrder(Base):
         self.gate = True
         if os.getenv('ENV') not in ('PROD','PERF'):
             self.env = 'UAT'
-        self.payment_url = self.read_conf('ma_env.conf', self.env, 'pay_host')
+        self.payment_url = self.read_conf('ma_env.conf', self.env, 'base_url_hu') + '/mosc-payment'
         self.order_url = self.read_conf('ma_env.conf', self.env, 'order_host')
 
     def assert_msg(self, code, body):
@@ -179,12 +159,23 @@ class MAOrder(Base):
         c,b = self.do_get(url,data)
         self.assert_msg(c,b)
 
+    def count(self,aid,**kwargs):
+        '''
+        查询订单数量
+        '''
+        url = self.order_url + '/internal/v2/order/count'
+        data = {'aid':aid,**kwargs}
+        c,b = self.do_get(url,data)
+        self.assert_msg(c,b)
+
 
 if __name__ == '__main__':
-    os.environ['ENV'] = 'PROD'
-    aid = '4614233'
+    os.environ['ENV'] = 'UAT'
+    aid = '9353263'
     vin = 'LFVTESTMOSC000129'
     ma_order = MAOrder()
+    status_list = ['PAID','PROCESSING','PAY_FAILED']
+    # ma_order.count(aid,orderCategory='00',orderStatusList=status_list)
     # ma_order.create_order(aid,vin)
     # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
     # ma_order.order_list(aid='9349831',status=['FINISHED'],category='00',begin=None,end=None)
@@ -200,7 +191,7 @@ if __name__ == '__main__':
     #                         pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02,
     #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
-    # order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=False,durationTimes=1,vin='LFVTESTMOSC000129')['data']
-    order_no = ma_order.create_goods_order(aid='15867227',goods_id='5d9821d6a1b24ecfa829ec3963fc20c0',category='MEDIA_FLOW',quantity=1,vin='LFV3A23C2L3121054')['data']
+    order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1,vin='LFVTESTMOSC000129')['data']
+    # order_no = ma_order.create_goods_order(aid='15867227',goods_id='5d9821d6a1b24ecfa829ec3963fc20c0',category='MEDIA_FLOW',quantity=1,vin='LFV3A23C2L3121054')['data']
     # ma_order.create_goods_order(aid='4608442',goods_id='1010500100000535420',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000075')
 

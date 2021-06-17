@@ -12,8 +12,8 @@ class MAPayCallback(Base):
     def __init__(self):
         super().__init__()
         self.gate = True
-        self.be_url = self.read_conf('ma_env.conf', self.env, 'pay_be_host')
-        self.h5_url = self.read_conf('ma_env.conf', self.env, 'payment_h5_host')
+        self.be_url = self.read_conf('ma_env.conf', self.env, 'base_url_back') + '/mosc-payment'
+        self.h5_url = self.read_conf('ma_env.conf', self.env, 'base_url_back') + '/mos/payment'
 
     def ma_contract_sign(self,channel,service,operator,aid,vin):
         '''

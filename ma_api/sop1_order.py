@@ -1,8 +1,9 @@
 from box.base import Base
 from box.lk_logger import lk
 
+
 class SOP1Base(Base):
-    def __init__(self,aid,user,password,vin,token=True):
+    def __init__(self, aid, user, password, vin, token=True):
         super().__init__()
         self.aid = aid
         self.vin = vin
@@ -11,16 +12,17 @@ class SOP1Base(Base):
             self.env = 'UAT'
         if token:
             lk.prt('开始获取token...')
-            self.add_header(self.read_conf('sop1_env.conf',self.env,'token_host'),user,password,vin)
+            self.add_header(self.read_conf('sop1_env.conf', self.env, 'token_host'), user, password, vin)
+
 
 class SOP1Order(SOP1Base):
-    def __init__(self, aid, user, password, vin,token=True):
-        super().__init__(aid, user, password, vin,token)
+    def __init__(self, aid, user, password, vin, token=True):
+        super().__init__(aid, user, password, vin, token)
         self.payment_url = self.read_conf('sop1_env.conf', self.env, 'payment_h5_host')
         self.url = self.read_conf('ma_env.conf', self.env, 'hu_host')
         self.mobile_url = self.read_conf('sop1_env.conf', self.env, 'one_app_host')
 
-    def sop1_create_order(self, aid, goods_id, category, vin, quantity,point=False,**kwargs):
+    def sop1_create_order(self, aid, goods_id, category, vin, quantity, point=False, **kwargs):
         '''
         SOP1车机端创建商品订单接口》》车机端接口
         :param goods_id:商品ID，orderCategory为PAID_CONTENT，priceType为2时，为专辑号，priceType为1时，为音频编号用“,”隔开其他均为商品ID
@@ -32,7 +34,8 @@ class SOP1Order(SOP1Base):
         :return:
         '''
         url = self.payment_url + '/api/v1/createOrder'
-        data = {'userId':aid,'goodsId': goods_id, 'vin':vin,'orderCategory': category, 'count': quantity, 'usedPoint': point, **kwargs}
+        data = {'userId': aid, 'goodsId': goods_id, 'vin': vin, 'orderCategory': category, 'count': quantity,
+                'usedPoint': point, **kwargs}
 
         c, b = self.do_post(url, data)
         print(b)
@@ -40,19 +43,19 @@ class SOP1Order(SOP1Base):
 
     def sop1_calendar_sync(self):
         url = self.mobile_url + '/mos/37w-calendar/public/calendar/event/sync'
-        event= [{'localEventId': self.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
-                     'eventStartTime': self.get_time_stamp(days=-1), 'eventEndTime': self.get_time_stamp(days=1)}]
+        event = [{'localEventId': self.f.pyint(100, 1000), 'cudStatus': 'C', 'rrule': 'Only Once',
+                  'eventStartTime': self.get_time_stamp(days=-1), 'eventEndTime': self.get_time_stamp(days=1)}]
         data = {'currentTime': self.time_delta(), 'events': event}
         c, b = self.do_post(url, data, gateway='APP')
-        self.assert_bm_msg(c,b)
+        self.assert_bm_msg(c, b)
 
     def sop1_calendar_find_all(self):
         url = self.mobile_url + '/mos/37w-calendar/public/calendar/event/findAll'
 
-        c, b = self.do_get(url,None, gateway='APP')
-        self.assert_bm_msg(c,b)
+        c, b = self.do_get(url, None, gateway='APP')
+        self.assert_bm_msg(c, b)
 
-    def get_qr_code(self,vin,order_no,pay_type,aid):
+    def get_qr_code(self, vin, order_no, pay_type, aid):
         '''
         获取支付二维码
         :param vin:
@@ -63,11 +66,11 @@ class SOP1Order(SOP1Base):
         '''
 
         url = self.payment_url + '/api/v1/getQRCodeImage'
-        data = {'vin':vin,'orderNo':order_no,'payType':pay_type,'aid':aid}
-        c,b = self.do_post(url,data)
-        self.assert_bm_msg(c,b)
+        data = {'vin': vin, 'orderNo': order_no, 'payType': pay_type, 'aid': aid}
+        c, b = self.do_post(url, data)
+        self.assert_bm_msg(c, b)
 
-    def ali_pay_callback(self,out_trade_no, receipt_amount, gmt_payment, trade_no, **kwargs):
+    def ali_pay_callback(self, out_trade_no, receipt_amount, gmt_payment, trade_no, **kwargs):
         '''
 
         :param out_trade_no:
@@ -84,7 +87,7 @@ class SOP1Order(SOP1Base):
         self.assert_bm_msg(code, body)
         return body
 
-    def get_goods_list(self,aid,vin,code,brand,product_type):
+    def get_goods_list(self, aid, vin, code, brand, product_type):
         '''
         SOP2MA车机端获取商品列表
         :param aid:
@@ -94,91 +97,111 @@ class SOP1Order(SOP1Base):
         :param product_type:
         :return:
         '''
-        url = self.payment_url + '/api/v2/users/{}/vins/{}/products/list'.format(aid,vin)
-        data = {'brand':brand,'productType':product_type,'shopCode':code}
-        c,b = self.do_get(url,data)
-        self.assert_bm_msg(c,b)
+        url = self.payment_url + '/api/v2/users/{}/vins/{}/products/list'.format(aid, vin)
+        data = {'brand': brand, 'productType': product_type, 'shopCode': code}
+        c, b = self.do_get(url, data)
+        self.assert_bm_msg(c, b)
 
     def local_order_create(self):
         url = self.payment_url + '/internal/v1/order/localOrderCreate'
-        data = {"aid":"4614233",
-                "vin":"LFVTESTMOSC000129",
-                "outOrderId":"1726545da36544908054d21171c6be28",
-                "orderId":"sergio123",
-                "goodsId":"cc50badd5bd6418b9c431f87394640fe",
-                "goodsName":"Wi-Fi半年包",
-                "goodsSpec":"【Wi-Fi半年包】",
-                "goodsPrice":0.01,
-                "quantity":1,
-                "orderCategory":"WIFI_FLOW",
-                "enterpriseId":"2100010000",
-                "isUsedPoint":False,
-                "deductPointNumber":0,
-                "deductionAmount":0,
-                "orderTitle":"Wi-Fi半年包",
-                "orderDesc":"【Wi-Fi半年包】",
-                "orderSubStatus":1,
-                "orderStatus":"1001",
-                "usefulTime":1618895233688,
-                "orderPrice":0.01}
-        c,b = self.do_post(url,data)
-        self.assert_msg(c,b)
+        data = {"aid": "4614233",
+                "vin": "LFVTESTMOSC000129",
+                "outOrderId": "1726545da36544908054d21171c6be28",
+                "orderId": "sergio123",
+                "goodsId": "cc50badd5bd6418b9c431f87394640fe",
+                "goodsName": "Wi-Fi半年包",
+                "goodsSpec": "【Wi-Fi半年包】",
+                "goodsPrice": 0.01,
+                "quantity": 1,
+                "orderCategory": "WIFI_FLOW",
+                "enterpriseId": "2100010000",
+                "isUsedPoint": False,
+                "deductPointNumber": 0,
+                "deductionAmount": 0,
+                "orderTitle": "Wi-Fi半年包",
+                "orderDesc": "【Wi-Fi半年包】",
+                "orderSubStatus": 1,
+                "orderStatus": "1001",
+                "usefulTime": 1618895233688,
+                "orderPrice": 0.01}
+        c, b = self.do_post(url, data)
+        self.assert_msg(c, b)
 
-    def ci_common_notification(self,id, category, status, origin_id, additional_attrs, enterprise_id='2100010000'):
+    def ci_common_notification(self, id, category, status, origin_id, additional_attrs, enterprise_id='2100010000'):
         url = self.payment_url + '/mos/internal/CI_CommonNotification'
         data = {'enterpriseId': enterprise_id,
                 'multiRecords': [{'id': id, 'idCategory': category, 'status': status, 'originalRequestId': origin_id,
                                   'additionalAttrs': additional_attrs}]}
 
         c, b = self.do_post(url, data)
-        self.assert_bm_msg(c,b)
+        self.assert_bm_msg(c, b)
         return b
 
-    def app_order_detail(self,order_no):
+    def CI_CustSimNotification(self,data):
+        '''
+        流量到期提醒回调到SOP1
+        '''
+        url = self.payment_url + '/mos/internal/CI_CustSimNotification'
+
+        c, b = self.do_post(url, data)
+        self.assert_bm_msg(c, b)
+        return b
+
+    def app_order_detail(self, order_no):
         '''
         APP端获取订单详情接口
         '''
         url = self.mobile_url + '/mos/payment/public/findOrderDetial'
-        data = {'orderId':order_no}
-        c,b = self.do_get(url,data)
-        self.assert_bm_msg(c,b)
+        data = {'orderId': order_no}
+        c, b = self.do_get(url, data)
+        self.assert_bm_msg(c, b)
 
-    def app_invoice(self,order_no,channel):
+    def app_invoice(self, order_no, channel):
         '''
         APP端申请开票
         '''
         url = self.payment_url + '/public/invoice'
-        data = {"orderId": order_no, "invoiceChannel": channel, "invoiceType": 1, "invoiceTitle": "开票", "taxNumber": "445678909876543",
+        data = {"orderId": order_no, "invoiceChannel": channel, "invoiceType": 1, "invoiceTitle": "开票",
+                "taxNumber": "445678909876543",
                 "email": "995939534@qq.com", "mobile": "18623459409", "mailingAddress": "new"}
-        c,b = self.do_post(url,data)
-        self.assert_bm_msg(c,b)
+        c, b = self.do_post(url, data)
+        self.assert_bm_msg(c, b)
 
-    def find_order_by_order_id(self,order_id):
+    def find_order_by_order_id(self, order_id):
         url = self.payment_url + '/mos/internal/findOrderItemById'
-        data = {'orderId':order_id}
-        c,b = self.do_get(url,data)
-        self.assert_msg(c,b)
+        data = {'orderId': order_id}
+        c, b = self.do_get(url, data)
+        self.assert_msg(c, b)
 
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'PROD'
+
+    os.environ['ENV'] = 'UAT'
     aid = '4614183'
     vin = 'LFVTEST1231231231'
     # sop1 = SOP1Order(aid,user='15330011918',password='000000',vin=vin,token=True)
-    sop1 = SOP1Order(aid='2016917',user='18602893309',password='225577',vin='LFVSOP2TESTLY0039',token=True)
+    sop1 = SOP1Order(aid='2016917', user='18602893309', password='225577', vin='LFVSOP2TESTLY0039', token=False)
     # sop1.app_invoice('M202105131330162678519543','CP')
     # sop1.app_order_detail('M202105110940497928365814')
     # sop1.local_order_create()
     # sop1.find_order_by_order_id('M202105110940497928365814')
-    # sop1.get_goods_list(aid,vin,code='MA',brand='VW',product_type='radio_vip')
+    # sop1.get_goods_list(aid, vin, code='MA', brand='VW', product_type='media_flow')
+    data = {
+        "notificationFlagRule": "1",
+        "requestDateTime": "20210609154410",
+        "packageId": "P1001182033",
+        "assetType": "ICCID",
+        "requestId": "21000102202021060915441000156682",
+        "assetId": "89860804092030224424"
+    }
+    sop1.CI_CustSimNotification(data)
     # sop1.sop1_calendar_find_all()
     # no = sop1.sop1_create_order(aid=aid,vin=vin,goods_id='17',category='MUSIC_VIP',quantity=1,durationDays=1,point=False)['data']['orderNumber']
     # sop1.sop1_create_order(aid=aid,vin='LFV3A23C2L3121054',goods_id='5d9821d6a1b24ecfa829ec3963fc20c0',category='WIFI_FLOW',quantity=1)
-    sop1.get_qr_code(vin,order_no='M202106041317598799846220',pay_type='12100',aid=aid)
+    # sop1.get_qr_code(vin,order_no='M202106041317598799846220',pay_type='12100',aid=aid)
     # sop1.ali_pay_callback(out_trade_no='9c1eb9f8a8f6475895465b4f13d9abba', buyer_logon_id='995939534@qq.com',
     #                      receipt_amount=0.01, gmt_payment=sop1.time_delta(), trade_no=sop1.f.pyint())
     # success_attr = {'thirdPartyPaymentSerial': 'qq995939534', 'payChannel': 'WECHAT_PAY',
     #                 'paidTime': sop1.time_delta(formatted='%Y%m%d%H%M%S')}
     # sop1.ci_common_notification(id='ma20210420150718586229376', category=1, status='1000_00', origin_id=sop1.f.md5(),additional_attrs=success_attr)
-

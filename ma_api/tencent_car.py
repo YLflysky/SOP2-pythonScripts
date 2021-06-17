@@ -1,14 +1,13 @@
 import json
 
-from ma_api.ma_order import MABase
-import os,sys
+from ma_api import MABase
 from box.utils import read_yml
 
 
 class TencentCar(MABase):
     def __init__(self,aid,user,password,vin,token=True):
         super().__init__(aid,user,password,vin,token)
-        self.url = self.read_conf('ma_env.conf',self.env,'car_host')
+        self.url = self.hu_url + '/mosc-tencent-mycar-sop2'
 
     def assert_ma_msg(self,code,body):
         print(json.dumps(body,ensure_ascii=False,indent=4))
@@ -80,13 +79,14 @@ class TencentCar(MABase):
 if __name__ == '__main__':
 
     import os
+    from app.vechicle import Vechicle
     os.environ['ENV'] = 'UAT'
     user_info = read_yml("../conf/user.yml")
-    user_info = user_info['sergio']
+    user_info = user_info['user_music']
     vin = user_info['vin']
     aid = user_info['aid']
     car = TencentCar(user=user_info['user'], password=user_info['password'], vin=vin, aid=aid, token=True)
-    hashVin = '5812E6EFA924DFEBD501D561DD011F66'
+    hashVin = user_info['hashVin']
     # car.check_vin(vin)
     car.get_QRcode(vin)
     # car.send_poi_hu(hashVin)

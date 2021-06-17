@@ -27,7 +27,7 @@ class Calendar(Base):
             if os.getenv("ENV") not in ['PROD','PREF']:
                 self.env = 'UAT'
             self.device_id = 'VW_HU_BS43C4_EPTest_Android9.0_v1.2.0'
-            self.url = self.read_conf('ma_env.conf',self.env,'calendar_host')
+            self.url = self.read_conf('ma_env.conf',self.env,'base_url_hu') + '/mos/37w-calendar-sop2'
             if token:
                 lk.prt('开始获取token...')
                 self.add_header(self.read_conf('ma_env.conf', self.env, 'token_host'),name,password,vin)
