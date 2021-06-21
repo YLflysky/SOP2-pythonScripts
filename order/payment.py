@@ -273,15 +273,15 @@ if __name__ == '__main__':
     pay = Payment()
     order = Order()
     aid = '9351524'
-    pay.get_sign_result(aid='4608048',channel='ALI_PAY',serviceId='FLOW',operatorId='CMCC')
+    # pay.get_sign_result(aid='4608048',channel='ALI_PAY',serviceId='FLOW',operatorId='CMCC')
     # pay.free_pay(aid,order_no='ftb20210128154824964307200',code='12101',score=False)
     # pay.weixin_cdp_callback(out_trade_no='ftb2021051916082372869632',nonce=pay.f.md5(),pay_amount=1)
     # pay.free_qr_code(aid,order_no='ftb2020120411374159845056',sp_id='CMCC',channel='QR_WEIXIN_WITHHOLDING_PAYMENT')
     # pay.agreement_qr_code(aid=aid,channel='ALI_PAY',service='FLOW',sp='CMCC',origin='SELF',way='QR_PAY',vin='LFVSOP2TESTLY0073')
-    pay.pay_channel(aid,order_no='ftb20201204113739602753664')
+    # pay.pay_channel(aid,order_no='ftb20201204113739602753664')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
     # no = order.generate_order_no()['data']
-    # pay.get_qr_code(aid='4614233',order_no='ftb202105201347167431036288',channel='WECHAT_PAY')
+    pay.get_qr_code(aid='122',order_no='ftb20210617183359180368640',channel='WECHAT_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback(out_trade_no='9229a55c770b47e09fb9681aaf8cde09',buyer_logon_id='995939534@qq.com',

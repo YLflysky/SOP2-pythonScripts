@@ -154,7 +154,7 @@ if __name__ == '__main__':
     os.environ['GATE'] = 'false'
     o = BMOrder()
     pay = BMPayment()
-    xmly_aid = '4608442'
+    xmly_aid = '9355005'
     kuwo_aid = '4614910'
     vin = 'LFV2A2BUXL4651255'
     # o.bm_update_pay(bm_order='20200921133430118139264',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
@@ -173,7 +173,7 @@ if __name__ == '__main__':
     # o.reload_config()
     # o.bm_order_detail(aid='122',order_no='ftb20210602100240367151552',vin=None)
     # o.bm_delete_order(aid='9349485',order_no='ftb20210315155832237913408')
-    # order_no = o.goods_order_create(tenant_id='VW',aid=xmly_aid,vin=vin,goods='236',quantity=1)['data']['orderNo']
-    order_no = o.goods_order_create(tenant_id='VW',aid=kuwo_aid,vin=vin,goods='226',quantity=1)['data']['orderNo']
+    order_no = o.goods_order_create(tenant_id='VW',aid=xmly_aid,vin=vin,goods='273',quantity=1)['data']['orderNo']
+    # order_no = o.goods_order_create(tenant_id='VW',aid=kuwo_aid,vin=vin,goods='226',quantity=1)['data']['orderNo']
     # order_no = o.goods_order_create(tenant_id='VW',aid=kuwo_aid,vin=vin,goods='253',quantity=1)['data']['orderNo']
     # pay.get_qr_code(vin,aid=kuwo_aid,order_no='ftb20210609135827683151552',pay_type='12100',category='110')

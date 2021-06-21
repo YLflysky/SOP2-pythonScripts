@@ -88,7 +88,7 @@ if __name__ == '__main__':
     car = TencentCar(user=user_info['user'], password=user_info['password'], vin=vin, aid=aid, token=True)
     hashVin = user_info['hashVin']
     # car.check_vin(vin)
-    car.get_QRcode(vin)
+    # car.get_QRcode(vin)
     # car.send_poi_hu(hashVin)
     # car.unbind(vin=vin)
     # car.get_info(vin)

@@ -11,7 +11,7 @@ class MAOrder(Base):
         if os.getenv('ENV') not in ('PROD','PERF'):
             self.env = 'UAT'
         self.payment_url = self.read_conf('ma_env.conf', self.env, 'base_url_hu') + '/mosc-payment'
-        self.order_url = self.read_conf('ma_env.conf', self.env, 'order_host')
+        self.order_url = self.read_conf('ma_env.conf', self.env, 'base_url_hu') + '/mosc-order'
 
     def assert_msg(self, code, body):
         print(json.dumps(body,ensure_ascii=False,indent=4))
@@ -182,7 +182,7 @@ if __name__ == '__main__':
     # ma_order.ma_contract_sign(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_get_sign_result(channel='ALIPAY',service='03',operator='030003')
     # ma_order.ma_release_sign(channel='ALIPAY',service='03',operator='030003')
-    # ma_order.apply_invoice(order_no='ma20210224155318454245760',i_channel='JDO',i_type='1',i_title='极豆科技',tax='445678909876543',email='995939534@qq.com')
+    # ma_order.apply_invoice(order_no='ma20210615083909326704512',i_channel='MNO',i_type='1',i_title='CMCC开票',tax='445678909876543',email='995939534@qq.com')
     # ma_order.get_order_detail(aid='9349824',order_no='ma20210413154730087774144')
     # ma_order.get_order_detail_by_ex(ex_order='1017383379447808')
     # ma_order.update_business(order_no='2020121606064500532768',status='AKSK',desc=ma_order.f.sentence())
@@ -191,7 +191,7 @@ if __name__ == '__main__':
     #                         pay_amount=0.01,pay_time=ma_order.time_delta(),pay_status='SUCCESS',discountAmount=0.02,
     #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
-    order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1,vin='LFVTESTMOSC000129')['data']
+    # order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1,vin='LFVTESTMOSC000129')['data']
     # order_no = ma_order.create_goods_order(aid='15867227',goods_id='5d9821d6a1b24ecfa829ec3963fc20c0',category='MEDIA_FLOW',quantity=1,vin='LFV3A23C2L3121054')['data']
-    # ma_order.create_goods_order(aid='4608442',goods_id='1010500100000535420',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000075')
+    ma_order.create_goods_order(aid='9355005',goods_id='1010500000113868',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000075')
 

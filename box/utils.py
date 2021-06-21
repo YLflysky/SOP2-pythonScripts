@@ -72,11 +72,3 @@ def read_yml(file_path):
         data = obj.read()
         return yaml.load(data,Loader=yaml.FullLoader)
 
-
-
-
-
-
-if __name__ == '__main__':
-    pdf_path = '../data/对账单_DZD20210521163546464675840.pdf'
-    pdf_doc_to_map(pdf_path,password=0)

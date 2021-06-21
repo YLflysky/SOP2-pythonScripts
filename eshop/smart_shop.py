@@ -13,7 +13,7 @@ class SmartEShop(Base):
             self.gate = True
             if os.getenv('ENV') not in ('PROD', 'PERF'):
                 self.env = 'UAT'
-            self.url = self.read_conf('ma_env.conf', self.env, 'smart_eshop_host')
+            self.url = self.read_conf('ma_env.conf', self.env, 'base_url_hu') + '/mosc-dispatch/ep/eshop'
         else:
             print('no such tenant...')
             sys.exit(-1)

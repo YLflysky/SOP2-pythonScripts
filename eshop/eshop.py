@@ -105,9 +105,9 @@ class SpareShop(EShop):
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
-    # shop = PointsShop('MA',token=True,name='13618079403',password='xyz2020',vin='LFVSOP2TESTLY0040')
-    shop = PointsShop('MA',token=True)
+    os.environ['ENV'] = 'PROD'
+    shop = PointsShop('MA',token=True,name='13618079403',password='xyz2020',vin='LFVSOP2TESTLY0040')
+    # shop = PointsShop('MA',token=True)
     category = shop.get_category_id()
     # print(category)
     # shop.get_list('all',index=1,size=10,sort='asc',sortName='score')

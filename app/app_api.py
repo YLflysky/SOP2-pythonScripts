@@ -216,8 +216,8 @@ class App(Base):
 if __name__ == '__main__':
     import json
     os.environ['ENV'] = 'UAT'
-    # app = App(name='15144142651',password='Qq111111',aid='4614233')
-    app = App(name='19900001122',password='111111',aid='4614910')
+    app = App(name='15144142651',password='Qq111111',aid='4614233')
+    # app = App(name='19900001122',password='111111',aid='4614910')
     # app = App(name='15330011918',password='000000',aid='4614183',token=True)
     # app = App(name='13618079403',password='xyz2020',aid='15867227',token=True)
     vim_bm = 'LFV2A2BUXL4651255'
@@ -225,10 +225,10 @@ if __name__ == '__main__':
     vim_sop1 = 'LFVUB9E75L5368051'
     # app.order_detail(order_no='ma20210514094945242778240')
     # app.contract_sign(vin=vim_bm,channel='WXPAY',cp_seller='CMCC',display_account=1)
-    app.apply_invoice(order_no='ma20210615083909326704512',i_type=1,i_channel='MNO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409',mailingAddress='new')
+    # app.apply_invoice(order_no='ma20210525163237260499712',i_type=1,i_channel='MNO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409',mailingAddress='new')
     # app.get_sign_result(vin='LFV2A2BUXL4651255',channel='WXPAY',cp_seller='CMCC')
     # app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
-    # app.get_invoice_info(order_no='ftb20210610145600261151552')
+    app.get_invoice_info(order_no='ma20210525163237260499712')
     # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
     #                  'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
     # events = [event]
@@ -238,8 +238,8 @@ if __name__ == '__main__':
     # app.calendar_mobile_sync(current_time=None,events=events,vin='LFVTB9E67L5200138')
     # app.calendar_mobile_find_all('LFVTB9E67L5200138')
     # app.free_access_pay(vin='LFV2A2BUXL4651255',channel='ALPAY',order_no='ftb2021040911024205240960')
-    # app.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_bm,count=1,durationDays=3)
-    # app.create_order(goods_id='1010500100000535429',category='RADIO_VIP',vin=vim_bm,count=1)
+    # app.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_ma,count=1,durationDays=3)
+    # app.create_order(goods_id='1010500100000535429',category='RADIO_VIP',vin=vim_ma,count=1)
     # wifi_order=app.create_order(goods_id='cc50badd5bd6418b9c431f87394640fe',category='WIFI_FLOW',vin=vim_ma,count=1)['data']['orderNumber']
     # app.get_pay_url(order_no='ma20210514094945242778240',channel='QR_ALIPAY')
     # app.get_order_list(orderStatus=None,orderCategoryList=None,tenantIdList=None)

@@ -4,7 +4,7 @@ import json,os
 
 lk.prt('导入 MA API 基类>>>>')
 
-
+__all__ = ['ma_pay','ma_pay_callback','ma_order','mno','team','tencent_car','violation','sop1_order','ma_order_adapter']
 class MABase(Base):
     def __init__(self,aid,user,password,vin,token=True):
         super().__init__()
