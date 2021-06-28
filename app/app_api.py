@@ -228,15 +228,15 @@ if __name__ == '__main__':
     # app.apply_invoice(order_no='ma20210525163237260499712',i_type=1,i_channel='MNO',i_title='开票',tax='445678909876543',email='995939534@qq.com',mobile='18623459409',mailingAddress='new')
     # app.get_sign_result(vin='LFV2A2BUXL4651255',channel='WXPAY',cp_seller='CMCC')
     # app.release_sign(vin='LFVSOP2TESTLY0002',channel='ALPAY',cp_seller='JDO')
-    app.get_invoice_info(order_no='ma20210525163237260499712')
-    # event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
-    #                  'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
-    # events = [event]
+    # app.get_invoice_info(order_no='ma20210525163237260499712')
+    event = {'localEventId': app.f.pyint(100, 1000), 'cudStatus': 'C','rrule':'Only Once',
+                     'eventStartTime': app.get_time_stamp(days=-1), 'eventEndTime': app.get_time_stamp(days=1)}
+    events = [event]
     # with open('../data/calendar_events.json', 'r', encoding='utf-8') as json_f:
     #     events = json.load(json_f)
     # print(events)
-    # app.calendar_mobile_sync(current_time=None,events=events,vin='LFVTB9E67L5200138')
-    # app.calendar_mobile_find_all('LFVTB9E67L5200138')
+    # app.calendar_mobile_sync(current_time=None,events=events,vin=vim_sop1)
+    app.calendar_mobile_find_all(vim_bm)
     # app.free_access_pay(vin='LFV2A2BUXL4651255',channel='ALPAY',order_no='ftb2021040911024205240960')
     # app.create_order(goods_id='17',category='MUSIC_VIP',vin=vim_ma,count=1,durationDays=3)
     # app.create_order(goods_id='1010500100000535429',category='RADIO_VIP',vin=vim_ma,count=1)

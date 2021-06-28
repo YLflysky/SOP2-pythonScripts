@@ -57,8 +57,8 @@ class Base:
         双向认证
         '''
 
-        client_path = os.path.join(self.get_pro_path(), 'cert/cs-client.crt')
-        key_path = os.path.join(self.get_pro_path(), 'cert/cs-pk.key')
+        client_path = os.path.join(self.get_pro_path(), 'conf/cs-client.crt')
+        key_path = os.path.join(self.get_pro_path(), 'conf/cs-pk.key')
         return (client_path,key_path)
 
     def get_time_stamp(self,formartted='%Y-%m-%d %H:%M:%S', days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):

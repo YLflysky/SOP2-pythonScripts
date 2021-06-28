@@ -44,7 +44,7 @@ class CDP(Base):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     cdp = CDP()
     # cdp.get_vin_by_iccid(iccid='89860802092030685837')
     cdp.get_iccid_by_vin(vin='LFV2A2BUXL4651255')

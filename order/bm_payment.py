@@ -127,13 +127,13 @@ if __name__ == '__main__':
     order = Order()
     pay = BMPayment()
     aid = '9351623'
-    vin = 'DEFAULT_VIN'
-    # pay.be_sync_result(vin='5E5F5EDBD91F4BF8462AE2DE2E89B509',aid='9349485',bm_order_no='bm001',bm_pay_no='bm_pay_001',order_no='ftb20210115135413613139264',pay_amount=1,order_amount=100,discountAmount=99,
+    vin = 'LFVSOP2TESTLY0056'
+    # pay.be_sync_result(vin='5E5F5EDBD91F4BF8462AE2DE2E89B509',aid='9349485',bm_order_no='bm001',bm_pay_no='bm_pay_001',order_no='ftb20210115135413613139264',pay_amount=2,order_amount=100,discountAmount=98,
     #                    channel='WECHAT_PAY',status='TRADE_SUCCESS',pay_time=pay.time_delta(),pay_way='QR_PAY',service='GAS',sp='111')
     # pay.get_pay_result(vin='LFVTEST1231231231',order_no='ftb20210426170439684274432',aid='4614910',category='112',roll_number=1)
-    # pay.get_pay_channel(vin=vin,aid='4614910',order_no='ftb20210610141240303151552',category='02')
+    # pay.get_pay_channel(vin=vin,aid='9355005',order_no='ftb20210622153841773368640',category='115')
     # pay.get_pay_agreement(aid='221',order_no='20201029154015868266240',language='en-US',code='11101')
-    # pay.get_qr_code(vin='LFV2A2BU2L4444083',aid='122',order_no='ftb20210617183359180368640',pay_type='12103',category='109',score='N')
+    pay.get_qr_code(vin='LFVTESTMOSC052726',aid='9354317',order_no='ftb20210628131340413503808',pay_type='12103',category='03',score='N')
     # pay.get_agreement_qr_code(aid,vin,channel=2,service_id='FLOW',sp_id='CMCC')
-    pay.free_pay(aid='122',vin='LFVSOP2TEST000016',order_no='ftb20210618091942335368640',channel='12101',useScore=False)
+    # pay.free_pay(aid='122',vin='LFVSOP2TEST000016',order_no='ftb20210622141513376368640',channel='12101',useScore=False)
 

@@ -159,7 +159,7 @@ if __name__ == '__main__':
     vin = 'LFV2A2BUXL4651255'
     # o.bm_update_pay(bm_order='20200921133430118139264',aid='U002',pay_no='yinli18623459409',channel=1,pay_amount=0.01,state=1,
     #                 pay_time=o.time_delta(),order_amount=0.01,orderStatus='PAY_SUCCESS')
-    # o.order_list(vin='LFVSOP2TESTLY0018',aid='9353750',pageSize=300,pageIndex=1,orderStatus='1000',orderCategory='00')
+    # o.order_list(vin='LFVSOP2TESTLY0018',aid='9353750',pageSize=10,pageIndex=1,orderStatus='1003',orderCategory='18')
     # o.order_count(vin='LFVSOP2TESTLY0018',uid='9353813',orderStatus='1000',orderCategory='00')
     # data = {"brand": "VW", "businessExtInfo": {"message": "扩展字段测试"}, "discountAmount": "2000", "orderAmount": "20000",
     #         "orderCategory": "112",
@@ -171,9 +171,9 @@ if __name__ == '__main__':
     # o.update_bm_order(order_no='ftb2021012216115830090112',vin='8099B3B73CF8EE0E85865D4EBD78C913',userId='123',updateType='1',
     #                   businessState='success',businessStateDesc='已完成')
     # o.reload_config()
-    # o.bm_order_detail(aid='122',order_no='ftb20210602100240367151552',vin=None)
-    # o.bm_delete_order(aid='9349485',order_no='ftb20210315155832237913408')
-    order_no = o.goods_order_create(tenant_id='VW',aid=xmly_aid,vin=vin,goods='273',quantity=1)['data']['orderNo']
+    o.bm_order_detail(aid='9353450',order_no='ftb20210625151129976499712',vin=None)
+    # o.bm_delete_order(aid='9353450',order_no='ftb20210624134312681368640')
+    # order_no = o.goods_order_create(tenant_id='VW',aid=xmly_aid,vin=vin,goods='273',quantity=1)['data']['orderNo']
     # order_no = o.goods_order_create(tenant_id='VW',aid=kuwo_aid,vin=vin,goods='226',quantity=1)['data']['orderNo']
     # order_no = o.goods_order_create(tenant_id='VW',aid=kuwo_aid,vin=vin,goods='253',quantity=1)['data']['orderNo']
-    # pay.get_qr_code(vin,aid=kuwo_aid,order_no='ftb20210609135827683151552',pay_type='12100',category='110')
+    # pay.get_qr_code(vin,aid=kuwo_aid,order_no=order_no,pay_type='12100',category='110')

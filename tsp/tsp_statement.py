@@ -7,7 +7,7 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 class Statement(Base):
     def __init__(self):
         super().__init__()
-        self.url = self.read_conf('ftb3_env.conf',self.env,'statement_host')
+        self.url = self.read_conf('ftb3_env.conf',self.env,'market_host') + '/bill'
         self.header['username'] = 'sergio'
         self.header['userId'] = '4614183'
         self.header['brand'] = 'VW'
@@ -136,6 +136,21 @@ class Statement(Base):
         with open('../data/对账单_{}.pdf'.format(s_no),'wb') as obj:
             obj.write(b)
 
+    def mno_trigger(self,s_time,s_p_type):
+        '''
+        从MOSI获取MNO对账单数据
+        '''
+        url = self.url + '/statement/trigger/mno'
+
+    def platform_data(self,s_time,cp):
+        '''
+        从大数据获取平台对账数据
+        '''
+        url = self.url + '/statement/prepare/platformData'
+        data = {'statementTime':s_time,'spId':cp}
+        c,b = self.do_post(url,data)
+        self.assert_msg(c,b)
+
 
 if __name__ == '__main__':
 
@@ -147,6 +162,7 @@ if __name__ == '__main__':
     cp = 'CMCC'
     s_type = 'ORDER_STATEMENT'
     s_time = '20200401000000'
+    s.platform_data(s_time,cp)
     # redis_util.get_set_value(key='bill:compare_set:third:CMCC:ORDER_STATEMENT:20200401000000:false')
 
     # s.upload_statement_diff(s_no='DZD20210519133028632368640')
@@ -177,9 +193,9 @@ if __name__ == '__main__':
 
     # res = s.generate_statement(cp=cp,s_time='2020-04-24 14:00:00',percent_platform=25.5,s_p_type='MONTH',s_type=s_type)
     # s.statement_list(third_name='XIMALAYA',beginTime=None,statementStatus=None)
-    s_no = 'DZD20210514131001355385024'
-    index = 1
-    size = 50
+    # s_no = 'DZD20210514131001355385024'
+    # index = 1
+    # size = 50
     # items = s.item_list(s_no,page_no=index,page_size=size)
     # data = []
     # page = int(items['totalCount'] /size)
@@ -196,4 +212,4 @@ if __name__ == '__main__':
     #         lk.prt('{}明细确认成功！'.format(i['statementCheckNo']))
     # s.confirm_statement(s_no)
 
-    s.upload_statement(s_no)
+    # s.upload_statement(s_no)

@@ -268,7 +268,7 @@ class Payment(Base):
 if __name__ == '__main__':
     import os
     from order.order_api import Order
-    os.environ['ENV'] = 'SIT'
+    os.environ['ENV'] = 'UAT'
     os.environ['GATE'] = 'false'
     pay = Payment()
     order = Order()
@@ -281,12 +281,17 @@ if __name__ == '__main__':
     # pay.pay_channel(aid,order_no='ftb20201204113739602753664')
     # pay.check_route(ex_pay_no='fdb6099683ad4ba6877e65450f9d6e51')
     # no = order.generate_order_no()['data']
-    pay.get_qr_code(aid='122',order_no='ftb20210617183359180368640',channel='WECHAT_PAY')
+    # pay.get_qr_code(aid='122',order_no='ftb20210617183359180368640',channel='WECHAT_PAY')
     # pay.get_pay_result('ftb20210115131009135139264',aid)
     # pay.get_pay_agreement(uid='4614907',order_no='20201012103736463180224',lang='zh-CN',code='11101')
     # pay.ali_pay_callback(out_trade_no='9229a55c770b47e09fb9681aaf8cde09',buyer_logon_id='995939534@qq.com',
     #                      receipt_amount=218.00, gmt_payment=pay.time_delta(),trade_no=pay.f.pyint())
 
     # pay.contract_sign_notify(aid='221',)
-    # pay.sync_pay_result(pay_no='ftb20210331163501667811008',ex_pay_no='yinli18623459409',pay_time=pay.time_delta(),
-    #                     amount=999,way='QR_PAY',origin='BM',channel='WECHAT_PAY',status='SUCCESS')
+    data = {'vin': 'DEFAULT_VIN', 'aid': aid, 'exOrderNo': '188468', 'exPayNo': '995939534@qq.com',
+            'payAmount': 1, 'orderAmount': 100, 'discountAmount': 99, 'payChannel': 'WECHAT_PAY',
+            'payStatus': "SUCCESS", 'payTime': pay.time_delta(), 'payWay': 'QR_PAY', 'serviceId': 'MUSIC', 'spId': 'KUWO',
+            'origin': 'SOP1'}
+    pay.sync_pay_stream(data)
+    # pay.sync_pay_result(pay_no='ftb20210604064419578593920',ex_pay_no='yinli18623459409',pay_time=pay.time_delta(),
+    #                     amount=999,way='QR_PAY',origin='BM',channel='WECHAT_PAY',status='SUCCESS',orderAmount=100,discountAmount=1345)

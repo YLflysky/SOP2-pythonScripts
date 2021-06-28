@@ -286,9 +286,9 @@ if __name__ == '__main__':
     bm_pay = BMPayment()
     # user_data = flow.read_yml('../conf','user.yml')
     # user_data = user_data['uat_zqs']
-    aid = '122'
+    aid = '9354317'
     goods_id = 253
-    vin = 'LFVSOP2TEST000016'
+    vin = 'LFVTESTMOSC052726'
     iccid = '89860802091930027461'
     # flow.release_sign(aid,sp='CMCC',channel='WECHAT_PAY',reason='测试数据')
     # flow.get_sign_result(aid,sp_id='CMCC',channel='WECHAT_PAY')
@@ -305,7 +305,7 @@ if __name__ == '__main__':
 
     order_no = flow.bm_create_flow_order(goods_id, aid, vin=vin, quantity=1)['data']['orderNo']
     # flow.qrCode(aid,order='ftb2021061014445628440960',ex_order='111af05652694db59e275f5ba0775e4d',channel='ALI_PAY',pay_no=flow.f.md5())
-    bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='12100',category='112')
+    # bm_pay.get_qr_code(vin,aid,order_no=order_no,pay_type='12100',category='112')
     # flow.bm_goods_list('995939534',['MUSIC_VIP'])
     # flow.sign_result_callback(aid,channel=1,notify_type=1,status=1)
 
@@ -314,7 +314,7 @@ if __name__ == '__main__':
     # flow.cp_sign_result_notify(user_id='995939534',channel=2,notify_type=2,status=2)
     # flow.cp_common_notify(id='M202106041317598799846220', category=2, status='2000_00', origin_id=flow.f.md5(),channel='WECHAT_PAY')
     # flow.cp_sim_notify(id=flow.f.md5(),date=flow.time_delta(formatted='%Y%m%d%H%M%S'),rule=0.9,
-    #                    asset_type='iccid',asset_id='0042',package_id='P1001114671')
+    #                    asset_type='iccid',asset_id='89860802091930027461',package_id='P1001114671')
     # flow.cp_over_due_notify(asset_id='0042',asset_type='iccid',package_code='P1001183210',
     #                         effective_time=flow.time_delta(formatted='%Y%m%d%H%M%S',days=-10),
     #                         expired_time=flow.time_delta(formatted='%Y%m%d%H%M%S',minutes=-5))

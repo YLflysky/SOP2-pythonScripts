@@ -59,9 +59,9 @@ class Vechicle(Base):
 if __name__ == '__main__':
     import os
     os.environ['GATE'] = 'false'
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     v= Vechicle(aid='914',vin='LFV2A11K373053899',name='15566938326',password='test1234',token=False)
     # v.update_plate_no(num='渝CR3683')
-    # v.get_tenant_by_vin(vin='LFV3A23C913046742')
-    v.get_hashVin_by_vin('LFVTEST1231231231')
+    v.get_tenant_by_vin(vin='LFV3A23C913046742')
+    # v.get_hashVin_by_vin('WVWZZZ3CZME000221')
     # v.get_vin_by_hashvin('5812E6EFA924DFEBD501D561DD011F66')

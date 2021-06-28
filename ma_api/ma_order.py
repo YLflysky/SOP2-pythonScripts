@@ -174,7 +174,7 @@ if __name__ == '__main__':
     aid = '9353263'
     vin = 'LFVTESTMOSC000129'
     ma_order = MAOrder()
-    status_list = ['PAID','PROCESSING','PAY_FAILED']
+    # status_list = ['PAID','PROCESSING','PAY_FAILED']
     # ma_order.count(aid,orderCategory='00',orderStatusList=status_list)
     # ma_order.create_order(aid,vin)
     # ma_order.refund(order_no='ma20210303162711260364544',aid='4614183')
@@ -192,6 +192,7 @@ if __name__ == '__main__':
     #                         pay_type='QR_CODE')
     # ma_order.get_qr_code('ma2021030911013915116384',channel='11100')
     # order_no = ma_order.create_goods_order(aid='4614183',goods_id='17',category='MUSIC_VIP',quantity=1,point=True,durationTimes=1,vin='LFVTESTMOSC000129')['data']
+    ma_order.create_goods_order(aid=aid,goods_id='ca85c936d2564debb89e52bf11692e2f',category='MEDIA_FLOW',quantity=1,vin=vin)
     # order_no = ma_order.create_goods_order(aid='15867227',goods_id='5d9821d6a1b24ecfa829ec3963fc20c0',category='MEDIA_FLOW',quantity=1,vin='LFV3A23C2L3121054')['data']
-    ma_order.create_goods_order(aid='9355005',goods_id='1010500000113868',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000075')
+    # ma_order.create_goods_order(aid='9355005',goods_id='1010500000113868',category='RADIO_VIP',quantity=1,vin='LFVSOP2TEST000075')
 

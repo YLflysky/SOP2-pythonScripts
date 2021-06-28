@@ -156,7 +156,7 @@ class MAOrderAdapter(MABase):
         self.assert_bm_msg(c,b)
 
     def data_flow(self,aid,vin):
-        url = 'https://hu-uat-sop2.mosc.faw-vw.com/test-access/tm/mos/mobiledata/api/v1/dataflow/users/{}/vehicles/{}/detail'.format(aid,vin)
+        url = 'https://hu-sop2.mosc.faw-vw.com/prod/tm/mos/mobiledata/api/v1/dataflow/users/{}/vehicles/{}/detail'.format(aid,vin)
         c,b = self.do_get(url,{'vin':vin})
         self.assert_bm_msg(c,b)
 
@@ -171,18 +171,18 @@ class MAOrderAdapter(MABase):
 
 if __name__ == '__main__':
     import os
-    os.environ['ENV'] = 'UAT'
+    os.environ['ENV'] = 'PROD'
     os.environ['GATE'] = 'false'
     aid = '9353263'
     vin = 'LFVTESTMOSC989216'
-    ma_order = MAOrderAdapter(aid,user='13482172676',password='000000',vin=vin)
-    # ma_order = MAOrderAdapter(aid='2016917',user='18602893309',password='225577',vin='LFVSOP2TESTLY0039')
+    # ma_order = MAOrderAdapter(aid,user='13482172676',password='000000',vin=vin)
+    ma_order = MAOrderAdapter(aid='2016917',user='18602893309',password='225577',vin='LFVSOP2TESTLY0039')
     # music = MAOrderAdapter('9349824',user='18217539032',password='Abc123456',vin='LFV3A23C913046742')
-    ma_order.order_count(aid,vin,category='00',status='1002',begin_time=ma_order.time_delta(days=-100),end_time=ma_order.time_delta())
+    # ma_order.order_count(aid,vin,category='00',status='1002',begin_time=ma_order.time_delta(days=-100),end_time=ma_order.time_delta())
     # ma_order.order_list(vin=vin,begin=ma_order.time_delta(days=-10),end=ma_order.time_delta(),order_status='1002',category='00')
     # order_no = ma_order.ma_create_order(aid='4614183', vin=vin, goods_id='17',durationTimes=3,
     #                                     category='MUSIC_VIP', quantity=1, point=False)['data']['orderNo']
-    # ma_order.data_flow(aid,vin)
+    ma_order.data_flow(aid,'LFV3A23C913046742')
     # ma_order.ma_create_order(aid,goods_id='8a248c5a231b4e2d99ec8183b578e339',category='MEDIA_FLOW',
     #                          vin=vin,quantity=1)
     # ma_order.cancel_order(order_no='ma20210316141348247856064')

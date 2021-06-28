@@ -16,7 +16,7 @@ class MysqlConfig(Enum):
     SOP2_DEV = {'host':'192.168.133.191','port':3306,'username':'faw_sop2_dev','password':'oJNqwQsUa239GbdYz7Tp'}
     SOP2_SIT = {'host':'192.168.133.178','port':3306,'username':'faw_sop2_sit','password':'d5Au97KWFXH@MGQk3fcU'}
     SOP2_UAT = {'host':'192.168.133.203','port':3306,'username':'faw_sop2_uat_rd_automation','password':'ci1yjxz4qIuNpJZCOHrR'}
-    FTB3_DEV = {'host':'192.168.133.191','port':3306,'username':'faw_ftb3_dev','password':'aus8GTX7Eox5MgCOyBqk'}
+    FTB3_DEV = {'host':'10.89.0.2','port':3306,'username':'fawvw_ftb3_dev','password':'2HcURpWPn9yeZBgSrJGM'}
     FTB3_SIT = {'host':'192.168.133.178','port':3306,'username':'faw_sop2_sit','password':'d5Au97KWFXH@MGQk3fcU'}
     FTB3_UAT = {'host':'192.168.133.203','port':3306,'username':'faw_sop2_uat_rd_automation','password':'ci1yjxz4qIuNpJZCOHrR'}
     SOP2_LOCAL = SOP2_DEV
